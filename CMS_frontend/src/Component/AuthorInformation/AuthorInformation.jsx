@@ -1,35 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaPlus, FaTimes, FaTrash, FaEdit } from 'react-icons/fa'
 import { IoPersonAdd } from 'react-icons/io5'
+import { useDispatch, useSelector } from 'react-redux'
+import { setAbstractAuthors } from '../../Redux/Slice/AbstractSlice'
 
 const AuthorInformation = ({ activeStep, setActiveStep }) => {
+  const { user } = useSelector(state => state.user)
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState(null)
-  const [authors, setAuthors] = useState([
-    {
-      id: 1,
-      isPrimary: true,
-      email: 'madni4all@yahoo.com',
-      firstName: 'Dr. Syed Hamid Hussain',
-      lastName: 'Madni',
-      organization: 'Universiti Teknologi Malaysia',
-      country: 'Malaysia',
-      title: 'Dr.'
-    }
-  ])
+  const [authors, setAuthors] = useState([])
 
   const [formData, setFormData] = useState({
     title: '',
-    firstName: '',
-    lastName: '',
+    name: '',
     email: '',
-    organization: '',
+    affiliation: '',
     country: '',
     isCorresponding: false
   })
 
   const [errors, setErrors] = useState({})
-
+const dispatch = useDispatch()
   const titleOptions = ['Dr.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.']
   const countryOptions = [
     'Malaysia',
@@ -50,19 +42,38 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
     'Other'
   ]
 
+  useEffect(() => {
+    if (user?.email) {
+      const data = {
+        id: 1,
+        title: 'Mr',
+        name: user?.name,
+        email: user?.email,
+        affiliation: user?.affiliation,
+        country: user?.country,
+        isPrimary: true
+      }
+
+      setAuthors([data])
+    }
+  }, [user])
+
+  useEffect(()=>{
+    dispatch(setAbstractAuthors(authors))
+  },[authors, dispatch])
+
   const validateForm = () => {
     const newErrors = {}
 
     if (!formData.title) newErrors.title = 'Title is required'
-    if (!formData.firstName) newErrors.firstName = 'First name is required'
-    if (!formData.lastName) newErrors.lastName = 'Last name is required'
+    if (!formData.name) newErrors.firstName = 'First name is required'
     if (!formData.email) {
       newErrors.email = 'Email is required'
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid'
     }
-    if (!formData.organization)
-      newErrors.organization = 'Organization is required'
+    if (!formData.affiliation)
+      newErrors.affiliation = 'Organization is required'
     if (!formData.country) newErrors.country = 'Country is required'
 
     // Check for duplicate email
@@ -187,10 +198,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
                   Email
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
-                  First Name
-                </th>
-                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
-                  Last Name
+                  Name
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Organization
@@ -227,17 +235,13 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900'>
-                      {author.firstName}
+                      {author.name}
                     </div>
                   </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm text-gray-900'>
-                      {author.lastName}
-                    </div>
-                  </td>
+
                   <td className='px-6 py-4'>
                     <div className='text-sm text-gray-900 max-w-xs truncate'>
-                      {author.organization}
+                      {author.affiliation}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
@@ -364,7 +368,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
                     </label>
                     <input
                       type='text'
-                      name='firstName'
+                      name='name'
                       value={formData.firstName}
                       onChange={handleInputChange}
                       placeholder='Enter full name'
@@ -436,17 +440,17 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
                   </label>
                   <input
                     type='text'
-                    name='organization'
-                    value={formData.organization}
+                    name='affiliation'
+                    value={formData.affiliation}
                     onChange={handleInputChange}
                     placeholder='Enter organization/affiliation'
                     className={`border border-black rounded-md p-2 w-full text-black ${
-                      errors.organization ? 'border-red-500' : 'border-black'
+                      errors.affiliation ? 'border-red-500' : 'border-black'
                     }`}
                   />
-                  {errors.organization && (
+                  {errors.affiliation && (
                     <p className='mt-1 text-sm text-red-600'>
-                      {errors.organization}
+                      {errors.affiliation}
                     </p>
                   )}
                 </div>

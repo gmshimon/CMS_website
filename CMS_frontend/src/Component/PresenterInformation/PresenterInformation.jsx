@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setContactNumber, setCountry, setDepartment, setMailingAddress, setOrganization, setPresenterEmail, setPresenterName, setPresenterStatus } from '../../Redux/Slice/AbstractSlice'
 
 const PresenterInformation = ({ activeStep, setActiveStep }) => {
-  // const {
-
-  // } = useSelector(state=>state.abstract)
+  const {
+presenter_name,presenter_email,organization,
+department,country,
+contact_number,mailing_address,presenter_status
+  } = useSelector(state=>state.abstract)
   const [formData, setFormData] = useState({
     presenterName: '',
     email: '',
@@ -18,7 +21,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
   })
 
   const [errors, setErrors] = useState({})
-
+  const dispatch = useDispatch()
   const presenterStatusOptions = [
     'Student',
     'Faculty Member',
@@ -44,33 +47,33 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
 
   const validateForm = () => {
     const newErrors = {}
-    if (!formData.presenterName.trim()) {
+    if (!presenter_name?.trim()||!presenter_name) {
       newErrors.presenterName = 'Presenter name is required'
     }
-    if (!formData.email.trim()) {
+    if (!presenter_email?.trim()||!presenter_email) {
       newErrors.email = 'Email is required'
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address'
     }
-    if (!formData.organization.trim()) {
+    if (!organization?.trim()||!organization) {
       newErrors.organization = 'Organization/University is required'
     }
-    if (!formData.department.trim()) {
+    if (!department?.trim()||!department) {
       newErrors.department = 'Department is required'
     }
-    if (!formData.country.trim()) {
+    if (!country?.trim()||!country) {
       newErrors.country = 'Country is required'
     }
-    if (!formData.contactNumber.trim()) {
+    if (!contact_number?.trim()||!contact_number) {
       newErrors.contactNumber = 'Contact number is required'
     }
-    if (!formData.mailingAddress.trim()) {
+    if (!mailing_address?.trim()||!mailing_address) {
       newErrors.mailingAddress = 'Mailing address is required'
     }
-    if (!formData.presenterStatus) {
+    if (!presenter_status) {
       newErrors.presenterStatus = 'Presenter status is required'
     }
-    if (formData.presenterStatus === 'Other' && !formData.otherStatus.trim()) {
+    if (presenter_status === 'Other' && !presenter_status?.trim()) {
       newErrors.otherStatus = 'Please specify your status'
     }
     return newErrors
@@ -107,8 +110,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='text'
             name='presenterName'
-            value={formData.presenterName}
-            onChange={handleChange}
+            value={presenter_name}
+            onChange={(e)=>dispatch(setPresenterName(e.target.name))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presenterName ? 'input-error' : ''
             }`}
@@ -129,8 +132,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='email'
             name='email'
-            value={formData.email}
-            onChange={handleChange}
+            value={presenter_email}
+            onChange={e=>dispatch(setPresenterEmail(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.email ? 'input-error' : ''
             }`}
@@ -151,8 +154,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='text'
             name='organization'
-            value={formData.organization}
-            onChange={handleChange}
+            value={organization}
+            onChange={e=>dispatch(setOrganization(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.organization ? 'input-error' : ''
             }`}
@@ -173,8 +176,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='text'
             name='department'
-            value={formData.department}
-            onChange={handleChange}
+            value={department}
+            onChange={e=>dispatch(setDepartment(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.department ? 'input-error' : ''
             }`}
@@ -193,8 +196,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='text'
             name='country'
-            value={formData.country}
-            onChange={handleChange}
+            value={country}
+            onChange={e=>dispatch(setCountry(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.country ? 'input-error' : ''
             }`}
@@ -215,8 +218,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='tel'
             name='contactNumber'
-            value={formData.contactNumber}
-            onChange={handleChange}
+            value={contact_number}
+            onChange={e=>dispatch(setContactNumber(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.contactNumber ? 'input-error' : ''
             }`}
@@ -241,8 +244,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           </label>
           <textarea
             name='mailingAddress'
-            value={formData.mailingAddress}
-            onChange={handleChange}
+            value={mailing_address}
+            onChange={e=>dispatch(setMailingAddress(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black h-24 ${
               errors.mailingAddress ? 'textarea-error' : ''
             }`}
@@ -262,8 +265,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           </label>
           <select
             name='presenterStatus'
-            value={formData.presenterStatus}
-            onChange={handleChange}
+            value={presenter_status}
+            onChange={e=>dispatch(setPresenterStatus(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presenterStatus ? 'select-error' : ''
             }`}
