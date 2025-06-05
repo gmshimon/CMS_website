@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import {
   FaCalendarAlt,
   FaClock,
-  FaUser,
   FaBed,
-  FaGraduationCap
 } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
@@ -196,20 +194,20 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
     console.log(data)
   }
 
-  const resetForm = () => {
-    setFormData({
-      presenterName: '',
-      accommodationRequired: 'No',
-      accommodationOption: '',
-      checkInDate: '',
-      checkInTime: '',
-      checkOutDate: '',
-      checkOutTime: '',
-      attendingGalaDinner: 'Yes',
-      preConferenceWorkshops: []
-    })
-    setErrors({})
-  }
+  // const resetForm = () => {
+  //   setFormData({
+  //     presenterName: '',
+  //     accommodationRequired: 'No',
+  //     accommodationOption: '',
+  //     checkInDate: '',
+  //     checkInTime: '',
+  //     checkOutDate: '',
+  //     checkOutTime: '',
+  //     attendingGalaDinner: 'Yes',
+  //     preConferenceWorkshops: []
+  //   })
+  //   setErrors({})
+  // }
 
   return (
     <div className='min-h-screen '>

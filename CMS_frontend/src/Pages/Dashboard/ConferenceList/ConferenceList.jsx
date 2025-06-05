@@ -11,7 +11,9 @@ const ConferenceList = () => {
   const { conference_regs, getConferenceRegLoading } = useSelector(
     state => state.conferenceReg
   )
-  const { conferences ,getConferenceLoading} = useSelector(state => state.conference)
+  const { conferences, getConferenceLoading } = useSelector(
+    state => state.conference
+  )
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const conferencesPerPage = 6
@@ -22,58 +24,6 @@ const ConferenceList = () => {
       dispatch(getConferenceRegs(conferences?._id))
     }
   }, [conferences?._id, dispatch])
-
-  // Sample conference data
-  // const [conferences] = useState([
-  //   {
-  //     id: 1,
-  //     name: 'International Conference on AI and Machine Learning',
-  //     date: new Date('2024-06-15'),
-  //     location: 'London, UK',
-  //     status: 'Upcoming',
-  //     organizer: 'Tech University London'
-  //   },
-  //   {
-  //     id: 2,
-  //     name: 'Global Software Engineering Summit',
-  //     date: new Date('2024-07-20'),
-  //     location: 'San Francisco, USA',
-  //     status: 'Open for Registration',
-  //     organizer: 'Software Engineering Institute'
-  //   },
-  //   {
-  //     id: 3,
-  //     name: 'Data Science and Analytics Conference',
-  //     date: new Date('2024-08-10'),
-  //     location: 'Berlin, Germany',
-  //     status: 'Upcoming',
-  //     organizer: 'Berlin Tech Hub'
-  //   },
-  //   {
-  //     id: 4,
-  //     name: 'Cybersecurity and Privacy Symposium',
-  //     date: new Date('2024-09-05'),
-  //     location: 'Tokyo, Japan',
-  //     status: 'Planning',
-  //     organizer: 'Cyber Defense Institute'
-  //   },
-  //   {
-  //     id: 5,
-  //     name: 'Cloud Computing and DevOps Conference',
-  //     date: new Date('2024-10-15'),
-  //     location: 'Singapore',
-  //     status: 'Upcoming',
-  //     organizer: 'Cloud Tech Association'
-  //   },
-  //   {
-  //     id: 6,
-  //     name: 'Blockchain Technology Summit',
-  //     date: new Date('2024-11-20'),
-  //     location: 'Dubai, UAE',
-  //     status: 'Planning',
-  //     organizer: 'Blockchain Foundation'
-  //   }
-  // ])
 
   // Filter conferences based on search query
   const filteredConferences = conference_regs.filter(
@@ -138,8 +88,8 @@ const ConferenceList = () => {
                   </tr>
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200'>
-                  {currentConferences.map(conference => (
-                    <tr key={conference.id}>
+                  {currentConferences.map((conference, index) => (
+                    <tr key={index}>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
                           {conference.abstract._id}
