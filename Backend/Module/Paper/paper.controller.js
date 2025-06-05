@@ -74,13 +74,15 @@ export const postPaper = async (req, res, next) => {
 
 export const getPaper = async (req, res, next) => {
   try {
-    const { abstractId } = req.params
+    const { conferenceId } = req.params
     const { id } = req.user
 
     const getPaper = await Paper.find({
-      abstract: abstractId,
+      conference: conferenceId,
       createdBy: id
-    })
+    }).populate([
+        {path:'abstract'}
+    ])
 
     res.status(200).json({
       status: 'Success',

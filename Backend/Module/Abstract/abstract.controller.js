@@ -9,10 +9,10 @@ import {
 export const createAbstract = async (req, res, next) => {
   try {
     const { conference_registration, ...data } = req.body
-    const { id } = req.user
-    conference_registration.createdBy = id
+    const { _id } = req.user
+    conference_registration.createdBy = _id
     const createConference = await conference_reg.create(
-      JSON.parse(conference_registration)
+      conference_registration
     )
 
     const abstractFile = req.files?.image?.[0]
@@ -32,7 +32,7 @@ export const createAbstract = async (req, res, next) => {
     data.graphical_abstract = graphical
     data.presentation_profile_picture = image
     data.conference_reg = createConference._id
-    data.createdBy = id
+    data.createdBy = _id
 
     const createAbstract = await Abstracts.create(data)
     await conference_reg.updateOne(
@@ -46,8 +46,8 @@ export const createAbstract = async (req, res, next) => {
 
     res.status(200).json({
       status: 'Success',
-      message: 'Successfully abstract created',
-      data: createAbstract
+      message: 'Successfully abstract created'
+      // data: createAbstract
     })
   } catch (error) {
     res.status(400).json({

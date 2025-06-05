@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FaCalendarAlt,
   FaClock,
@@ -7,8 +7,36 @@ import {
   FaGraduationCap
 } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
+import { useDispatch, useSelector } from 'react-redux'
+import { createAbstract } from '../../Redux/Slice/AbstractSlice'
+import { useNavigate } from 'react-router'
 
 const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
+  const { conferences } = useSelector(state => state.conference)
+  const {
+    conference,
+    member_id,
+    theme,
+    presentation_method,
+    publication_options,
+    paper_title,
+    abstract,
+    keywords,
+    researchGate_link,
+    orcid_link,
+    google_scholar_link,
+    presenter_name,
+    presenter_email,
+    organization,
+    department,
+    country,
+    contact_number,
+    mailing_address,
+    presenter_status,
+    authors,
+    createAbstractSuccess,
+    createAbstractLoading
+  } = useSelector(state => state.abstract)
   const [formData, setFormData] = useState({
     presenterName: '',
     accommodationRequired: 'No',
@@ -22,6 +50,13 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
   })
 
   const [errors, setErrors] = useState({})
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  useEffect(() => {
+    // if (createAbstractSuccess) {
+    //   navigate('/admin/abstract')
+    // }
+  }, [createAbstractSuccess, dispatch, navigate])
 
   const accommodationOptions = [
     'Single Room',
@@ -29,17 +64,6 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
     'Twin Room',
     'Suite',
     'Shared Accommodation'
-  ]
-
-  const workshopOptions = [
-    'Research Methodology Workshop',
-    'Data Analysis and Statistics',
-    'Academic Writing and Publishing',
-    'Grant Writing Workshop',
-    'Technology in Education',
-    'Leadership in Academia',
-    'Innovation and Entrepreneurship',
-    'Digital Marketing for Researchers'
   ]
 
   const galaDinnerOptions = ['Yes', 'No', 'Maybe']
@@ -131,10 +155,45 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
     if (!validateForm()) {
       return
     }
-
-    // Handle form submission
-    console.log('Form submitted:', formData)
-    alert('Registration submitted successfully!')
+    const data = {
+      conference: conferences?._id,
+      category: conference,
+      member_id,
+      theme,
+      presentation_method,
+      publication_options,
+      paper_title,
+      abstract,
+      keywords,
+      researchGate_link,
+      orcid_link,
+      google_scholar_link,
+      conference_registration: {
+        conference: conferences?._id,
+        presenterName: formData.presenterName,
+        accommodationRequired: formData.accommodationRequired,
+        accommodationOption: formData.accommodationOption,
+        checkInDate: formData.checkInDate,
+        checkInTime: formData.checkInTime,
+        checkOutDate: formData.checkOutDate,
+        checkOutTime: formData.checkOutTime,
+        attendingGalaDinner: formData.attendingGalaDinner,
+        preConferenceWorkshops: formData.preConferenceWorkshops
+      },
+      presenter: {
+        presenter_name,
+        presenter_email,
+        organization,
+        department,
+        country,
+        contact_number,
+        mailing_address,
+        presenter_status
+      },
+      authors
+    }
+    dispatch(createAbstract(data))
+    console.log(data)
   }
 
   const resetForm = () => {
@@ -377,7 +436,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                         key={workshop}
                         className='inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full'
                       >
-                        {workshop}
+                        {workshop?.title}
                         <button
                           type='button'
                           onClick={() => removeWorkshop(workshop)}
@@ -394,9 +453,9 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
               {/* Workshop Selection */}
               <div className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
-                  {workshopOptions.map(workshop => (
+                  {conferences?.workOptions?.map(workshop => (
                     <label
-                      key={workshop}
+                      key={workshop._id}
                       className='flex items-center space-x-3 cursor-pointer hover:bg-white p-2 rounded transition-colors'
                     >
                       <input
@@ -407,7 +466,9 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                         onChange={() => handleWorkshopChange(workshop)}
                         className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
                       />
-                      <span className='text-sm text-gray-700'>{workshop}</span>
+                      <span className='text-sm text-gray-700'>
+                        {workshop?.title}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -442,11 +503,12 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
             Previous
           </button>
           <button
+            disabled={createAbstractLoading}
             type='button'
             onClick={handleSubmit}
             className='mt-4 px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
           >
-            Submit
+            {createAbstractLoading ? '..Loading' : 'Submit'}
           </button>
         </div>
       </div>

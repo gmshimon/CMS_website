@@ -1,13 +1,27 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setContactNumber, setCountry, setDepartment, setMailingAddress, setOrganization, setPresenterEmail, setPresenterName, setPresenterStatus } from '../../Redux/Slice/AbstractSlice'
+import {
+  setContactNumber,
+  setCountry,
+  setDepartment,
+  setMailingAddress,
+  setOrganization,
+  setPresenterEmail,
+  setPresenterName,
+  setPresenterStatus
+} from '../../Redux/Slice/AbstractSlice'
 
 const PresenterInformation = ({ activeStep, setActiveStep }) => {
   const {
-presenter_name,presenter_email,organization,
-department,country,
-contact_number,mailing_address,presenter_status
-  } = useSelector(state=>state.abstract)
+    presenter_name,
+    presenter_email,
+    organization,
+    department,
+    country,
+    contact_number,
+    mailing_address,
+    presenter_status
+  } = useSelector(state => state.abstract)
   const [formData, setFormData] = useState({
     presenterName: '',
     email: '',
@@ -47,27 +61,27 @@ contact_number,mailing_address,presenter_status
 
   const validateForm = () => {
     const newErrors = {}
-    if (!presenter_name?.trim()||!presenter_name) {
+    if (!presenter_name?.trim() || !presenter_name) {
       newErrors.presenterName = 'Presenter name is required'
     }
-    if (!presenter_email?.trim()||!presenter_email) {
+    if (!presenter_email?.trim() || !presenter_email) {
       newErrors.email = 'Email is required'
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address'
     }
-    if (!organization?.trim()||!organization) {
+    if (!organization?.trim() || !organization) {
       newErrors.organization = 'Organization/University is required'
     }
-    if (!department?.trim()||!department) {
+    if (!department?.trim() || !department) {
       newErrors.department = 'Department is required'
     }
-    if (!country?.trim()||!country) {
+    if (!country?.trim() || !country) {
       newErrors.country = 'Country is required'
     }
-    if (!contact_number?.trim()||!contact_number) {
+    if (!contact_number?.trim() || !contact_number) {
       newErrors.contactNumber = 'Contact number is required'
     }
-    if (!mailing_address?.trim()||!mailing_address) {
+    if (!mailing_address?.trim() || !mailing_address) {
       newErrors.mailingAddress = 'Mailing address is required'
     }
     if (!presenter_status) {
@@ -111,7 +125,7 @@ contact_number,mailing_address,presenter_status
             type='text'
             name='presenterName'
             value={presenter_name}
-            onChange={(e)=>dispatch(setPresenterName(e.target.name))}
+            onChange={e => dispatch(setPresenterName(e.target.name))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presenterName ? 'input-error' : ''
             }`}
@@ -133,7 +147,7 @@ contact_number,mailing_address,presenter_status
             type='email'
             name='email'
             value={presenter_email}
-            onChange={e=>dispatch(setPresenterEmail(e.target.value))}
+            onChange={e => dispatch(setPresenterEmail(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.email ? 'input-error' : ''
             }`}
@@ -155,7 +169,7 @@ contact_number,mailing_address,presenter_status
             type='text'
             name='organization'
             value={organization}
-            onChange={e=>dispatch(setOrganization(e.target.value))}
+            onChange={e => dispatch(setOrganization(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.organization ? 'input-error' : ''
             }`}
@@ -177,7 +191,7 @@ contact_number,mailing_address,presenter_status
             type='text'
             name='department'
             value={department}
-            onChange={e=>dispatch(setDepartment(e.target.value))}
+            onChange={e => dispatch(setDepartment(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.department ? 'input-error' : ''
             }`}
@@ -197,7 +211,7 @@ contact_number,mailing_address,presenter_status
             type='text'
             name='country'
             value={country}
-            onChange={e=>dispatch(setCountry(e.target.value))}
+            onChange={e => dispatch(setCountry(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.country ? 'input-error' : ''
             }`}
@@ -219,7 +233,7 @@ contact_number,mailing_address,presenter_status
             type='tel'
             name='contactNumber'
             value={contact_number}
-            onChange={e=>dispatch(setContactNumber(e.target.value))}
+            onChange={e => dispatch(setContactNumber(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.contactNumber ? 'input-error' : ''
             }`}
@@ -245,7 +259,7 @@ contact_number,mailing_address,presenter_status
           <textarea
             name='mailingAddress'
             value={mailing_address}
-            onChange={e=>dispatch(setMailingAddress(e.target.value))}
+            onChange={e => dispatch(setMailingAddress(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black h-24 ${
               errors.mailingAddress ? 'textarea-error' : ''
             }`}
@@ -266,7 +280,7 @@ contact_number,mailing_address,presenter_status
           <select
             name='presenterStatus'
             value={presenter_status}
-            onChange={e=>dispatch(setPresenterStatus(e.target.value))}
+            onChange={e => dispatch(setPresenterStatus(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presenterStatus ? 'select-error' : ''
             }`}
@@ -305,10 +319,10 @@ contact_number,mailing_address,presenter_status
       <button
         onClick={() => {
           activeStep.pop('Presenter Information')
-          setActiveStep(['Select Conference','Abstract Information'])
+          setActiveStep(['Select Conference', 'Abstract Information'])
           sessionStorage.setItem(
             'activeStep',
-            JSON.stringify(['Select Conference','Abstract Information'])
+            JSON.stringify(['Select Conference', 'Abstract Information'])
           )
         }}
         className='mt-4 px-6 py-3 text-white font-bold btn btn-active btn-sm btn-primary mr-2'

@@ -5,17 +5,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   setAbstract,
   setGoogleScholarLink,
-  setGraphicalAbstract,
+  // setGraphicalAbstract,
   setKeywords,
   setOrcidLink,
   setPaperTitle,
   setPresentationMethod,
-  setPresentationProfilePicture,
-  setPresentationVideoLink,
+  // setPresentationProfilePicture,
+  // setPresentationVideoLink,
   setPublicationOptions,
   setResearchGateLink,
   setTheme,
-  setVideoAbstract
+  // setVideoAbstract
 } from '../../Redux/Slice/AbstractSlice'
 const AbstractInformation = ({ activeStep, setActiveStep }) => {
   const {
@@ -25,8 +25,6 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
     paper_title,
     abstract,
     keywords,
-    presentation_video_link,
-    video_abstract,
     researchGate_link,
     orcid_link,
     google_scholar_link
@@ -225,7 +223,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
         </div>
 
         {/* Presentation Video Link */}
-        <div>
+        {/* <div>
           <label className='label'>
             <span className='label-text font-medium text-black'>
               Presentation Video Link
@@ -239,10 +237,10 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             className='border border-black rounded-md p-2 w-full text-black'
             placeholder='Enter presentation video link'
           />
-        </div>
+        </div> */}
 
         {/* Graphical Abstract */}
-        <div>
+        {/* <div>
           <label className='label'>
             <span className='label-text font-medium text-black'>
               Graphical Abstract
@@ -255,10 +253,10 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             className='border border-black rounded-md p-2  w-full'
             accept='image/*'
           />
-        </div>
+        </div> */}
 
         {/* Video Abstract of Findings */}
-        <div>
+        {/* <div>
           <label className='label'>
             <span className='label-text font-medium text-black'>
               Video Abstract of Findings
@@ -272,10 +270,10 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             className='border border-black rounded-md p-2 w-full text-black'
             placeholder='Enter video abstract link'
           />
-        </div>
+        </div> */}
 
         {/* Presenter Profile Picture */}
-        <div>
+        {/* <div>
           <label className='label'>
             <span className='label-text font-medium text-black'>
               Presenter Profile Picture
@@ -290,7 +288,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             className='border border-black rounded-md p-2 w-full'
             accept='image/*'
           />
-        </div>
+        </div> */}
 
         {/* Social Media Links */}
         <div>

@@ -14,7 +14,9 @@ import { getConference } from '../../../Redux/Slice/conferenceSlice'
 import { paperReset } from '../../../Redux/Slice/paperSlice'
 
 const Abstracts = () => {
-  const { createPostPaperSuccess,createPostPaperError } = useSelector(state => state.paper)
+  const { createPostPaperSuccess, createPostPaperError } = useSelector(
+    state => state.paper
+  )
   const { conferences } = useSelector(state => state.conference)
   const { createAbstractSuccess, abstracts } = useSelector(
     state => state.abstract
@@ -24,7 +26,8 @@ const Abstracts = () => {
   const [selectedPaper, setSelectedPaper] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
-  const [selectedAbstractForUpload, setSelectedAbstractForUpload] = useState(null)
+  const [selectedAbstractForUpload, setSelectedAbstractForUpload] =
+    useState(null)
   const [filterTheme, setFilterTheme] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
   const navigate = useNavigate()
@@ -37,7 +40,7 @@ const Abstracts = () => {
   }, [conferences, dispatch])
   useEffect(() => {
     dispatch(getAbstract(conferences?._id))
-  }, [conferences, createPostPaperSuccess,dispatch])
+  }, [conferences, createPostPaperSuccess, dispatch])
 
   useEffect(() => {
     const initializeStep = ['Select Conference']
@@ -78,12 +81,19 @@ const Abstracts = () => {
       })
       dispatch(paperReset())
     }
-  }, [createAbstractSuccess,createPostPaperSuccess, createPostPaperError,dispatch])
+  }, [
+    createAbstractSuccess,
+    createPostPaperSuccess,
+    createPostPaperError,
+    dispatch
+  ])
   // Filter abstracts based on search query and filters
   const filteredAbstracts = abstracts?.filter(abstract => {
     const matchesSearch =
       abstract.paper_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      abstract.authors[0].name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      abstract.authors[0].name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
       abstract.abstractId.toLowerCase().includes(searchQuery.toLowerCase()) ||
       abstract.theme.toLowerCase().includes(searchQuery.toLowerCase())
 
@@ -132,7 +142,7 @@ const Abstracts = () => {
   }
 
   // Function to get status color classes
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
       case 'Abstract Submitted':
         return 'bg-blue-100 text-blue-800'
@@ -268,7 +278,9 @@ const Abstracts = () => {
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(abstract.status)}`}
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                        abstract.status
+                      )}`}
                     >
                       {abstract.status}
                     </span>
@@ -282,11 +294,11 @@ const Abstracts = () => {
                       >
                         <IoMdEye className='text-xl' />
                       </button>
-                      
+
                       {/* Upload Paper Button - Show for specific statuses */}
-                      {(abstract.status === 'Abstract Submitted' || 
-                        abstract.status === 'Accepted' || 
-                        abstract.status === 'Minor Revision' || 
+                      {(abstract.status === 'Abstract Submitted' ||
+                        abstract.status === 'Accepted' ||
+                        abstract.status === 'Minor Revision' ||
                         abstract.status === 'Major Revision') && (
                         <button
                           onClick={() => handleOpenUploadModal(abstract)}
@@ -296,7 +308,7 @@ const Abstracts = () => {
                           <FaUpload className='text-lg' />
                         </button>
                       )}
-                      
+
                       {/* Download Paper - Show when paper is available */}
                       {abstract.paperUrl && (
                         <a
@@ -308,7 +320,7 @@ const Abstracts = () => {
                           <FaDownload className='text-lg' />
                         </a>
                       )}
-                      
+
                       {/* Receipt - Show for accepted papers */}
                       {abstract.status === 'Accepted' && abstract.receiptUrl && (
                         <a
@@ -317,7 +329,9 @@ const Abstracts = () => {
                           download
                           title='View Fee Receipt'
                         >
-                          <span className='text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded'>Receipt</span>
+                          <span className='text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded'>
+                            Receipt
+                          </span>
                         </a>
                       )}
                     </div>
@@ -342,7 +356,7 @@ const Abstracts = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
-      
+
       <UploadPaperModal
         isOpen={isUploadModalOpen}
         onClose={handleCloseUploadModal}

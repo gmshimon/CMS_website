@@ -1,117 +1,98 @@
 import mongoose from 'mongoose'
 
-const abstractSchema = new mongoose.Schema({
-  conference: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'conference',
-    required: true
-  },
-  category:{
-    type:String
-  },
-  member_id: {
-    type: String
-  },
-  status:{
-    type:String,
-    enum:['Abstract Submitted','Paper Submitted','In Review','Accepted','Rejected','Minor Revision','Major Revision','Revision Submitted','Camera Ready Copy Submitted','Withdraw'],
-    default:'Abstract Submitted'
-  },
-  theme: {
-    type: String,
-    required: true
-  },
-  presentation_method: {
-    type: String,
-    required: true,
-  },
-  publication_options:{
-    type:String,
-    required:true,
-  },
-  paper_title: {
-    type: String,
-    required: true
-  },
-  abstract: {
-    type: String,
-    required: true,
-  },
-  keywords: {
-    type: String,
-    required: true
-  },
-  presentation_video_link: {
-    type: String
-  },
-  graphical_abstract: {
-    type: String
-  },
-  video_abstract: {
-    type: String
-  },
-  presentation_profile_picture:{
-    type:String
-  },
-  researchGate_link: {
-    type: String
-  },
-  orcid_link: {
-    type: String
-  },
-  google_scholar_link: {
-    type: String
-  },
-  conference_reg: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'conference_reg',
-    required: true
-  },
-  presenter: {
-    presenter_name: {
+const abstractSchema = new mongoose.Schema(
+  {
+    conference: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'conference',
+      required: true
+    },
+    category: {
+      type: String
+    },
+    member_id: {
+      type: String
+    },
+    status: {
+      type: String,
+      enum: [
+        'Abstract Submitted',
+        'Paper Submitted',
+        'In Review',
+        'Accepted',
+        'Rejected',
+        'Minor Revision',
+        'Major Revision',
+        'Revision Submitted',
+        'Camera Ready Copy Submitted',
+        'Withdraw'
+      ],
+      default: 'Abstract Submitted'
+    },
+    theme: {
       type: String,
       required: true
     },
-    presenter_email: {
+    presentation_method: {
       type: String,
       required: true
     },
-    organization: {
+    publication_options: {
       type: String,
       required: true
     },
-    department: {
+    paper_title: {
       type: String,
       required: true
     },
-    country: {
+    abstract: {
       type: String,
       required: true
     },
-    contact_number: {
+    keywords: {
       type: String,
       required: true
     },
-    mailing_address: {
-      type: String,
+    presentation_video_link: {
+      type: String
+    },
+    graphical_abstract: {
+      type: String
+    },
+    video_abstract: {
+      type: String
+    },
+    presentation_profile_picture: {
+      type: String
+    },
+    researchGate_link: {
+      type: String
+    },
+    orcid_link: {
+      type: String
+    },
+    google_scholar_link: {
+      type: String
+    },
+    conference_reg: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'conference_reg',
       required: true
     },
-    presenter_status: {
-      type: String,
-      required: true
-    }
-  },
-  authors: [
-    {
-      title: {
+    presenter: {
+      presenter_name: {
         type: String,
         required: true
       },
-      name: {
+      presenter_email: {
         type: String,
         required: true
       },
-      email: {
+      organization: {
+        type: String,
+        required: true
+      },
+      department: {
         type: String,
         required: true
       },
@@ -119,22 +100,55 @@ const abstractSchema = new mongoose.Schema({
         type: String,
         required: true
       },
-      affiliation: {
+      contact_number: {
         type: String,
+        required: true
       },
-      isPrimary:{
-        type:Boolean,
-        default:false
+      mailing_address: {
+        type: String,
+        required: true
+      },
+      presenter_status: {
+        type: String,
+        required: true
       }
+    },
+    authors: [
+      {
+        title: {
+          type: String,
+          required: true
+        },
+        name: {
+          type: String,
+          required: true
+        },
+        email: {
+          type: String,
+          required: true
+        },
+        country: {
+          type: String,
+          required: true
+        },
+        affiliation: {
+          type: String
+        },
+        isPrimary: {
+          type: Boolean,
+          default: false
+        }
+      }
+    ],
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users'
     }
-  ],
-  createdBy:{
-    type: mongoose.Schema.Types.ObjectId,
-    ref:'users'
-  }
-},{
+  },
+  {
     timestamps: true
-})
+  }
+)
 
 const Abstracts = mongoose.model('abstract', abstractSchema)
 
