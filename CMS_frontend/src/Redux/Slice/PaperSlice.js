@@ -34,6 +34,7 @@ export const getPaper = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axiosSecure.get(`/paper/${id}`)
+      console.log(response.data.data)
       return response.data.data
     } catch (error) {
       const message =

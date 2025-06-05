@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
-import { FaCalendarAlt, FaClock, FaUser, FaBed, FaGraduationCap } from 'react-icons/fa'
+import {
+  FaCalendarAlt,
+  FaClock,
+  FaUser,
+  FaBed,
+  FaGraduationCap
+} from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
 
-const ConferenceRegistration = () => {
+const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
   const [formData, setFormData] = useState({
     presenterName: '',
     accommodationRequired: 'No',
@@ -36,15 +42,11 @@ const ConferenceRegistration = () => {
     'Digital Marketing for Researchers'
   ]
 
-  const galaDinnerOptions = [
-    'Yes',
-    'No',
-    'Maybe'
-  ]
+  const galaDinnerOptions = ['Yes', 'No', 'Maybe']
 
   const validateForm = () => {
     const newErrors = {}
-    
+
     if (!formData.presenterName.trim()) {
       newErrors.presenterName = 'Presenter/Attendee name is required'
     }
@@ -65,7 +67,7 @@ const ConferenceRegistration = () => {
       if (!formData.checkOutTime) {
         newErrors.checkOutTime = 'Check-out time is required'
       }
-      
+
       // Validate that check-out is after check-in
       if (formData.checkInDate && formData.checkOutDate) {
         const checkIn = new Date(formData.checkInDate)
@@ -80,13 +82,13 @@ const ConferenceRegistration = () => {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: value
     }))
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
@@ -105,7 +107,7 @@ const ConferenceRegistration = () => {
     }
   }
 
-  const handleWorkshopChange = (workshop) => {
+  const handleWorkshopChange = workshop => {
     setFormData(prev => ({
       ...prev,
       preConferenceWorkshops: prev.preConferenceWorkshops.includes(workshop)
@@ -114,16 +116,18 @@ const ConferenceRegistration = () => {
     }))
   }
 
-  const removeWorkshop = (workshop) => {
+  const removeWorkshop = workshop => {
     setFormData(prev => ({
       ...prev,
-      preConferenceWorkshops: prev.preConferenceWorkshops.filter(w => w !== workshop)
+      preConferenceWorkshops: prev.preConferenceWorkshops.filter(
+        w => w !== workshop
+      )
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -149,34 +153,21 @@ const ConferenceRegistration = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-gray-50 py-8 px-4'>
-      <div className='max-w-4xl mx-auto'>
-        {/* Header */}
-        <div className='bg-white rounded-lg shadow-lg mb-8 p-6 border-t-4 border-blue-600'>
-          <div className='flex items-center gap-3 mb-4'>
-            <FaGraduationCap className='text-3xl text-blue-600' />
-            <div>
-              <h1 className='text-3xl font-bold text-gray-800'>Conference Registration</h1>
-              <div className='flex items-center gap-4 mt-2 text-sm text-gray-600'>
-                <span className='flex items-center gap-1'>
-                  <FaUser className='text-blue-500' />
-                  Home
-                </span>
-                <span className='text-gray-400'>></span>
-                <span className='text-blue-600 font-medium'>Conference Registration</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+    <div className='min-h-screen '>
+      <div className=''>
         {/* Registration Form */}
-        <div className='bg-white rounded-lg shadow-lg p-8'>
-          <div className='mb-6'>
-            <h2 className='text-2xl font-semibold text-gray-800 mb-2'>Registration Information</h2>
-            <p className='text-gray-600'>Please fill in all required information for conference registration.</p>
+        <div className=''>
+          <div className='mb-2'>
+            <h2 className='text-2xl font-semibold text-gray-800 mb-2'>
+              Registration Information
+            </h2>
+            <p className='text-gray-600'>
+              Please fill in all required information for conference
+              registration.
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className='space-y-6'>
+          <form onSubmit={handleSubmit} className='space-y-2'>
             {/* Presenter/Attendee Name */}
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-2'>
@@ -188,13 +179,17 @@ const ConferenceRegistration = () => {
                 value={formData.presenterName}
                 onChange={handleInputChange}
                 placeholder='Enter your full name'
-                className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                  errors.presenterName ? 'border-red-500' : 'border-gray-300'
+                className={`border border-black rounded-md p-2 w-full text-black ${
+                  errors.presenterName ? 'border-red-500' : 'border-blacks'
                 }`}
               />
-              <p className='text-sm text-gray-500 mt-1'>This name will be displayed on Certificates and schedule</p>
+              <p className='text-sm text-gray-500 mt-1'>
+                This name will be displayed on Certificates and schedule
+              </p>
               {errors.presenterName && (
-                <p className='mt-1 text-sm text-red-600'>{errors.presenterName}</p>
+                <p className='mt-1 text-sm text-red-600'>
+                  {errors.presenterName}
+                </p>
               )}
             </div>
 
@@ -207,7 +202,7 @@ const ConferenceRegistration = () => {
                 name='accommodationRequired'
                 value={formData.accommodationRequired}
                 onChange={handleInputChange}
-                className='w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors'
+                className='border border-black rounded-md p-2 w-full text-black'
               >
                 <option value='No'>No</option>
                 <option value='Yes'>Yes</option>
@@ -216,12 +211,12 @@ const ConferenceRegistration = () => {
 
             {/* Conditional Accommodation Fields */}
             {formData.accommodationRequired === 'Yes' && (
-              <div className='bg-blue-50 p-6 rounded-lg border border-blue-200'>
+              <div className='bg-blue-50 p-4 rounded-lg border border-blue-200'>
                 <h3 className='text-lg font-medium text-gray-800 mb-4 flex items-center gap-2'>
                   <FaBed className='text-blue-600' />
                   Accommodation Details
                 </h3>
-                
+
                 {/* Accommodation Option */}
                 <div className='mb-4'>
                   <label className='block text-sm font-medium text-gray-700 mb-2'>
@@ -231,17 +226,23 @@ const ConferenceRegistration = () => {
                     name='accommodationOption'
                     value={formData.accommodationOption}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                      errors.accommodationOption ? 'border-red-500' : 'border-gray-300'
+                    className={`border border-black rounded-md p-2 w-full text-black ${
+                      errors.accommodationOption
+                        ? 'border-red-500'
+                        : 'border-black'
                     }`}
                   >
                     <option value=''>Please select option</option>
                     {accommodationOptions.map(option => (
-                      <option key={option} value={option}>{option}</option>
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
                     ))}
                   </select>
                   {errors.accommodationOption && (
-                    <p className='mt-1 text-sm text-red-600'>{errors.accommodationOption}</p>
+                    <p className='mt-1 text-sm text-red-600'>
+                      {errors.accommodationOption}
+                    </p>
                   )}
                 </div>
 
@@ -257,12 +258,14 @@ const ConferenceRegistration = () => {
                       name='checkInDate'
                       value={formData.checkInDate}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.checkInDate ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black ${
+                        errors.checkInDate ? 'border-red-500' : 'border-black'
                       }`}
                     />
                     {errors.checkInDate && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.checkInDate}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.checkInDate}
+                      </p>
                     )}
                   </div>
                   <div>
@@ -275,12 +278,14 @@ const ConferenceRegistration = () => {
                       name='checkInTime'
                       value={formData.checkInTime}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.checkInTime ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black ${
+                        errors.checkInTime ? 'border-red-500' : 'border-black'
                       }`}
                     />
                     {errors.checkInTime && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.checkInTime}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.checkInTime}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -297,12 +302,14 @@ const ConferenceRegistration = () => {
                       name='checkOutDate'
                       value={formData.checkOutDate}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.checkOutDate ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black ${
+                        errors.checkOutDate ? 'border-red-500' : 'border-black'
                       }`}
                     />
                     {errors.checkOutDate && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.checkOutDate}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.checkOutDate}
+                      </p>
                     )}
                   </div>
                   <div>
@@ -315,12 +322,14 @@ const ConferenceRegistration = () => {
                       name='checkOutTime'
                       value={formData.checkOutTime}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                        errors.checkOutTime ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black ${
+                        errors.checkOutTime ? 'border-red-500' : 'border-black'
                       }`}
                     />
                     {errors.checkOutTime && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.checkOutTime}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.checkOutTime}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -336,13 +345,18 @@ const ConferenceRegistration = () => {
                 name='attendingGalaDinner'
                 value={formData.attendingGalaDinner}
                 onChange={handleInputChange}
-                className='w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors'
+                className='border border-black rounded-md p-2 w-full text-black'
               >
                 {galaDinnerOptions.map(option => (
-                  <option key={option} value={option}>{option}</option>
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
                 ))}
               </select>
-              <p className='text-sm text-gray-500 mt-1'>A dinner will be held for the conference participants on 22nd July 2023</p>
+              <p className='text-sm text-gray-500 mt-1'>
+                A dinner will be held for the conference participants on 22nd
+                July 2023
+              </p>
             </div>
 
             {/* Pre-conference Workshops */}
@@ -350,11 +364,13 @@ const ConferenceRegistration = () => {
               <label className='block text-sm font-medium text-gray-700 mb-3'>
                 Pre-conference Workshops
               </label>
-              
+
               {/* Selected Workshops Display */}
               {formData.preConferenceWorkshops.length > 0 && (
                 <div className='mb-4'>
-                  <p className='text-sm text-gray-600 mb-2'>Selected workshops:</p>
+                  <p className='text-sm text-gray-600 mb-2'>
+                    Selected workshops:
+                  </p>
                   <div className='flex flex-wrap gap-2'>
                     {formData.preConferenceWorkshops.map(workshop => (
                       <span
@@ -379,10 +395,15 @@ const ConferenceRegistration = () => {
               <div className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                   {workshopOptions.map(workshop => (
-                    <label key={workshop} className='flex items-center space-x-3 cursor-pointer hover:bg-white p-2 rounded transition-colors'>
+                    <label
+                      key={workshop}
+                      className='flex items-center space-x-3 cursor-pointer hover:bg-white p-2 rounded transition-colors'
+                    >
                       <input
                         type='checkbox'
-                        checked={formData.preConferenceWorkshops.includes(workshop)}
+                        checked={formData.preConferenceWorkshops.includes(
+                          workshop
+                        )}
                         onChange={() => handleWorkshopChange(workshop)}
                         className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
                       />
@@ -391,28 +412,42 @@ const ConferenceRegistration = () => {
                   ))}
                 </div>
                 <p className='text-sm text-gray-500 mt-3'>
-                  Base fee of RM 0.00 will be added to your invoice if you select one or more workshop(s).
+                  Base fee of RM 0.00 will be added to your invoice if you
+                  select one or more workshop(s).
                 </p>
               </div>
             </div>
-
-            {/* Form Actions */}
-            <div className='flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200'>
-              <button
-                type='button'
-                onClick={resetForm}
-                className='px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200 border border-gray-300'
-              >
-                Reset Form
-              </button>
-              <button
-                type='submit'
-                className='px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg flex-1 sm:flex-none'
-              >
-                Submit Registration
-              </button>
-            </div>
           </form>
+          <button
+            onClick={() => {
+              activeStep.pop('Conference Registration')
+              setActiveStep([
+                'Select Conference',
+                'Abstract Information',
+                'Presenter Information',
+                'Author'
+              ])
+              sessionStorage.setItem(
+                'activeStep',
+                JSON.stringify([
+                  'Select Conference',
+                  'Abstract Information',
+                  'Presenter Information',
+                  'Author'
+                ])
+              )
+            }}
+            className='mt-4 px-6 py-3 text-white font-bold btn btn-active btn-sm btn-primary mr-2'
+          >
+            Previous
+          </button>
+          <button
+            type='button'
+            onClick={handleSubmit}
+            className='mt-4 px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+          >
+            Submit
+          </button>
         </div>
       </div>
     </div>

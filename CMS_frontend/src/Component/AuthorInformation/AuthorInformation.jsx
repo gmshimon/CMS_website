@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { FaPlus, FaTimes, FaTrash, FaEdit } from 'react-icons/fa'
 import { IoPersonAdd } from 'react-icons/io5'
 
-const AuthorInformation = () => {
+const AuthorInformation = ({ activeStep, setActiveStep }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState(null)
   const [authors, setAuthors] = useState([
@@ -32,14 +32,27 @@ const AuthorInformation = () => {
 
   const titleOptions = ['Dr.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.']
   const countryOptions = [
-    'Malaysia', 'Singapore', 'Indonesia', 'Thailand', 'Philippines',
-    'United States', 'United Kingdom', 'Canada', 'Australia', 'India',
-    'China', 'Japan', 'South Korea', 'Germany', 'France', 'Other'
+    'Malaysia',
+    'Singapore',
+    'Indonesia',
+    'Thailand',
+    'Philippines',
+    'United States',
+    'United Kingdom',
+    'Canada',
+    'Australia',
+    'India',
+    'China',
+    'Japan',
+    'South Korea',
+    'Germany',
+    'France',
+    'Other'
   ]
 
   const validateForm = () => {
     const newErrors = {}
-    
+
     if (!formData.title) newErrors.title = 'Title is required'
     if (!formData.firstName) newErrors.firstName = 'First name is required'
     if (!formData.lastName) newErrors.lastName = 'Last name is required'
@@ -48,13 +61,15 @@ const AuthorInformation = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid'
     }
-    if (!formData.organization) newErrors.organization = 'Organization is required'
+    if (!formData.organization)
+      newErrors.organization = 'Organization is required'
     if (!formData.country) newErrors.country = 'Country is required'
 
     // Check for duplicate email
-    const isDuplicate = authors.some(author => 
-      author.email === formData.email && 
-      (!editingAuthor || author.id !== editingAuthor.id)
+    const isDuplicate = authors.some(
+      author =>
+        author.email === formData.email &&
+        (!editingAuthor || author.id !== editingAuthor.id)
     )
     if (isDuplicate) {
       newErrors.email = 'This email is already used by another author'
@@ -64,31 +79,31 @@ const AuthorInformation = () => {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value, type, checked } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }))
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
 
     if (editingAuthor) {
       // Update existing author
-      setAuthors(prev => prev.map(author => 
-        author.id === editingAuthor.id 
-          ? { ...author, ...formData }
-          : author
-      ))
+      setAuthors(prev =>
+        prev.map(author =>
+          author.id === editingAuthor.id ? { ...author, ...formData } : author
+        )
+      )
     } else {
       // Add new author
       const newAuthor = {
@@ -117,7 +132,7 @@ const AuthorInformation = () => {
     setEditingAuthor(null)
   }
 
-  const handleEdit = (author) => {
+  const handleEdit = author => {
     setEditingAuthor(author)
     setFormData({
       title: author.title || '',
@@ -131,7 +146,7 @@ const AuthorInformation = () => {
     setIsModalOpen(true)
   }
 
-  const handleDelete = (authorId) => {
+  const handleDelete = authorId => {
     if (authors.find(a => a.id === authorId)?.isPrimary) {
       alert('Cannot delete primary contact')
       return
@@ -140,11 +155,15 @@ const AuthorInformation = () => {
   }
 
   return (
-    <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className=' min-h-[calc(100vh-64px)]'>
       <div className='mb-6 flex justify-between items-center'>
         <div>
-          <h2 className='text-2xl font-bold text-gray-800 mb-2'>Author Information</h2>
-          <p className='text-gray-600'>Author list cannot be modified except author order.</p>
+          <h2 className='text-2xl font-bold text-gray-800 mb-2'>
+            Author Information
+          </h2>
+          <p className='text-gray-600'>
+            Author list cannot be modified except author order.
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -156,9 +175,9 @@ const AuthorInformation = () => {
       </div>
 
       {/* Authors Table */}
-      <div className='bg-white rounded-lg shadow-md overflow-hidden'>
+      <div className='bg-white h-[calc(100vh-64px)] rounded-lg shadow-md overflow-hidden'>
         <div className='overflow-x-auto'>
-          <table className='min-w-full divide-y divide-gray-200'>
+          <table className='min-w-full  divide-y divide-gray-200'>
             <thead className='bg-slate-500'>
               <tr>
                 <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
@@ -212,7 +231,9 @@ const AuthorInformation = () => {
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm text-gray-900'>{author.lastName}</div>
+                    <div className='text-sm text-gray-900'>
+                      {author.lastName}
+                    </div>
                   </td>
                   <td className='px-6 py-4'>
                     <div className='text-sm text-gray-900 max-w-xs truncate'>
@@ -220,7 +241,9 @@ const AuthorInformation = () => {
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm text-gray-900'>{author.country}</div>
+                    <div className='text-sm text-gray-900'>
+                      {author.country}
+                    </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
                     <div className='flex items-center gap-2'>
@@ -248,6 +271,40 @@ const AuthorInformation = () => {
           </table>
         </div>
       </div>
+      <button
+        onClick={() => {
+          activeStep.pop('Author')
+          setActiveStep([
+            'Select Conference',
+            'Abstract Information',
+            'Presenter Information'
+          ])
+          sessionStorage.setItem(
+            'activeStep',
+            JSON.stringify([
+              'Select Conference',
+              'Abstract Information',
+              'Presenter Information'
+            ])
+          )
+        }}
+        className='mt-4 px-6 py-3 text-white font-bold btn btn-active btn-sm btn-primary mr-2'
+      >
+        Previous
+      </button>
+      <button
+        type='button'
+        onClick={() => {
+          setActiveStep([...activeStep, 'Conference Registration'])
+          sessionStorage.setItem(
+            'activeStep',
+            JSON.stringify([...activeStep, 'Conference Registration'])
+          )
+        }}
+        className='mt-4 px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+      >
+        Next
+      </button>
 
       {/* Add/Edit Author Modal */}
       {isModalOpen && (
@@ -282,17 +339,21 @@ const AuthorInformation = () => {
                       name='title'
                       value={formData.title}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.title ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black ${
+                        errors.title ? 'border-red-500' : 'border-black'
                       }`}
                     >
                       <option value=''>Choose</option>
                       {titleOptions.map(title => (
-                        <option key={title} value={title}>{title}</option>
+                        <option key={title} value={title}>
+                          {title}
+                        </option>
                       ))}
                     </select>
                     {errors.title && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.title}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.title}
+                      </p>
                     )}
                   </div>
 
@@ -307,12 +368,14 @@ const AuthorInformation = () => {
                       value={formData.firstName}
                       onChange={handleInputChange}
                       placeholder='Enter full name'
-                      className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.firstName ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black${
+                        errors.firstName ? 'border-red-500' : 'border-black'
                       }`}
                     />
                     {errors.firstName && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.firstName}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.firstName}
+                      </p>
                     )}
                   </div>
 
@@ -327,12 +390,14 @@ const AuthorInformation = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder='Enter email address'
-                      className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black ${
+                        errors.email ? 'border-red-500' : 'border-black'
                       }`}
                     />
                     {errors.email && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.email}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.email}
+                      </p>
                     )}
                   </div>
 
@@ -345,17 +410,21 @@ const AuthorInformation = () => {
                       name='country'
                       value={formData.country}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                        errors.country ? 'border-red-500' : 'border-gray-300'
+                      className={`border border-black rounded-md p-2 w-full text-black ${
+                        errors.country ? 'border-red-500' : 'border-black'
                       }`}
                     >
                       <option value=''>Choose</option>
                       {countryOptions.map(country => (
-                        <option key={country} value={country}>{country}</option>
+                        <option key={country} value={country}>
+                          {country}
+                        </option>
                       ))}
                     </select>
                     {errors.country && (
-                      <p className='mt-1 text-sm text-red-600'>{errors.country}</p>
+                      <p className='mt-1 text-sm text-red-600'>
+                        {errors.country}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -371,12 +440,14 @@ const AuthorInformation = () => {
                     value={formData.organization}
                     onChange={handleInputChange}
                     placeholder='Enter organization/affiliation'
-                    className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                      errors.organization ? 'border-red-500' : 'border-gray-300'
+                    className={`border border-black rounded-md p-2 w-full text-black ${
+                      errors.organization ? 'border-red-500' : 'border-black'
                     }`}
                   />
                   {errors.organization && (
-                    <p className='mt-1 text-sm text-red-600'>{errors.organization}</p>
+                    <p className='mt-1 text-sm text-red-600'>
+                      {errors.organization}
+                    </p>
                   )}
                 </div>
 

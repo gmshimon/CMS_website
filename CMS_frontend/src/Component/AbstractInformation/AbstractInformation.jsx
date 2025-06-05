@@ -343,7 +343,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
       </form>
       <button
         onClick={() => {
-          activeStep.pop('Conference Registration')
+          activeStep.pop('Abstraction Information')
           setActiveStep(['Select Conference'])
           sessionStorage.setItem(
             'activeStep',
