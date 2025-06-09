@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
-import path from 'path';
 import bodyParser from 'body-parser';
-import fs from 'fs';
-import schedule from 'node-schedule';
 import dotenv from 'dotenv';
+import { setupWebSocket } from './socket/index.js';
 // import sessionMiddleware from './Middleware/Redis/sessionConfig.js';
 const { query } = express;
 dotenv.config();
@@ -19,6 +18,8 @@ app.use(
     credentials: true
   })
 )
+const server = http.createServer(app);
+setupWebSocket(server)
 
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
@@ -37,14 +38,18 @@ import abstractRouter from './Module/Abstract/abstract.routes.js'
 import conferenceRouter from './Module/Conference/conference.routes.js'
 import conferenceRegRouter from './Module/Conference_reg/conference_reg.routes.js'
 import paperRouter from './Module/Paper/paper.routes.js'
+import notificationRouter from './Module/Notification/notification.routes.js'
+import { sendEmail } from './Utilis/sendEmail.js';
 
 app.use('/api/v1/user',userRouter)
 app.use('/api/v1/abstract',abstractRouter)
 app.use('/api/v1/conference',conferenceRouter)
 app.use('/api/v1/conference_reg',conferenceRegRouter)
 app.use('/api/v1/paper',paperRouter)
+app.use('/api/v1/notification',notificationRouter)
 
-app.get('/', (req, res) =>{
+app.get('/', async(req, res) =>{
+  await sendEmail()
     res.send('API is running')
 })
 

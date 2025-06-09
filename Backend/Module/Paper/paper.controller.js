@@ -8,7 +8,7 @@ import {
 export const postPaper = async (req, res, next) => {
   try {
     const { abstractId } = req.params
-    const { id } = req.user
+    const { _id } = req.user
 
     const paperFile = req.file
     let fileUrl = null
@@ -50,7 +50,7 @@ export const postPaper = async (req, res, next) => {
 
     const data = req.body
 
-    data.createdBy = id
+    data.createdBy = _id
     data.paper = [fileUrl]
 
     const result = await Paper.create(data)
@@ -75,11 +75,11 @@ export const postPaper = async (req, res, next) => {
 export const getPaper = async (req, res, next) => {
   try {
     const { conferenceId } = req.params
-    const { id } = req.user
+    const { _id } = req.user
 
     const getPaper = await Paper.find({
       conference: conferenceId,
-      createdBy: id
+      createdBy: _id
     }).populate([
         {path:'abstract'}
     ])
