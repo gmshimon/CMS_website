@@ -1,7 +1,7 @@
 import { io } from "../../socket/index.js"
 import notification from "./notification.model.js"
 
-export const createNotificationService = async (user,message,title) => {
+export const createNotificationService = async (user,title,message) => {
     try {
         const data = {
             user,
@@ -11,10 +11,10 @@ export const createNotificationService = async (user,message,title) => {
 
         const result = await notification.create(data)
 
-        io.emit('sendNotification',{user,message,title}); 
+        io.emit('sendNotification',result); 
 
         return result;
     } catch (error) {
-        throw new error(error.message)
+        throw new Error(error.message)
     }
 }

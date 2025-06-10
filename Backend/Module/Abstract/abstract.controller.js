@@ -55,7 +55,7 @@ export const createAbstract = async (req, res, next) => {
     // get the styled html
     const emailHtml = abstractCreatedTemplate({
       userName: name,
-      abstractTitle: data.paper_title
+      abstractTitle: data.paper_title || ''
     })
 
     // ✅ save the notification and send notification to the frontend
@@ -69,8 +69,8 @@ export const createAbstract = async (req, res, next) => {
     })
     res.status(200).json({
       status: 'Success',
-      message: 'Successfully abstract created'
-      // data: createAbstract
+      message: 'Successfully abstract created',
+      data: createAbstract
     })
   } catch (error) {
     res.status(400).json({

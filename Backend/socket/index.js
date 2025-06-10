@@ -9,7 +9,7 @@ let io
 const setupWebSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: process.env.socket_origin,
+      origin: '*',
       methods: ['GET', 'POST']
     }
   });
@@ -17,15 +17,18 @@ const setupWebSocket = (server) => {
   const connectedUsers = new Map(); // userId -> socketId
 
   io.on('connection', (socket) => {
-    console.log('Client connected');
+    console.log('trying to connect the websocket')
+    console.info('Socket Client connected');
 
     socket.on('register', (userId) => {
+      console.log(`User registered: ${userId} with socket ID: ${socket.id}`);
       connectedUsers.set(userId, socket.id);
     });
 
     socket.on('disconnect', () => {
       for (const [userId, socketId] of connectedUsers.entries()) {
         if (socketId === socket.id) {
+          console.log(`User disconnected: ${userId}`);
           connectedUsers.delete(userId);
         }
       }

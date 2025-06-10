@@ -1,12 +1,16 @@
 import notification from "./notification.model.js";
 
 export const getUserNotifications = async (req, res) => {
-  const userId = req.params.userId;
+  const {_id} = req.user
 
   try {
-    const notifications = await notification.find({ user: userId }).sort({ createdAt: -1 });
-    res.json(notifications);
+    const notifications = await notification.find({ user: _id }).populate('user').sort({ createdAt: -1 });
+    res.status(200).json({
+      status:'Success',
+      message:'Successfully fetched the notifications',
+      data:notifications
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching notifications' });
+    res.status(500).json({ message: err.message});
   }
 };
