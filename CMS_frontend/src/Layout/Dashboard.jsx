@@ -22,67 +22,64 @@ import {
   updateNotification
 } from '../Redux/Slice/notificationSlice'
 import axiosSecure from '../Utilis/axiosSecure'
+import { adminNavOptions, presenterNavOptions } from '../Utilis/navOptions'
 
-const navOptions = [
-  {
-    id: 1,
-    label: 'Home',
-    path: '/admin/home',
-    icon: <FaHome />
-  },
-  //   {
-  //     id:2,
-  //     label:'Presenter List',
-  //     path: '/presenter-list',
-  //     icon: <FaListUl/>
-  //   },
-  {
-    id: 2,
-    label: 'Conference Registration',
-    path: '/admin/conference-list',
-    icon: <IoPerson />
-  },
-  {
-    id: 3,
-    label: 'Abstract',
-    path: '/admin/abstract',
-    icon: <IoDocumentAttachSharp />
-  },
-  {
-    id: 4,
-    label: 'Papers',
-    path: '/admin/my-paper',
-    icon: <FaBook />
-  },
-  {
-    id: 5,
-    label: 'Payment',
-    path: '/admin/invoice',
-    icon: <IoNewspaperSharp />
-  },
-  {
-    id: 6,
-    label: 'Scheduling',
-    path: '/admin/scheduling',
-    icon: <IoNewspaperSharp />
-  },
-  {
-    id: 7,
-    label: 'Certificate',
-    path: '/admin/certificates',
-    icon: <FaAward />
-  },
-  {
-    id: 8,
-    label: 'Messages',
-    path: '/admin/messages',
-    icon: <FaMessage />
-  }
-]
+// const navOptions = [
+//   {
+//     id: 1,
+//     label: 'Home',
+//     path: '/admin/home',
+//     icon: <FaHome />
+//   },
+
+//   {
+//     id: 2,
+//     label: 'Conference Registration',
+//     path: '/admin/conference-list',
+//     icon: <IoPerson />
+//   },
+//   {
+//     id: 3,
+//     label: 'Abstract',
+//     path: '/admin/abstract',
+//     icon: <IoDocumentAttachSharp />
+//   },
+//   {
+//     id: 4,
+//     label: 'Papers',
+//     path: '/admin/my-paper',
+//     icon: <FaBook />
+//   },
+//   {
+//     id: 5,
+//     label: 'Payment',
+//     path: '/admin/invoice',
+//     icon: <IoNewspaperSharp />
+//   },
+//   {
+//     id: 6,
+//     label: 'Scheduling',
+//     path: '/admin/scheduling',
+//     icon: <IoNewspaperSharp />
+//   },
+//   {
+//     id: 7,
+//     label: 'Certificate',
+//     path: '/admin/certificates',
+//     icon: <FaAward />
+//   },
+//   {
+//     id: 8,
+//     label: 'Messages',
+//     path: '/admin/messages',
+//     icon: <FaMessage />
+//   }
+// ]
 
 const Dashboard = () => {
   const { list } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.user)
+  const [navOptions,setNavOptions] = useState([])
   const [activeOptions, setActiveOptions] = useState('Home')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   CurrentUser()
@@ -97,27 +94,33 @@ const Dashboard = () => {
       return
     }
     if (user?._id) {
-      dispatch(getNotifications())
-      socket.emit('register', user?._id)
+     if(user?.role?.value==='Presenter'){
+      setNavOptions(presenterNavOptions)
+     }
+     if(user?.role?.value==='Admin'){
+      setNavOptions(adminNavOptions)
+     }
+      //dispatch(getNotifications())
+      // socket.emit('register', user?._id)
     }
-    socket.on('sendNotification', notification => {
-      dispatch(addNotification(notification))
-      // toast.info(`New notification: ${notification.message}`)
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(notification.title, {
-          body: notification.message,
-          icon: '/logo192.png' // Optional icon — use your own image path
-        })
-      }
-    })
+    // socket.on('sendNotification', notification => {
+    //   dispatch(addNotification(notification))
+    //   // toast.info(`New notification: ${notification.message}`)
+    //   if ('Notification' in window && Notification.permission === 'granted') {
+    //     new Notification(notification.title, {
+    //       body: notification.message,
+    //       icon: '/logo192.png' // Optional icon — use your own image path
+    //     })
+    //   }
+    // })
 
-    socket.on('notificationRead', ({ notificationId }) => {
-      dispatch(updateNotification(notificationId))
-    })
-    return () => {
-      socket.off('sendNotification')
-      socket.off('notificationRead')
-    }
+    // socket.on('notificationRead', ({ notificationId }) => {
+    //   dispatch(updateNotification(notificationId))
+    // })
+    // return () => {
+    //   socket.off('sendNotification')
+    //   socket.off('notificationRead')
+    // }
   }, [dispatch, user, user?._id])
 
   const navigate = useNavigate()
@@ -175,7 +178,7 @@ const Dashboard = () => {
               tabIndex={0}
               className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow bg-gray-400'
             >
-              {navOptions.map((option, index) => (
+              {navOptions?.map((option, index) => (
                 <Link key={index} to={option.path}>
                   <div
                     onClick={() => {

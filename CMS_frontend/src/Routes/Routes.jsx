@@ -13,6 +13,8 @@ import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
 import MyInvoice from "../Pages/Dashboard/MyInvoice/MyInvoice";
 import Profile from "../Pages/MyProfile/Profile";
 import AddAbstract from "../Pages/Dashboard/Abstracts/AddAbstract/AddAbstract";
+import AdminConference from "../Pages/Dashboard/AdminConference/AdminConference";
+import CreateConference from "../Pages/Dashboard/CreateConference/CreateConference";
 
 
 export const router = createBrowserRouter([
@@ -77,6 +79,14 @@ export const router = createBrowserRouter([
             {
                 path:'profile',
                 element:<Profile/>
+            },
+            {
+                path:'conference',
+                element:<AdminConference/>
+            },
+            {
+                path:'create-conference',
+                element:<CreateConference/>
             }
         ]
     }

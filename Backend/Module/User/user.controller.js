@@ -8,8 +8,8 @@ export const createUser = async (req, res, next) => {
     const userData = req.body
     const { name, email, role } = userData
 
-    const user = await Users.findOne({ email: email })
-
+    const user = await Users.findOne({ email: email }).populate('role')
+  console.log(user)
     if (user) {
       const data = {
         _id: user._id,
@@ -26,7 +26,6 @@ export const createUser = async (req, res, next) => {
       })
     } else {
       const file = req.file
-      console.log(file)
       if (file) {
         const image = await s3UserUpload(file)
 
