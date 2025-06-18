@@ -17,8 +17,6 @@ const MyPaper = () => {
 
   const dispatch = useDispatch()
 
-  console.log(papers)
-
   useEffect(() => {
     if (conferences?._id) {
       dispatch(getPaper(conferences?._id))
@@ -204,7 +202,7 @@ const MyPaper = () => {
                 <tbody className='bg-white divide-y divide-gray-200'>
                   {currentPapers.map(paper => (
                     <tr
-                      key={paper.id}
+                      key={paper._id}
                       className='hover:bg-gray-50 transition-colors duration-200'
                     >
                       <td className='px-6 py-4 whitespace-nowrap'>

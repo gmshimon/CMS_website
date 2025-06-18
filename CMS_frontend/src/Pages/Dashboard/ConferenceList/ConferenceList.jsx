@@ -28,7 +28,7 @@ const ConferenceList = () => {
   // Filter conferences based on search query
   const filteredConferences = conference_regs.filter(
     conference =>
-      conference.abstract.paper_title
+      conference?.abstract?.paper_title
         .toLowerCase()
         .includes(searchQuery.toLowerCase())
     // conference.location.toLowerCase().includes(searchQuery.toLowerCase()) ||

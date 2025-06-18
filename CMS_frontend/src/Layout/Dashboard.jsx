@@ -15,6 +15,13 @@ import { FaMessage } from 'react-icons/fa6'
 import MessageList from '../Component/MessageList/MessageList'
 import CurrentUser from '../Utilis/CurrentUser'
 import { getConference } from '../Redux/Slice/conferenceSlice'
+import socket from '../Socket/socket'
+import {
+  addNotification,
+  getNotifications,
+  updateNotification
+} from '../Redux/Slice/notificationSlice'
+import axiosSecure from '../Utilis/axiosSecure'
 
 const navOptions = [
   {
@@ -74,17 +81,44 @@ const navOptions = [
 ]
 
 const Dashboard = () => {
+  const { list } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.user)
   const [activeOptions, setActiveOptions] = useState('Home')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   CurrentUser()
 
   const dispatch = useDispatch()
-  //   useEffect(() => {
-  //     dispatch(getCategory())
-  //     dispatch(getProducts('all'))
-  //   }, [dispatch, createCategorySuccess])
-  //   CurrentUser()
+
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect()
+    }
+    if (!user) {
+      return
+    }
+    if (user?._id) {
+      dispatch(getNotifications())
+      socket.emit('register', user?._id)
+    }
+    socket.on('sendNotification', notification => {
+      dispatch(addNotification(notification))
+      // toast.info(`New notification: ${notification.message}`)
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(notification.title, {
+          body: notification.message,
+          icon: '/logo192.png' // Optional icon — use your own image path
+        })
+      }
+    })
+
+    socket.on('notificationRead', ({ notificationId }) => {
+      dispatch(updateNotification(notificationId))
+    })
+    return () => {
+      socket.off('sendNotification')
+      socket.off('notificationRead')
+    }
+  }, [dispatch, user, user?._id])
 
   const navigate = useNavigate()
 
@@ -92,55 +126,21 @@ const Dashboard = () => {
     dispatch(getConference())
   }, [dispatch])
 
-  // if(!isGetUserDataLoading){
-  //   return null
-  // }
-  // useEffect(()=>{
-  //  if (isLoginSuccess) {
-  //       toast.success('Successful', {
-  //         position: 'top-right',
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: 'light'
-  //       })
-  //       dispatch(reset())
-  //     }
-  // },[dispatch, isLoginSuccess])
-  //   useEffect(() => {
-  //     if (isGetUserDataLoading) {
-  //       return // Wait until data is loaded
-  //     } else {
-  //       if (!user?.role || user?.role !== 'admin') {
-  //         navigate('/login') // Redirect to login page
-  //       }
-  //     }
-  //   }, [user, isGetUserDataLoading, navigate])
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   const checkTokenExpiration = () => {
-  //     const storedToken = localStorage.getItem('userToken')
-  //     if (storedToken) {
-  //       const { expiration } = JSON.parse(storedToken)
-  //       const currentTime = new Date().getTime()
-  //       if (currentTime > expiration) {
-  //         // Token has expired, log out the user
-  //         localStorage.removeItem('userToken')
-  //         // Redirect to the login page or show a logged-out state
-  //         // dispatch(logOut())
-  //         // window.location.href = "/";
-  //         // history.push('/login');
-  //       }
-  //     }
+  //   const handleTestNotification = async () => {
+  //   const testNotification = {
+  //     user: user?._id,
+  //     title: 'Test Notification',
+  //     message: 'This is a test notification'
   //   }
-  //   useEffect(() => {
-  //     // Call checkTokenExpiration every sec (1 * 1000 milliseconds)
-  //     const tokenExpirationInterval = setInterval(checkTokenExpiration, 1 * 1000)
-  //     // Clean up the interval on component unmount
-  //     return () => clearInterval(tokenExpirationInterval)
-  //   }, [checkTokenExpiration])
+
+  //   try {
+  //     const res = await axiosSecure.post('/notification', testNotification)
+  //     toast.success('Test notification sent via API!')
+  //   } catch (err) {
+  //     console.error(err)
+  //     toast.error('Failed to send test notification')
+  //   }
+  // }
   return (
     <section>
       <ToastContainer />
@@ -196,7 +196,12 @@ const Dashboard = () => {
             </ul>
           </div>
         </div>
-
+        {/* <button
+          onClick={handleTestNotification}
+          className='btn btn-sm bg-orange-500 hover:bg-orange-600 text-white mr-2'
+        >
+          Send Test Notification
+        </button> */}
         <div className='navbar-end'>
           <div className='flex-none'>
             <div className='dropdown dropdown-end'>
@@ -207,7 +212,9 @@ const Dashboard = () => {
               >
                 <div className='indicator'>
                   <LuMessageSquare className='text-xl' />
-                  <span className='badge badge-xs indicator-item'>8</span>
+                  <span className='badge badge-xs indicator-item'>
+                    {list?.length}
+                  </span>
                 </div>
               </div>
               <div

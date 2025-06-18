@@ -124,7 +124,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='text'
             name='presenterName'
-            value={presenter_name}
+            // value={presenter_name}
             onChange={e => dispatch(setPresenterName(e.target.name))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presenterName ? 'input-error' : ''
@@ -253,7 +253,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
         <div>
           <label className='label'>
             <span className='label-text font-medium text-black'>
-              Correspondence Mailing Address *
+              Correspondence Email Address *
             </span>
           </label>
           <textarea

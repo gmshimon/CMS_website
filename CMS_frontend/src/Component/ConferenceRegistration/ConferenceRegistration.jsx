@@ -51,9 +51,9 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   useEffect(() => {
-    // if (createAbstractSuccess) {
-    //   navigate('/admin/abstract')
-    // }
+    if (createAbstractSuccess) {
+      navigate('/admin/abstract')
+    }
   }, [createAbstractSuccess, dispatch, navigate])
 
   const accommodationOptions = [

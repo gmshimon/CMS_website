@@ -5,7 +5,6 @@ import Loading from '../../../Component/Loading/Loading'
 
 const DashboardHome = () => {
   const { user, isLoading } = useSelector(state => state.user)
-  console.log(user?.role)
   return (
     <>
       {isLoading ? (
