@@ -1,6 +1,5 @@
-/* eslint-disable no-unused-vars */
+
 import React, {  useState } from 'react'
-import { Link } from 'react-router-dom'
 import {
   IoDocumentText,
   IoWallet,
@@ -9,6 +8,7 @@ import {
 } from 'react-icons/io5'
 import { FaDownload } from 'react-icons/fa'
 import PaymentModal from '../../Component//PaymentModal/PaymentModal'
+import StatCard from '../StatCard/StatCard'
 
 const PresenterHome = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
@@ -21,26 +21,6 @@ const PresenterHome = () => {
     revisions: 3
   }
 
-  const StatCard = ({ title, count, icon: Icon, link, color }) => (
-    <Link to={link} className='block'>
-      <div
-        className={`p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 ${color}`}
-      >
-        <div className='flex items-center justify-between'>
-          <div>
-            <h3 className='text-xl font-semibold text-gray-800 mb-2'>
-              {title}
-            </h3>
-            <p className='text-3xl font-bold text-gray-900'>{count}</p>
-          </div>
-          <Icon className='text-4xl text-gray-700 opacity-80' />
-        </div>
-        <p className='mt-4 text-sm text-gray-600 hover:text-gray-800'>
-          View Details →
-        </p>
-      </div>
-    </Link>
-  )
 
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>

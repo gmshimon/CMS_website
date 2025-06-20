@@ -11,16 +11,45 @@ const conferenceSchema = mongoose.Schema(
     theme: [String],
     presentation_method: [String],
     publication_option: [String],
-    workshopOptions:[
-        {
-            title:{
-                type:String
-            },
-            price:{
-                type:Number
-            }
+    workshopOptions: [
+      {
+        title: {
+          type: String
+        },
+        price: {
+          type: Number
         }
-    ]
+      }
+    ],
+    year: {
+      type: Number,
+      required: true
+    },
+    country: {
+      type: String,
+      required: true
+    },
+    city: {
+      type: String,
+      default:''
+    },
+    venue: {
+      type: String,
+      default:''
+    },
+    startingDate: {
+      type: Date,
+      required: true
+    },
+    closingDate: {
+      type: Date,
+      required: true
+    },
+    mode: {
+      type: String,
+      enum: ['online', 'onsite', 'hybrid'],
+      default: 'hybrid'
+    }
   },
   {
     timestamps: true
