@@ -8,11 +8,7 @@ const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPa
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Upcoming":
-        return "bg-blue-100 text-blue-800";
-      case "Ongoing":
-        return "bg-yellow-100 text-yellow-800";
-      case "Completed":
+      case "active":
         return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -30,10 +26,10 @@ const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPa
                   Conference ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs text-black font-bold uppercase">
-                  Title
+                  Name
                 </th>
                 <th className="px-6 py-3 text-left text-xs text-black font-bold uppercase">
-                  Date
+                  Start Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs text-black font-bold uppercase">
                   Location
@@ -60,16 +56,16 @@ const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPa
                 currentConferences.map((conference) => (
                   <tr key={conference.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {conference.id}
+                      {conference._id}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {conference.title}
+                      {conference.name}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {format(conference.date, "MMM d, yyyy")}
+                      {format(conference.createdAt, "MMM d, yyyy")}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                      {conference.location}
+                    {conference.city},{conference.country}
                     </td>
                     <td className="px-6 py-4">
                       <span

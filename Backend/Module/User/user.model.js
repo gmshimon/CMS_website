@@ -19,7 +19,7 @@ const userSchema = mongoose.Schema(
     phone: {
       type: String
     },
-    role: { type: mongoose.Schema.Types.ObjectId, ref: 'roles' },
+    role: { type: mongoose.Schema.Types.ObjectId, ref: 'role' },
     photo: {
       type: String
     },

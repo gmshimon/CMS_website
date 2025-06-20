@@ -6,10 +6,10 @@ import { deleteImageFromS3, s3UserUpload } from './user.s3Uploader.js'
 export const createUser = async (req, res, next) => {
   try {
     const userData = req.body
-    const { name, email, role } = userData
+    const { email } = userData
 
     const user = await Users.findOne({ email: email }).populate('role')
-  console.log(user)
+
     if (user) {
       const data = {
         _id: user._id,
@@ -18,6 +18,7 @@ export const createUser = async (req, res, next) => {
         role: user.role
       }
       const token = generateToken(data)
+      console.log({ data: user, token: token })
       return res.status(200).json({
         status: 'Success',
         message: 'User already exists',
@@ -59,9 +60,9 @@ export const fetchUser = async (req, res, next) => {
     const roleIds = user.role // assuming it's an array of ObjectIds
 
     const roles = await mongoose.connection.db
-    .collection('roles')
-    .find({_id:roleIds})
-    .toArray();
+      .collection('roles')
+      .find({ _id: roleIds })
+      .toArray()
     user.role = roles[0]
     if (!user) {
       return res.status(404).json({

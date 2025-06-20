@@ -31,11 +31,11 @@ const conferenceSchema = mongoose.Schema(
     },
     city: {
       type: String,
-      default:''
+      default: ''
     },
     venue: {
       type: String,
-      default:''
+      default: ''
     },
     startingDate: {
       type: Date,
@@ -49,6 +49,15 @@ const conferenceSchema = mongoose.Schema(
       type: String,
       enum: ['online', 'onsite', 'hybrid'],
       default: 'hybrid'
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users'
+    },
+    status:{
+      type:String,
+      enum:['active','de-active'],
+      default:'active'
     }
   },
   {

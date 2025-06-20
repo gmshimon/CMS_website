@@ -82,6 +82,22 @@ const conferenceSlice = createSlice({
       state.getConferenceSuccess = false
       state.getConferenceError = true
     })
+    .addCase(createConference.pending,state=>{
+      state.createConferenceLoading = true
+      state.createConferenceSuccess = false
+      state.createConferenceError = false
+    })
+    .addCase(createConference.fulfilled,(state,action)=>{
+      state.conferences.push(action.payload)
+      state.createConferenceLoading = false
+      state.createConferenceSuccess = true
+      state.createConferenceError = false
+    })
+    .addCase(createConference.rejected,(state)=>{
+      state.createConferenceLoading = false
+      state.createConferenceSuccess = false
+      state.createConferenceError = true
+    })
   }
 })
 

@@ -42,6 +42,7 @@ import conferenceRegRouter from './Module/Conference_reg/conference_reg.routes.j
 import paperRouter from './Module/Paper/paper.routes.js'
 import notificationRouter from './Module/Notification/notification.routes.js'
 import { sendEmail } from './Utilis/sendEmail.js';
+import role from './Module/Role/role.model.js';
 
 app.use('/api/v1/user',userRouter)
 app.use('/api/v1/abstract',abstractRouter)
