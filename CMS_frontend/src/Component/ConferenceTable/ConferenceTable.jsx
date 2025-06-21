@@ -3,9 +3,16 @@ import { format } from "date-fns";
 import { IoMdEye } from "react-icons/io";
 import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/classic.css";
+import { FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
-const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPage }) => {
-
+const ConferenceTable = ({
+  currentConferences,
+  totalPages,
+  currentPage,
+  setCurrentPage,
+}) => {
+  const navigate = useNavigate()
   const getStatusColor = (status) => {
     switch (status) {
       case "active":
@@ -16,7 +23,7 @@ const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPa
   };
 
   return (
-    <div className="px-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]">
+    <div className="px-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto h-[400px] overflow-y-auto">
           <table className="min-w-full divide-y divide-gray-200 table-zebra">
@@ -54,7 +61,7 @@ const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPa
                 </tr>
               ) : (
                 currentConferences.map((conference) => (
-                  <tr key={conference.id}>
+                  <tr key={conference._id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {conference._id}
                     </td>
@@ -65,7 +72,7 @@ const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPa
                       {format(conference.createdAt, "MMM d, yyyy")}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">
-                    {conference.city},{conference.country}
+                      {conference.city},{conference.country}
                     </td>
                     <td className="px-6 py-4">
                       <span
@@ -77,12 +84,21 @@ const ConferenceTable = ({currentConferences,totalPages,currentPage,setCurrentPa
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <button
-                        className="hover:text-blue-600 transition p-1 rounded-full hover:bg-blue-100"
-                        title="View Details"
-                      >
-                        <IoMdEye className="text-lg" />
-                      </button>
+                      <div className="flex">
+                        <button
+                          className="hover:text-blue-600 transition p-1 rounded-full hover:bg-blue-100"
+                          title="View Details"
+                        >
+                          <IoMdEye className="text-lg" />
+                        </button>
+                        <button
+                          className="hover:text-blue-600 transition p-1 rounded-full hover:bg-blue-100"
+                          title="View Details"
+                          onClick={()=>navigate(`/admin/edit-conference/${conference._id}`)}
+                        >
+                          <FaEdit className="text-lg"/>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

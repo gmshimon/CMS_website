@@ -11,6 +11,7 @@ const AdminConference = () => {
     useSelector((state) => state.conference);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -22,13 +23,15 @@ const AdminConference = () => {
       dispatch(reset());
     }
   }, [createConferenceSuccess, dispatch]);
-  console.log(conferences);
-  const filteredConferences = conferences.filter(
-    (conference) =>
-      conference.name.toLowerCase().includes(searchQuery.toLowerCase()) 
-      // conference.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      // conference.status.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+
+  const filteredConferences = conferences.filter((conference) => {
+    const matchesName = conference.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesStatus =
+      statusFilter === "" || conference.status === statusFilter;
+    return matchesName && matchesStatus;
+  });
 
   const totalPages = Math.ceil(filteredConferences.length / conferencesPerPage);
   const indexOfLast = currentPage * conferencesPerPage;
@@ -59,6 +62,15 @@ const AdminConference = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="de-active">De-active</option>
+                  </select>
                 </div>
                 <div>
                   <button

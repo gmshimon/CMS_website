@@ -7,6 +7,10 @@ const conferenceSchema = mongoose.Schema(
       unique: true,
       required: true
     },
+    price: {
+      type: Number,
+      default: 0
+    },
     category: [String],
     theme: [String],
     presentation_method: [String],
@@ -54,10 +58,10 @@ const conferenceSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users'
     },
-    status:{
-      type:String,
-      enum:['active','de-active'],
-      default:'active'
+    status: {
+      type: String,
+      enum: ['active', 'de-active'],
+      default: 'active'
     }
   },
   {

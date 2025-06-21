@@ -15,79 +15,83 @@ import Profile from "../Pages/MyProfile/Profile";
 import AddAbstract from "../Pages/Dashboard/Abstracts/AddAbstract/AddAbstract";
 import AdminConference from "../Pages/Dashboard/AdminConference/AdminConference";
 import CreateConference from "../Pages/Dashboard/CreateConference/CreateConference";
-
+import EditConference from "../Component/EditConference/EditConference";
 
 export const router = createBrowserRouter([
-    {
-        path:'/',
-        element:<Main></Main>,
-        children:[
-            {
-                path:'/',
-                element:<h1>Home</h1>
-            },
-            {
-                path:'login',
-                element:<Login/>
-            },
-            {
-                path:'register',
-                element:<Registration/>
-            }
-        ]
-    },
-    {
-        path:'admin',
-        element:<Dashboard/>,
-        children:[
-            {
-                path:'home',
-                element:<DashboardHome/>
-            },
-            {   
-                path:'abstract/',
-                element:<Abstracts/>
-            },
-            {
-                path:'abstract/add',
-                element:<AddAbstract/>
-            },
-            {
-                path:'my-paper',
-                element:<MyPaper/>
-            },
-            {
-                path:'invoice',
-                element:<MyInvoice/>
-            },
-            {
-                path:'conference-list',
-                element:<ConferenceList/>
-            },
-            {
-                path:'conference/:id',
-                element:<SingleConference/>
-            },
-            {
-                path:'certificates',
-                element:<Certificates/>
-            },
-            {
-                path:'messages',
-                element:<Messages/>
-            },
-            {
-                path:'profile',
-                element:<Profile/>
-            },
-            {
-                path:'conference',
-                element:<AdminConference/>
-            },
-            {
-                path:'create-conference',
-                element:<CreateConference/>
-            }
-        ]
-    }
-])
+  {
+    path: "/",
+    element: <Main></Main>,
+    children: [
+      {
+        path: "/",
+        element: <h1>Home</h1>,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Registration />,
+      },
+    ],
+  },
+  {
+    path: "admin",
+    element: <Dashboard />,
+    children: [
+      {
+        path: "home",
+        element: <DashboardHome />,
+      },
+      {
+        path: "abstract/",
+        element: <Abstracts />,
+      },
+      {
+        path: "abstract/add",
+        element: <AddAbstract />,
+      },
+      {
+        path: "my-paper",
+        element: <MyPaper />,
+      },
+      {
+        path: "invoice",
+        element: <MyInvoice />,
+      },
+      {
+        path: "conference-list",
+        element: <ConferenceList />,
+      },
+      {
+        path: "conference/:id",
+        element: <SingleConference />,
+      },
+      {
+        path: "certificates",
+        element: <Certificates />,
+      },
+      {
+        path: "messages",
+        element: <Messages />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+      {
+        path: "conference",
+        element: <AdminConference />,
+      },
+      {
+        path: "edit-conference/:id",
+        element: <EditConference />,
+      },
+      {
+        path: "create-conference",
+        element: <CreateConference />,
+      },
+    ],
+  },
+]);

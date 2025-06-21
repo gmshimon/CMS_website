@@ -25,6 +25,7 @@ const CreateConference = () => {
     name: "",
     category: [],
     theme: [],
+    price: 0,
     presentation_method: [],
     publication_option: [],
     year: new Date().getFullYear(),
@@ -106,21 +107,22 @@ const CreateConference = () => {
     };
     dispatch(createConference(data));
     // // Reset form
-    // setFormData({
-    //   name: "",
-    //   category: [],
-    //   theme: [],
-    //   presentation_method: [],
-    //   publication_option: [],
-    //   year: new Date().getFullYear(),
-    //   country: "",
-    //   city: "",
-    //   venue: "",
-    //   startingDate: "",
-    //   closingDate: "",
-    //   mode: "hybrid",
-    // });
-    // setWorkshopOptions([{ title: "", price: 0 }]);
+    setFormData({
+      name: "",
+      category: [],
+      theme: [],
+      price: 0,
+      presentation_method: [],
+      publication_option: [],
+      year: new Date().getFullYear(),
+      country: "",
+      city: "",
+      venue: "",
+      startingDate: "",
+      closingDate: "",
+      mode: "hybrid",
+    });
+    setWorkshopOptions([{ title: "", price: 0 }]);
   };
 
   return (
@@ -156,8 +158,8 @@ const CreateConference = () => {
                 Basic Information
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="md:col-span-3">
                   <label
                     htmlFor="name"
                     className="block text-gray-700 text-sm font-bold mb-2"
@@ -176,6 +178,23 @@ const CreateConference = () => {
                   />
                 </div>
 
+                <div>
+                  <label
+                    htmlFor="year"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Registration Price *
+                  </label>
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className="border border-black rounded-md p-2 w-full text-black"
+                    required
+                  />
+                </div>
                 <div>
                   <label
                     htmlFor="year"
