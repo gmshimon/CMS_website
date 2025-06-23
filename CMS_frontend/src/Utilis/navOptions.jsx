@@ -73,7 +73,7 @@ const adminNavOptions = [
   {
     id: 3,
     label: 'Submission',
-    path: '/admin/conference-list',
+    path: '/admin/submission',
     icon: <IoIosPaper />
   },
   {

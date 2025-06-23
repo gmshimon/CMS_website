@@ -16,6 +16,9 @@ import AddAbstract from "../Pages/Dashboard/Abstracts/AddAbstract/AddAbstract";
 import AdminConference from "../Pages/Dashboard/AdminConference/AdminConference";
 import CreateConference from "../Pages/Dashboard/CreateConference/CreateConference";
 import EditConference from "../Component/EditConference/EditConference";
+import AdminSubmission from "../Pages/Dashboard/Submission/AdminSubmission/AdminSubmission";
+import Submission from "../Layout/Submission";
+import PhysicalSubmission from "../Pages/Dashboard/Submission/PhysicalSubmission/PhysicalSubmission";
 
 export const router = createBrowserRouter([
   {
@@ -92,6 +95,20 @@ export const router = createBrowserRouter([
         path: "create-conference",
         element: <CreateConference />,
       },
+      {
+        path:'submission',
+        element:<Submission/>,
+        children:[
+          {
+            path:'',
+            element:<AdminSubmission/>
+          },
+          {
+            path:'physical',
+            element:<PhysicalSubmission/>
+          }
+        ]
+      }
     ],
   },
 ]);

@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaDownload, FaFilePdf, FaFileWord } from 'react-icons/fa'
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion'
 
 const PaperModal = ({ paper, isOpen, onClose }) => {
