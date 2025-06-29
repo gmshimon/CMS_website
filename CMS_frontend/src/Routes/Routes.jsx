@@ -20,6 +20,14 @@ import AdminSubmission from "../Pages/Dashboard/Submission/AdminSubmission/Admin
 import Submission from "../Layout/Submission";
 import PhysicalSubmission from "../Pages/Dashboard/Submission/PhysicalSubmission/PhysicalSubmission";
 import PosterSubmission from "../Pages/Dashboard/Submission/PosterSubmission/PosterSubmission";
+import AdminUser from "../Pages/Dashboard/AdminUser/AdminUser";
+import Users from "../Layout/Users";
+import ManageAuthor from "../Pages/Dashboard/ManageAuthor/ManageAuthor.jsx";
+import ManageReviewers from "../Pages/Dashboard/ManageReviewers/ManageReviewers";
+import ManageSessionChair from "../Pages/Dashboard/ManageSessionChair/ManageSessionChair.jsx";
+import ManageKeynoteSpeaker from "../Pages/Dashboard/ManageKeynoteSpeaker/ManageKeynoteSpeaker.jsx";
+import ManageModerator from "../Pages/Dashboard/ManageModerator/ManageModerator.jsx";
+import ManageCommittee from "../Pages/Dashboard/ManageCommittee/ManageCommittee.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -111,6 +119,40 @@ export const router = createBrowserRouter([
           {
             path:'poster',
             element:<PosterSubmission/>
+          }
+        ]
+      },
+      {
+        path:'users',
+        element:<Users/>,
+        children:[
+          {
+            path:'',
+            element:<AdminUser/>
+          },
+          {
+            path:'authors',
+            element:<ManageAuthor/>
+          },
+          {
+            path:'reviewers',
+            element:<ManageReviewers/>
+          },
+          {
+            path:'session-chairs',
+            element:<ManageSessionChair/>
+          },
+          {
+            path:'keynote-speakers',
+            element:<ManageKeynoteSpeaker/>
+          },
+          {
+            path:'moderators',
+            element:<ManageModerator/>
+          },
+          {
+            path:'committee',
+            element:<ManageCommittee/>
           }
         ]
       }

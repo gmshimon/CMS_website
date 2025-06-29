@@ -79,7 +79,7 @@ const adminNavOptions = [
   {
     id: 4,
     label: 'Users',
-    path: '/admin/payment',
+    path: '/admin/users',
     icon: <IoIosPaper />
   },
   {
