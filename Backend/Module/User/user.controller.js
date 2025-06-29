@@ -18,7 +18,6 @@ export const createUser = async (req, res, next) => {
         role: user.role
       }
       const token = generateToken(data)
-      console.log({ data: user, token: token })
       return res.status(200).json({
         status: 'Success',
         message: 'User already exists',

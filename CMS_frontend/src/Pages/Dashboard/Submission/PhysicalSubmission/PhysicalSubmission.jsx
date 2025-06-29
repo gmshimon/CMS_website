@@ -1,5 +1,6 @@
 import React from 'react'
-import PhysicalPresentationTable from '../../../../Component/PhysicalPresentationTable/PhysicalPresentationTable'
+import PhysicalPresentationTable from '../../../../Component/SubmissionTable/SubmissionTable'
+import SubmissionTable from '../../../../Component/SubmissionTable/SubmissionTable'
 const dummyPresentationList = [
   {
     _id: 'ABS2025001',
@@ -72,15 +73,15 @@ const PhysicalSubmission = () => {
     }
   }
 
-  const handleView = item => {
-    alert(`Viewing presentation: ${item.title}`)
-  }
   return (
     <div>
-      <PhysicalPresentationTable
+      <SubmissionTable
         data={dummyPresentationList}
         getStatusColor={getStatusColor}
-        onView={handleView}
+        onView={item => alert(`View details: ${item.title}`)}
+        onEdit={item => alert(`Edit: ${item._id}`)}
+        onDelete={item => alert(`Delete: ${item._id}`)}
+        onViewFiles={item => alert(`View files for: ${item.title}`)}
       />
     </div>
   )

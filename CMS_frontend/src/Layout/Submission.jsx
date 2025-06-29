@@ -20,7 +20,11 @@ const Submission = () => {
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/submission'
           ? 'Submission Overview'
-          : location?.pathname==='/admin/submission/physical'?'Physical Presentation':'overview'}
+          : location?.pathname === '/admin/submission/physical'
+          ? 'Physical Presentation'
+          : location.pathname === '/admin/submission/poster'
+          ? 'Poster Overview'
+          : 'overview'}
       </h2>
 
       {/* Standard Year Search Field */}

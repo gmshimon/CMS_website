@@ -1,9 +1,20 @@
 import React from 'react'
 import { format } from 'date-fns'
-import { IoMdEye } from 'react-icons/io'
-import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaFileAlt,
+  FaEdit,
+  FaTrash
+} from 'react-icons/fa'
 
-const PhysicalPresentationTable = ({ data, getStatusColor, onView }) => {
+const SubmissionTable = ({
+  data,
+  getStatusColor,
+  onEdit,
+  onDelete,
+  onViewFiles
+}) => {
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>
@@ -20,7 +31,8 @@ const PhysicalPresentationTable = ({ data, getStatusColor, onView }) => {
                 'Payment',
                 'Payment Proof',
                 'Review Status',
-                'Actions'
+                'Submitted Files',
+                'Actions',
               ].map((heading, i) => (
                 <th
                   key={i}
@@ -35,7 +47,7 @@ const PhysicalPresentationTable = ({ data, getStatusColor, onView }) => {
           <tbody className='bg-white divide-y divide-gray-200'>
             {data.length === 0 ? (
               <tr>
-                <td colSpan={10} className='text-center py-6 text-gray-500'>
+                <td colSpan={11} className='text-center py-6 text-gray-500'>
                   No presentations available.
                 </td>
               </tr>
@@ -45,9 +57,7 @@ const PhysicalPresentationTable = ({ data, getStatusColor, onView }) => {
                   <td className='px-4 py-3 text-sm font-medium text-gray-900'>
                     {item._id}
                   </td>
-                  <td className='px-4 py-3 text-sm text-gray-700'>
-                    {item.theme}
-                  </td>
+                  <td className='px-4 py-3 text-sm text-gray-700'>{item.theme}</td>
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.authors[0]?.name}
                   </td>
@@ -74,11 +84,7 @@ const PhysicalPresentationTable = ({ data, getStatusColor, onView }) => {
                   </td>
                   <td className='px-4 py-3 text-center'>
                     {item.paymentProofUrl ? (
-                      <a
-                        href={item.paymentProofUrl}
-                        title='View Proof'
-                        download
-                      >
+                      <a href={item.paymentProofUrl} title='View Proof' download>
                         <FaCheckCircle className='text-green-500 text-lg mx-auto' />
                       </a>
                     ) : (
@@ -88,13 +94,33 @@ const PhysicalPresentationTable = ({ data, getStatusColor, onView }) => {
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.reviewStatus || 'Pending'}
                   </td>
-                  <td className='px-4 py-3'>
+                  <td className='px-4 py-3 text-center'>
+                    {item.submittedFiles && item.submittedFiles.length > 0 ? (
+                      <button
+                        onClick={() => onViewFiles(item)}
+                        className='text-purple-600 hover:text-purple-800 transition-colors p-1 rounded-full hover:bg-purple-100'
+                        title='View Submitted Files'
+                      >
+                        <FaFileAlt className='text-lg' />
+                      </button>
+                    ) : (
+                      <span className='text-gray-400 text-xs'>No files</span>
+                    )}
+                  </td>
+                  <td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
-                      onClick={() => onView(item)}
-                      className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
-                      title='View Details'
+                      onClick={() => onEdit(item)}
+                      className='text-yellow-600 hover:text-yellow-800 transition-colors p-1 rounded-full hover:bg-yellow-100'
+                      title='Edit'
                     >
-                      <IoMdEye className='text-xl' />
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => onDelete(item)}
+                      className='text-red-600 hover:text-red-800 transition-colors p-1 rounded-full hover:bg-red-100'
+                      title='Delete'
+                    >
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>
@@ -107,4 +133,4 @@ const PhysicalPresentationTable = ({ data, getStatusColor, onView }) => {
   )
 }
 
-export default PhysicalPresentationTable
+export default SubmissionTable

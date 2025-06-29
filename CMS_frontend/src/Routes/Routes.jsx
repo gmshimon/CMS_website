@@ -19,6 +19,7 @@ import EditConference from "../Component/EditConference/EditConference";
 import AdminSubmission from "../Pages/Dashboard/Submission/AdminSubmission/AdminSubmission";
 import Submission from "../Layout/Submission";
 import PhysicalSubmission from "../Pages/Dashboard/Submission/PhysicalSubmission/PhysicalSubmission";
+import PosterSubmission from "../Pages/Dashboard/Submission/PosterSubmission/PosterSubmission";
 
 export const router = createBrowserRouter([
   {
@@ -106,6 +107,10 @@ export const router = createBrowserRouter([
           {
             path:'physical',
             element:<PhysicalSubmission/>
+          },
+          {
+            path:'poster',
+            element:<PosterSubmission/>
           }
         ]
       }

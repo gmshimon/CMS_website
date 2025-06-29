@@ -35,7 +35,7 @@ const AdminSubmission = () => {
       title: 'Poster Presentation',
       count: 8,
       icon: FaImage,
-      link: '/admin/submissions/poster',
+      link: '/admin/submission/poster',
       color: 'bg-yellow-100',
       iconColor: 'text-yellow-600',
       description: 'Participants submitting posters.'
