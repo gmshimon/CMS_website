@@ -4,9 +4,15 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 import auth from '../../Firebase/firebase.config.js'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile
+} from 'firebase/auth'
 const initialState = {
   user: null,
+  roles: null,
   isLoading: false,
   isLoginLoading: false,
   isLoginSuccess: false,
@@ -22,7 +28,10 @@ const initialState = {
   isGetUserDataError: false,
   isGetUsersLoading: false,
   isGetUsersSuccess: false,
-  isGetUsersError: false
+  isGetUsersError: false,
+  getRoleLoading: false,
+  getRoleSuccess: false,
+  getRoleError: false
 }
 
 export const saveUserData = async userData => {
@@ -52,21 +61,18 @@ export const loginUser = createAsyncThunk(
   }
 )
 
-export const createUser = createAsyncThunk(
-  'createUser',
-  async (formdata) => {
-    const email = formdata.get("email")
-    const password = formdata.get("password")
-    const name = formdata.get("name")
-    console.log("signing in with", email, password);
-    const res = await createUserWithEmailAndPassword(auth, email, password)
-    const result = updateProfile(auth.currentUser, {
-      displayName: name
-    })
-    const data = await saveUserData(formdata)
-    return data
-  }
-)
+export const createUser = createAsyncThunk('createUser', async formdata => {
+  const email = formdata.get('email')
+  const password = formdata.get('password')
+  const name = formdata.get('name')
+  console.log('signing in with', email, password)
+  const res = await createUserWithEmailAndPassword(auth, email, password)
+  const result = updateProfile(auth.currentUser, {
+    displayName: name
+  })
+  const data = await saveUserData(formdata)
+  return data
+})
 
 export const fetchUser = createAsyncThunk('fetchUser', async email => {
   const response = await axios.post(`/user/get-user`, { email: email })
@@ -77,6 +83,11 @@ export const logOut = createAsyncThunk('logOut', async () => {
   const response = await signOut(auth)
   localStorage.removeItem('userToken')
   return response
+})
+
+export const getRole = createAsyncThunk('getRole', async () => {
+  const response = await axios.get('/role')
+  return response.data.data
 })
 
 const userSlice = createSlice({
@@ -99,6 +110,9 @@ const userSlice = createSlice({
       state.isUpdateUserLoading = false
       state.isUpdateUserSuccess = false
       state.isUpdateUserError = false
+      state.getRoleLoading = false
+      state.getRoleSuccess = false
+      state.getRoleError = false
     },
     startLoading: (state, action) => {
       state.isGetUserDataLoading = false
@@ -167,6 +181,23 @@ const userSlice = createSlice({
         state.isCreateUserSuccess = false
       })
       .addCase(logOut.rejected, (state, action) => {})
+      .addCase(getRole.pending, state => {
+        state.getRoleLoading = true
+        state.getRoleSuccess = false
+        state.getRoleError = false
+      })
+      .addCase(getRole.fulfilled, (state,action) => {
+        action.payload
+        state.roles = action.payload
+        state.getRoleLoading = false
+        state.getRoleSuccess = true
+        state.getRoleError = false
+      })
+      .addCase(getRole.rejected, (state) => {
+        state.getRoleLoading = false
+        state.getRoleSuccess = false
+        state.getRoleError = true
+      })
   }
 })
 

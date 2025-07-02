@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import generateToken from '../../Utilis/token.js'
 import Users from './user.model.js'
 import { deleteImageFromS3, s3UserUpload } from './user.s3Uploader.js'
@@ -8,8 +7,7 @@ export const createUser = async (req, res, next) => {
     const userData = req.body
     const { email } = userData
 
-    const user = await Users.findOne({ email: email }).populate('role')
-
+    const user = await Users.findOne({ email: email })
     if (user) {
       const data = {
         _id: user._id,
@@ -56,13 +54,6 @@ export const fetchUser = async (req, res, next) => {
   try {
     const data = req.body
     const user = await Users.findOne({ email: data.email }).lean()
-    const roleIds = user.role // assuming it's an array of ObjectIds
-
-    const roles = await mongoose.connection.db
-      .collection('roles')
-      .find({ _id: roleIds })
-      .toArray()
-    user.role = roles[0]
     if (!user) {
       return res.status(404).json({
         status: 'Fail',

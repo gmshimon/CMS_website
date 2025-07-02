@@ -12,7 +12,7 @@ import StatCard from '../../../Component/StatCard/StatCard'
 const AdminUser = () => {
   const stats = [
     {
-      title: 'Total Authors',
+      title: 'Total Authors/Presenter',
       count: 120,
       icon: FaUserGraduate,
       link: '/admin/users/authors',

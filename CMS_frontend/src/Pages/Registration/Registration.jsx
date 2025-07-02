@@ -1,10 +1,10 @@
 
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { reset } from '../../Redux/Slice/authSlice'
+import { getRole, reset } from '../../Redux/Slice/authSlice'
 import { createUser } from '../../Redux/Slice/authSlice'
 
 const countries = [
@@ -55,7 +55,7 @@ const countries = [
 
 
 const Registration = () => {
-  const { isCreateUserLoading,isCreateUserSuccess,isCreateUserError} = useSelector(state=>state.user)
+  const { isCreateUserLoading,isCreateUserSuccess,isCreateUserError,roles} = useSelector(state=>state.user)
   const [selectedRole, setSelectedRole] = useState('')
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
@@ -74,35 +74,6 @@ const Registration = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const dispatch = useDispatch()
-  const navigate=useNavigate()
-
-  const roles = [
-    {
-      _id: "67f44a5297608f94ffd75fdd",
-      title: "Register as Presenter",
-      description: "You can submit your articles for presentation in conference(s)."
-    },
-    {
-      _id: "67f44a5297608f94ffd75fde",
-      title: "Register as Attendee",
-      description: "You can participate in conference(s) without submitting articles."
-    },
-    {
-      _id:  "67f44a5297608f94ffd75fdf",
-      title: "Register as Reviewer",
-      description: "You can review articles of your interest and submit reviews."
-    },
-    {
-      _id: "67f44a5297608f94ffd75fe0",
-      title: "Become a Member",
-      description: "You can submit articles for presentation in conference(s). You can review articles of your interest and submit reviews. You will be offered different discounts on fee."
-    },
-    {
-      _id:  "67f44a5297608f94ffd75fe1",
-      title: "Register as Session Chair",
-      description: "You will get an opportunity to evaluate and mark presentations."
-    }
-  ]
 
  useEffect(()=>{
   if(isCreateUserError){
@@ -132,6 +103,10 @@ const Registration = () => {
     dispatch(reset())
   }
  },[dispatch,isCreateUserError,isCreateUserSuccess])
+
+ useEffect(()=>{
+  dispatch(getRole())
+ },[dispatch])
 
   const handleFileChange = event => {
     const file = event.target.files[0]
@@ -189,7 +164,7 @@ const Registration = () => {
               <div className='mb-2'>
                 <h3 className='text-sm font-semibold mb-1 text-gray-700'>Select Your Role</h3>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2'>
-                  {roles.map((role) => (
+                  {roles?.map((role) => (
                     <div
                       key={role._id}
                       onClick={() => setSelectedRole(role._id)}

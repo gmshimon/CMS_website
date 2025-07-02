@@ -1,15 +1,17 @@
-/* eslint-disable no-unused-vars */
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import auth from "../Firebase/firebase.config";
-import { fetchUser, startLoading } from "../Redux/Slice/authSlice";
+import { fetchUser, getRole, startLoading } from "../Redux/Slice/authSlice";
 
+// TODO:: Remove this function in Hooks
 
 const CurrentUser = () => {
     const { user } = useSelector(state => state.user);
     const  dispatch  = useDispatch();
     useEffect(() => {
+      dispatch(getRole)
       if(!sessionStorage.getItem('navOptions')){
         sessionStorage.setItem('navOptions','Home')
       }

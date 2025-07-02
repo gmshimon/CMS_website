@@ -1,10 +1,12 @@
-import React from 'react'
+import  { useState } from 'react'
 import UserTable from '../../../Component/UserTable/UserTable'
 import { authorColumns } from '../../../Utilis/userTabelColumn'
-
-
+import CreateUserModal from '../../../Component/CreateUserModal/CreateUserModal'
+import useCreateUser from '../../../Hooks/useCreateUser'
 
 const ManageAuthor = () => {
+  const [modalOpen, setModalOpen] = useState(false)
+    const { handleCreateUser } = useCreateUser();
   const authors = [
     {
       _id: 'auth001',
@@ -46,15 +48,11 @@ const ManageAuthor = () => {
     console.log('Delete author:', user)
   }
 
-  const handleAddAuthor = () => {
-    console.log('Add Author clicked')
-    // Later, open modal or route to a form
-  }
 
   return (
     <div>
       <button
-        onClick={handleAddAuthor}
+        onClick={() => setModalOpen(true)}
         className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 mb-2'
       >
         + Add Author
@@ -65,6 +63,12 @@ const ManageAuthor = () => {
         columns={authorColumns}
         onEdit={handleEdit}
         onDelete={handleDelete}
+      />
+      <CreateUserModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleCreateUser}
+        selectedRole={'Presenter'}
       />
     </div>
   )

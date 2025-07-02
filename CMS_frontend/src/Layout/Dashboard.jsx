@@ -24,58 +24,6 @@ import {
 import axiosSecure from '../Utilis/axiosSecure'
 import { adminNavOptions, presenterNavOptions } from '../Utilis/navOptions'
 
-// const navOptions = [
-//   {
-//     id: 1,
-//     label: 'Home',
-//     path: '/admin/home',
-//     icon: <FaHome />
-//   },
-
-//   {
-//     id: 2,
-//     label: 'Conference Registration',
-//     path: '/admin/conference-list',
-//     icon: <IoPerson />
-//   },
-//   {
-//     id: 3,
-//     label: 'Abstract',
-//     path: '/admin/abstract',
-//     icon: <IoDocumentAttachSharp />
-//   },
-//   {
-//     id: 4,
-//     label: 'Papers',
-//     path: '/admin/my-paper',
-//     icon: <FaBook />
-//   },
-//   {
-//     id: 5,
-//     label: 'Payment',
-//     path: '/admin/invoice',
-//     icon: <IoNewspaperSharp />
-//   },
-//   {
-//     id: 6,
-//     label: 'Scheduling',
-//     path: '/admin/scheduling',
-//     icon: <IoNewspaperSharp />
-//   },
-//   {
-//     id: 7,
-//     label: 'Certificate',
-//     path: '/admin/certificates',
-//     icon: <FaAward />
-//   },
-//   {
-//     id: 8,
-//     label: 'Messages',
-//     path: '/admin/messages',
-//     icon: <FaMessage />
-//   }
-// ]
-
 const Dashboard = () => {
   const { list } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.user)
@@ -83,7 +31,6 @@ const Dashboard = () => {
   const [activeOptions, setActiveOptions] = useState('Home')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   CurrentUser()
-
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -94,10 +41,10 @@ const Dashboard = () => {
       return
     }
     if (user?._id) {
-     if(user?.role?.value==='Presenter'){
+     if(user?.role==='Presenter'){
       setNavOptions(presenterNavOptions)
      }
-     if(user?.role?.value==='Admin'){
+     if(user?.role==='Admin'){
       setNavOptions(adminNavOptions)
      }
       //dispatch(getNotifications())

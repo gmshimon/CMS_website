@@ -1,13 +1,13 @@
 import mongoose from 'mongoose'
-import { type } from 'os'
 import validate from 'validator'
-import { ObjectId } from 'mongodb'
+
 const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
       minLength: 3,
-      maxLength: 50
+      maxLength: 50,
+      required: true
     },
     email: {
       type: String,
@@ -19,36 +19,44 @@ const userSchema = mongoose.Schema(
     phone: {
       type: String
     },
-    role: { type: mongoose.Schema.Types.ObjectId, ref: 'role' },
     photo: {
       type: String
     },
-    address: {
-      type: String
-    },
-    country: {
-      type: String
-    },
-    city: {
-      type: String
-    },
-    zip_code: {
-      type: String
-    },
-    state: {
-      type: String
-    },
-    affiliation: {
+
+    // Address Info
+    address: { type: String },
+    country: { type: String },
+    city: { type: String },
+    zip_code: { type: String },
+    state: { type: String },
+
+    // Affiliation & Education
+    affiliation: { type: String },
+    department: { type: String },
+    faculty: { type: String },
+
+    // Role (ObjectId ref or enum fallback)
+    role: { type: String }, // collection: roles
+
+    // How user heard about it (optional)
+    hear: { type: String },
+
+    // Reviewer/Moderator/Session Chair-specific fields
+    university: { type: String },
+    position: { type: String }, // current position like "Associate Professor"
+    domain: { type: String },
+    orcid: { type: String }, // ORCID link
+    contact: { type: String }, // Alternative contact or phone
+
+    // For committee members (scientific/technical)
+    committeeType: {
       type: String,
-      required: true
+      enum: ['Scientific', 'Organizing'],
+      default: null
     },
-    department: {
-      type: String,
-      required: true
-    },
-    hear: {
-      type: String,
-      required: true
+    committeeName:{
+      type:String,
+      enum:['Program','Technical','Publication','Publicity','Sponsorship','Technical Support','Registration','Virtual Conference','Logistic'],
     }
   },
   {
