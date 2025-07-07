@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
 
-const UserTable = ({ users, onEdit, onDelete, columns }) => {
+const UserTable = ({ role,users, onEdit, onDelete, columns }) => {
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>

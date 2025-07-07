@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit'
 import userSlice from './Slice/AuthSlice'
 import abstractSlice from './Slice/AbstractSlice'
 import conferenceSlice from './Slice/conferenceSlice'
@@ -8,14 +8,13 @@ import notificationSlice from './Slice/notificationSlice'
 import adminSlice from './Slice/AdminSlice'
 
 export const store = configureStore({
-    reducer: {
-        user:userSlice,
-        abstract:abstractSlice,
-        conference:conferenceSlice,
-        conferenceReg:conferenceRegSlice,
-        paper:paperSlice,
-        notifications:notificationSlice,
-        admin:adminSlice
-    }, // Define your reducers here
+  reducer: {
+    user: userSlice,
+    abstract: abstractSlice,
+    conference: conferenceSlice,
+    conferenceReg: conferenceRegSlice,
+    paper: paperSlice,
+    notifications: notificationSlice,
+    admin: adminSlice
+  } // Define your reducers here
 })
-

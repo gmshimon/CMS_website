@@ -1,4 +1,4 @@
-import  { useState } from 'react'
+import { useState } from 'react'
 import UserTable from '../../../Component/UserTable/UserTable'
 import { authorColumns } from '../../../Utilis/userTabelColumn'
 import CreateUserModal from '../../../Component/CreateUserModal/CreateUserModal'
@@ -6,7 +6,7 @@ import useCreateUser from '../../../Hooks/useCreateUser'
 
 const ManageAuthor = () => {
   const [modalOpen, setModalOpen] = useState(false)
-    const { handleCreateUser } = useCreateUser();
+  const { handleCreateUser } = useCreateUser()
   const authors = [
     {
       _id: 'auth001',
@@ -16,7 +16,9 @@ const ManageAuthor = () => {
       country: 'Bangladesh',
       affiliation: 'University of Dhaka',
       faculty: 'Science',
-      role: 'Author'
+      submission: 'Abstract Submitted',
+      payment: 'Pending',
+      payment_decision: 'Unpaid'
     },
     {
       _id: 'auth002',
@@ -26,7 +28,11 @@ const ManageAuthor = () => {
       country: 'USA',
       affiliation: 'MIT',
       faculty: 'Engineering',
-      role: 'Author'
+      submission: 'Abstract Submitted',
+      payment: 'Paid',
+      payment_proof:
+        'https://www.youtube.com/watch?v=Z_OY3-H-0W8&list=RDZ_OY3-H-0W8&start_radio=1',
+      payment_decision: 'Paid'
     },
     {
       _id: 'auth003',
@@ -36,7 +42,11 @@ const ManageAuthor = () => {
       country: 'Spain',
       affiliation: 'University of Barcelona',
       faculty: 'Arts',
-      role: 'Author'
+      submission: 'Abstract Submitted',
+      payment: 'UnPaid',
+      payment_proof:
+        'https://www.youtube.com/watch?v=Z_OY3-H-0W8&list=RDZ_OY3-H-0W8&start_radio=1',
+      payment_decision: 'paid'
     }
   ]
 
@@ -48,17 +58,17 @@ const ManageAuthor = () => {
     console.log('Delete author:', user)
   }
 
-
   return (
     <div>
-      <button
+      {/* <button
         onClick={() => setModalOpen(true)}
         className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 mb-2'
       >
         + Add Author
-      </button>
+      </button> */}
 
       <UserTable
+        role='Presenter'
         users={authors}
         columns={authorColumns}
         onEdit={handleEdit}

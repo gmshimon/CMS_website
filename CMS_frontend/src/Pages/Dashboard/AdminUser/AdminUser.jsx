@@ -12,7 +12,7 @@ import StatCard from '../../../Component/StatCard/StatCard'
 const AdminUser = () => {
   const stats = [
     {
-      title: 'Total Authors/Presenter',
+      title: 'Total Authors',
       count: 120,
       icon: FaUserGraduate,
       link: '/admin/users/authors',
@@ -57,14 +57,23 @@ const AdminUser = () => {
       description: 'Moderators managing sessions'
     },
     {
-      title: 'Total Committee Members',
+      title: 'Total Scientific Committee Members',
       count: 30,
       icon: FaUsers,
       link: '/admin/users/committee',
       color: 'bg-indigo-100',
       iconColor: 'text-indigo-600',
       description: 'Organizing committee members'
-    }
+    },
+    {
+      title: 'Total Technical Committee Members',
+      count: 30,
+      icon: FaUsers,
+      link: '/admin/users/committee',
+      color: 'bg-pink-100',
+      iconColor: 'text-pink-600',
+      description: 'Organizing committee members'
+    },
   ]
 
   return (
