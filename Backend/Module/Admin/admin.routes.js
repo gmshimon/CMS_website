@@ -6,6 +6,6 @@ import { AdminCreateUser } from './admin.controller.js';
 const router = express.Router();
 
 
-router.route('/admin/create-user').post(verifyToken,userImageUploader.single('image'),AdminCreateUser)
+router.route('/create-user').post(verifyToken,userImageUploader.single('image'),AdminCreateUser)
 
 export default router;

@@ -51,12 +51,11 @@ const userSchema = mongoose.Schema(
     // For committee members (scientific/technical)
     committeeType: {
       type: String,
-      enum: ['Scientific', 'Organizing'],
       default: null
     },
-    committeeName:{
-      type:String,
-      enum:['Program','Technical','Publication','Publicity','Sponsorship','Technical Support','Registration','Virtual Conference','Logistic'],
+    committeeName: {
+      type: String,
+      default: null
     }
   },
   {

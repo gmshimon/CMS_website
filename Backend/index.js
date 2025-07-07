@@ -52,6 +52,7 @@ app.use('/api/v1/conference_reg', conferenceRegRouter)
 app.use('/api/v1/paper', paperRouter)
 app.use('/api/v1/notification', notificationRouter)
 app.use('/api/v1/role', roleRouter)
+app.use('/api/v1/admin',adminRouter)
 
 app.get('/', async (req, res) => {
   res.send('API is running')

@@ -1,9 +1,35 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
+import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
+import { reset } from '../Redux/Slice/AdminSlice'
+import Loading from '../Component/Loading/Loading'
 
 const Users = () => {
+  const {
+    adminErrorMessage,
+    isAdminCreateUserLoading,
+    isAdminCreateUserSuccess,
+    isAdminCreateUserError
+  } = useSelector(state => state.admin)
   const [yearInput, setYearInput] = useState('')
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (isAdminCreateUserSuccess) {
+      showSuccessToast('Successfully Created the User')
+      dispatch(reset())
+    }
+    if (isAdminCreateUserError) {
+      showErrorToast(adminErrorMessage)
+      dispatch(reset())
+    }
+  }, [
+    adminErrorMessage,
+    dispatch,
+    isAdminCreateUserError,
+    isAdminCreateUserSuccess
+  ])
 
   const location = useLocation()
   const handleSearch = () => {
@@ -13,6 +39,14 @@ const Users = () => {
     }
     // TODO: Trigger API or filter logic using yearInput
     console.log('Searching submissions for year:', yearInput)
+  }
+
+  if (isAdminCreateUserLoading) {
+    return (
+      <div className='flex justify-center min-h-[calc(100vh-100px)] items-center'>
+        <Loading />
+      </div>
+    )
   }
   return (
     <div className='p-6'>
@@ -29,7 +63,9 @@ const Users = () => {
           ? 'Manage Key Note Speaker'
           : location.pathname === '/admin/users/moderators'
           ? 'Manage Moderator'
-          : location.pathname==="/admin/users/committee"?'Manage Committee':'User Overview'}
+          : location.pathname === '/admin/users/committee'
+          ? 'Manage Committee'
+          : 'User Overview'}
       </h2>
 
       {/* Standard Year Search Field */}

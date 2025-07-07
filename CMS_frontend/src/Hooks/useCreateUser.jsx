@@ -1,5 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
+import { adminCreateUser } from '../Redux/Slice/AdminSlice'
 
 const useCreateUser = () => {
   const dispatch = useDispatch()
@@ -12,8 +13,9 @@ const useCreateUser = () => {
         formData.append(key, form[key])
       }
     }
+    console.log(form)
     // You might want to send formData to your backend here, or return it
-    return formData
+    dispatch(adminCreateUser(formData))
   }
 
   return { handleCreateUser }

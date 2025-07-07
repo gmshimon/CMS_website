@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
   const [form, setForm] = useState({
+    role:selectedRole,
     name: '',
     title:'',
     email: '',
@@ -13,7 +14,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     domain: '',
     contact: '',
     orcid: '',
-    committeeType: 'Scientific', // for committees only
+    committeeType: null, // for committees only
     imageFile: null
   })
 

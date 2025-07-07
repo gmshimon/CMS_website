@@ -5,7 +5,7 @@ import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
-    users:[],
+  users: [],
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
@@ -40,23 +40,23 @@ const adminSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-    .addCase(adminCreateUser.pending, state => {
-      state.isAdminCreateUserLoading = true
-      state.isAdminCreateUserSuccess = false
-      state.isAdminCreateUserError = false
-    })
-    .addCase(adminCreateUser.fulfilled, (state,action) => {
-      state.isAdminCreateUserLoading = false
-      state.isAdminCreateUserSuccess = true
-      state.isAdminCreateUserError = false
-      state.users.push(action.payload)
-    })
-    .addCase(adminCreateUser.rejected, (state,action) => {
-      state.isAdminCreateUserLoading = false
-      state.isAdminCreateUserSuccess = false
-      state.isAdminCreateUserError = true
-      state.adminErrorMessage = action.payload
-    })
+      .addCase(adminCreateUser.pending, state => {
+        state.isAdminCreateUserLoading = true
+        state.isAdminCreateUserSuccess = false
+        state.isAdminCreateUserError = false
+      })
+      .addCase(adminCreateUser.fulfilled, (state, action) => {
+        state.isAdminCreateUserLoading = false
+        state.isAdminCreateUserSuccess = true
+        state.isAdminCreateUserError = false
+        state.users.push(action.payload)
+      })
+      .addCase(adminCreateUser.rejected, (state, action) => {
+        state.isAdminCreateUserLoading = false
+        state.isAdminCreateUserSuccess = false
+        state.isAdminCreateUserError = true
+        state.adminErrorMessage = action.payload
+      })
   }
 })
 export const { reset } = adminSlice.actions
