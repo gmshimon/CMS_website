@@ -20,7 +20,7 @@ const Users = () => {
         {location.pathname === '/admin/users'
           ? 'User Overview'
           : location?.pathname === '/admin/users/authors'
-          ? 'Manage Presentation'
+          ? 'Manage Authors'
           : location.pathname === '/admin/users/reviewers'
           ? 'Manage Reviewers'
           : location.pathname === '/admin/users/session-chairs'

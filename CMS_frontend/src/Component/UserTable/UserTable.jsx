@@ -1,7 +1,15 @@
 import React from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
+import { MdEmail } from 'react-icons/md'
 
-const UserTable = ({ role,users, onEdit, onDelete, columns }) => {
+const UserTable = ({
+  role,
+  users,
+  onDelete,
+  onEdit,
+  columns,
+  onPaymentDecisionChange
+}) => {
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>
@@ -25,29 +33,47 @@ const UserTable = ({ role,users, onEdit, onDelete, columns }) => {
           <tbody className='bg-white divide-y divide-gray-200'>
             {users.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + 1} className='text-center py-6 text-gray-500'>
+                <td
+                  colSpan={columns.length + 1}
+                  className='text-center py-6 text-gray-500'
+                >
                   No users found.
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
+              users.map(user => (
                 <tr key={user._id} className='hover:bg-gray-100 transition-all'>
                   {columns.map((col, index) => (
                     <td key={index} className='px-4 py-3 text-sm text-gray-700'>
                       {col.render
-                        ? col.render(user[col.key], user)
+                        ? col.render(user[col.key], user, {
+                            onPaymentDecisionChange // pass handler here as context
+                          })
                         : user[col.key] || '—'}
                     </td>
                   ))}
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
-                    <button
-                      onClick={() => onEdit(user)}
-                      className='text-yellow-600 hover:text-yellow-800 transition-colors p-1 rounded-full hover:bg-yellow-100'
-                      title='Edit'
-                      aria-label={`Edit ${user.name}`}
-                    >
-                      <FaEdit />
-                    </button>
+                    {user.payment?.toLowerCase() === 'unpaid' ||
+                    user.payment?.toLowerCase() === 'pending' ? (
+                      <button
+                        // onClick={() => onSendReminder(user)}
+                        className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
+                        title='Send Reminder'
+                        aria-label={`Send payment reminder to ${user.name}`}
+                      >
+                        <MdEmail />
+                      </button>
+                    ) : null}
+                    {role === 'Reviewer' && (
+                      <button
+                        onClick={()=>onEdit(user)}
+                        className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
+                        title='Send Reminder'
+                        aria-label={`Send payment reminder to ${user.name}`}
+                      >
+                        <FaEdit />
+                      </button>
+                    )}
                     <button
                       onClick={() => onDelete(user)}
                       className='text-red-600 hover:text-red-800 transition-colors p-1 rounded-full hover:bg-red-100'

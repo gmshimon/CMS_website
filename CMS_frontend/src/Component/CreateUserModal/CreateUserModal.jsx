@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { getRole } from '../../Redux/Slice/authSlice'
+import { useState } from 'react'
 
 const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
-  const { roles } = useSelector(state => state.user)
-  const [role, setRole] = useState(selectedRole || 'Presenter')
   const [form, setForm] = useState({
     name: '',
+    title:'',
     email: '',
     address: '',
     country: '',
@@ -21,11 +18,6 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
   })
 
   const [errors, setErrors] = useState({})
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getRole())
-  }, [dispatch])
 
   if (!isOpen) return null
 
@@ -53,7 +45,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     onSubmit(form)
     onClose()
   }
-  console.log(roles)
+
   return (
     <div className='fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50'>
       <div className='bg-white rounded-lg max-w-xl w-full p-6 shadow-lg max-h-[90vh] overflow-y-auto'>
@@ -63,23 +55,29 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           {/* Role */}
           <div>
             <label className='block mb-1 font-medium'>Role</label>
-            <select
-              name='role'
-              value={role}
-              onChange={e => {
-                setRole(e.target.value)
-                setForm(f => ({ ...f, role: e.target.value }))
-              }}
-              className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-            >
-              {roles?.map(r => (
-                <option key={r._id} value={r.value}>
-                  {r.value}
-                </option>
-              ))}
-            </select>
+            <input
+              type='text'
+              disabled={true}
+              value={selectedRole}
+              className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${'border-gray-300'}`}
+            />
           </div>
 
+          {/* title */}
+          {selectedRole === 'Reviewer' && (
+            <div>
+              <label className='block mb-1 font-medium'>Title</label>
+              <input
+                name='title'
+                value={form.title}
+                onChange={onChange}
+                type='text'
+                placeholder='Title of user'
+                className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $
+                `}
+              />
+            </div>
+          )}
           {/* Name */}
           <div>
             <label className='block mb-1 font-medium'>Name</label>
@@ -141,7 +139,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
               name='address'
               value={form.address}
               onChange={onChange}
-                            placeholder='Address'
+              placeholder='Address'
               type='text'
               className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
@@ -155,28 +153,30 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
               value={form.country}
               onChange={onChange}
               type='text'
-                            placeholder='Country'
+              placeholder='Country'
               className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
           </div>
 
           {/* Affiliation (common) */}
           <div>
-            <label className='block mb-1 font-medium'>Affiliation/University</label>
+            <label className='block mb-1 font-medium'>
+              Affiliation/University
+            </label>
             <input
               name='affiliation'
               value={form.affiliation}
               onChange={onChange}
-                            placeholder='Affiliation'
+              placeholder='Affiliation'
               type='text'
               className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             />
           </div>
 
           {/* Faculty (only for Authors, Reviewers, Session Chair, Moderator) */}
-          {(role === 'Presenter' ||
-            role === 'Reviewer' ||
-            role === 'Session Chair') && (
+          {(selectedRole === 'Presenter' ||
+            selectedRole === 'Reviewer' ||
+            selectedRole === 'Session Chair') && (
             <div>
               <label className='block mb-1 font-medium'>
                 Faculty/Department
@@ -186,19 +186,19 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 value={form.faculty}
                 onChange={onChange}
                 type='text'
-                              placeholder='Faculty'
+                placeholder='Faculty'
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
             </div>
           )}
 
           {/* Position (for Committees, Keynote Speaker, Session Chair, Moderator) */}
-          {(role === 'Scientific Committee' ||
-            role === 'Reviewer' ||
-            role === 'Technical Committee' ||
-            role === 'Keynote Speaker' ||
-            role === 'Session Chair' ||
-            role === 'Moderator') && (
+          {(selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Reviewer' ||
+            selectedRole === 'Technical Committee' ||
+            selectedRole === 'Keynote Speaker' ||
+            selectedRole === 'Session Chair' ||
+            selectedRole === 'Moderator') && (
             <div>
               <label className='block mb-1 font-medium'>Position</label>
               <input
@@ -206,17 +206,17 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 value={form.position}
                 onChange={onChange}
                 type='text'
-                              placeholder='User position'
+                placeholder='User position'
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
             </div>
           )}
 
           {/* Domain (Reviewers and Committees) */}
-          {(role === 'Reviewer' ||
-          role==="Session Chair"||
-            role === 'Scientific Committee' ||
-            role === 'Technical Committee') && (
+          {(selectedRole === 'Reviewer' ||
+            selectedRole === 'Session Chair' ||
+            selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Technical Committee') && (
             <div>
               <label className='block mb-1 font-medium'>Research Domain</label>
               <input
@@ -224,16 +224,16 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 value={form.domain}
                 onChange={onChange}
                 type='text'
-                              placeholder='Domain'
+                placeholder='Domain'
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
             </div>
           )}
 
           {/* Contact (Committees and Reviewers) */}
-          {(role === 'Reviewer' ||
-            role === 'Scientific Committee' ||
-            role === 'Technical Committee') && (
+          {(selectedRole === 'Reviewer' ||
+            selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Technical Committee') && (
             <div>
               <label className='block mb-1 font-medium'>Contact</label>
               <input
@@ -241,16 +241,16 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 value={form.contact}
                 onChange={onChange}
                 type='text'
-                              placeholder='User Contact'
+                placeholder='User Contact'
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
             </div>
           )}
 
           {/* ORCID (Committees and Reviewers) */}
-          {(role === 'Reviewer' ||
-            role === 'Scientific Committee' ||
-            role === 'Technical Committee') && (
+          {(selectedRole === 'Reviewer' ||
+            selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Technical Committee') && (
             <div>
               <label className='block mb-1 font-medium'>ORCID ID</label>
               <input
@@ -265,8 +265,8 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           )}
 
           {/* Committee Type (only Committees) */}
-          {(role === 'Scientific Committee' ||
-            role === 'Technical Committee') && (
+          {(selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Technical Committee') && (
             <div>
               <label className='block mb-1 font-medium'>Committee Type</label>
               <select

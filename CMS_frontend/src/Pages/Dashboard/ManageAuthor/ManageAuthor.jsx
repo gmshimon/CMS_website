@@ -43,10 +43,10 @@ const ManageAuthor = () => {
       affiliation: 'University of Barcelona',
       faculty: 'Arts',
       submission: 'Abstract Submitted',
-      payment: 'UnPaid',
+      payment: 'Unpaid',
       payment_proof:
         'https://www.youtube.com/watch?v=Z_OY3-H-0W8&list=RDZ_OY3-H-0W8&start_radio=1',
-      payment_decision: 'paid'
+      payment_decision: 'Paid'
     }
   ]
 
@@ -57,6 +57,10 @@ const ManageAuthor = () => {
   const handleDelete = user => {
     console.log('Delete author:', user)
   }
+  const handlePaymentDecisionChange = (newValue, user) => {
+  console.log(`Changed payment decision for ${user.name} to ${newValue}`)
+  // optionally update state or send API request
+}
 
   return (
     <div>
@@ -73,6 +77,7 @@ const ManageAuthor = () => {
         columns={authorColumns}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onPaymentDecisionChange={handlePaymentDecisionChange}
       />
       <CreateUserModal
         isOpen={modalOpen}

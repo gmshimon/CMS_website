@@ -7,11 +7,13 @@ export const reviewerColumns = [
     )
   },
   { label: 'Name', key: 'name' },
-  { label: 'University', key: 'university' },
+  {label:'Title',key:'title'},
+  { label: 'Email', key: 'email' },
   { label: 'Position', key: 'position' },
   { label: 'Country', key: 'country' },
-  { label: 'Domain', key: 'domain' },
-  { label: 'Email', key: 'email' },
+  { label: 'Research Area', key: 'domain' },
+  { label: 'Faculty', key: 'faculty' },
+  { label: 'Affiliation', key: 'affiliation' },
   { label: 'Contact', key: 'contact' },
   {
     label: 'ORCID ID',
@@ -26,7 +28,7 @@ export const reviewerColumns = [
         ORCID
       </a>
     )
-  }
+  },
 ]
 
 export const authorColumns = [
@@ -69,16 +71,15 @@ export const authorColumns = [
   {
     key: 'payment_decision',
     label: 'Payment Decision',
-    render: value => (
-      <span
-        className={`px-2 py-1 rounded text-xs font-semibold ${
-          value.toLowerCase() === 'paid'
-            ? 'bg-green-100 text-green-700'
-            : 'bg-red-100 text-red-700'
-        }`}
+    render: (value, row) => (
+      <select
+        value={value.toLowerCase()}
+        onChange={e => row.onPaymentDecisionChange(e.target.value, row)}
+        className='bg-white border rounded px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
       >
-        {value}
-      </span>
+        <option value='paid'>Paid</option>
+        <option value='unpaid'>UnPaid</option>
+      </select>
     )
   },
   {
