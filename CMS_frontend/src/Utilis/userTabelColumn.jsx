@@ -1,7 +1,7 @@
 export const reviewerColumns = [
   {
     label: 'Photo',
-    key: 'image',
+    key: 'photo',
     render: value => (
       <img src={value} alt='Session Chair' className='w-10 h-10 rounded-full' />
     )

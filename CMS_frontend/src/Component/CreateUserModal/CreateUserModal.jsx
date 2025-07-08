@@ -9,7 +9,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     address: '',
     country: '',
     affiliation: '',
-    department: '',
+    faculty: '',
     position: '',
     domain: '',
     contact: '',
@@ -183,11 +183,11 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 Faculty/Department
               </label>
               <input
-                name='department'
+                name='faculty'
                 value={form.faculty}
                 onChange={onChange}
                 type='text'
-                placeholder='Faculty'
+                placeholder='faculty'
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
             </div>

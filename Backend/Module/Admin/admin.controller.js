@@ -3,7 +3,6 @@ import admin from 'firebase-admin'
 import { readFile } from 'fs/promises'
 import { deleteImageFromS3, s3UserUpload } from '../User/user.s3Uploader.js'
 import {
-  accountCreatedTemplate,
   accountCreatedTemplateLogin,
   accountCreateTemplate
 } from '../../Utilis/EmailTemplate/createUserTemplate.js'
@@ -22,7 +21,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
 
-export const AdminCreateUser = async (req, res) => {
+export const AdminCreateUser = async (req, res, next) => {
   try {
     const data = req.body
     if (data.role === 'Presenter' || data.role === 'Attendee') {
@@ -39,7 +38,6 @@ export const AdminCreateUser = async (req, res) => {
 
     let password = null
     let html = null
-
     // generate password and save user in the firebase if the user role is reviewer and keynote Speaker
     if (data.role === 'Reviewer' || data.role === 'Keynote Speaker') {
       // ✅ generate a random password
@@ -56,21 +54,18 @@ export const AdminCreateUser = async (req, res) => {
 
       // ✅ get the styled html
       html = accountCreatedTemplateLogin({
-        name: createUser.name,
-        email: createUser.email,
+        name: data.name,
+        email: data.email,
         ...(password && { password }),
-        role: createUser.role,
-        ...(createUser.committeeType && {
-          committeeType: createUser.committeeType
-        })
+        role: data.role,
       })
     } else {
       html = accountCreateTemplate({
-        name: createUser.name,
-        email: createUser.email,
-        role: createUser.role,
-        ...(createUser.committeeType && {
-          committeeType: createUser.committeeType
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        ...(data?.committeeType && {
+          committeeType: data.committeeType
         })
       })
     }
@@ -102,8 +97,70 @@ export const AdminCreateUser = async (req, res) => {
     }
 
     console.error('AdminCreateUser error:', error)
-    return res
-      .status(500)
-      .json({ message: 'Something went wrong. Please try again later.' })
+    next(error)
+  }
+}
+
+export const getReviewersUser = async (req, res, next) => {
+  try {
+    const { year } = req.query
+
+    const matchQuery = {
+      role: 'Reviewer'
+    }
+
+    // Add year filter if provided
+    if (year) {
+      matchQuery.$expr = {
+        $eq: [{ $year: '$createdAt' }, parseInt(year)]
+      }
+    }
+    const users = await Users.find(matchQuery)
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Fetch the reviewer user',
+      data: users
+    })
+  } catch (error) {
+    console.error('Error fetching reviewers:', error)
+    next(error)
+  }
+}
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    // First delete user from your MongoDB
+    const deletedUser = await Users.findByIdAndDelete(id)
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    // Step 1: Find Firebase UID by email
+    const firebaseUser = await admin.auth().getUserByEmail(deletedUser.email)
+
+    // Step 2: Delete user from Firebase Auth
+    if (firebaseUser?.uid) {
+      await admin.auth().deleteUser(firebaseUser.uid)
+    }
+
+    // Step 3: Delete user image from the bucket
+    if(deletedUser){
+      deleteImageFromS3(deletedUser.photo.split(".com/")[1])
+    }
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'User deleted successfully',
+      data: {
+        id: deletedUser._id,
+        role: deletedUser.role
+      }
+    })
+  } catch (error) {
+    next(error)
   }
 }

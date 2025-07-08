@@ -2,7 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand
-}  from'@aws-sdk/client-s3'
+} from '@aws-sdk/client-s3'
 
 const s3client = new S3Client({
   region: process.env.AWS_REGION,
@@ -38,6 +38,7 @@ export const deleteImageFromS3 = async fileKey => {
       Key: fileKey
     }
     const result = await s3client.send(new DeleteObjectCommand(params))
+    console.log('File deleted successfully')
     return {
       success: true,
       message: 'File deleted successfully'

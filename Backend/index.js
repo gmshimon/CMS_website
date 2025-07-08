@@ -5,6 +5,7 @@ import cors from 'cors'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { setupWebSocket } from './socket/index.js'
+import globalErrorHandler from './Middleware/GlobalErrorHandler/globalErrorHandler.js'
 // import sessionMiddleware from './Middleware/Redis/sessionConfig.js';
 const { query } = express
 dotenv.config()
@@ -32,7 +33,7 @@ const uri = 'mongodb://127.0.0.1:27017/cms_website'
 // const uri = process.env.MONGODB_URI
 
 mongoose.connect(uri).then(() => {
-  console.log('Connected to MongoDB')
+  console.log('🛢️ Connected to MongoDB')
 })
 
 import userRouter from './Module/User/user.routes.js'
@@ -43,7 +44,7 @@ import paperRouter from './Module/Paper/paper.routes.js'
 import notificationRouter from './Module/Notification/notification.routes.js'
 import roleRouter from './Module/Role/role.routes.js'
 import adminRouter from './Module/Admin/admin.routes.js'
-import { sendEmail } from './Utilis/sendEmail.js'
+
 
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/abstract', abstractRouter)
@@ -58,8 +59,11 @@ app.get('/', async (req, res) => {
   res.send('API is running')
 })
 
+// Global error handler
+app.use(globalErrorHandler)
+
 server.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
+  console.log(`🚀 Server is running on port ${port}`)
 })
 
 export default app

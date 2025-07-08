@@ -75,7 +75,7 @@ const UserTable = ({
                       </button>
                     )}
                     <button
-                      onClick={() => onDelete(user)}
+                      onClick={() => onDelete(user,role)}
                       className='text-red-600 hover:text-red-800 transition-colors p-1 rounded-full hover:bg-red-100'
                       title='Delete'
                       aria-label={`Delete ${user.name}`}

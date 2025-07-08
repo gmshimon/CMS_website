@@ -32,7 +32,6 @@ const userSchema = mongoose.Schema(
 
     // Affiliation & Education
     affiliation: { type: String },
-    department: { type: String },
     faculty: { type: String },
 
     // Role (ObjectId ref or enum fallback)

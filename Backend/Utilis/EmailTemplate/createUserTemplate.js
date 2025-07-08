@@ -10,7 +10,6 @@ export const accountCreatedTemplateLogin = ({ name, email, password, role }) => 
         <li><strong>Email:</strong> ${email}</li>
         <li><strong>Password:</strong> ${password}</li>
         <li><strong>Role:</strong> ${role}</li>
-        ${committeeType ? `<li><strong>Committee Type:</strong> ${committeeType}</li>` : ''}
       </ul>
 
       <p>You can log in to your dashboard and start using the platform:</p>

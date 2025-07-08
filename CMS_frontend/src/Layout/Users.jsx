@@ -11,13 +11,24 @@ const Users = () => {
     adminErrorMessage,
     isAdminCreateUserLoading,
     isAdminCreateUserSuccess,
-    isAdminCreateUserError
+    isAdminCreateUserError,
+    isDeleteUserLoading,
+    isDeleteUserSuccess,
+    isDeleteUserError
   } = useSelector(state => state.admin)
   const [yearInput, setYearInput] = useState('')
   const dispatch = useDispatch()
   useEffect(() => {
     if (isAdminCreateUserSuccess) {
       showSuccessToast('Successfully Created the User')
+      dispatch(reset())
+    }
+    if (isDeleteUserSuccess) {
+      showSuccessToast('Successfully deleted the user')
+      dispatch(reset())
+    }
+    if (isDeleteUserError) {
+      showErrorToast(adminErrorMessage)
       dispatch(reset())
     }
     if (isAdminCreateUserError) {
@@ -28,7 +39,9 @@ const Users = () => {
     adminErrorMessage,
     dispatch,
     isAdminCreateUserError,
-    isAdminCreateUserSuccess
+    isAdminCreateUserSuccess,
+    isDeleteUserError,
+    isDeleteUserSuccess
   ])
 
   const location = useLocation()
@@ -41,7 +54,7 @@ const Users = () => {
     console.log('Searching submissions for year:', yearInput)
   }
 
-  if (isAdminCreateUserLoading) {
+  if (isAdminCreateUserLoading || isDeleteUserLoading) {
     return (
       <div className='flex justify-center min-h-[calc(100vh-100px)] items-center'>
         <Loading />

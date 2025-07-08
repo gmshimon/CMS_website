@@ -17,18 +17,18 @@ const setupWebSocket = server => {
   const connectedUsers = new Map() // userId -> socketId
 
   io.on('connection', socket => {
-    console.log('trying to connect the websocket')
-    console.info('Socket Client connected')
+    console.log('🔌 trying to connect the websocket')
+    console.info('✅ Socket Client connected')
 
     socket.on('register', userId => {
-      console.log(`User registered: ${userId} with socket ID: ${socket.id}`)
+      console.log(`🆔 User registered: ${userId} with socket ID: ${socket.id}`)
       connectedUsers.set(userId, socket.id)
     })
 
     socket.on('disconnect', () => {
       for (const [userId, socketId] of connectedUsers.entries()) {
         if (socketId === socket.id) {
-          console.log(`User disconnected: ${userId}`)
+          console.log(`❌ User disconnected: ${userId}`)
           connectedUsers.delete(userId)
         }
       }
@@ -44,6 +44,7 @@ const setupWebSocket = server => {
 
       const receiverSocketId = connectedUsers.get(userId)
       if (receiverSocketId) {
+        console.log(`📨 Sending notification to user: ${userId}`)
         io.to(receiverSocketId).emit('newNotification', notificationData)
       }
     })
