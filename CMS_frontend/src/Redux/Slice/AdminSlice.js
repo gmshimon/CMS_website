@@ -16,7 +16,10 @@ const initialState = {
   isGetReviewersUserError: false,
   isDeleteUserLoading: false,
   isDeleteUserSuccess: false,
-  isDeleteUserError: false
+  isDeleteUserError: false,
+  isUpdateUserLoading: false,
+  isUpdateUserSuccess: false,
+  isUpdateUserError: false
 }
 
 export const adminCreateUser = createAsyncThunk(
@@ -63,6 +66,20 @@ export const deleteUserFromDb = createAsyncThunk(
   }
 )
 
+export const updateUser = createAsyncThunk(
+  'updateUser',
+  async ({ data, role }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`/admin/update/user/`, data)
+      return { data, role }
+    } catch (error) {
+      const message =
+        error.response?.data?.message || 'An error occurred while updating user'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
@@ -80,6 +97,10 @@ const adminSlice = createSlice({
       state.isDeleteUserLoading = false
       state.isDeleteUserSuccess = false
       state.isDeleteUserError = false
+
+      state.isUpdateUserLoading = false
+      state.isUpdateUserSuccess = false
+      state.isUpdateUserError = false
     }
   },
   extraReducers: builder => {
@@ -138,6 +159,36 @@ const adminSlice = createSlice({
         state.isDeleteUserSuccess = false
         state.isDeleteUserError = true
         state.adminErrorMessage = action.payload
+      })
+      .addCase(updateUser.pending, state => {
+        state.isUpdateUserLoading = true
+        state.isUpdateUserSuccess = false
+        state.isUpdateUserError = false
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = true
+        state.isUpdateUserError = false
+
+        const { data, role } = action.payload
+        if (role === 'Reviewer') {
+          const index = state.reviewers.findIndex(r => r._id === data._id)
+          if (index !== -1) {
+            state.reviewers[index] = {
+              ...state.reviewers[index],
+              title: data.title,
+              position: data.position,
+              affiliation: data.affiliation,
+              contact: data.contact,
+              orcid: data.orcid
+            }
+          }
+        }
+      })
+      .addCase(updateUser.rejected, state => {
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = false
+        state.isUpdateUserError = true
       })
   }
 })

@@ -1,10 +1,13 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { adminCreateUser, deleteUserFromDb } from '../Redux/Slice/AdminSlice'
+import {
+  adminCreateUser,
+  deleteUserFromDb,
+  updateUser
+} from '../Redux/Slice/AdminSlice'
 import Swal from 'sweetalert2'
 
 const useCreateUser = () => {
-
   const dispatch = useDispatch()
   const handleCreateUser = form => {
     const formData = new FormData()
@@ -15,12 +18,11 @@ const useCreateUser = () => {
         formData.append(key, form[key])
       }
     }
-    console.log(form)
     // You might want to send formData to your backend here, or return it
     dispatch(adminCreateUser(formData))
   }
 
-  const handleDeleteUser = (user,role) => {
+  const handleDeleteUser = (user, role) => {
     Swal.fire({
       title: `Do you want to delete ${user?.name}`,
       text: "You won't be able to revert this!",
@@ -30,11 +32,15 @@ const useCreateUser = () => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!'
     }).then(() => {
-      dispatch(deleteUserFromDb({id:user?._id,role}))
+      dispatch(deleteUserFromDb({ id: user?._id, role }))
     })
   }
 
-  return { handleCreateUser,handleDeleteUser }
+  const handleUpdateUser = (data, role) => {
+    dispatch(updateUser({ data, role }))
+  }
+
+  return { handleCreateUser, handleDeleteUser, handleUpdateUser }
 }
 
 export default useCreateUser

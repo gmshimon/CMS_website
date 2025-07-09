@@ -57,7 +57,7 @@ export const AdminCreateUser = async (req, res, next) => {
         name: data.name,
         email: data.email,
         ...(password && { password }),
-        role: data.role,
+        role: data.role
       })
     } else {
       html = accountCreateTemplate({
@@ -148,8 +148,8 @@ export const deleteUser = async (req, res, next) => {
     }
 
     // Step 3: Delete user image from the bucket
-    if(deletedUser){
-      deleteImageFromS3(deletedUser.photo.split(".com/")[1])
+    if (deletedUser) {
+      deleteImageFromS3(deletedUser.photo.split('.com/')[1])
     }
 
     res.status(200).json({
@@ -159,6 +159,33 @@ export const deleteUser = async (req, res, next) => {
         id: deletedUser._id,
         role: deletedUser.role
       }
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateUser = async (req, res, next) => {
+  try {
+    const data = req.body
+    const findUser = await Users.findOne({ _id: data?._id })
+
+    if (!findUser) {
+      const error = new Error('User not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    const updateUser = await Users.updateOne(
+      { _id: data._id },
+      {
+        $set: data
+      }
+    )
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Successfully updated the user'
     })
   } catch (error) {
     next(error)

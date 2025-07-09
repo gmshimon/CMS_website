@@ -22,7 +22,9 @@ const userSchema = mongoose.Schema(
     photo: {
       type: String
     },
-
+    title:{
+     type:String
+    },
     // Address Info
     address: { type: String },
     country: { type: String },
