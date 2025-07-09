@@ -7,6 +7,7 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 const initialState = {
   users: [],
   reviewers: [],
+  session_chairs: [],
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
@@ -37,12 +38,15 @@ export const adminCreateUser = createAsyncThunk(
   }
 )
 
-export const getReviewersUser = createAsyncThunk(
-  'getReviewersUser',
-  async (data, { rejectWithValue }) => {
+export const getRoleBasedUser = createAsyncThunk(
+  'getRoleBasedUser',
+  async ({ data, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.get('/admin/get/reviewer', data)
-      return response.data.data
+      const response = await axios.get(`/admin/get/${role}`, data)
+      return {
+        data: response.data.data,
+        role
+      }
     } catch (error) {
       const message =
         error.response?.data?.message ||
@@ -69,9 +73,10 @@ export const deleteUserFromDb = createAsyncThunk(
 export const updateUser = createAsyncThunk(
   'updateUser',
   async ({ data, role }, { rejectWithValue }) => {
+    console.log('updateUser called', { data, role })
     try {
       const response = await axios.put(`/admin/update/user/`, data)
-      return { data, role }
+      return { data: response.data.data, role }
     } catch (error) {
       const message =
         error.response?.data?.message || 'An error occurred while updating user'
@@ -122,18 +127,23 @@ const adminSlice = createSlice({
         state.isAdminCreateUserError = true
         state.adminErrorMessage = action.payload
       })
-      .addCase(getReviewersUser.pending, state => {
+      .addCase(getRoleBasedUser.pending, state => {
         state.isGetReviewersUserLoading = true
         state.isGetReviewersUserSuccess = false
         state.isGetReviewersUserError = false
       })
-      .addCase(getReviewersUser.fulfilled, (state, action) => {
+      .addCase(getRoleBasedUser.fulfilled, (state, action) => {
         state.isGetReviewersUserLoading = false
         state.isGetReviewersUserSuccess = true
         state.isGetReviewersUserError = false
-        state.reviewers = action.payload
+        const { data, role } = action.payload
+        if (role == 'Reviewer') {
+          state.reviewers = data
+        } else if (role == 'Session Chair') {
+          state.session_chairs = data
+        }
       })
-      .addCase(getReviewersUser.rejected, (state, action) => {
+      .addCase(getRoleBasedUser.rejected, (state, action) => {
         state.isGetReviewersUserLoading = false
         state.isGetReviewersUserSuccess = false
         state.isGetReviewersUserError = true
@@ -149,8 +159,10 @@ const adminSlice = createSlice({
         state.isDeleteUserSuccess = true
         state.isDeleteUserError = false
         const { id, role } = action.payload
-        if (role === 'reviewers') {
+        if (role === 'Reviewer') {
           state.reviewers = state.reviewers.filter(user => user._id !== id)
+        } else if (role === 'Session Chair') {
+          state.session_chairs = state.reviewers.filter(user => user._id !== id)
         }
         state.users = state.users.filter(user => user._id !== id)
       })
@@ -181,6 +193,19 @@ const adminSlice = createSlice({
               affiliation: data.affiliation,
               contact: data.contact,
               orcid: data.orcid
+            }
+          }
+        } else if (role === 'Session Chair') {
+          const index = state.session_chairs.findIndex(r => r._id === data._id)
+          if (index !== -1) {
+            state.session_chairs[index] = {
+              ...state.session_chairs[index],
+              title: data.title,
+              position: data.position,
+              affiliation: data.affiliation,
+              contact: data.contact,
+              orcid: data.orcid,
+              chair_bio: data.chair_bio
             }
           }
         }

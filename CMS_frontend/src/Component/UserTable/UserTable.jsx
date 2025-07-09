@@ -10,6 +10,7 @@ const UserTable = ({
   columns,
   onPaymentDecisionChange
 }) => {
+  console.log(role)
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>
@@ -64,7 +65,7 @@ const UserTable = ({
                         <MdEmail />
                       </button>
                     ) : null}
-                    {role === 'Reviewer' && (
+                    {(role == 'Reviewer' || role === 'Session Chair') && (
                       <button
                         onClick={()=>onEdit(user)}
                         className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'

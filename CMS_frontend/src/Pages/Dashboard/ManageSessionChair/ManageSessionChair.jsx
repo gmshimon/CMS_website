@@ -1,65 +1,92 @@
-import React from 'react'
+import React, { useState } from 'react'
 import UserTable from '../../../Component/UserTable/UserTable'
 import { reviewerColumns } from '../../../Utilis/userTabelColumn'
+import CreateUserModal from '../../../Component/CreateUserModal/CreateUserModal'
+import useCreateUser from '../../../Hooks/useCreateUser'
+import { useSelector } from 'react-redux'
+import EditUserModal from '../../../Component/EditUserModal/EditUserModal'
 
 const ManageSessionChair = () => {
-  // Dummy data aligned with reviewers' columns
-  const sessionChairs = [
-    {
-      _id: 'sc001',
-      image: 'https://i.pravatar.cc/40?img=30',
-      name: 'Prof. Lina Zhang',
-      university: 'Tsinghua University',
-      position: 'Session Chair',
-      country: 'China',
-      domain: 'Cybersecurity',
-      email: 'lina.zhang@example.com',
-      contact: '+86-10-1234-5678',
-      orcid: 'https://orcid.org/0000-0002-2468-1357',
-      role: 'Session Chair'
-    },
-    {
-      _id: 'sc002',
-      image: 'https://i.pravatar.cc/40?img=31',
-      name: 'Dr. Michael Brown',
-      university: 'MIT',
-      position: 'Session Chair',
-      country: 'USA',
-      domain: 'Robotics',
-      email: 'michael.brown@example.com',
-      contact: '+1-617-555-9876',
-      orcid: 'https://orcid.org/0000-0001-1357-2468',
-      role: 'Session Chair'
-    }
-  ]
+  const { session_chairs } = useSelector(state => state.admin)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editForm, setEditForm] = useState({
+    title: '',
+    position: '',
+    affiliation: '',
+    contact: '',
+    orcid: '',
+    chair_bio: ''
+  })
+  const { handleCreateUser, handleDeleteUser, handleUpdateUser } =
+    useCreateUser('Session Chair')
+
+  const [editErrors, setEditErrors] = useState({})
 
   const handleEdit = user => {
-    console.log('Edit session chair:', user)
+    setEditForm({
+      _id: user._id,
+      title: user.title || '',
+      position: user.position || '',
+      affiliation: user.affiliation || '',
+      contact: user.contact || '',
+      orcid: user.orcid || '',
+      chair_bio: user.chair_bio || ''
+    })
+    setEditErrors({})
+    setEditModalOpen(true)
   }
 
-  const handleDelete = user => {
-    console.log('Delete session chair:', user)
+  const handleFormChange = e => {
+    const { name, value } = e.target
+    setEditForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleAddSessionChair = () => {
-    console.log('Add Session Chair clicked')
-    // Later: open modal or navigate to form
+  const validateEditForm = () => {
+    const errors = {}
+    if (!editForm.affiliation) errors.affiliation = 'Affiliation is required'
+    return errors
   }
-
+  const handleFormSubmit = e => {
+    e.preventDefault()
+    const errors = validateEditForm()
+    if (Object.keys(errors).length > 0) {
+      setEditErrors(errors)
+      return
+    }
+    handleUpdateUser({ ...editForm }, 'Session Chair')
+    setEditModalOpen(false)
+  }
   return (
     <div>
       <button
-        onClick={handleAddSessionChair}
+        onClick={() => setModalOpen(true)}
         className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 mb-2'
       >
         + Add Session Chair
       </button>
 
       <UserTable
-        users={sessionChairs}
+      role={'Session Chair'}
+        users={session_chairs}
         columns={reviewerColumns}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={handleDeleteUser}
+      />
+      <EditUserModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        form={editForm}
+        errors={editErrors}
+        onChange={handleFormChange}
+        onSubmit={handleFormSubmit}
+        selectedRole='Session Chair'
+      />
+      <CreateUserModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleCreateUser}
+        selectedRole={'Session Chair'}
       />
     </div>
   )

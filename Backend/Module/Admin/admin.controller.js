@@ -39,7 +39,11 @@ export const AdminCreateUser = async (req, res, next) => {
     let password = null
     let html = null
     // generate password and save user in the firebase if the user role is reviewer and keynote Speaker
-    if (data.role === 'Reviewer' || data.role === 'Keynote Speaker') {
+    if (
+      data.role === 'Reviewer' ||
+      data.role === 'Keynote Speaker' ||
+      data.role === 'Session Chair'
+    ) {
       // ✅ generate a random password
       password = (Math.random() * 10000 + 100000).toFixed(0)
 
@@ -101,12 +105,12 @@ export const AdminCreateUser = async (req, res, next) => {
   }
 }
 
-export const getReviewersUser = async (req, res, next) => {
+export const getRoleBasedUser = async (req, res, next) => {
   try {
     const { year } = req.query
-
+    const { role } = req.params
     const matchQuery = {
-      role: 'Reviewer'
+      role: role
     }
 
     // Add year filter if provided
@@ -139,12 +143,17 @@ export const deleteUser = async (req, res, next) => {
       return res.status(404).json({ message: 'User not found' })
     }
 
-    // Step 1: Find Firebase UID by email
-    const firebaseUser = await admin.auth().getUserByEmail(deletedUser.email)
+    if (
+      deletedUser.role === 'Reviewer' ||
+      deletedUser.role === 'Session Chair'
+    ) {
+      // Step 1: Find Firebase UID by email
+      const firebaseUser = await admin.auth().getUserByEmail(deletedUser.email)
 
-    // Step 2: Delete user from Firebase Auth
-    if (firebaseUser?.uid) {
-      await admin.auth().deleteUser(firebaseUser.uid)
+      // Step 2: Delete user from Firebase Auth
+      if (firebaseUser?.uid) {
+        await admin.auth().deleteUser(firebaseUser.uid)
+      }
     }
 
     // Step 3: Delete user image from the bucket
@@ -168,24 +177,23 @@ export const deleteUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const data = req.body
-    const findUser = await Users.findOne({ _id: data?._id })
 
-    if (!findUser) {
+    const updatedUser = await Users.findByIdAndUpdate(
+      data._id,
+      { $set: data },
+      { new: true } // This returns the updated document
+    )
+
+    if (!updatedUser) {
       const error = new Error('User not found')
       error.statusCode = 404
       return next(error)
     }
 
-    const updateUser = await Users.updateOne(
-      { _id: data._id },
-      {
-        $set: data
-      }
-    )
-
     res.status(200).json({
       status: 'Success',
-      message: 'Successfully updated the user'
+      message: 'Successfully updated the user',
+      data: updatedUser // optional, only if you want to return it
     })
   } catch (error) {
     next(error)

@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
   const [form, setForm] = useState({
-    role:selectedRole,
+    role: selectedRole,
     name: '',
-    title:'',
+    title: '',
     email: '',
     address: '',
     country: '',
@@ -14,6 +14,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     domain: '',
     contact: '',
     orcid: '',
+    chair_bio: '',
     committeeType: null, // for committees only
     imageFile: null
   })
@@ -65,20 +66,21 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           </div>
 
           {/* title */}
-          {selectedRole === 'Reviewer' && (
-            <div>
-              <label className='block mb-1 font-medium'>Title</label>
-              <input
-                name='title'
-                value={form.title}
-                onChange={onChange}
-                type='text'
-                placeholder='Title of user'
-                className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $
+          {selectedRole === 'Reviewer' ||
+            (selectedRole === 'Session Chair' && (
+              <div>
+                <label className='block mb-1 font-medium'>Title</label>
+                <input
+                  name='title'
+                  value={form.title}
+                  onChange={onChange}
+                  type='text'
+                  placeholder='Title of user'
+                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $
                 `}
-              />
-            </div>
-          )}
+                />
+              </div>
+            ))}
           {/* Name */}
           <div>
             <label className='block mb-1 font-medium'>Name</label>
@@ -234,6 +236,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           {/* Contact (Committees and Reviewers) */}
           {(selectedRole === 'Reviewer' ||
             selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Session Chair' ||
             selectedRole === 'Technical Committee') && (
             <div>
               <label className='block mb-1 font-medium'>Contact</label>
@@ -251,6 +254,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           {/* ORCID (Committees and Reviewers) */}
           {(selectedRole === 'Reviewer' ||
             selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Session Chair' ||
             selectedRole === 'Technical Committee') && (
             <div>
               <label className='block mb-1 font-medium'>ORCID ID</label>
@@ -279,6 +283,21 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 <option value='Scientific'>Scientific</option>
                 <option value='Technical'>Technical</option>
               </select>
+            </div>
+          )}
+
+          {/* session Chair Biography */}
+          {selectedRole === 'Session Chair' && (
+            <div>
+              <label className='block mb-1 font-medium'>Chair Biography</label>
+              <textarea
+                name='chair_bio'
+                value={form.chair_bio}
+                onChange={onChange}
+                type='url'
+                placeholder='Biography of Session chair'
+                className='w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
             </div>
           )}
 

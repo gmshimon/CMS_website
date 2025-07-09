@@ -1,14 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import {
   adminCreateUser,
   deleteUserFromDb,
+  getRoleBasedUser,
   updateUser
 } from '../Redux/Slice/AdminSlice'
 import Swal from 'sweetalert2'
 
-const useCreateUser = () => {
+const useCreateUser = (searchRole) => {
   const dispatch = useDispatch()
+    useEffect(() => {
+    dispatch(getRoleBasedUser({
+      role:searchRole
+    }))
+  }, [dispatch, searchRole])
+  
   const handleCreateUser = form => {
     const formData = new FormData()
     for (const key in form) {

@@ -22,8 +22,12 @@ const userSchema = mongoose.Schema(
     photo: {
       type: String
     },
-    title:{
-     type:String
+    title: {
+      type: String
+    },
+    chair_bio:{
+      type:String,
+      default:''
     },
     // Address Info
     address: { type: String },
@@ -42,8 +46,6 @@ const userSchema = mongoose.Schema(
     // How user heard about it (optional)
     hear: { type: String },
 
-    // Reviewer/Moderator/Session Chair-specific fields
-    university: { type: String },
     position: { type: String }, // current position like "Associate Professor"
     domain: { type: String },
     orcid: { type: String }, // ORCID link

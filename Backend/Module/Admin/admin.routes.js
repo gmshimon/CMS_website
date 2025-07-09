@@ -5,7 +5,7 @@ import verifyToken from '../../Middleware/verifyToken.js'
 import {
   AdminCreateUser,
   deleteUser,
-  getReviewersUser,
+  getRoleBasedUser,
   updateUser
 } from './admin.controller.js'
 const router = express.Router()
@@ -21,6 +21,6 @@ router
   .post(userImageUploader.single('image'), AdminCreateUser)
 
 // TODO:: add validation of user
-router.route('/get/reviewer').get(getReviewersUser)
+router.route('/get/:role').get(getRoleBasedUser)
 
 export default router
