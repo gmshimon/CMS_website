@@ -7,7 +7,8 @@ import {
   deleteUser,
   deleteUserImage,
   getRoleBasedUser,
-  updateUser
+  updateUser,
+  updateUserImage
 } from './admin.controller.js'
 const router = express.Router()
 
@@ -19,6 +20,11 @@ router.route('/update/user').put(updateUser)
 
 // TODO:: add validation of user
 router.route('/delete/user-image/:id').delete(deleteUserImage)
+
+// TODO:: add validation of user
+router
+  .route('/update/user-image/:id')
+  .put(userImageUploader.single('image'), updateUserImage)
 
 router
   .route('/create-user')

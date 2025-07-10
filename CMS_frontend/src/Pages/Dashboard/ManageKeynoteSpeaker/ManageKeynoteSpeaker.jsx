@@ -21,7 +21,7 @@ const ManageKeynoteSpeaker = () => {
     orcid: ''
   })
   const [editErrors, setEditErrors] = useState({})
-  const { handleCreateUser, handleDeleteUser, handleUpdateUser,handleDeleteImage } =
+  const { handleCreateUser, handleDeleteUser, handleUpdateUser,handleDeleteImage,handleAddImage } =
     useCreateUser('Keynote Speaker')
 
   const handleEdit = user => {
@@ -59,16 +59,6 @@ const ManageKeynoteSpeaker = () => {
     }
     handleUpdateUser({ ...editForm }, 'Session Chair')
     setEditModalOpen(false)
-  }
-
-  // const handleDeleteImage = row => {
-  //   console.log('Delete image for', row)
-  //   // Your API call and state update logic here
-  // }
-
-  const handleAddImage = row => {
-    console.log('Add image for', row)
-    // Your file picker/modal logic here
   }
 
   return (

@@ -102,6 +102,24 @@ export const deleteUserImage = createAsyncThunk(
     }
   }
 )
+export const updateUserImage = createAsyncThunk(
+  'updateUserImage',
+  async ({ id, role, data }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`/admin/update/user-image/${id}`, data)
+      return {
+        id,
+        data: response.data.data,
+        role
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating user image'
+      return rejectWithValue(message)
+    }
+  }
+)
 
 const adminSlice = createSlice({
   name: 'admin',
@@ -247,10 +265,11 @@ const adminSlice = createSlice({
           }
         }
       })
-      .addCase(updateUser.rejected, state => {
+      .addCase(updateUser.rejected, (state, action) => {
         state.isUpdateUserLoading = false
         state.isUpdateUserSuccess = false
         state.isUpdateUserError = true
+        state.adminErrorMessage = action.payload
       })
       .addCase(deleteUserImage.pending, state => {
         state.isDeleteUserLoading = true
@@ -272,6 +291,36 @@ const adminSlice = createSlice({
             }
           }
         }
+      })
+      .addCase(deleteUserImage.rejected, (state, action) => {
+        state.isDeleteUserLoading = false
+        state.isDeleteUserSuccess = false
+        state.isDeleteUserError = true
+        state.adminErrorMessage = action.payload
+      })
+      .addCase(updateUserImage.pending, state => {
+        state.isUpdateUserLoading = true
+        state.isUpdateUserSuccess = false
+        state.isUpdateUserError = false
+      })
+      .addCase(updateUserImage.fulfilled, (state, action) => {
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = true
+        state.isUpdateUserError = false
+
+        const { id, data, role } = action.payload
+        if (role === 'Keynote Speaker') {
+          const index = state.keynote_speakers.findIndex(r => r._id === id._id)
+          if (index !== -1) {
+            state.keynote_speakers[index] = data
+          }
+        }
+      })
+      .addCase(updateUserImage.rejected, (state, action) => {
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = false
+        ;(state.isUpdateUserError = true),
+          (state.adminErrorMessage = action.payload)
       })
   }
 })

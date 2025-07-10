@@ -5,7 +5,8 @@ import {
   deleteUserFromDb,
   deleteUserImage,
   getRoleBasedUser,
-  updateUser
+  updateUser,
+  updateUserImage
 } from '../Redux/Slice/AdminSlice'
 import Swal from 'sweetalert2'
 
@@ -54,11 +55,25 @@ const useCreateUser = searchRole => {
     dispatch(deleteUserImage({ id: row._id, role: row.role }))
   }
 
+  const handleAddImage = (file, row) => {
+    const formData = new FormData()
+
+    formData.append('image', file)
+    dispatch(
+      updateUserImage({
+        id: row._id,
+        data: formData,
+        role: row.role
+      })
+    )
+  }
+
   return {
     handleCreateUser,
     handleDeleteUser,
     handleUpdateUser,
-    handleDeleteImage
+    handleDeleteImage,
+    handleAddImage
   }
 }
 

@@ -69,7 +69,6 @@ export const AdminCreateUser = async (req, res, next) => {
       })
     }
 
-    console.log(html)
     // ✅ Upload image to S3 if available
     if (req.file) {
       const s3Result = await s3UserUpload(req.file)
@@ -230,6 +229,57 @@ export const deleteUserImage = async (req, res, next) => {
       data: user
     })
   } catch (error) {
+    next(error)
+  }
+}
+
+export const updateUserImage = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    // 1. Check if user is present
+    const isUser = await Users.findOne({ _id: id })
+
+    if (!isUser) {
+      const error = new Error('User not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    if (!isUser.role === 'Keynote Speaker') {
+      const error = new Error('Not allowed to change image')
+      error.statusCode = 403
+      return next(error)
+    }
+
+    //  Upload image to S3 if available
+    let image
+    if (req.file) {
+      const s3Result = await s3UserUpload(req.file)
+      image = s3Result
+    }
+
+    // update the user
+    const updateUser = await Users.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          photo: image
+        }
+      },
+      { new: true } // ✅ Important
+    )
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfully updated user image',
+      data: updateUser
+    })
+  } catch (error) {
+    // Cleanup image from S3 if something failed after upload
+    if (req.file?.key) {
+      await deleteImageFromS3(req.file.key)
+    }
     next(error)
   }
 }

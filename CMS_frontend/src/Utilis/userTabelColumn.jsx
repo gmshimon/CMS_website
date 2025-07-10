@@ -34,50 +34,69 @@ export const keynoteSpeakerCol = ({ handleDeleteImage, handleAddImage }) => [
   {
     label: 'Photo',
     key: 'photo',
-      render: (value, row) => (
-    <div className='relative w-14 h-14 group'>
-      {value ? (
-        <>
-          <img
-            src={value}
-            alt='Session Chair'
-            className='w-full h-full object-cover rounded-full border'
-          />
-          <button
-            onClick={() => handleDeleteImage(row)}
-            className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
-          >
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='w-5 h-5 text-white'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-              strokeWidth={2}
-            >
-              <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12' />
-            </svg>
-          </button>
-        </>
-      ) : (
-        <button
-          onClick={() => handleAddImage(row)}
-          className='w-full h-full flex items-center justify-center border rounded-full bg-gray-100 hover:bg-gray-200 transition'
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            className='w-6 h-6 text-gray-600'
-            fill='none'
-            viewBox='0 0 24 24'
-            stroke='currentColor'
-            strokeWidth={2}
-          >
-            <path strokeLinecap='round' strokeLinejoin='round' d='M12 4v16m8-8H4' />
-          </svg>
-        </button>
-      )}
-    </div>
-  )
+    render: (value, row) => {
+      const inputId = `upload-${row._id}`; // unique input ID per row
+
+      return (
+        <div className='relative w-14 h-14 group'>
+          {value ? (
+            <>
+              <img
+                src={value}
+                alt='Session Chair'
+                className='w-full h-full object-cover rounded-full border'
+              />
+              <button
+                onClick={() => handleDeleteImage(row)}
+                className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
+              >
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='w-5 h-5 text-white'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12' />
+                </svg>
+              </button>
+            </>
+          ) : (
+            <>
+              <label
+                htmlFor={inputId}
+                className='w-full h-full flex items-center justify-center border rounded-full bg-gray-100 hover:bg-gray-200 transition cursor-pointer'
+              >
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='w-6 h-6 text-gray-600'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap='round' strokeLinejoin='round' d='M12 4v16m8-8H4' />
+                </svg>
+              </label>
+              <input
+                id={inputId}
+                type='file'
+                accept='image/*'
+                className='hidden'
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    handleAddImage(file, row); // send file and row
+                    e.target.value = ''; // reset input for same file re-upload
+                  }
+                }}
+              />
+            </>
+          )}
+        </div>
+      );
+    }
   },
   { label: 'Name', key: 'name' },
   { label: 'Title', key: 'title' },
