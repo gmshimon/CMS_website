@@ -8,6 +8,7 @@ const initialState = {
   users: [],
   reviewers: [],
   session_chairs: [],
+  keynote_speakers: [],
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
@@ -73,13 +74,30 @@ export const deleteUserFromDb = createAsyncThunk(
 export const updateUser = createAsyncThunk(
   'updateUser',
   async ({ data, role }, { rejectWithValue }) => {
-    console.log('updateUser called', { data, role })
     try {
       const response = await axios.put(`/admin/update/user/`, data)
       return { data: response.data.data, role }
     } catch (error) {
       const message =
         error.response?.data?.message || 'An error occurred while updating user'
+      return rejectWithValue(message)
+    }
+  }
+)
+
+export const deleteUserImage = createAsyncThunk(
+  'deleteUserImage',
+  async ({ id, role }, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`/admin/delete/user-image/${id}`)
+      return {
+        id,
+        role
+      }
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while deleting user image'
       return rejectWithValue(message)
     }
   }
@@ -141,6 +159,8 @@ const adminSlice = createSlice({
           state.reviewers = data
         } else if (role == 'Session Chair') {
           state.session_chairs = data
+        } else if (role === 'Keynote Speaker') {
+          state.keynote_speakers = data
         }
       })
       .addCase(getRoleBasedUser.rejected, (state, action) => {
@@ -208,12 +228,50 @@ const adminSlice = createSlice({
               chair_bio: data.chair_bio
             }
           }
+        } else if (role === 'Keynote Speaker') {
+          const index = state.keynote_speakers.findIndex(
+            r => r._id === data._id
+          )
+          if (index !== -1) {
+            state.keynote_speakers[index] = {
+              ...state.keynote_speakers[index],
+              title: data.title,
+              position: data.position,
+              affiliation: data.affiliation,
+              contact: data.contact,
+              talk_title: data.talk_title,
+              talk_abstract: data.talk_abstract,
+              speaker_bio: data.speaker_bio,
+              orcid: data.orcid
+            }
+          }
         }
       })
       .addCase(updateUser.rejected, state => {
         state.isUpdateUserLoading = false
         state.isUpdateUserSuccess = false
         state.isUpdateUserError = true
+      })
+      .addCase(deleteUserImage.pending, state => {
+        state.isDeleteUserLoading = true
+        state.isDeleteUserSuccess = false
+        state.isDeleteUserError = false
+      })
+      .addCase(deleteUserImage.fulfilled, (state, action) => {
+        state.isDeleteUserLoading = false
+        state.isDeleteUserSuccess = true
+        state.isDeleteUserError = false
+
+        const { id, role } = action.payload
+
+        if (role === 'Keynote Speaker') {
+          const index = state.keynote_speakers.findIndex(r => r._id === id._id)
+          if (index !== -1) {
+            state.keynote_speakers[index] = {
+              photo: null
+            }
+          }
+        }
       })
   }
 })

@@ -25,10 +25,26 @@ const userSchema = mongoose.Schema(
     title: {
       type: String
     },
+    // for session chair user
     chair_bio:{
       type:String,
       default:''
     },
+
+    // for keynote speaker 
+    talk_title:{
+      type:String,
+      default:'',
+    },
+    talk_abstract:{
+      type:String,
+      default:''
+    },
+    speaker_bio:{
+      type:String,
+      default:'',
+    },
+
     // Address Info
     address: { type: String },
     country: { type: String },

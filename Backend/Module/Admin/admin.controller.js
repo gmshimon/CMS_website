@@ -35,15 +35,10 @@ export const AdminCreateUser = async (req, res, next) => {
     if (existingUser) {
       return res.status(409).json({ message: 'Email already exists' })
     }
-
     let password = null
     let html = null
     // generate password and save user in the firebase if the user role is reviewer and keynote Speaker
-    if (
-      data.role === 'Reviewer' ||
-      data.role === 'Keynote Speaker' ||
-      data.role === 'Session Chair'
-    ) {
+    if (data.role === 'Reviewer' || data.role === 'Session Chair') {
       // ✅ generate a random password
       password = (Math.random() * 10000 + 100000).toFixed(0)
 
@@ -74,6 +69,7 @@ export const AdminCreateUser = async (req, res, next) => {
       })
     }
 
+    console.log(html)
     // ✅ Upload image to S3 if available
     if (req.file) {
       const s3Result = await s3UserUpload(req.file)
@@ -194,6 +190,44 @@ export const updateUser = async (req, res, next) => {
       status: 'Success',
       message: 'Successfully updated the user',
       data: updatedUser // optional, only if you want to return it
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteUserImage = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    // 1. Check if user is present
+    const isUser = await Users.findOne({ _id: id })
+
+    if (!isUser) {
+      const error = new Error('User not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    // 2. If user has photo it will be deleted from amazon s3
+    if (isUser.photo) {
+      deleteImageFromS3(isUser.photo.split('.com/')[1])
+    }
+
+    // 3. update the user photo in db
+    const user = await Users.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          photo: null
+        }
+      }
+    )
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Successfully deleted user Image',
+      data: user
     })
   } catch (error) {
     next(error)

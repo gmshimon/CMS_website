@@ -3,19 +3,22 @@ import { useDispatch } from 'react-redux'
 import {
   adminCreateUser,
   deleteUserFromDb,
+  deleteUserImage,
   getRoleBasedUser,
   updateUser
 } from '../Redux/Slice/AdminSlice'
 import Swal from 'sweetalert2'
 
-const useCreateUser = (searchRole) => {
+const useCreateUser = searchRole => {
   const dispatch = useDispatch()
-    useEffect(() => {
-    dispatch(getRoleBasedUser({
-      role:searchRole
-    }))
+  useEffect(() => {
+    dispatch(
+      getRoleBasedUser({
+        role: searchRole
+      })
+    )
   }, [dispatch, searchRole])
-  
+
   const handleCreateUser = form => {
     const formData = new FormData()
     for (const key in form) {
@@ -47,7 +50,16 @@ const useCreateUser = (searchRole) => {
     dispatch(updateUser({ data, role }))
   }
 
-  return { handleCreateUser, handleDeleteUser, handleUpdateUser }
+  const handleDeleteImage = row => {
+    dispatch(deleteUserImage({ id: row._id, role: row.role }))
+  }
+
+  return {
+    handleCreateUser,
+    handleDeleteUser,
+    handleUpdateUser,
+    handleDeleteImage
+  }
 }
 
 export default useCreateUser

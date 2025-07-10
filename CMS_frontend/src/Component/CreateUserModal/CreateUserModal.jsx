@@ -15,6 +15,9 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     contact: '',
     orcid: '',
     chair_bio: '',
+    talk_title:'',
+    talk_abstract:'',
+    speaker_bio:'',
     committeeType: null, // for committees only
     imageFile: null
   })
@@ -66,21 +69,23 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           </div>
 
           {/* title */}
-          {selectedRole === 'Reviewer' ||
-            (selectedRole === 'Session Chair' && (
-              <div>
-                <label className='block mb-1 font-medium'>Title</label>
-                <input
-                  name='title'
-                  value={form.title}
-                  onChange={onChange}
-                  type='text'
-                  placeholder='Title of user'
-                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $
+          {(selectedRole === 'Reviewer' ||
+            selectedRole === 'Keynote Speaker' ||
+            selectedRole === 'Session Chair') && (
+            <div>
+              <label className='block mb-1 font-medium'>Title</label>
+              <input
+                name='title'
+                value={form.title}
+                onChange={onChange}
+                type='text'
+                placeholder='Title of user'
+                className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $
                 `}
-                />
-              </div>
-            ))}
+              />
+            </div>
+          )}
+
           {/* Name */}
           <div>
             <label className='block mb-1 font-medium'>Name</label>
@@ -116,24 +121,6 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
               <p className='text-red-600 text-sm mt-1'>{errors.email}</p>
             )}
           </div>
-
-          {/* Password */}
-          {/* <div>
-            <label className='block mb-1 font-medium'>Password</label>
-            <input
-              name='password'
-              value={form.password}
-              onChange={onChange}
-              type='password'
-              placeholder='Password'
-              className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-            />
-            {errors.password && (
-              <p className='text-red-600 text-sm mt-1'>{errors.password}</p>
-            )}
-          </div> */}
 
           {/* Address */}
           <div>
@@ -178,6 +165,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
 
           {/* Faculty (only for Authors, Reviewers, Session Chair, Moderator) */}
           {(selectedRole === 'Presenter' ||
+            selectedRole === 'Keynote Speaker' ||
             selectedRole === 'Reviewer' ||
             selectedRole === 'Session Chair') && (
             <div>
@@ -236,6 +224,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           {/* Contact (Committees and Reviewers) */}
           {(selectedRole === 'Reviewer' ||
             selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Keynote Speaker' ||
             selectedRole === 'Session Chair' ||
             selectedRole === 'Technical Committee') && (
             <div>
@@ -254,6 +243,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           {/* ORCID (Committees and Reviewers) */}
           {(selectedRole === 'Reviewer' ||
             selectedRole === 'Scientific Committee' ||
+            selectedRole === 'Keynote Speaker' ||
             selectedRole === 'Session Chair' ||
             selectedRole === 'Technical Committee') && (
             <div>
@@ -267,6 +257,46 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
             </div>
+          )}
+
+          {/* Talk Abstract */}
+          {selectedRole === 'Keynote Speaker' && (
+            <>
+              <div>
+              <label className='block mb-1 font-medium'>Talk Title</label>
+              <input
+                name='talk_title'
+                value={form.talk_title}
+                onChange={onChange}
+                type='text'
+                placeholder='Talk Title'
+                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
+            </div>
+            <div>
+              <label className='block mb-1 font-medium'>Talk Abstract</label>
+              <textarea
+                name='talk_abstract'
+                value={form.talk_abstract}
+                onChange={onChange}
+                type='text'
+                placeholder='Talk Abstract'
+                className='w-full px-3 h-32 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
+            </div>
+            <div>
+              <label className='block mb-1 font-medium'>Speaker Biography</label>
+              <textarea
+                name='speaker_bio'
+                value={form.speaker_bio}
+                onChange={onChange}
+                type='text'
+                placeholder='Biography of Speaker'
+                className='w-full px-3 h-32 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              />
+            </div>
+            
+            </>
           )}
 
           {/* Committee Type (only Committees) */}

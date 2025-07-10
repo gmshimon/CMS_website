@@ -10,7 +10,6 @@ const UserTable = ({
   columns,
   onPaymentDecisionChange
 }) => {
-  console.log(role)
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>
@@ -65,9 +64,11 @@ const UserTable = ({
                         <MdEmail />
                       </button>
                     ) : null}
-                    {(role == 'Reviewer' || role === 'Session Chair') && (
+                    {(role == 'Reviewer' ||
+                      role === 'Session Chair' ||
+                      role === 'Keynote Speaker') && (
                       <button
-                        onClick={()=>onEdit(user)}
+                        onClick={() => onEdit(user)}
                         className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
                         title='Send Reminder'
                         aria-label={`Send payment reminder to ${user.name}`}
@@ -76,7 +77,7 @@ const UserTable = ({
                       </button>
                     )}
                     <button
-                      onClick={() => onDelete(user,role)}
+                      onClick={() => onDelete(user, role)}
                       className='text-red-600 hover:text-red-800 transition-colors p-1 rounded-full hover:bg-red-100'
                       title='Delete'
                       aria-label={`Delete ${user.name}`}

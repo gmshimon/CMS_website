@@ -1,64 +1,109 @@
-import React from 'react'
+import React, { useState } from 'react'
 import UserTable from '../../../Component/UserTable/UserTable'
-import { reviewerColumns } from '../../../Utilis/userTabelColumn'
+import { keynoteSpeakerCol } from '../../../Utilis/userTabelColumn'
+import CreateUserModal from '../../../Component/CreateUserModal/CreateUserModal'
+import useCreateUser from '../../../Hooks/useCreateUser'
+import { useSelector } from 'react-redux'
+import EditUserModal from '../../../Component/EditUserModal/EditUserModal'
 
 const ManageKeynoteSpeaker = () => {
-  const keynoteSpeakers = [
-    {
-      _id: 'ks001',
-      image: 'https://i.pravatar.cc/40?img=11',
-      name: 'Dr. Ayesha Karim',
-      university: 'University of Toronto',
-      position: 'Keynote Speaker',
-      country: 'Canada',
-      domain: 'Data Science',
-      email: 'ayesha.karim@example.com',
-      contact: '+1-416-555-9876',
-      orcid: 'https://orcid.org/0000-0002-5678-1234',
-      role: 'Keynote Speaker'
-    },
-    {
-      _id: 'ks002',
-      image: 'https://i.pravatar.cc/40?img=12',
-      name: 'Prof. Lars Müller',
-      university: 'TU Berlin',
-      position: 'Keynote Speaker',
-      country: 'Germany',
-      domain: 'Artificial Intelligence',
-      email: 'lars.mueller@example.com',
-      contact: '+49-30-9876-5432',
-      orcid: 'https://orcid.org/0000-0003-1234-5678',
-      role: 'Keynote Speaker'
-    }
-  ]
+  const { keynote_speakers } = useSelector(state => state.admin)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [editForm, setEditForm] = useState({
+    title: '',
+    position: '',
+    affiliation: '',
+    talk_title: '',
+    talk_abstract: '',
+    speaker_bio: '',
+    contact: '',
+    orcid: ''
+  })
+  const [editErrors, setEditErrors] = useState({})
+  const { handleCreateUser, handleDeleteUser, handleUpdateUser,handleDeleteImage } =
+    useCreateUser('Keynote Speaker')
 
   const handleEdit = user => {
-    console.log('Edit keynote speaker:', user)
+    setEditForm({
+      _id: user._id,
+      title: user.title || '',
+      position: user.position || '',
+      affiliation: user.affiliation || '',
+      contact: user.contact || '',
+      talk_title: user.talk_title || '',
+      talk_abstract: user.talk_abstract || '',
+      speaker_bio: user.speaker_bio || '',
+      orcid: user.orcid || ''
+    })
+    setEditErrors({})
+    setEditModalOpen(true)
   }
 
-  const handleDelete = user => {
-    console.log('Delete keynote speaker:', user)
+  const handleFormChange = e => {
+    const { name, value } = e.target
+    setEditForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleAddKeynote = () => {
-    console.log('Add Keynote Speaker clicked')
-    // Optional: open modal or navigate to form
+  const validateEditForm = () => {
+    const errors = {}
+    if (!editForm.affiliation) errors.affiliation = 'Affiliation is required'
+    return errors
+  }
+  const handleFormSubmit = e => {
+    e.preventDefault()
+    const errors = validateEditForm()
+    if (Object.keys(errors).length > 0) {
+      setEditErrors(errors)
+      return
+    }
+    handleUpdateUser({ ...editForm }, 'Session Chair')
+    setEditModalOpen(false)
+  }
+
+  // const handleDeleteImage = row => {
+  //   console.log('Delete image for', row)
+  //   // Your API call and state update logic here
+  // }
+
+  const handleAddImage = row => {
+    console.log('Add image for', row)
+    // Your file picker/modal logic here
   }
 
   return (
     <div>
       <button
-        onClick={handleAddKeynote}
+        onClick={() => setModalOpen(true)}
         className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 mb-2'
       >
         + Add Keynote Speaker
       </button>
 
       <UserTable
-        users={keynoteSpeakers}
-        columns={reviewerColumns}
+        role={'Keynote Speaker'}
+        users={keynote_speakers}
+        columns={keynoteSpeakerCol({
+          handleDeleteImage,
+          handleAddImage
+        })}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={handleDeleteUser}
+      />
+      <EditUserModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        form={editForm}
+        errors={editErrors}
+        onChange={handleFormChange}
+        onSubmit={handleFormSubmit}
+        selectedRole='Keynote Speaker'
+      />
+      <CreateUserModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleCreateUser}
+        selectedRole={'Keynote Speaker'}
       />
     </div>
   )

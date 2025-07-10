@@ -8,8 +8,8 @@ import EditUserModal from '../../../Component/EditUserModal/EditUserModal'
 
 const ManageSessionChair = () => {
   const { session_chairs } = useSelector(state => state.admin)
-  const [editModalOpen, setEditModalOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
   const [editForm, setEditForm] = useState({
     title: '',
     position: '',
