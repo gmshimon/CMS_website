@@ -1,4 +1,3 @@
-import React from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
 import { MdEmail } from 'react-icons/md'
 
@@ -67,6 +66,7 @@ const UserTable = ({
                     {(role == 'Reviewer' ||
                       role === 'Session Chair' ||
                       role === 'Moderator' ||
+                      role === 'scientific_committee' ||
                       role === 'Keynote Speaker') && (
                       <button
                         onClick={() => onEdit(user)}

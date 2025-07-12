@@ -26,23 +26,23 @@ const userSchema = mongoose.Schema(
       type: String
     },
     // for session chair user
-    chair_bio:{
-      type:String,
-      default:''
+    chair_bio: {
+      type: String,
+      default: ''
     },
 
-    // for keynote speaker 
-    talk_title:{
-      type:String,
-      default:'',
+    // for keynote speaker
+    talk_title: {
+      type: String,
+      default: ''
     },
-    talk_abstract:{
-      type:String,
-      default:''
+    talk_abstract: {
+      type: String,
+      default: ''
     },
-    speaker_bio:{
-      type:String,
-      default:'',
+    speaker_bio: {
+      type: String,
+      default: ''
     },
 
     // Address Info
@@ -67,11 +67,12 @@ const userSchema = mongoose.Schema(
     orcid: { type: String }, // ORCID link
     contact: { type: String }, // Alternative contact or phone
 
-    // For committee members (scientific/technical)
-    committeeType: {
+    // committee member
+    bio: {
       type: String,
-      default: null
+      default: '—'
     },
+
     committeeName: {
       type: String,
       default: null

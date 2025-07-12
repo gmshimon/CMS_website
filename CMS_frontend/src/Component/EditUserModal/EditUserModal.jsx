@@ -28,7 +28,7 @@ const EditUserModal = ({
             </div>
           )}
           {/* Name */}
-          {selectedRole === 'Moderator' && (
+          {(selectedRole === 'Moderator'||selectedRole==="scientific_committee") && (
             <div>
               <label className='block mb-1 font-medium'>Name</label>
               <input
@@ -51,7 +51,21 @@ const EditUserModal = ({
               type='text'
               className='w-full px-3 py-2 border border-gray-300 rounded-md'
             />
+            </div>
+
+          {/* Domain */}
+          {
+            selectedRole==="scientific_committee"&&<div>
+            <label className='block mb-1 font-medium'>Research Domain</label>
+            <input
+              name='domain'
+              value={form.domain}
+              onChange={onChange}
+              type='text'
+              className='w-full px-3 py-2 border border-gray-300 rounded-md'
+            />
           </div>
+          }
 
           {/* Affiliation */}
           <div>
@@ -71,7 +85,7 @@ const EditUserModal = ({
           </div>
 
           {/* Faculty */}
-          {selectedRole === 'Moderator' && (
+          {(selectedRole === 'Moderator'||selectedRole === 'scientific_committee') && (
             <>
               <div>
                 <label className='block mb-1 font-medium'>Faculty</label>
@@ -166,6 +180,20 @@ const EditUserModal = ({
               <textarea
                 name='chair_bio'
                 value={form.chair_bio}
+                onChange={onChange}
+                type='text'
+                className='w-full px-3 h-32 py-2 border border-gray-300 rounded-md'
+              />
+            </div>
+          )}
+
+          {/*  Biography */}
+          {selectedRole === 'scientific_committee' && (
+            <div>
+              <label className='block mb-1 font-medium'>Biography</label>
+              <textarea
+                name='bio'
+                value={form.bio}
                 onChange={onChange}
                 type='text'
                 className='w-full px-3 h-32 py-2 border border-gray-300 rounded-md'

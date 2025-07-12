@@ -10,6 +10,7 @@ const initialState = {
   session_chairs: [],
   keynote_speakers: [],
   moderators: [],
+  scientificCommittee:[],
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
@@ -182,6 +183,8 @@ const adminSlice = createSlice({
           state.keynote_speakers = data
         } else if (role === 'Moderator') {
           state.moderators = data
+        }else if(role==='scientific_committee'){
+          state.scientificCommittee=data
         }
       })
       .addCase(getRoleBasedUser.rejected, (state, action) => {

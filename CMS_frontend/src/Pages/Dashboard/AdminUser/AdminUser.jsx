@@ -5,14 +5,17 @@ import {
   FaMicrophone,
   FaChalkboardTeacher,
   FaUsers,
-  FaUserCog
+  FaUserCog,
+  FaTools 
 } from 'react-icons/fa'
+import { GiMaterialsScience } from "react-icons/gi";
+
 import StatCard from '../../../Component/StatCard/StatCard'
 
 const AdminUser = () => {
   const stats = [
     {
-      title: 'Total Authors',
+      title: 'Authors',
       count: 120,
       icon: FaUserGraduate,
       link: '/admin/users/authors',
@@ -21,7 +24,7 @@ const AdminUser = () => {
       description: 'All registered authors'
     },
     {
-      title: 'Total Reviewers',
+      title: 'Reviewers',
       count: 75,
       icon: FaUserTie,
       link: '/admin/users/reviewers',
@@ -30,7 +33,7 @@ const AdminUser = () => {
       description: 'Experts reviewing submissions'
     },
     {
-      title: 'Total Session Chairs',
+      title: 'Session Chairs',
       count: 20,
       icon: FaChalkboardTeacher,
       link: '/admin/users/session-chairs',
@@ -39,7 +42,7 @@ const AdminUser = () => {
       description: 'Chairs leading sessions'
     },
     {
-      title: 'Total Keynote Speakers',
+      title: 'Keynote Speakers',
       count: 10,
       icon: FaMicrophone,
       link: '/admin/users/keynote-speakers',
@@ -48,7 +51,7 @@ const AdminUser = () => {
       description: 'Speakers giving keynote talks'
     },
     {
-      title: 'Total Moderators',
+      title: 'Moderators',
       count: 15,
       icon: FaUserCog,
       link: '/admin/users/moderators',
@@ -57,16 +60,25 @@ const AdminUser = () => {
       description: 'Moderators managing sessions'
     },
     {
-      title: 'Total Scientific Committee Members',
+      title: 'Scientific Committee Members',
       count: 30,
-      icon: FaUsers,
-      link: '/admin/users/committee',
+      icon: GiMaterialsScience,
+      link: '/admin/users/committee/scientific',
       color: 'bg-indigo-100',
       iconColor: 'text-indigo-600',
       description: 'Organizing committee members'
     },
     {
-      title: 'Total Technical Committee Members',
+      title: 'Technical Committee Members',
+      count: 30,
+      icon: FaTools ,
+      link: '/admin/users/committee',
+      color: 'bg-pink-100',
+      iconColor: 'text-pink-600',
+      description: 'Organizing committee members'
+    },
+    {
+      title: 'Registration Committee Members',
       count: 30,
       icon: FaUsers,
       link: '/admin/users/committee',

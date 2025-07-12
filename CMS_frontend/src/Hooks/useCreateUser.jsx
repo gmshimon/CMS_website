@@ -42,8 +42,10 @@ const useCreateUser = searchRole => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!'
-    }).then(() => {
-      dispatch(deleteUserFromDb({ id: user?._id, role }))
+    }).then((result) => {
+       if (result.isConfirmed) {
+         dispatch(deleteUserFromDb({ id: user?._id, role }))
+       }
     })
   }
 
