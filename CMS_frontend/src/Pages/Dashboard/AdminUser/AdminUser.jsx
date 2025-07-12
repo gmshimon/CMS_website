@@ -81,7 +81,7 @@ const AdminUser = () => {
       title: 'Registration Committee Members',
       count: 30,
       icon: FaUsers,
-      link: '/admin/users/committee',
+      link: '/admin/users/committee/registration',
       color: 'bg-pink-100',
       iconColor: 'text-pink-600',
       description: 'Organizing committee members'

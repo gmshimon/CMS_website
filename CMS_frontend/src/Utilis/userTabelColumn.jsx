@@ -346,35 +346,40 @@ export const committeeScientificColumns = ({
   ].filter(Boolean),
   { label: 'Country', key: 'country' },
   { label: 'Contact', key: 'contact' },
-  {
-    label: role === 'scientific_committee' ? 'Biography' : 'Unit',
-    key: role === 'scientific_committee' ? 'bio' : 'committeeName',
-    render: value =>
-      role === 'scientific_committee' ? (
-        <span
-          title={value}
-          className='block max-w-[200px] truncate cursor-help'
+  ...[
+    role !== 'registration_committee' && {
+      label: role === 'scientific_committee' ? 'Biography' : 'Unit',
+      key: role === 'scientific_committee' ? 'bio' : 'committeeName',
+      render: value =>
+        role === 'scientific_committee' ? (
+          <span
+            title={value}
+            className='block max-w-[200px] truncate cursor-help'
+          >
+            {value}
+          </span>
+        ) : (
+          <span>{value} Team</span>
+        )
+    }
+  ].filter(Boolean),
+
+  ...[
+    role !== 'registration_committee' && {
+      label: 'ORCID ID',
+      key: 'orcid',
+      render: value => (
+        <a
+          href={value}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='text-blue-600 underline'
         >
-          {value}
-        </span>
-      ) : (
-        <span>{value} Team</span>
+          ORCID
+        </a>
       )
-  },
-  {
-    label: 'ORCID ID',
-    key: 'orcid',
-    render: value => (
-      <a
-        href={value}
-        target='_blank'
-        rel='noopener noreferrer'
-        className='text-blue-600 underline'
-      >
-        ORCID
-      </a>
-    )
-  }
+    }
+  ].filter(Boolean)
 ]
 
 export const authorColumns = [

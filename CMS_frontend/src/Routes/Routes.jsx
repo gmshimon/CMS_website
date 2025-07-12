@@ -29,6 +29,7 @@ import ManageKeynoteSpeaker from "../Pages/Dashboard/ManageKeynoteSpeaker/Manage
 import ManageModerator from "../Pages/Dashboard/ManageModerator/ManageModerator.jsx";
 import ManageScientificCommittee from "../Pages/Dashboard/ManageScientificCommittee/ManageScientificCommittee.jsx";
 import ManageTechnicalCommittee from "../Pages/Dashboard/ManageTechnicalCommittee/ManageTechnicalCommittee.jsx";
+import ManageRegistrationCommittee from "../Pages/Dashboard/ManageRegistrationCommittee/ManageRegistrationCommittee.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -158,6 +159,10 @@ export const router = createBrowserRouter([
           {
             path:'committee/technical',
             element:<ManageTechnicalCommittee/>
+          },
+          {
+            path:'committee/registration',
+            element:<ManageRegistrationCommittee/>
           }
         ]
       }

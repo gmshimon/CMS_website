@@ -30,6 +30,7 @@ const EditUserModal = ({
           {/* Name */}
           {(selectedRole === 'Moderator' ||
             selectedRole === 'scientific_committee' ||
+            selectedRole === 'registration_committee' ||
             selectedRole === 'technical_committee') && (
             <div>
               <label className='block mb-1 font-medium'>Name</label>
@@ -89,6 +90,7 @@ const EditUserModal = ({
           {/* Faculty */}
           {(selectedRole === 'Moderator' ||
             selectedRole === 'scientific_committee' ||
+            selectedRole === 'registration_committee' ||
             selectedRole === 'technical_committee') && (
             <>
               <div>
@@ -193,7 +195,7 @@ const EditUserModal = ({
           )}
 
           {/* ORCID */}
-          {selectedRole !== 'technical_committee' && (
+          {selectedRole !== 'technical_committee' || selectedRole!=='registration_committee' && (
             <div>
               <label className='block mb-1 font-medium'>ORCID / LinkedIn</label>
               <input

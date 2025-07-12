@@ -12,6 +12,7 @@ const initialState = {
   moderators: [],
   scientificCommittee: [],
   technicalCommittee: [],
+  registrationCommittee: [],
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
@@ -188,6 +189,8 @@ const adminSlice = createSlice({
           state.scientificCommittee = data
         } else if (role === 'technical_committee') {
           state.technicalCommittee = data
+        } else if (role === 'registration_committee') {
+          state.registrationCommittee = data
         }
       })
       .addCase(getRoleBasedUser.rejected, (state, action) => {

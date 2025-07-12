@@ -38,7 +38,11 @@ export const AdminCreateUser = async (req, res, next) => {
     let password = null
     let html = null
     // generate password and save user in the firebase if the user role is reviewer and keynote Speaker
-    if (data.role === 'Reviewer' || data.role === 'Session Chair') {
+    if (
+      data.role === 'Reviewer' ||
+      data.role === 'Session Chair' ||
+      data.role === 'registration_committee'
+    ) {
       // ✅ generate a random password
       password = (Math.random() * 10000 + 100000).toFixed(0)
 
@@ -140,7 +144,8 @@ export const deleteUser = async (req, res, next) => {
 
     if (
       deletedUser.role === 'Reviewer' ||
-      deletedUser.role === 'Session Chair'
+      deletedUser.role === 'Session Chair' ||
+      deletedUser.role === 'registration_committee'
     ) {
       // Step 1: Find Firebase UID by email
       const firebaseUser = await admin.auth().getUserByEmail(deletedUser.email)
