@@ -91,6 +91,10 @@ const Users = () => {
           ? 'Manage Moderator'
           : location.pathname === '/admin/users/committee'
           ? 'Manage Committee'
+          : location.pathname === '/admin/users/committee/scientific'
+          ? 'Manage Scientific Committee'
+          : location.pathname === '/admin/users/committee/technical'
+          ? 'Manage Technical Committee'
           : 'User Overview'}
       </h2>
 

@@ -67,6 +67,7 @@ const UserTable = ({
                       role === 'Session Chair' ||
                       role === 'Moderator' ||
                       role === 'scientific_committee' ||
+                      role === 'technical_committee' ||
                       role === 'Keynote Speaker') && (
                       <button
                         onClick={() => onEdit(user)}

@@ -82,7 +82,8 @@ const ManageScientificCommittee = () => {
         users={scientificCommittee}
         columns={committeeScientificColumns({
           handleDeleteImage,
-          handleAddImage
+          handleAddImage,
+          role:'scientific_committee'
         })}
         onEdit={handleEdit}
         onDelete={handleDeleteUser}

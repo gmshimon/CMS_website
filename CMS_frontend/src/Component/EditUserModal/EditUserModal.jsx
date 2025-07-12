@@ -28,7 +28,9 @@ const EditUserModal = ({
             </div>
           )}
           {/* Name */}
-          {(selectedRole === 'Moderator'||selectedRole==="scientific_committee") && (
+          {(selectedRole === 'Moderator' ||
+            selectedRole === 'scientific_committee' ||
+            selectedRole === 'technical_committee') && (
             <div>
               <label className='block mb-1 font-medium'>Name</label>
               <input
@@ -51,21 +53,21 @@ const EditUserModal = ({
               type='text'
               className='w-full px-3 py-2 border border-gray-300 rounded-md'
             />
-            </div>
+          </div>
 
           {/* Domain */}
-          {
-            selectedRole==="scientific_committee"&&<div>
-            <label className='block mb-1 font-medium'>Research Domain</label>
-            <input
-              name='domain'
-              value={form.domain}
-              onChange={onChange}
-              type='text'
-              className='w-full px-3 py-2 border border-gray-300 rounded-md'
-            />
-          </div>
-          }
+          {selectedRole === 'scientific_committee' && (
+            <div>
+              <label className='block mb-1 font-medium'>Research Domain</label>
+              <input
+                name='domain'
+                value={form.domain}
+                onChange={onChange}
+                type='text'
+                className='w-full px-3 py-2 border border-gray-300 rounded-md'
+              />
+            </div>
+          )}
 
           {/* Affiliation */}
           <div>
@@ -85,7 +87,9 @@ const EditUserModal = ({
           </div>
 
           {/* Faculty */}
-          {(selectedRole === 'Moderator'||selectedRole === 'scientific_committee') && (
+          {(selectedRole === 'Moderator' ||
+            selectedRole === 'scientific_committee' ||
+            selectedRole === 'technical_committee') && (
             <>
               <div>
                 <label className='block mb-1 font-medium'>Faculty</label>
@@ -121,7 +125,33 @@ const EditUserModal = ({
               className='w-full px-3 py-2 border border-gray-300 rounded-md'
             />
           </div>
-
+          {selectedRole === 'technical_committee' && (
+            <div>
+              <label className='block mb-1 font-medium'>Committee Name</label>
+              <select
+                name='committeeName'
+                value={form.committeeName}
+                onChange={onChange}
+                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+              >
+                <option value='Publication'>Publication Committee</option>
+                <option value='Publicity and Promotion'>
+                  Publicity and Promotion Committee
+                </option>
+                <option value='Sponsorship'>Sponsorship Committee</option>
+                <option value='Technical Support'>
+                  Technical Support Committee
+                </option>
+                <option value='Virtual Conference'>
+                  Virtual Conference Committee
+                </option>
+                <option value='Logistic Conference'>Logistic Committee</option>
+                <option value='Multimedia Conference'>
+                  Multimedia Committee
+                </option>
+              </select>
+            </div>
+          )}
           {selectedRole === 'Keynote Speaker' && (
             <>
               <div>
@@ -163,16 +193,18 @@ const EditUserModal = ({
           )}
 
           {/* ORCID */}
-          <div>
-            <label className='block mb-1 font-medium'>ORCID / LinkedIn</label>
-            <input
-              name='orcid'
-              value={form.orcid}
-              onChange={onChange}
-              type='url'
-              className='w-full px-3 py-2 border border-gray-300 rounded-md'
-            />
-          </div>
+          {selectedRole !== 'technical_committee' && (
+            <div>
+              <label className='block mb-1 font-medium'>ORCID / LinkedIn</label>
+              <input
+                name='orcid'
+                value={form.orcid}
+                onChange={onChange}
+                type='url'
+                className='w-full px-3 py-2 border border-gray-300 rounded-md'
+              />
+            </div>
+          )}
           {/* Chair Biography */}
           {selectedRole === 'Session Chairs' && (
             <div>

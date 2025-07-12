@@ -18,6 +18,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     talk_title: '',
     talk_abstract: '',
     speaker_bio: '',
+    committeeName:null,
     bio: '',
     imageFile: null
   })
@@ -69,23 +70,19 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           </div>
 
           {/* title */}
-          {(selectedRole === 'Reviewer' ||
-            selectedRole === 'Keynote Speaker' ||
-            selectedRole === 'scientific_committee' ||
-            selectedRole === 'Session Chair') && (
-            <div>
-              <label className='block mb-1 font-medium'>Title</label>
-              <input
-                name='title'
-                value={form.title}
-                onChange={onChange}
-                type='text'
-                placeholder='Title of user'
-                className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $
+
+          <div>
+            <label className='block mb-1 font-medium'>Title</label>
+            <input
+              name='title'
+              value={form.title}
+              onChange={onChange}
+              type='text'
+              placeholder='Title of user'
+              className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $
                 `}
-              />
-            </div>
-          )}
+            />
+          </div>
 
           {/* Name */}
           <div>
@@ -125,7 +122,8 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
 
           {/* Address */}
           {selectedRole !== 'Moderator' ||
-            (selectedRole !== 'scientific_committee' && (
+            selectedRole !== 'scientific_committee' ||
+            (selectedRole != 'technical_committee' && (
               <div>
                 <label className='block mb-1 font-medium'>Address</label>
                 <input
@@ -168,12 +166,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
           </div>
 
           {/* Faculty (only for Authors, Reviewers, Session Chair, Moderator) */}
-          {(selectedRole === 'Presenter' ||
-            selectedRole === 'Keynote Speaker' ||
-            selectedRole === 'Reviewer' ||
-            selectedRole === 'Moderator' ||
-            selectedRole === 'scientific_committee' ||
-            selectedRole === 'Session Chair') && (
+          {
             <div>
               <label className='block mb-1 font-medium'>
                 Faculty/Department
@@ -187,28 +180,21 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               />
             </div>
-          )}
+          }
 
           {/* Position (for Committees, Keynote Speaker, Session Chair, Moderator) */}
-          {(selectedRole === 'Scientific Committee' ||
-            selectedRole === 'Reviewer' ||
-            selectedRole === 'Technical Committee' ||
-            selectedRole === 'Keynote Speaker' ||
-            selectedRole === 'Session Chair' ||
-            selectedRole === 'scientific_committee' ||
-            selectedRole === 'Moderator') && (
-            <div>
-              <label className='block mb-1 font-medium'>Position</label>
-              <input
-                name='position'
-                value={form.position}
-                onChange={onChange}
-                type='text'
-                placeholder='User position'
-                className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-              />
-            </div>
-          )}
+
+          <div>
+            <label className='block mb-1 font-medium'>Position</label>
+            <input
+              name='position'
+              value={form.position}
+              onChange={onChange}
+              type='text'
+              placeholder='User position'
+              className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+            />
+          </div>
 
           {/* Domain (Reviewers and Committees) */}
           {(selectedRole === 'Reviewer' ||
@@ -322,18 +308,22 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
             </div>
           )}
           {/* Committee Type (only Committees) */}
-          {(selectedRole === 'Scientific Committee' ||
-            selectedRole === 'Technical Committee') && (
+          {selectedRole === 'technical_committee'  && (
             <div>
-              <label className='block mb-1 font-medium'>Committee Type</label>
+              <label className='block mb-1 font-medium'>Committee Name</label>
               <select
-                name='committeeType'
-                value={form.committeeType}
+                name='committeeName'
+                value={form.committeeName}
                 onChange={onChange}
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               >
-                <option value='Scientific'>Scientific</option>
-                <option value='Technical'>Technical</option>
+                <option value='Publication'>Publication Committee</option>
+                <option value='Publicity and Promotion'>Publicity and Promotion Committee</option>
+                <option value='Sponsorship'>Sponsorship Committee</option>
+                <option value='Technical Support'>Technical Support Committee</option>
+                <option value='Virtual Conference'>Virtual Conference Committee</option>
+                <option value='Logistic Conference'>Logistic Committee</option>
+                <option value='Multimedia Conference'>Multimedia Committee</option>
               </select>
             </div>
           )}

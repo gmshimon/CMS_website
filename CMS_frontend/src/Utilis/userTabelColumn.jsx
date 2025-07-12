@@ -254,7 +254,8 @@ export const moderatorCol = ({ handleDeleteImage, handleAddImage }) => [
 
 export const committeeScientificColumns = ({
   handleDeleteImage,
-  handleAddImage
+  handleAddImage,
+  role
 }) => [
   {
     label: 'Photo',
@@ -337,17 +338,28 @@ export const committeeScientificColumns = ({
   { label: 'Position', key: 'position' },
   { label: 'Affiliation/University', key: 'affiliation' },
   { label: 'Faculty', key: 'faculty' },
-  { label: 'Research Domain', key: 'domain' },
+  ...[
+    role === 'scientific_committee' && {
+      label: 'Research Domain',
+      key: 'domain'
+    }
+  ].filter(Boolean),
   { label: 'Country', key: 'country' },
   { label: 'Contact', key: 'contact' },
   {
-    label: 'Biography',
-    key: 'bio',
-    render: value => (
-      <span title={value} className='block max-w-[200px] truncate cursor-help'>
-        {value}
-      </span>
-    )
+    label: role === 'scientific_committee' ? 'Biography' : 'Unit',
+    key: role === 'scientific_committee' ? 'bio' : 'committeeName',
+    render: value =>
+      role === 'scientific_committee' ? (
+        <span
+          title={value}
+          className='block max-w-[200px] truncate cursor-help'
+        >
+          {value}
+        </span>
+      ) : (
+        <span>{value} Team</span>
+      )
   },
   {
     label: 'ORCID ID',

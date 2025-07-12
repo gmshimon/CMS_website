@@ -72,7 +72,7 @@ const AdminUser = () => {
       title: 'Technical Committee Members',
       count: 30,
       icon: FaTools ,
-      link: '/admin/users/committee',
+      link: '/admin/users/committee/technical',
       color: 'bg-pink-100',
       iconColor: 'text-pink-600',
       description: 'Organizing committee members'
