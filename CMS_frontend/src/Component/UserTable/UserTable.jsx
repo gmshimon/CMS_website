@@ -41,7 +41,7 @@ const UserTable = ({
                 </td>
               </tr>
             ) : (
-              users.map(user => (
+              users?.map(user => (
                 <tr key={user._id} className='hover:bg-gray-100 transition-all'>
                   {columns.map((col, index) => (
                     <td key={index} className='px-4 py-3 text-sm text-gray-700'>
@@ -66,6 +66,7 @@ const UserTable = ({
                     ) : null}
                     {(role == 'Reviewer' ||
                       role === 'Session Chair' ||
+                      role === 'Moderator' ||
                       role === 'Keynote Speaker') && (
                       <button
                         onClick={() => onEdit(user)}

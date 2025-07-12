@@ -9,6 +9,7 @@ const initialState = {
   reviewers: [],
   session_chairs: [],
   keynote_speakers: [],
+  moderators: [],
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
@@ -179,6 +180,8 @@ const adminSlice = createSlice({
           state.session_chairs = data
         } else if (role === 'Keynote Speaker') {
           state.keynote_speakers = data
+        } else if (role === 'Moderator') {
+          state.moderators = data
         }
       })
       .addCase(getRoleBasedUser.rejected, (state, action) => {
@@ -260,6 +263,20 @@ const adminSlice = createSlice({
               talk_title: data.talk_title,
               talk_abstract: data.talk_abstract,
               speaker_bio: data.speaker_bio,
+              orcid: data.orcid
+            }
+          }
+        } else if (role === 'Moderator') {
+          const index = state.moderators.findIndex(r => r._id === data._id)
+          if (index !== -1) {
+            state.moderators[index] = {
+              ...state.moderators[index],
+              name: data.name,
+              position: data.position,
+              affiliation: data.affiliation,
+              contact: data.contact,
+              faculty: data.faculty,
+              country: data.country,
               orcid: data.orcid
             }
           }

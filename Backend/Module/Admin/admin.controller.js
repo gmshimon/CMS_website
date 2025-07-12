@@ -238,7 +238,7 @@ export const updateUserImage = async (req, res, next) => {
     const { id } = req.params
 
     // 1. Check if user is present
-    const isUser = await Users.findOne({ _id: id })
+    const isUser = await Users.findOne({ _id: id }).lean()
 
     if (!isUser) {
       const error = new Error('User not found')
@@ -267,7 +267,7 @@ export const updateUserImage = async (req, res, next) => {
           photo: image
         }
       },
-      { new: true } // ✅ Important
+      { new: true }
     )
 
     res.status(200).json({

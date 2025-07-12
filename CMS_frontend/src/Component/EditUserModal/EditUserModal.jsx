@@ -15,16 +15,31 @@ const EditUserModal = ({
         <h2 className='text-xl font-semibold mb-4'>Edit {selectedRole}</h2>
         <form onSubmit={onSubmit} className='space-y-4'>
           {/* Title */}
-          <div>
-            <label className='block mb-1 font-medium'>Title</label>
-            <input
-              name='title'
-              value={form.title}
-              onChange={onChange}
-              type='text'
-              className='w-full px-3 py-2 border border-gray-300 rounded-md'
-            />
-          </div>
+          {selectedRole !== 'Moderator' && (
+            <div>
+              <label className='block mb-1 font-medium'>Title</label>
+              <input
+                name='title'
+                value={form.title}
+                onChange={onChange}
+                type='text'
+                className='w-full px-3 py-2 border border-gray-300 rounded-md'
+              />
+            </div>
+          )}
+          {/* Name */}
+          {selectedRole === 'Moderator' && (
+            <div>
+              <label className='block mb-1 font-medium'>Name</label>
+              <input
+                name='name'
+                value={form.name}
+                onChange={onChange}
+                type='text'
+                className='w-full px-3 py-2 border border-gray-300 rounded-md'
+              />
+            </div>
+          )}
 
           {/* Position */}
           <div>
@@ -54,6 +69,32 @@ const EditUserModal = ({
               <p className='text-red-600 text-sm mt-1'>{errors.affiliation}</p>
             )}
           </div>
+
+          {/* Faculty */}
+          {selectedRole === 'Moderator' && (
+            <>
+              <div>
+                <label className='block mb-1 font-medium'>Faculty</label>
+                <input
+                  name='faculty'
+                  value={form.faculty}
+                  onChange={onChange}
+                  type='text'
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md'
+                />
+              </div>
+              <div>
+                <label className='block mb-1 font-medium'>Country</label>
+                <input
+                  name='country'
+                  value={form.country}
+                  onChange={onChange}
+                  type='text'
+                  className='w-full px-3 py-2 border border-gray-300 rounded-md'
+                />
+              </div>
+            </>
+          )}
 
           {/* Contact */}
           <div>

@@ -1,94 +1,103 @@
-import React from 'react'
+import React, { useState } from 'react'
 import UserTable from '../../../Component/UserTable/UserTable'
+import { useSelector } from 'react-redux'
+import useCreateUser from '../../../Hooks/useCreateUser'
+import { moderatorCol } from '../../../Utilis/userTabelColumn'
+import CreateUserModal from '../../../Component/CreateUserModal/CreateUserModal'
+import EditUserModal from '../../../Component/EditUserModal/EditUserModal'
 
 const ManageModerator = () => {
-  const moderators = [
-    {
-      _id: 'mod001',
-      image: 'https://i.pravatar.cc/40?img=21',
-      name: 'Dr. Mehedi Hasan',
-      university: 'University of Chittagong',
-      position: 'Moderator',
-      country: 'Bangladesh',
-      domain: 'Cybersecurity',
-      email: 'mehedi.hasan@example.com',
-      contact: '+880-1711-234567',
-      orcid: 'https://orcid.org/0000-0001-2345-6789',
-      role: 'Moderator'
-    },
-    {
-      _id: 'mod002',
-      image: 'https://i.pravatar.cc/40?img=22',
-      name: 'Prof. Olivia Brown',
-      university: 'Harvard University',
-      position: 'Moderator',
-      country: 'USA',
-      domain: 'Sociology',
-      email: 'olivia.brown@example.com',
-      contact: '+1-202-555-0173',
-      orcid: 'https://orcid.org/0000-0002-9876-5432',
-      role: 'Moderator'
-    }
-  ]
-
-  const reviewerColumns = [
-    {
-      label: 'Photo',
-      key: 'image',
-      render: value => (
-        <img src={value} alt='Moderator' className='w-10 h-10 rounded-full' />
-      )
-    },
-    { label: 'Name', key: 'name' },
-    { label: 'University', key: 'university' },
-    { label: 'Position', key: 'position' },
-    { label: 'Country', key: 'country' },
-    { label: 'Domain', key: 'domain' },
-    { label: 'Email', key: 'email' },
-    { label: 'Contact', key: 'contact' },
-    {
-      label: 'ORCID ID',
-      key: 'orcid',
-      render: value => (
-        <a
-          href={value}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='text-blue-600 underline'
-        >
-          ORCID
-        </a>
-      )
-    }
-  ]
+  const { moderators } = useSelector(state => state.admin)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [editForm, setEditForm] = useState({
+    name:'',
+    position: '',
+    affiliation: '',
+    faculty:'',
+    contact: '',
+    country:'',
+    orcid: ''
+  })
+  const [editErrors, setEditErrors] = useState({})
+  const {
+    handleCreateUser,
+    handleDeleteUser,
+    handleUpdateUser,
+    handleDeleteImage,
+    handleAddImage
+  } = useCreateUser('Moderator')
 
   const handleEdit = user => {
-    console.log('Edit moderator:', user)
+    setEditForm({
+      _id: user._id,
+      name:user.name||'',
+      position: user.position || '',
+      affiliation: user.affiliation || '',
+      contact: user.contact || '',
+      faculty: user.faculty || '',
+      country:user.country||'',
+      orcid: user.orcid || ''
+    })
+    setEditErrors({})
+    setEditModalOpen(true)
   }
 
-  const handleDelete = user => {
-    console.log('Delete moderator:', user)
+  const handleFormChange = e => {
+    const { name, value } = e.target
+    setEditForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleAddModerator = () => {
-    console.log('Add Moderator clicked')
-    // Trigger modal or navigation if needed
+  const validateEditForm = () => {
+    const errors = {}
+    if (!editForm.affiliation) errors.affiliation = 'Affiliation is required'
+    return errors
+  }
+  const handleFormSubmit = e => {
+    e.preventDefault()
+    const errors = validateEditForm()
+    if (Object.keys(errors).length > 0) {
+      setEditErrors(errors)
+      return
+    }
+    handleUpdateUser({ ...editForm }, 'Session Chair')
+    setEditModalOpen(false)
   }
 
   return (
     <div>
       <button
-        onClick={handleAddModerator}
+        onClick={() => setModalOpen(true)}
         className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 mb-2'
       >
         + Add Moderator
       </button>
 
       <UserTable
+        role={'Moderator'}
         users={moderators}
-        columns={reviewerColumns}
+        columns={moderatorCol({
+          handleDeleteImage,
+          handleAddImage
+        })}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={handleDeleteUser}
+      />
+
+      <EditUserModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        form={editForm}
+        errors={editErrors}
+        onChange={handleFormChange}
+        onSubmit={handleFormSubmit}
+        selectedRole='Moderator'
+      />
+      <CreateUserModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleCreateUser}
+        selectedRole={'Moderator'}
       />
     </div>
   )
