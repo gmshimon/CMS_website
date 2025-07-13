@@ -25,15 +25,20 @@ import axiosSecure from '../Utilis/axiosSecure'
 import { adminNavOptions, presenterNavOptions } from '../Utilis/navOptions'
 
 const Dashboard = () => {
+  const { conferences } = useSelector(state => state.conference)
   const { list } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.user)
-  const [navOptions,setNavOptions] = useState([])
+  const [selectedConference, setSelectedConference] = useState(null)
+  const [navOptions, setNavOptions] = useState([])
   const [activeOptions, setActiveOptions] = useState('Home')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   CurrentUser()
   const dispatch = useDispatch()
 
   useEffect(() => {
+    if (sessionStorage.getItem('selectedConference')) {
+      setSelectedConference(sessionStorage.getItem('selectedConference'))
+    }
     if (!socket.connected) {
       socket.connect()
     }
@@ -41,12 +46,12 @@ const Dashboard = () => {
       return
     }
     if (user?._id) {
-     if(user?.role==='Presenter'){
-      setNavOptions(presenterNavOptions)
-     }
-     if(user?.role==='Admin'){
-      setNavOptions(adminNavOptions)
-     }
+      if (user?.role === 'Presenter') {
+        setNavOptions(presenterNavOptions)
+      }
+      if (user?.role === 'Admin') {
+        setNavOptions(adminNavOptions)
+      }
       //dispatch(getNotifications())
       // socket.emit('register', user?._id)
     }
@@ -91,6 +96,7 @@ const Dashboard = () => {
   //     toast.error('Failed to send test notification')
   //   }
   // }
+
   return (
     <section>
       <ToastContainer />
@@ -153,6 +159,29 @@ const Dashboard = () => {
           Send Test Notification
         </button> */}
         <div className='navbar-end'>
+          {/* Dropdown Select */}
+          {user?.role !== 'Admin' && (
+            <div className='ml-2'>
+              <select
+                value={selectedConference}
+                className='border border-black p-1 rounded-lg w-44 text-sm'
+                onChange={e =>
+                  sessionStorage.setItem('selectedConference', e.target.value)
+                }
+                defaultValue='default'
+              >
+                <option value='default' disabled>
+                  Select Conference
+                </option>
+                {conferences?.map((opt, index) => (
+                  <option key={index} value={opt.name}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          {/* Message Dropdown */}
           <div className='flex-none'>
             <div className='dropdown dropdown-end'>
               <div
@@ -177,6 +206,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          {/* Profile Dropdown */}
           <div className='dropdown dropdown-end ml-2'>
             <div
               tabIndex={0}
