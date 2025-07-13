@@ -76,10 +76,10 @@ const EditConference = () => {
         country: singleConference.country || "",
         city: singleConference.city || "",
         venue: singleConference.venue || "",
-        startingDate: singleConference.startingDate || "",
-        closingDate: singleConference.closingDate || "",
+        startingDate: singleConference.startingDate?.substring(0, 10) || "",
+        closingDate: singleConference.closingDate?.substring(0, 10) || "",
         mode: singleConference.mode || "hybrid",
-        status: singleConference.status || "active",
+        status: singleConference?.status || "active",
       });
 
       // Set workshop options if they exist
@@ -151,7 +151,6 @@ const EditConference = () => {
 
     dispatch(editConference({ id, data: formData }));
   };
-
   return (
     <div className=" min-h-screen p-2">
       <ToastContainer />
@@ -221,7 +220,7 @@ const EditConference = () => {
                     required
                   >
                     <option value="active">Active</option>
-                    <option value="de-active">Disable</option>
+                    <option value="Disable">Disable</option>
                   </select>
                 </div>
                 <div>
@@ -385,7 +384,7 @@ const EditConference = () => {
                     type="date"
                     id="startingDate"
                     name="startingDate"
-                    value={formData.startingDate}
+                    value={formData.startingDate} 
                     onChange={handleInputChange}
                     className="border border-black rounded-md p-2 w-full text-black"
                     required

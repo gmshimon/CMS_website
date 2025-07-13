@@ -15,7 +15,7 @@ const ConferenceTable = ({
   const navigate = useNavigate()
   const getStatusColor = (status) => {
     switch (status) {
-      case "active":
+      case "Active":
         return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -85,12 +85,12 @@ const ConferenceTable = ({
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex">
-                        <button
+                        {/* <button
                           className="hover:text-blue-600 transition p-1 rounded-full hover:bg-blue-100"
                           title="View Details"
                         >
                           <IoMdEye className="text-lg" />
-                        </button>
+                        </button> */}
                         <button
                           className="hover:text-blue-600 transition p-1 rounded-full hover:bg-blue-100"
                           title="View Details"
@@ -108,7 +108,7 @@ const ConferenceTable = ({
         </div>
 
         <div className="px-4 py-3 border-t border-gray-200">
-          {totalPages > 1 && (
+          {totalPages === 1 && (
             <ResponsivePagination
               current={currentPage}
               total={totalPages}

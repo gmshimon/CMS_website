@@ -61,7 +61,7 @@ export const updateConference = async (req, res, next) => {
     const { id } = req.params
     const updateData = req.body
 
-    const existingConference = await Conference.findById(id)
+    const existingConference = await conference.findById(id)
     if (!existingConference) {
       throw new NotFoundError('Conference not found')
     }

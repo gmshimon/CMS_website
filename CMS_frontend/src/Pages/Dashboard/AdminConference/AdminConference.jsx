@@ -6,8 +6,9 @@ import { showSuccessToast } from "../../../Utilis/toastUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../../../Redux/Slice/conferenceSlice";
 import Loading from "../../../Component/Loading/Loading";
+import { ToastContainer } from "react-toastify";
 const AdminConference = () => {
-  const { createConferenceSuccess, conferences, getConferenceLoading } =
+  const { createConferenceSuccess, conferences, getConferenceLoading,editConferenceSuccess } =
     useSelector((state) => state.conference);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +23,11 @@ const AdminConference = () => {
       showSuccessToast("Conference created successfully!");
       dispatch(reset());
     }
-  }, [createConferenceSuccess, dispatch]);
+    if(editConferenceSuccess){
+      showSuccessToast("Conference Updated successfully!");
+      dispatch(reset());
+    }
+  }, [createConferenceSuccess, dispatch, editConferenceSuccess]);
 
   const filteredConferences = conferences.filter((conference) => {
     const matchesName = conference.name
@@ -42,6 +47,7 @@ const AdminConference = () => {
   );
   return (
     <div>
+      <ToastContainer/>
       {getConferenceLoading ? (
         <div className="flex justify-center items-center h-[calc(100vh-64px)]">
           <Loading />

@@ -132,7 +132,7 @@ const Registration = () => {
       formData.append('zip_code', zip);
       formData.append('state', state);
       formData.append('affiliation', affiliation);
-      formData.append('department', department);
+      formData.append('faculty', department);
       formData.append('password', password);
       formData.append('hear', hear);
   
@@ -167,7 +167,7 @@ const Registration = () => {
                   {roles?.map((role) => (
                     <div
                       key={role._id}
-                      onClick={() => setSelectedRole(role._id)}
+                      onClick={() => setSelectedRole(role.value)}
                       className={`p-1.5 rounded-lg border cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${selectedRole === role._id ? 'border-blue-500 bg-blue-50 shadow-md scale-105' : 'border-gray-200 hover:border-blue-300'} group`}
                     >
                       <div className='flex flex-col h-full'>
