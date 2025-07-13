@@ -29,7 +29,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
     orcid_link,
     google_scholar_link
   } = useSelector(state => state.abstract)
-  const { conferences } = useSelector(state => state.conference)
+  const { singleConference } = useSelector(state => state.conference)
 
   const [errors, setErrors] = useState({})
 
@@ -90,7 +90,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             }`}
           >
             <option value=''>Select a theme</option>
-            {conferences?.theme?.map((option, index) => (
+            {singleConference?.theme?.map((option, index) => (
               <option key={index} value={option}>
                 {option}
               </option>
@@ -117,7 +117,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             }`}
           >
             <option value=''>Select presentation method</option>
-            {conferences?.presentation_method?.map((option, index) => (
+            {singleConference?.presentation_method?.map((option, index) => (
               <option key={index} value={option}>
                 {option}
               </option>
@@ -146,7 +146,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             }`}
           >
             <option value=''>Select publication option</option>
-            {conferences?.publication_option?.map((option, index) => (
+            {singleConference?.publication_option?.map((option, index) => (
               <option key={index} value={option}>
                 {option}
               </option>

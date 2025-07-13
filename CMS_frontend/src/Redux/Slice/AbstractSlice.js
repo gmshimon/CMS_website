@@ -82,7 +82,33 @@ const abstractSlice = createSlice({
       state.getAbstractSuccess = false
       state.getAbstractError = false
     },
-
+    resetForm: (state, action) => {
+      state.conference = null
+      state.member_id = null
+      state.theme = null
+      state.presentation_method = null
+      state.publication_options = null
+      state.paper_title = null
+      state.abstract = null
+      state.keywords = null
+      state.presentation_video_link = null
+      state.graphical_abstract = null
+      state.video_abstract = null
+      state.presentation_profile_picture = null
+      state.researchGate_link = null
+      state.orcid_link = null
+      state.google_scholar_link = null
+      state.presenter_name = null
+      state.presenter_email = null
+      state.organization = null
+      state.department = null
+      state.country = null
+      state.contact_number = null
+      state.mailing_address = null
+      state.presenter_status = null
+      state.authors = []
+      state.conference_registration = {}
+    },
     // setters for each field
     setAbstracts: (state, { payload }) => {
       state.abstracts = payload
@@ -202,6 +228,7 @@ const abstractSlice = createSlice({
 
 export const {
   reset,
+  resetForm,
   setAbstracts,
   setConference,
   setMemberId,

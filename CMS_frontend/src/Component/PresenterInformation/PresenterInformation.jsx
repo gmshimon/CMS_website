@@ -125,8 +125,8 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <input
             type='text'
             name='presenterName'
-            // value={presenter_name}
-            onChange={e => dispatch(setPresenterName(e.target.name))}
+            value={presenter_name}
+            onChange={e => dispatch(setPresenterName(e.target.value))}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presenterName ? 'input-error' : ''
             }`}

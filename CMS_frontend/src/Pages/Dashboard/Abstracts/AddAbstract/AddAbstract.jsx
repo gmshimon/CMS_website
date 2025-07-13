@@ -4,9 +4,9 @@ import PresenterInformation from '../../../../Component/PresenterInformation/Pre
 import AbstractInformation from '../../../../Component/AbstractInformation/AbstractInformation'
 import AuthorInformation from '../../../../Component/AuthorInformation/AuthorInformation'
 import ConferenceRegistration from '../../../../Component/ConferenceRegistration/ConferenceRegistration'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Loading from '../../../../Component/Loading/Loading'
-import { getConference } from '../../../../Redux/Slice/conferenceSlice'
+import useAbstract from '../../../../Hooks/useAbstract'
 
 const steps = [
   'Select Conference',
@@ -17,15 +17,10 @@ const steps = [
 ]
 
 const AddAbstract = () => {
-  const { getConferenceLoading ,conferences} = useSelector(state => state.conference)
+  const { getConferenceLoading} = useSelector(state => state.conference)
   const [activeStep, setActiveStep] = useState([])
-
-  const dispatch = useDispatch()
-  useEffect(() => {
-    if(conferences.length===0 || !conferences){
-      dispatch(getConference())
-    }
-  }, [conferences, dispatch])
+  useAbstract()
+ 
 
   useEffect(() => {
     if (sessionStorage.getItem('activeStep')) {

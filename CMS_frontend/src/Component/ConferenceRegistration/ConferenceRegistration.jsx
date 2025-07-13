@@ -10,7 +10,7 @@ import { createAbstract } from '../../Redux/Slice/AbstractSlice'
 import { useNavigate } from 'react-router'
 
 const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
-  const { conferences } = useSelector(state => state.conference)
+  const { singleConference } = useSelector(state => state.conference)
   const {
     conference,
     member_id,
@@ -154,7 +154,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       return
     }
     const data = {
-      conference: conferences?._id,
+      conference: singleConference?._id,
       category: conference,
       member_id,
       theme,
@@ -167,7 +167,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       orcid_link,
       google_scholar_link,
       conference_registration: {
-        conference: conferences?._id,
+        conference: singleConference?._id,
         presenterName: formData.presenterName,
         accommodationRequired: formData.accommodationRequired,
         accommodationOption: formData.accommodationOption,
@@ -451,7 +451,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
               {/* Workshop Selection */}
               <div className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
-                  {conferences?.workOptions?.map(workshop => (
+                  {singleConference?.workOptions?.map(workshop => (
                     <label
                       key={workshop._id}
                       className='flex items-center space-x-3 cursor-pointer hover:bg-white p-2 rounded transition-colors'

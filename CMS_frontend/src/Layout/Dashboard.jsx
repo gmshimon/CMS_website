@@ -14,7 +14,7 @@ import { LuMessageSquare } from 'react-icons/lu'
 import { FaMessage } from 'react-icons/fa6'
 import MessageList from '../Component/MessageList/MessageList'
 import CurrentUser from '../Utilis/CurrentUser'
-import { getConference } from '../Redux/Slice/conferenceSlice'
+import { getConference, setSelectedConference } from '../Redux/Slice/conferenceSlice'
 import socket from '../Socket/socket'
 import {
   addNotification,
@@ -25,10 +25,9 @@ import axiosSecure from '../Utilis/axiosSecure'
 import { adminNavOptions, presenterNavOptions } from '../Utilis/navOptions'
 
 const Dashboard = () => {
-  const { conferences } = useSelector(state => state.conference)
+  const { conferences,selectedConference } = useSelector(state => state.conference)
   const { list } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.user)
-  const [selectedConference, setSelectedConference] = useState(null)
   const [navOptions, setNavOptions] = useState([])
   const [activeOptions, setActiveOptions] = useState('Home')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -37,7 +36,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (sessionStorage.getItem('selectedConference')) {
-      setSelectedConference(sessionStorage.getItem('selectedConference'))
+      dispatch(setSelectedConference(sessionStorage.getItem('selectedConference')))
     }
     if (!socket.connected) {
       socket.connect()
@@ -165,16 +164,17 @@ const Dashboard = () => {
               <select
                 value={selectedConference}
                 className='border border-black p-1 rounded-lg w-44 text-sm'
-                onChange={e =>
+                onChange={e => {
+                  dispatch(setSelectedConference(e.target.value))
                   sessionStorage.setItem('selectedConference', e.target.value)
-                }
+                }}
                 defaultValue='default'
               >
                 <option value='default' disabled>
                   Select Conference
                 </option>
                 {conferences?.map((opt, index) => (
-                  <option key={index} value={opt.name}>
+                  <option key={index} value={opt._id}>
                     {opt.name}
                   </option>
                 ))}

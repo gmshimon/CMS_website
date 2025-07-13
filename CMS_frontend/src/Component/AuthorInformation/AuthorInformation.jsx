@@ -6,10 +6,10 @@ import { setAbstractAuthors } from '../../Redux/Slice/AbstractSlice'
 
 const AuthorInformation = ({ activeStep, setActiveStep }) => {
   const { user } = useSelector(state => state.user)
-
+  const { authors } = useSelector(state => state.abstract)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingAuthor, setEditingAuthor] = useState(null)
-  const [authors, setAuthors] = useState([])
+  const [addAuthors, setAuthors] = useState([])
 
   const [formData, setFormData] = useState({
     title: '',
@@ -21,7 +21,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
   })
 
   const [errors, setErrors] = useState({})
-const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const titleOptions = ['Dr.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.']
   const countryOptions = [
     'Malaysia',
@@ -43,7 +43,9 @@ const dispatch = useDispatch()
   ]
 
   useEffect(() => {
-    if (user?.email) {
+    if (authors.length > 1) {
+      setAuthors(authors)
+    } else if (user?.email) {
       const data = {
         id: 1,
         title: 'Mr',
@@ -58,9 +60,9 @@ const dispatch = useDispatch()
     }
   }, [user])
 
-  useEffect(()=>{
-    dispatch(setAbstractAuthors(authors))
-  },[authors, dispatch])
+  useEffect(() => {
+    dispatch(setAbstractAuthors(addAuthors))
+  }, [addAuthors, dispatch])
 
   const validateForm = () => {
     const newErrors = {}
@@ -77,7 +79,7 @@ const dispatch = useDispatch()
     if (!formData.country) newErrors.country = 'Country is required'
 
     // Check for duplicate email
-    const isDuplicate = authors.some(
+    const isDuplicate = addAuthors.some(
       author =>
         author.email === formData.email &&
         (!editingAuthor || author.id !== editingAuthor.id)
@@ -158,7 +160,7 @@ const dispatch = useDispatch()
   }
 
   const handleDelete = authorId => {
-    if (authors.find(a => a.id === authorId)?.isPrimary) {
+    if (addAuthors.find(a => a.id === authorId)?.isPrimary) {
       alert('Cannot delete primary contact')
       return
     }
@@ -212,9 +214,9 @@ const dispatch = useDispatch()
               </tr>
             </thead>
             <tbody className='bg-white divide-y divide-gray-200'>
-              {authors.map((author, index) => (
+              {addAuthors.map((author, index) => (
                 <tr
-                  key={author.id}
+                  key={index}
                   className={`hover:bg-blue-50 transition-colors duration-200 ${
                     author.isPrimary ? 'bg-blue-25' : ''
                   }`}

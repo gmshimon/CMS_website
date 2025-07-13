@@ -8,17 +8,17 @@ import PaperModal from '../../../Component/PaperModal/PaperModal'
 import UploadPaperModal from '../../../Component/UploadPaperModal/UploadPaperModal'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast, ToastContainer } from 'react-toastify'
-import { getAbstract, reset } from '../../../Redux/Slice/AbstractSlice'
-import { getConference } from '../../../Redux/Slice/conferenceSlice'
+import { ToastContainer } from 'react-toastify'
+import { reset, resetForm } from '../../../Redux/Slice/AbstractSlice'
 import { paperReset } from '../../../Redux/Slice/paperSlice'
 import Loading from '../../../Component/Loading/Loading'
+import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
+import useAbstract from '../../../Hooks/useAbstract'
 
 const Abstracts = () => {
   const { createPostPaperSuccess, createPostPaperError } = useSelector(
     state => state.paper
   )
-  const { conferences } = useSelector(state => state.conference)
   const { createAbstractSuccess, getAbstractLoading, abstracts } = useSelector(
     state => state.abstract
   )
@@ -29,19 +29,13 @@ const Abstracts = () => {
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [selectedAbstractForUpload, setSelectedAbstractForUpload] =
     useState(null)
-  const [filterTheme, setFilterTheme] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
+
+  // call custom hook
+  useAbstract()
   const navigate = useNavigate()
   const abstractsPerPage = 6
   const dispatch = useDispatch()
-  useEffect(() => {
-    if (conferences.length === 0 || !conferences) {
-      dispatch(getConference())
-    }
-  }, [conferences, dispatch])
-  useEffect(() => {
-    dispatch(getAbstract(conferences?._id))
-  }, [conferences, createPostPaperSuccess, dispatch])
 
   useEffect(() => {
     const initializeStep = ['Select Conference']
@@ -50,36 +44,16 @@ const Abstracts = () => {
 
   useEffect(() => {
     if (createAbstractSuccess) {
-      toast.success('Abstract created successfully', {
-        position: 'top-right',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false
-      })
+      showSuccessToast('Abstract created successfully')
+      dispatch(resetForm())
       dispatch(reset())
     }
     if (createPostPaperSuccess) {
-      toast.success('Paper uploaded successfully', {
-        position: 'top-right',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false
-      })
+      showSuccessToast('Paper uploaded successfully')
       dispatch(paperReset())
     }
     if (createPostPaperError) {
-      toast.error('Paper Upload failed', {
-        position: 'top-right',
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false
-      })
+      showErrorToast('Paper Upload failed')
       dispatch(paperReset())
     }
   }, [
@@ -98,15 +72,12 @@ const Abstracts = () => {
       abstract.abstractId.toLowerCase().includes(searchQuery.toLowerCase()) ||
       abstract.theme.toLowerCase().includes(searchQuery.toLowerCase())
 
-    const matchesTheme = filterTheme === 'all' || abstract.theme === filterTheme
     const matchesStatus =
       filterStatus === 'all' || abstract.status === filterStatus
 
-    return matchesSearch && matchesTheme && matchesStatus
+    return matchesSearch && matchesStatus
   })
 
-  // Get unique themes for filter dropdown
-  const themes = ['all', ...new Set(abstracts.map(abstract => abstract.theme))]
   const statuses = [
     'all',
     ...new Set(abstracts.map(abstract => abstract.status))
@@ -172,7 +143,6 @@ const Abstracts = () => {
 
   return (
     <div className='md:p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
-      <ToastContainer />
       {getAbstractLoading ? (
         <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
           <Loading />
@@ -190,17 +160,6 @@ const Abstracts = () => {
                   onChange={e => setSearchQuery(e.target.value)}
                   className='w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 />
-                <select
-                  value={filterTheme}
-                  onChange={e => setFilterTheme(e.target.value)}
-                  className='w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                >
-                  {themes.map(theme => (
-                    <option key={theme} value={theme}>
-                      {theme === 'all' ? 'All Themes' : theme}
-                    </option>
-                  ))}
-                </select>
                 <select
                   value={filterStatus}
                   onChange={e => setFilterStatus(e.target.value)}

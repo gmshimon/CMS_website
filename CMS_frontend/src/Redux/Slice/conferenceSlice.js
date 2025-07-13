@@ -5,6 +5,7 @@ import axiosSecure from '../../Utilis/axiosSecure.js';
 const initialState = {
   conferences: [],
   singleConference: null,
+  selectedConference:null,
 
   getConferenceLoading: false,
   getConferenceSuccess: false,
@@ -109,7 +110,10 @@ const conferenceSlice = createSlice({
       state.editConferenceLoading = false;
       state.editConferenceSuccess = false;
       state.editConferenceError = false;
-    }
+    },
+    setSelectedConference:(state,action)=>{
+      state.selectedConference =action.payload
+    },
   },
   extraReducers: builder => {
     builder
@@ -185,5 +189,5 @@ const conferenceSlice = createSlice({
   }
 });
 
-export const { reset } = conferenceSlice.actions;
+export const { reset ,setSelectedConference} = conferenceSlice.actions;
 export default conferenceSlice.reducer;

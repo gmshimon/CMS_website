@@ -2,8 +2,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setConference, setMemberId } from '../../Redux/Slice/AbstractSlice'
 
 const SelectConference = () => {
+
   const { conference, member_id } = useSelector(state => state.abstract)
-  const { conferences } = useSelector(
+  const { singleConference } = useSelector(
     state => state.conference
   )
   const dispatch = useDispatch()
@@ -27,7 +28,7 @@ const SelectConference = () => {
           >
             <option value=''>Select an option</option>
             {
-              conferences?.category?.map((cat,index)=><option key={index} value={cat._id}>{cat}</option>)
+              singleConference?.category?.map((cat,index)=><option key={index} value={cat._id}>{cat}</option>)
             }
           </select>
         </div>
