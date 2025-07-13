@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
 import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
-import { reset } from '../Redux/Slice/AdminSlice'
+import { reset, setSelectedYear } from '../Redux/Slice/AdminSlice'
 import Loading from '../Component/Loading/Loading'
 
 const Users = () => {
@@ -61,10 +61,10 @@ const Users = () => {
   const handleSearch = () => {
     if (!yearInput || yearInput < 1900 || yearInput > 3000) {
       alert('Please enter a valid year')
+      dispatch(setSelectedYear(null))
       return
     }
-    // TODO: Trigger API or filter logic using yearInput
-    console.log('Searching submissions for year:', yearInput)
+    dispatch(setSelectedYear(yearInput))
   }
 
   if (isAdminCreateUserLoading || isDeleteUserLoading || isUpdateUserLoading) {
@@ -95,7 +95,9 @@ const Users = () => {
           ? 'Manage Scientific Committee'
           : location.pathname === '/admin/users/committee/technical'
           ? 'Manage Technical Committee'
-          :location.pathname==='/admin/users/committee/registration'?'Manage Registration Committee': 'User Overview'}
+          : location.pathname === '/admin/users/committee/registration'
+          ? 'Manage Registration Committee'
+          : 'User Overview'}
       </h2>
 
       {/* Standard Year Search Field */}

@@ -5,6 +5,7 @@ import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
+  roleCounts :{},
   users: [],
   reviewers: [],
   session_chairs: [],
@@ -13,13 +14,14 @@ const initialState = {
   scientificCommittee: [],
   technicalCommittee: [],
   registrationCommittee: [],
+  selectedYear:null,
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
   isAdminCreateUserError: false,
-  isGetReviewersUserLoading: false,
-  isGetReviewersUserSuccess: false,
-  isGetReviewersUserError: false,
+  isGetUserLoading: false,
+  isGetUserSuccess: false,
+  isGetUserError: false,
   isDeleteUserLoading: false,
   isDeleteUserSuccess: false,
   isDeleteUserError: false,
@@ -38,6 +40,22 @@ export const adminCreateUser = createAsyncThunk(
       const message =
         error.response?.data?.message ||
         'An error occurred while creating abstract'
+      return rejectWithValue(message)
+    }
+  }
+)
+
+export const getUserRoleCounts = createAsyncThunk(
+  'getUserRoleCounts',
+  async (year, { rejectWithValue }) => {
+    try {
+      const query = year ? `?year=${year}`:'' 
+      const response = await axios.get(`/admin/total-user${query}`,)
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while getting total user'
       return rejectWithValue(message)
     }
   }
@@ -135,9 +153,9 @@ const adminSlice = createSlice({
       state.isAdminCreateUserSuccess = false
       state.isAdminCreateUserError = false
 
-      state.isGetReviewersUserLoading = false
-      state.isGetReviewersUserSuccess = false
-      state.isGetReviewersUserError = false
+      state.isGetUserLoading = false
+      state.isGetUserSuccess = false
+      state.isGetUserError = false
 
       state.isDeleteUserLoading = false
       state.isDeleteUserSuccess = false
@@ -146,6 +164,9 @@ const adminSlice = createSlice({
       state.isUpdateUserLoading = false
       state.isUpdateUserSuccess = false
       state.isUpdateUserError = false
+    },
+    setSelectedYear:(state,action)=>{
+      state.selectedYear = action.payload
     }
   },
   extraReducers: builder => {
@@ -168,14 +189,14 @@ const adminSlice = createSlice({
         state.adminErrorMessage = action.payload
       })
       .addCase(getRoleBasedUser.pending, state => {
-        state.isGetReviewersUserLoading = true
-        state.isGetReviewersUserSuccess = false
-        state.isGetReviewersUserError = false
+        state.isGetUserLoading = true
+        state.isGetUserSuccess = false
+        state.isGetUserError = false
       })
       .addCase(getRoleBasedUser.fulfilled, (state, action) => {
-        state.isGetReviewersUserLoading = false
-        state.isGetReviewersUserSuccess = true
-        state.isGetReviewersUserError = false
+        state.isGetUserLoading = false
+        state.isGetUserSuccess = true
+        state.isGetUserError = false
         const { data, role } = action.payload
         if (role == 'Reviewer') {
           state.reviewers = data
@@ -193,10 +214,27 @@ const adminSlice = createSlice({
           state.registrationCommittee = data
         }
       })
+      .addCase(getUserRoleCounts.pending, state => {
+        state.isGetUserLoading = true
+        state.isGetUserSuccess = false
+        state.isGetUserError = false
+      })
+      .addCase(getUserRoleCounts.fulfilled, (state, action) => {
+        state.isGetUserLoading = false
+        state.isGetUserSuccess = true
+        state.isGetUserError = false
+        state.roleCounts  = action.payload
+      })
+      .addCase(getUserRoleCounts.rejected, (state, action) => {
+        state.isGetUserLoading = false
+        state.isGetUserSuccess = false
+        state.isGetUserError = true
+        state.adminErrorMessage = action.payload
+      })
       .addCase(getRoleBasedUser.rejected, (state, action) => {
-        state.isGetReviewersUserLoading = false
-        state.isGetReviewersUserSuccess = false
-        state.isGetReviewersUserError = true
+        state.isGetUserLoading = false
+        state.isGetUserSuccess = false
+        state.isGetUserError = true
         state.adminErrorMessage = action.payload
       })
       .addCase(deleteUserFromDb.pending, state => {
@@ -350,5 +388,5 @@ const adminSlice = createSlice({
       })
   }
 })
-export const { reset } = adminSlice.actions
+export const { reset ,setSelectedYear} = adminSlice.actions
 export default adminSlice.reducer

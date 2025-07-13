@@ -7,6 +7,7 @@ import {
   deleteUser,
   deleteUserImage,
   getRoleBasedUser,
+  getUserRoleCounts,
   updateUser,
   updateUserImage
 } from './admin.controller.js'
@@ -25,6 +26,9 @@ router.route('/delete/user-image/:id').delete(deleteUserImage)
 router
   .route('/update/user-image/:id')
   .put(userImageUploader.single('image'), updateUserImage)
+
+// TODO:: add validation of user
+router.route('/total-user').get(getUserRoleCounts)
 
 router
   .route('/create-user')

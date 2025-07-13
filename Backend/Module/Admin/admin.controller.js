@@ -21,6 +21,57 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
 
+export const getUserRoleCounts = async (req, res, next) => {
+  try {
+    const { year } = req.query
+    const roles = [
+      'Presenter',
+      'Attendee',
+      'Reviewer',
+      'Session Chair',
+      'Moderator',
+      'Keynote Speaker',
+      'scientific_committee',
+      'technical_committee',
+      'registration_committee'
+    ]
+
+    const matchQuery = {
+      role: { $in: roles }
+    }
+
+    // Filter by year of createdAt if provided
+    if (year) {
+      matchQuery.$expr = {
+        $eq: [{ $year: '$createdAt' }, parseInt(year)]
+      }
+    }
+
+    const counts = await Users.aggregate([
+      { $match: matchQuery },
+      {
+        $group: {
+          _id: '$role',
+          count: { $sum: 1 }
+        }
+      }
+    ])
+
+    const roleCounts = roles.reduce((acc, role) => {
+      const found = counts.find(c => c._id === role)
+      acc[role] = found ? found.count : 0
+      return acc
+    }, {})
+
+    res.status(200).json({
+      status: 'Success',
+      data: roleCounts
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const AdminCreateUser = async (req, res, next) => {
   try {
     const data = req.body
