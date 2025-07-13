@@ -52,7 +52,19 @@ const reviewSchema = new mongoose.Schema(
       min: 1,
       max: 10
     },
-
+    correctionLevel: {
+      type: String,
+      enum: [
+        'None',
+        'Minor',
+        'Moderate', // Optional middle ground
+        'Major',
+        'Conditional Acceptance',
+        'Reject',
+        'Withdrawn'
+      ],
+      default: 'None'
+    },
     comments: {
       type: String
     }

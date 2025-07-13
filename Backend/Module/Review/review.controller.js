@@ -1,11 +1,11 @@
 import {
   authorReviewAssignedTemplate,
   reviewerAssignmentTemplate
-} from '../../Utilis/EmailTemplate/reviewEmailTemplate'
-import { sendEmail } from '../../Utilis/sendEmail'
-import Abstracts from '../Abstract/abstract.model'
-import Users from '../User/user.model'
-import Reviews from './review.model'
+} from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
+import { sendEmail } from '../../Utilis/sendEmail.js'
+import Abstracts from '../Abstract/abstract.model.js'
+import Users from '../User/user.model.js'
+import Reviews from './review.model.js'
 
 export const assignReviewer = async (req, res, next) => {
   try {
@@ -99,6 +99,95 @@ export const assignReviewer = async (req, res, next) => {
     res.status(201).json({
       status: 'Success',
       message: 'Reviewer assigned and emails sent successfully',
+      data: review
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const acceptReviewInvitation = async (req, res, next) => {
+  try {
+    const { reviewId } = req.body
+
+    if (!reviewId) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'reviewId is required'
+      })
+    }
+
+    // Find the review document by ID and check if it is still pending
+    const review = await Reviews.findOne({
+      _id: reviewId,
+      status: 'Pending'
+    })
+
+    if (!review) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Review assignment not found or already responded'
+      })
+    }
+
+    // Update review to accepted state, set acceptedAt and deadline (7 days from now)
+    const now = new Date()
+    const deadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days later
+
+    review.accepted = true
+    review.acceptedAt = now
+    review.status = 'Accepted'
+    review.deadline = deadline
+
+    await review.save()
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Review invitation accepted',
+      data: review
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const submitReview = async (req, res, next) => {
+  try {
+    const { reviewId, score, comments } = req.body
+    const userId = req.user._id // assuming you have authentication middleware that sets req.user
+
+    if (!reviewId || score == null || comments == null) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'reviewId, score, and comments are required'
+      })
+    }
+
+    // Find the review by ID and check ownership and accepted status
+    const review = await Reviews.findOne({
+      _id: reviewId,
+      reviewer: userId,
+      status: 'Accepted'
+    })
+
+    if (!review) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Review not found, not accepted, or not assigned to you'
+      })
+    }
+
+    // Update review fields
+    review.score = score
+    review.comments = comments
+    review.completedAt = new Date()
+    review.status = 'Reviewed'
+
+    await review.save()
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Review submitted successfully',
       data: review
     })
   } catch (error) {
