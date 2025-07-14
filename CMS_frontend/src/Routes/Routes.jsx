@@ -30,6 +30,9 @@ import ManageModerator from "../Pages/Dashboard/ManageModerator/ManageModerator.
 import ManageScientificCommittee from "../Pages/Dashboard/ManageScientificCommittee/ManageScientificCommittee.jsx";
 import ManageTechnicalCommittee from "../Pages/Dashboard/ManageTechnicalCommittee/ManageTechnicalCommittee.jsx";
 import ManageRegistrationCommittee from "../Pages/Dashboard/ManageRegistrationCommittee/ManageRegistrationCommittee.jsx";
+import Review from "../Layout/Review.jsx";
+import AdminReview from "../Pages/Dashboard/AdminReview/AdminReview.jsx";
+import ReviewDetailsPage from "../Component/ReviewDetailsPage/ReviewDetailsPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -121,6 +124,20 @@ export const router = createBrowserRouter([
           {
             path:'poster',
             element:<PosterSubmission/>
+          }
+        ]
+      },
+      {
+        path:'review',
+        element:<Review/>,
+        children:[
+          {
+            path:'',
+            element:<AdminReview/>
+          },
+          {
+            path:'details/:category',
+            element:<ReviewDetailsPage/>
           }
         ]
       },

@@ -194,3 +194,76 @@ export const submitReview = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getReviewDashboardsStats = async (req, res, next) => {
+  try {
+    const { year } = req.query
+    const matchQuery = {}
+    if (year) {
+      matchQuery.$expr = {
+        $eq: [{ $year: '$createdAt' }, parseInt(year)]
+      }
+    }
+    // 1. Total submissions
+    const totalSubmissions = await Abstracts.countDocuments(matchQuery)
+
+    // 2. Pending reviews (status = 'Accepted' but no completedAt)
+    const pendingReviews = await Reviews.countDocuments({
+      status: 'Accepted',
+      completedAt: { $exists: false }
+    })
+
+    // 3. Unassigned submissions = abstracts with no reviews
+    const abstractsWithReviews = await Reviews.distinct('abstract')
+    const unassignedSubmissions = await Abstracts.countDocuments({
+      _id: { $nin: abstractsWithReviews }
+    })
+
+    // 4. Completed reviews
+    const completedReviews = await Reviews.countDocuments({
+      status: 'Reviewed'
+    })
+
+    // 5. Overdue reviews = status = 'Overdue'
+    const overdueReviews = await Reviews.countDocuments({
+      status: 'Overdue'
+    })
+
+    // 6. Multiple review rounds = abstracts that appear more than once in Reviews
+    const multiRoundAbstractsAgg = await Reviews.aggregate([
+      {
+        $group: {
+          _id: '$abstract',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $match: {
+          count: { $gt: 1 }
+        }
+      },
+      {
+        $count: 'multiRoundAbstracts'
+      }
+    ])
+    const multiRoundAbstracts =
+      multiRoundAbstractsAgg[0]?.multiRoundAbstracts || 0
+
+    const data = {
+      totalSubmissions,
+      pendingReviews,
+      unassignedSubmissions,
+      completedReviews,
+      overdueReviews,
+      multiRoundAbstracts
+    }
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Fetched the review dashboard',
+      data
+    })
+  } catch (error) {
+    next(error)
+  }
+}

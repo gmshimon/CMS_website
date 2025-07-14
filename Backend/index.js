@@ -44,7 +44,7 @@ import paperRouter from './Module/Paper/paper.routes.js'
 import notificationRouter from './Module/Notification/notification.routes.js'
 import roleRouter from './Module/Role/role.routes.js'
 import adminRouter from './Module/Admin/admin.routes.js'
-
+import reviewRouter from './Module/Review/review.routes.js'
 
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/abstract', abstractRouter)
@@ -54,6 +54,7 @@ app.use('/api/v1/paper', paperRouter)
 app.use('/api/v1/notification', notificationRouter)
 app.use('/api/v1/role', roleRouter)
 app.use('/api/v1/admin',adminRouter)
+app.use('/api/v1/review',reviewRouter)
 
 app.get('/', async (req, res) => {
   res.send('API is running')
