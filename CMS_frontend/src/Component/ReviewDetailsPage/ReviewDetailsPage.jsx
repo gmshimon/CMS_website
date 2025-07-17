@@ -9,7 +9,7 @@ const reviewData = [
     theme: 'Artificial Intelligence',
     createdAt: '2025-07-01T12:00:00Z',
     conference: { name: 'ICAAI 2025' },
-    reviewers: [{ name: 'Dr. Rahman' }, { name: 'Dr. Lisa' }]
+    reviewers: [{ name: 'Dr. Rahman',status:'Accepted' }, { name: 'Dr. Lisa' }]
   },
   {
     _id: 'ABS98765',

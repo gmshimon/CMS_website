@@ -1,7 +1,10 @@
 import { format } from 'date-fns'
 import { FaEye } from 'react-icons/fa'
 
-export const abstractReviewColumns = ({ onViewSubmission, maxReviewers = 3 }) => {
+export const abstractReviewColumns = ({
+  onViewSubmission,
+  maxReviewers = 3
+}) => {
   const baseColumns = [
     {
       key: '_id',
@@ -34,20 +37,59 @@ export const abstractReviewColumns = ({ onViewSubmission, maxReviewers = 3 }) =>
     }
   ]
 
-  const reviewerColumns = Array.from({ length: maxReviewers }).map((_, index) => ({
-    key: `reviewer_${index}`,
-    label: `Reviewer ${index + 1}`,
-    render: (_, row) => {
-      const reviewer = row.reviewers?.[index]
-      return reviewer ? (
-        <span className='text-sm text-gray-700'>
-          {reviewer.name || reviewer.email || 'Unnamed Reviewer'}
-        </span>
-      ) : (
-        <span className='text-sm text-gray-400'>—</span>
-      )
-    }
-  }))
+  const reviewerColumns = Array.from({ length: maxReviewers }).map(
+    (_, index) => ({
+      key: `reviewer_${index}`,
+      label: `Reviewer ${index + 1}`,
+      render: (_, row) => {
+        console.log(row)
+        const reviewer = row.reviewers?.[index]
+
+        if (!reviewer) {
+          return <span className='text-sm text-gray-400'>—</span>
+        }
+
+        const { name, email, status, completedAt } = reviewer
+
+        const hasReviewed = !!completedAt
+        const hasAccepted = status === 'Accepted'
+        const noResponse = !hasAccepted && !hasReviewed
+
+        let statusLabel = ''
+        let statusColor = ''
+
+        if (hasReviewed) {
+          statusLabel = 'Reviewed'
+          statusColor = 'text-blue-600'
+        } else if (hasAccepted) {
+          statusLabel = 'Under Review'
+          statusColor = 'text-green-600'
+        } else {
+          statusLabel = 'No Response'
+          statusColor = 'text-yellow-600'
+        }
+
+        return (
+          <div className='flex flex-col gap-1 text-sm'>
+            <span className='font-medium text-gray-700'>
+              {name || email || 'Unnamed Reviewer'}
+            </span>
+            <span className={`text-xs font-semibold ${statusColor}`}>
+              {statusLabel}
+            </span>
+            {noResponse&& (
+              <button
+                onClick={() => row.onSendReminder(reviewer, row)}
+                className='btn btn-xs btn-outline btn-warning mt-1'
+              >
+                 Reminder
+              </button>
+            )}
+          </div>
+        )
+      }
+    })
+  )
 
   const viewColumn = {
     key: 'view_submission',
