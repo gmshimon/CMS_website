@@ -6,7 +6,6 @@ import useReview from '../../Hooks/useReview'
 import { useSelector } from 'react-redux'
 import ReviewersModal from '../ReviewersModal/ReviewersModal'
 import useCreateUser from '../../Hooks/useCreateUser'
-import Loading from '../Loading/Loading'
 
 const ReviewDetailsPage = () => {
   const { reviews } = useSelector(state => state.review)
@@ -16,11 +15,6 @@ const ReviewDetailsPage = () => {
   const { handleInviteReview } = useReview(category)
   useCreateUser('Reviewer')
 
-  const navigate = useNavigate()
-  // Define logic function passed down
-  const handleViewSubmission = row => {
-    navigate(`/admin/abstracts/${row._id}`)
-  }
   const handleOpenReviewerModal = row => {
     setSelectedAbstract(row)
   }

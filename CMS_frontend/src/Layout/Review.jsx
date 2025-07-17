@@ -27,6 +27,7 @@ const Review = () => {
       showErrorToast(getReviewStatsError)
       dispatch(clearReviewStats())
     }
+    
   }, [
     assigningReviewerError,
     assigningReviewerSuccess,

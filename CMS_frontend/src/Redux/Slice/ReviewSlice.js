@@ -44,7 +44,6 @@ export const getAbstractsByCategory = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const { category } = data
-      console.log(category)
       const query = category ? `?category=${category}` : ''
       const response = await axiosSecure.get(`/review/abstract${query}`)
       return response.data.data

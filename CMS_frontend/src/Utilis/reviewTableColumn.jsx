@@ -42,7 +42,7 @@ export const abstractReviewColumns = ({
       key: `reviewer_${index}`,
       label: `Reviewer ${index + 1}`,
       render: (_, row) => {
-        const reviewer = row.reviewers?.[index]
+        const reviewer = row?.reviews[index]?.reviewer
 
         if (!reviewer) {
           return <span className='text-sm text-gray-400'>—</span>
@@ -76,12 +76,12 @@ export const abstractReviewColumns = ({
             <span className={`text-xs font-semibold ${statusColor}`}>
               {statusLabel}
             </span>
-            {noResponse&& (
+            {noResponse && (
               <button
                 onClick={() => row.onSendReminder(reviewer, row)}
                 className='btn btn-xs btn-outline btn-warning mt-1'
               >
-                 Reminder
+                Reminder
               </button>
             )}
           </div>
