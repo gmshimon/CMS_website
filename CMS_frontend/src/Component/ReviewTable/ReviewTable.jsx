@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ReviewTable = ({ data, columns, onInvite }) => {
+const ReviewTable = ({ data, columns, handleOpenReviewerModal }) => {
   return (
     <div className='overflow-x-auto bg-white shadow rounded-lg'>
       <table className='min-w-full divide-y divide-gray-200'>
@@ -31,7 +31,7 @@ const ReviewTable = ({ data, columns, onInvite }) => {
               ))}
               <td className='px-4 py-2'>
                 <button
-                  onClick={() => onInvite(row)}
+                  onClick={() => handleOpenReviewerModal(row)}
                   className='btn btn-xs text-xs  btn-accent'
                 >
                   Invite

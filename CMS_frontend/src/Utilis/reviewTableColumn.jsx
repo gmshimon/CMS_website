@@ -42,7 +42,6 @@ export const abstractReviewColumns = ({
       key: `reviewer_${index}`,
       label: `Reviewer ${index + 1}`,
       render: (_, row) => {
-        console.log(row)
         const reviewer = row.reviewers?.[index]
 
         if (!reviewer) {

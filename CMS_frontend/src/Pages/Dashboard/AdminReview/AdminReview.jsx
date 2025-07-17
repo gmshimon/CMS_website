@@ -19,7 +19,7 @@ const AdminReview = () => {
       title: 'Total Submissions',
       count: reviewStats?.totalSubmissions || 0,
       icon: FaFileAlt,
-      link: '/admin/review/details/total-submission',
+      link: '/admin/review/details/all',
       color: 'bg-blue-100',
       iconColor: 'text-blue-600',
       description: 'All abstracts submitted'
@@ -70,6 +70,9 @@ const AdminReview = () => {
       description: 'Abstracts with more than 1 review round'
     }
   ]
+
+  
+
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 '>
       {stats.map((stat, index) => (

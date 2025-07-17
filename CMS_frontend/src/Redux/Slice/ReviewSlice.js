@@ -6,9 +6,19 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
   reviewStats: null,
+  reviews: [],
   isGetReviewStatsLoading: false,
   isGetReviewStatsSuccess: false,
   isGetReviewStatsError: false,
+
+  isGetAbstractReviewLoading: false,
+  isGetAbstractReviewSuccess: false,
+  isGetAbstractReviewError: false,
+
+  assigningReviewerLoading: false,
+  assigningReviewerSuccess: false,
+  assigningReviewerError: false,
+
   getReviewStatsError: null
 }
 export const fetchReviewStats = createAsyncThunk(
@@ -16,9 +26,7 @@ export const fetchReviewStats = createAsyncThunk(
   async (year, { rejectWithValue }) => {
     try {
       const query = year ? `?year=${year}` : ''
-      const response = await axiosSecure.get(
-        `/review/review-stats?${query}`
-      )
+      const response = await axiosSecure.get(`/review/review-stats${query}`)
       return response.data.data
     } catch (error) {
       // Customize error handling as needed
@@ -31,14 +39,50 @@ export const fetchReviewStats = createAsyncThunk(
   }
 )
 
+export const getAbstractsByCategory = createAsyncThunk(
+  'getAbstractsByCategory',
+  async (data, { rejectWithValue }) => {
+    try {
+      const { category } = data
+      console.log(category)
+      const query = category ? `?category=${category}` : ''
+      const response = await axiosSecure.get(`/review/abstract${query}`)
+      return response.data.data
+    } catch (error) {
+      rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
+export const assignReviewer = createAsyncThunk(
+  'assignReviewer',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.post('/review/assign-reviewer', data)
+      return response.data.data
+    } catch (error) {
+      rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
 const adminSlice = createSlice({
-  name: 'admin',
+  name: 'review',
   initialState,
   reducers: {
     clearReviewStats (state) {
       state.isGetReviewStatsLoading = false
       state.isGetReviewStatsSuccess = false
       state.isGetReviewStatsError = false
+
+      state.isGetAbstractReviewLoading = false
+      state.isGetAbstractReviewSuccess = false
+      state.isGetAbstractReviewError = false
+
+      state.assigningReviewerLoading = false
+      state.assigningReviewerSuccess = false
+      state.assigningReviewerError = false
+
       state.getReviewStatsError = null
     }
   },
@@ -62,6 +106,40 @@ const adminSlice = createSlice({
         state.isGetReviewStatsError = true
         state.getReviewStatsError =
           action.payload || 'Failed to fetch review stats'
+      })
+      .addCase(getAbstractsByCategory.pending, state => {
+        state.isGetAbstractReviewLoading = true
+        state.isGetAbstractReviewSuccess = false
+        state.isGetAbstractReviewError = false
+      })
+      .addCase(getAbstractsByCategory.fulfilled, (state, action) => {
+        state.reviews = action.payload
+        state.isGetAbstractReviewLoading = false
+        state.isGetAbstractReviewSuccess = true
+        state.isGetAbstractReviewError = false
+      })
+      .addCase(getAbstractsByCategory.rejected, (state, action) => {
+        state.getReviewStatsError = action.payload
+        state.isGetAbstractReviewLoading = false
+        state.isGetAbstractReviewSuccess = false
+        state.isGetAbstractReviewError = true
+      })
+
+      .addCase(assignReviewer.pending,state=>{
+      state.assigningReviewerLoading = true
+      state.assigningReviewerSuccess = false
+      state.assigningReviewerError = false
+      })
+      .addCase(assignReviewer.fulfilled,state=>{
+      state.assigningReviewerLoading = false
+      state.assigningReviewerSuccess = true
+      state.assigningReviewerError = false
+      })
+      .addCase(assignReviewer.rejected,(state,action)=>{
+      state.assigningReviewerLoading = false
+      state.assigningReviewerSuccess = false
+      state.assigningReviewerError = true
+      state.getReviewStatsError = action.payload
       })
   }
 })

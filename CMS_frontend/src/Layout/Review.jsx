@@ -1,13 +1,39 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
 import { setSelectedYear } from '../Redux/Slice/AdminSlice'
 import { FaSearch } from 'react-icons/fa'
+import Loading from '../Component/Loading/Loading'
+import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
+import { clearReviewStats } from '../Redux/Slice/ReviewSlice'
 
 const Review = () => {
+  const {
+    assigningReviewerLoading,
+    assigningReviewerSuccess,
+    assigningReviewerError,
+    getReviewStatsError
+  } = useSelector(state => state.review)
   const [yearInput, setYearInput] = useState('')
   const location = useLocation()
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (assigningReviewerSuccess) {
+      showSuccessToast('Reviewer successfully assigned')
+      dispatch(clearReviewStats())
+    }
+    if (assigningReviewerError) {
+      showErrorToast(getReviewStatsError)
+      dispatch(clearReviewStats())
+    }
+  }, [
+    assigningReviewerError,
+    assigningReviewerSuccess,
+    dispatch,
+    getReviewStatsError
+  ])
+
   const handleSearch = () => {
     if (!yearInput || yearInput < 1900 || yearInput > 3000) {
       alert('Please enter a valid year')
@@ -15,6 +41,14 @@ const Review = () => {
       return
     }
     dispatch(setSelectedYear(yearInput))
+  }
+
+  if (assigningReviewerLoading) {
+    return (
+      <div className='flex justify-center h-[calc(100vh-100px)] items-center'>
+        <Loading />
+      </div>
+    )
   }
   return (
     <div className='p-6'>
