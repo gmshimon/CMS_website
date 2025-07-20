@@ -2,7 +2,7 @@ import { FaHome, FaAward, FaChartBar, FaCog, FaBook } from 'react-icons/fa'
 import { IoIosPaper } from 'react-icons/io'
 import { FaMessage } from 'react-icons/fa6'
 import { IoDocumentAttachSharp, IoNewspaperSharp, IoPerson } from 'react-icons/io5'
-import { MdOutlineReviews, MdSchedule } from 'react-icons/md'
+import { MdOutlineInsertInvitation, MdOutlineReviews, MdSchedule } from 'react-icons/md'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiBarChartSquare } from 'react-icons/bi'
 
@@ -114,4 +114,32 @@ const adminNavOptions = [
   }
 ]
 
-export { presenterNavOptions,adminNavOptions }
+const reviewerNavOptions = [
+  {
+    id: 1,
+    label: 'Home',
+    path: '/admin/home',
+    icon: <FaHome />
+  }, 
+   {
+    id: 2,
+    label: 'Invitation',
+    path: '/admin/invitation',
+    icon: <MdOutlineInsertInvitation />
+  },
+  {
+    id:3,
+    label:'Reviews',
+    path:'/admin/review',
+    icon:<MdOutlineReviews />
+  },
+  {
+    id:4,
+    label:'Certificates',
+    path:'/admin/certificate',
+    icon:<FaAward />
+  }
+
+]
+
+export { presenterNavOptions,adminNavOptions,reviewerNavOptions}

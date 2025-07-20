@@ -415,3 +415,42 @@ export const sendReminderToReviewer = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getMyReviewStats = async (req, res, next) => {
+  try {
+    const { _id } = req.user
+    const { conference } = req.query
+
+    let myReviews = await Reviews.find({
+      reviewer: _id
+    })
+      .populate({
+        path: 'abstract',
+        populate: {
+          path: 'conference'
+        }
+      })
+      .lean()
+    if (conference) {
+      myReviews = myReviews.filter(
+        review => review.abstract?.conference?._id?.toString() === conference
+      )
+    }
+
+    const stats = {
+      total: myReviews.length,
+      pending: myReviews.filter(r => r.status === 'pending').length,
+      accepted: myReviews.filter(r => r.status === 'Accepted').length,
+      reviewed: myReviews.filter(r => r.status === 'Reviewed').length,
+      overdue: myReviews.filter(r => r.status === 'Overdue').length
+    }
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Successfully get my review stats',
+      data: stats
+    })
+  } catch (error) {
+    next(error)
+  }
+}

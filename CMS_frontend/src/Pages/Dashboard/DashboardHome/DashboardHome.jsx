@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../../Component/Loading/Loading'
 import AdminHome from '../../../Component/AdminHome/AdminHome'
 import { getConference } from '../../../Redux/Slice/conferenceSlice'
+import ReviewerHome from '../../../Component/ReviewerHome/ReviewerHome'
 
 const DashboardHome = () => {
   const { user, isLoading } = useSelector(state => state.user)
@@ -13,6 +14,7 @@ const DashboardHome = () => {
   useEffect(() => {
     dispatch(getConference())
   }, [dispatch])
+
   return (
     <>
       {isLoading ? (
@@ -21,7 +23,7 @@ const DashboardHome = () => {
         </div>
       ) : (
         (user?.role === 'Presenter' && <PresenterHome />) ||
-        (user?.role === 'Admin' && <AdminHome />)
+        (user?.role === 'Admin' && <AdminHome />)|| (user?.role==='Reviewer'&&<ReviewerHome/>)
       )}
     </>
   )

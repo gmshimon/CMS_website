@@ -25,7 +25,11 @@ import {
   updateNotification
 } from '../Redux/Slice/notificationSlice'
 import axiosSecure from '../Utilis/axiosSecure'
-import { adminNavOptions, presenterNavOptions } from '../Utilis/navOptions'
+import {
+  adminNavOptions,
+  presenterNavOptions,
+  reviewerNavOptions
+} from '../Utilis/navOptions'
 
 const Dashboard = () => {
   const { conferences, selectedConference } = useSelector(
@@ -38,7 +42,6 @@ const Dashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   CurrentUser()
   const dispatch = useDispatch()
-
   useEffect(() => {
     if (sessionStorage.getItem('selectedConference')) {
       dispatch(
@@ -58,6 +61,10 @@ const Dashboard = () => {
       if (user?.role === 'Admin') {
         setNavOptions(adminNavOptions)
       }
+      if (user?.role === 'Reviewer') {
+        setNavOptions(reviewerNavOptions)
+      }
+
       //dispatch(getNotifications())
       // socket.emit('register', user?._id)
     }
@@ -139,7 +146,7 @@ const Dashboard = () => {
                 <div className='ml-2'>
                   <select
                     value={selectedConference}
-                    className='border border-black p-1 rounded-lg w-44 text-sm'
+                    className='border border-black p-1 rounded-lg w-44 text-sm bg-slate-600'
                     onChange={e => {
                       dispatch(setSelectedConference(e.target.value))
                       sessionStorage.setItem(
@@ -149,7 +156,7 @@ const Dashboard = () => {
                     }}
                     defaultValue='default'
                   >
-                    <option value='default' disabled>
+                    <option value='default' className='text-black' disabled>
                       Select Conference
                     </option>
                     {conferences?.map((opt, index) => (

@@ -7,6 +7,8 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 const initialState = {
   reviewStats: null,
   reviews: [],
+  myReviewStat: [],
+
   isGetReviewStatsLoading: false,
   isGetReviewStatsSuccess: false,
   isGetReviewStatsError: false,
@@ -22,6 +24,10 @@ const initialState = {
   sentReviewerReminderLoading: false,
   sentReviewerReminderSuccess: false,
   sentReviewerReminderError: false,
+
+  getMyReviewStatsLoading: false,
+  getMyReviewStatsSuccess: false,
+  getMyReviewStatsError: false,
 
   getReviewStatsError: null
 }
@@ -81,6 +87,19 @@ export const sendReminderToReviewer = createAsyncThunk(
   }
 )
 
+export const getMyReviewStats = createAsyncThunk(
+  'getMyReviewStats',
+  async (id, { rejectWithValue }) => {
+    try {
+      const query = id ? `?conference=${id}` : ''
+      const response = await axiosSecure.get(`/review/my-review${query}`)
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
 const adminSlice = createSlice({
   name: 'review',
   initialState,
@@ -101,6 +120,10 @@ const adminSlice = createSlice({
       state.sentReviewerReminderLoading = false
       state.sentReviewerReminderSuccess = false
       state.sentReviewerReminderError = false
+
+      state.getMyReviewStatsLoading = false
+      state.getMyReviewStatsSuccess = false
+      state.getMyReviewStatsError = false
 
       state.getReviewStatsError = null
     }
@@ -175,6 +198,24 @@ const adminSlice = createSlice({
         state.sentReviewerReminderSuccess = false
         state.sentReviewerReminderError = true
         state.getReviewStatsError = action.payload
+      })
+
+      .addCase(getMyReviewStats.pending, state => {
+        state.getMyReviewStatsLoading = true
+        state.getMyReviewStatsSuccess = false
+        state.getMyReviewStatsError = false
+      })
+      .addCase(getMyReviewStats.fulfilled, (state, action) => {
+        state.getMyReviewStatsLoading = false
+        state.getMyReviewStatsSuccess = true
+        state.getMyReviewStatsError = false
+        state.myReviewStat = action.payload
+      })
+      .addCase(getMyReviewStats.rejected, (state, action) => {
+        state.getMyReviewStatsLoading = false
+        state.getMyReviewStatsSuccess = false
+        state.getMyReviewStatsError = true
+        state.getMyReviewStatsError = action.payload
       })
   }
 })
