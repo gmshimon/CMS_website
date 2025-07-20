@@ -107,3 +107,38 @@ export const abstractReviewColumns = ({
 
   return [...baseColumns, ...reviewerColumns, viewColumn]
 }
+
+export const reviewHomeColumn = [
+    {
+      key: '_id',
+      label: 'Abstract ID',
+      render: (_, row) => row?.abstract?._id
+    },
+    {
+      key: 'abstract.paper_title',
+      label: 'Title',
+      render: (_, row) => row?.abstract?.paper_title
+    },
+    {
+      key: 'theme',
+      label: 'Theme',
+      render: (_, row) => row?.abstract?.theme
+    },
+    {
+      key: 'conference.name',
+      label: 'Conference',
+      render: (_, row) => row?.abstract?.conference?.name || 'N/A'
+    },
+    {
+      key: 'abstract.createdAt',
+      label: 'Submission Date',
+      render: (_, row) =>
+        row.abstract?.createdAt ? (
+          <span className='text-sm text-gray-700'>
+            {format(new Date(row?.abstract?.createdAt), 'dd MMM yyyy')}
+          </span>
+        ) : (
+          <span className='text-sm text-gray-400'>N/A</span>
+        )
+    }
+  ]

@@ -8,6 +8,7 @@ const initialState = {
   reviewStats: null,
   reviews: [],
   myReviewStat: [],
+  myReviewData: [],
 
   isGetReviewStatsLoading: false,
   isGetReviewStatsSuccess: false,
@@ -28,6 +29,14 @@ const initialState = {
   getMyReviewStatsLoading: false,
   getMyReviewStatsSuccess: false,
   getMyReviewStatsError: false,
+
+  getReviewDataLoading: false,
+  getReviewDataSuccess: false,
+  getReviewDataError: false,
+
+  respondReviewLoading: false,
+  respondReviewSuccess: false,
+  respondReviewError: false,
 
   getReviewStatsError: null
 }
@@ -92,10 +101,41 @@ export const getMyReviewStats = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const query = id ? `?conference=${id}` : ''
-      const response = await axiosSecure.get(`/review/my-review${query}`)
+      const response = await axiosSecure.get(`/review/my-review-stats${query}`)
       return response.data.data
     } catch (error) {
       return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
+export const getMyReview = createAsyncThunk(
+  'getMyReview',
+  async ({ conference, status }, { rejectWithValue }) => {
+    try {
+      const conferenceQuery = conference ? `conference=${conference}` : ''
+      const statusQuery = status ? `status=${status}` : ''
+      const response = await axiosSecure.get(
+        `/review/my-review/?${statusQuery}&${conferenceQuery}`
+      )
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
+export const acceptReviewInvitation = createAsyncThunk(
+  'acceptReviewInvitation',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.post(`/review/respond`, data)
+      return response
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          'Something went wrong while responding to review.'
+      )
     }
   }
 )
@@ -124,6 +164,14 @@ const adminSlice = createSlice({
       state.getMyReviewStatsLoading = false
       state.getMyReviewStatsSuccess = false
       state.getMyReviewStatsError = false
+
+      state.getReviewDataLoading = false
+      state.getReviewDataSuccess = false
+      state.getReviewDataError = false
+
+      state.respondReviewLoading = false
+      state.respondReviewSuccess = false
+      state.respondReviewError = false
 
       state.getReviewStatsError = null
     }
@@ -215,6 +263,40 @@ const adminSlice = createSlice({
         state.getMyReviewStatsLoading = false
         state.getMyReviewStatsSuccess = false
         state.getMyReviewStatsError = true
+        state.getMyReviewStatsError = action.payload
+      })
+      .addCase(getMyReview.pending, state => {
+        state.getReviewDataLoading = true
+        state.getReviewDataSuccess = false
+        state.getReviewDataError = false
+      })
+      .addCase(getMyReview.fulfilled, (state, action) => {
+        state.getReviewDataLoading = false
+        state.getReviewDataSuccess = true
+        state.getReviewDataError = false
+        state.myReviewData = action.payload
+      })
+      .addCase(getMyReview.rejected, (state, action) => {
+        state.getReviewDataLoading = false
+        state.getReviewDataSuccess = false
+        state.getReviewDataError = false
+        state.getMyReviewStatsError = action.payload
+      })
+      .addCase(acceptReviewInvitation.pending, state => {
+        state.respondReviewLoading = true
+        state.respondReviewSuccess = false
+        state.respondReviewError = false
+      })
+      .addCase(acceptReviewInvitation.fulfilled, state => {
+        state.myReviewData = []
+        state.respondReviewLoading = false
+        state.respondReviewSuccess = true
+        state.respondReviewError = false
+      })
+      .addCase(acceptReviewInvitation.rejected, (state, action) => {
+        state.respondReviewLoading = false
+        state.respondReviewSuccess = false
+        state.respondReviewError = true
         state.getMyReviewStatsError = action.payload
       })
   }

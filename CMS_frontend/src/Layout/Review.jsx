@@ -47,7 +47,6 @@ const Review = () => {
     sentReviewerReminderSuccess
   ])
 
-  console.log(sentReviewerReminderError)
   const handleSearch = () => {
     if (!yearInput || yearInput < 1900 || yearInput > 3000) {
       alert('Please enter a valid year')

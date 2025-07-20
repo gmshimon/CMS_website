@@ -1,22 +1,29 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getMyReviewStats } from '../Redux/Slice/ReviewSlice'
+import { acceptReviewInvitation, getMyReview, getMyReviewStats } from '../Redux/Slice/ReviewSlice'
 import { FaUserPlus, FaClipboardList, FaCheckDouble } from 'react-icons/fa'
 import { MdOutlineAssignmentLate } from 'react-icons/md'
 
-const useReviewerHome = () => {
+const useReviewerHome = (category=null) => {
   const { myReviewStat } = useSelector(state => state.review)
   const { selectedConference } = useSelector(state => state.conference)
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getMyReviewStats(selectedConference))
-  }, [dispatch, selectedConference])
+    if(category){
+        const data={
+            conference:selectedConference,
+            status:category
+        }
+        dispatch(getMyReview(data))
+    }
+  }, [category, dispatch, selectedConference])
 
   const reviewActions = [
     {
       title: 'New Reviewer Invitations',
-      path: '/admin/reviewer-invitations',
+      path: '/admin/my-review/pending',
       icon: FaUserPlus,
       color: 'bg-yellow-50 hover:bg-yellow-100',
       stat: `${myReviewStat.pending || 0} Invited`,
@@ -24,7 +31,7 @@ const useReviewerHome = () => {
     },
     {
       title: 'Pending Assignments',
-      path: '/admin/pending-assignments',
+      path: '/admin/my-review/accepted',
       icon: FaClipboardList,
       color: 'bg-blue-50 hover:bg-blue-100',
       stat: `${myReviewStat.accepted || 0} Pending`,
@@ -32,7 +39,7 @@ const useReviewerHome = () => {
     },
     {
       title: 'Completed Assignments',
-      path: '/admin/completed-assignments',
+      path: '/admin/my-review/overdue',
       icon: FaCheckDouble,
       color: 'bg-green-50 hover:bg-green-100',
       stat: `${myReviewStat.reviewed || 0} Reviewed`,
@@ -40,7 +47,7 @@ const useReviewerHome = () => {
     },
     {
       title: 'Overdue Review',
-      path: '/admin/review-reports',
+      path: '/admin/my-review/pending',
       icon: MdOutlineAssignmentLate,
       color: 'bg-purple-50 hover:bg-purple-100',
       stat: `${myReviewStat.overdue || 0}`,
@@ -48,8 +55,14 @@ const useReviewerHome = () => {
     }
   ]
 
+  const handleRespondReview = (reviewId,status)=>{
+    console.log(reviewId,status)
+    dispatch(acceptReviewInvitation({reviewId,status}))
+  }
+
   return {
-    reviewActions
+    reviewActions,
+    handleRespondReview
   }
 }
 

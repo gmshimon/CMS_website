@@ -1,6 +1,7 @@
 import {
   authorReviewAssignedTemplate,
   reviewerAssignmentTemplate,
+  reviewerConfirmationTemplate,
   reviewerReminderTemplate
 } from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
@@ -55,7 +56,7 @@ export const assignReviewer = async (req, res, next) => {
     const review = await Reviews.create({
       abstract: abstractId,
       reviewer: reviewerId,
-      status: 'Pending',
+      status: 'pending',
       accepted: false
     })
 
@@ -76,33 +77,6 @@ export const assignReviewer = async (req, res, next) => {
       subject: 'Invitation to Review an Abstract',
       html: emailHtml
     })
-
-    // Fetch the abstract submitter (author) info
-    const authorUser = await Users.findById(abstract.createdBy).lean()
-
-    // If author exists and has an email, prepare and send notification email
-    if (authorUser && authorUser.email) {
-      const authorEmailHtml = authorReviewAssignedTemplate({
-        authorName: authorUser.name || 'Author',
-        abstractTitle: abstract.paper_title || 'your abstract',
-        conferenceName: abstract?.conference?.name
-      })
-      const authorMessage = ` We are pleased to inform you that your abstract titled "${abstract.paper_title}" has been assigned to reviewers for evaluation as part of the ${abstract?.conference?.name}.`
-
-      // sending notification to the author of the abstract
-      await createNotificationService(
-        authorUser._id,
-        authorMessage,
-        authorEmailHtml
-      )
-      // Send email to abstract author
-      await sendEmail({
-        to: authorUser.email,
-        subject: 'Your Abstract is Assigned to Reviewers',
-        html: authorEmailHtml
-      })
-    }
-
     res.status(201).json({
       status: 'Success',
       message: 'Reviewer assigned and emails sent successfully',
@@ -116,8 +90,9 @@ export const assignReviewer = async (req, res, next) => {
 // reviewer accept the invite link
 export const acceptReviewInvitation = async (req, res, next) => {
   try {
-    const { reviewId } = req.body
+    const { reviewId, status } = req.body
 
+    // ✅ Validate required input
     if (!reviewId) {
       return res.status(400).json({
         status: 'fail',
@@ -125,11 +100,18 @@ export const acceptReviewInvitation = async (req, res, next) => {
       })
     }
 
-    // Find the review document by ID and check if it is still pending
+    // ✅ Find the review with matching ID and ensure it's still pending
     const review = await Reviews.findOne({
       _id: reviewId,
-      status: 'Pending'
+      status: 'pending'
     })
+      .populate({
+        path: 'abstract',
+        populate: {
+          path: 'conference'
+        }
+      })
+      .populate('reviewer')
 
     if (!review) {
       return res.status(404).json({
@@ -138,21 +120,96 @@ export const acceptReviewInvitation = async (req, res, next) => {
       })
     }
 
-    // Update review to accepted state, set acceptedAt and deadline (7 days from now)
-    const now = new Date()
-    const deadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days later
+    // ✅ If reviewer ACCEPTS the review invitation
+    if (status === 'accepted') {
+      // Update review to accepted state, set acceptedAt and deadline (7 days from now)
+      const now = new Date()
+      const deadline = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) // 7 days later
 
-    review.accepted = true
-    review.acceptedAt = now
-    review.status = 'Accepted'
-    review.deadline = deadline
+      review.accepted = true
+      review.acceptedAt = now
+      review.status = 'accepted'
+      review.deadline = deadline
 
-    await review.save()
+      await review.save()
 
+      // ✅ Prepare deadline string for email content
+      const deadlineFormatted = review.deadline.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+
+      // ✅ Prepare email content for reviewer
+      const reviewerEmailHtml = reviewerConfirmationTemplate({
+        reviewerName: review.reviewer.name || 'Reviewer',
+        abstractTitle: review.abstract.paper_title || 'the abstract',
+        conferenceName: review.abstract.conference?.name || 'the conference',
+        deadlineDate: deadlineFormatted
+      })
+
+      // ✅ Prepare notification message for reviewer
+      const reviewerMessage = `Thank you for accepting the review invitation for the abstract titled "${
+        review.abstract.paper_title
+      }" under the ${
+        review.abstract.conference.name
+      } conference. Your review is due by ${review.deadline.toLocaleDateString(
+        'en-US',
+        { year: 'numeric', month: 'long', day: 'numeric' }
+      )}.`
+
+      // ✅ Send notification and email to reviewer
+      await createNotificationService(
+        review.reviewer._id,
+        reviewerMessage,
+        reviewerEmailHtml
+      )
+
+      await sendEmail({
+        to: review.reviewer.email,
+        subject: 'Review Invitation Accepted – Confirmation & Deadline',
+        html: reviewerEmailHtml
+      })
+
+      // ✅ Fetch the author (submitter of the abstract)
+      const authorUser = await Users.findById(review.abstract.createdBy).lean()
+
+      // ✅ Send notification and email to author if available
+      if (authorUser && authorUser.email) {
+        const authorEmailHtml = authorReviewAssignedTemplate({
+          authorName: authorUser.name || 'Author',
+          abstractTitle: review.abstract.paper_title || 'your abstract',
+          conferenceName: review.abstract?.conference?.name
+        })
+        const authorMessage = ` We are pleased to inform you that your abstract titled "${review.abstract.paper_title}" has been assigned to reviewers for evaluation as part of the ${review.abstract?.conference?.name}.`
+
+        // sending notification to the author of the abstract
+        await createNotificationService(
+          authorUser._id,
+          authorMessage,
+          authorEmailHtml
+        )
+        // Send email to abstract author
+        await sendEmail({
+          to: authorUser.email,
+          subject: 'Your Abstract is Assigned to Reviewers',
+          html: authorEmailHtml
+        })
+      }
+    } else {
+      // ❌ If reviewer REJECTS the invitation, delete the review record
+      await Reviews.deleteOne({
+        _id: reviewId
+      })
+    }
+
+    // ✅ Final response
     res.status(200).json({
       status: 'success',
-      message: 'Review invitation accepted',
-      data: review
+      message:
+        status === 'accepted'
+          ? 'Review invitation accepted'
+          : 'Review invitation declined and removed'
     })
   } catch (error) {
     next(error)
@@ -176,7 +233,7 @@ export const submitReview = async (req, res, next) => {
     const review = await Reviews.findOne({
       _id: reviewId,
       reviewer: userId,
-      status: 'Accepted'
+      status: 'reviewed'
     })
 
     if (!review) {
@@ -219,7 +276,7 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 
     // 2. Pending reviews (status = 'Accepted' but no completedAt)
     const pendingReviews = await Reviews.countDocuments({
-      status: { $in: ['Accepted', 'Pending'] },
+      status: { $in: ['accepted', 'pending'] },
       completedAt: { $exists: false }
     })
 
@@ -231,12 +288,12 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 
     // 4. Completed reviews
     const completedReviews = await Reviews.countDocuments({
-      status: 'Reviewed'
+      status: 'reviewed'
     })
 
     // 5. Overdue reviews = status = 'Overdue'
     const overdueReviews = await Reviews.countDocuments({
-      status: 'Overdue'
+      status: 'overdue'
     })
 
     // 6. Multiple review rounds = abstracts that appear more than once in Reviews
@@ -374,7 +431,7 @@ export const sendReminderToReviewer = async (req, res, next) => {
 
     const review = await Reviews.findOne({
       _id: reviewId,
-      status: { $in: ['Accepted', 'pending'] },
+      status: { $in: ['accepted', 'pending'] },
       completedAt: { $exists: false }
     }).populate('reviewer')
 
@@ -440,15 +497,47 @@ export const getMyReviewStats = async (req, res, next) => {
     const stats = {
       total: myReviews.length,
       pending: myReviews.filter(r => r.status === 'pending').length,
-      accepted: myReviews.filter(r => r.status === 'Accepted').length,
-      reviewed: myReviews.filter(r => r.status === 'Reviewed').length,
-      overdue: myReviews.filter(r => r.status === 'Overdue').length
+      accepted: myReviews.filter(r => r.status === 'accepted').length,
+      reviewed: myReviews.filter(r => r.status === 'reviewed').length,
+      overdue: myReviews.filter(r => r.status === 'overdue').length
     }
 
     res.status(200).json({
       status: 'Success',
       message: 'Successfully get my review stats',
       data: stats
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getMyReview = async (req, res, next) => {
+  try {
+    const { conference, status } = req.query
+    const { _id } = req.user
+    let getReview = await Reviews.find({
+      status: status,
+      reviewer: _id
+    })
+      .populate({
+        path: 'abstract',
+        populate: {
+          path: 'conference'
+        }
+      })
+      .lean()
+
+    if (conference) {
+      getReview = getReview.filter(
+        review => review.abstract?.conference?._id?.toString() === conference
+      )
+    }
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Review Data',
+      data: getReview
     })
   } catch (error) {
     next(error)

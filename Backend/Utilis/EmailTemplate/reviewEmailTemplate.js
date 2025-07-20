@@ -54,3 +54,29 @@ export const reviewerReminderTemplate = ({
     </div>
   `
 }
+
+export const reviewerConfirmationTemplate = ({
+  reviewerName,
+  abstractTitle,
+  conferenceName,
+  deadlineDate
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+      <h2 style="color: #2c3e50;">Dear ${reviewerName},</h2>
+      
+      <p>Thank you for accepting the invitation to review the abstract titled 
+      <strong>"${abstractTitle}"</strong> for the <strong>${conferenceName}</strong>.</p>
+      
+      <p>Your review is due by <strong>${deadlineDate}</strong>. Please ensure to submit your feedback by the deadline to support the timely progression of the review process.</p>
+
+      <p>Your contribution is greatly appreciated and plays a vital role in upholding the quality of our conference.</p>
+
+      <br />
+      <p style="color: #888;">If you have any questions or need assistance, feel free to contact us.</p>
+      
+      <hr />
+      <p style="font-size: 12px; color: #aaa;">This is an automated confirmation from the ${conferenceName} Conference System.</p>
+    </div>
+  `
+}

@@ -34,6 +34,7 @@ const ReviewDetailsPage = () => {
           data={reviews}
           columns={columns}
           handleOpenReviewerModal={handleOpenReviewerModal}
+          mode="admin"
         />
         {selectedAbstract && (
           <ReviewersModal

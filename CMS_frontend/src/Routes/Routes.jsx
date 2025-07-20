@@ -34,6 +34,7 @@ import Review from "../Layout/Review.jsx";
 import AdminReview from "../Pages/Dashboard/AdminReview/AdminReview.jsx";
 import ReviewDetailsPage from "../Component/ReviewDetailsPage/ReviewDetailsPage.jsx";
 import HomePage from "../Pages/HomePage/HomePage.jsx";
+import MyReviewDetailPage from "../Pages/Dashboard/MyReviewDetailPage/MyReviewDetailPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -111,7 +112,8 @@ export const router = createBrowserRouter([
         element: <CreateConference />,
       },
       {
-
+        path:'my-review/:category',
+        element:<MyReviewDetailPage/>
       },
       {
         path:'submission',

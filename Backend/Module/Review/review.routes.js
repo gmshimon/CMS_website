@@ -1,7 +1,9 @@
 import express from 'express'
 import {
+    acceptReviewInvitation,
   assignReviewer,
   getAbstractsByCategory,
+  getMyReview,
   getMyReviewStats,
   getReviewDashboardsStats,
   sendReminderToReviewer
@@ -12,9 +14,11 @@ const router = express.Router()
 
 // TODO: add JWT validation in all api endpoints
 
+router.post('/respond',verifyToken,acceptReviewInvitation)
 router.post('/assign-reviewer', assignReviewer)
 router.get('/review-stats', getReviewDashboardsStats)
 router.get('/abstract', getAbstractsByCategory)
 router.post('/send-reminder', sendReminderToReviewer)
-router.get('/my-review',verifyToken ,getMyReviewStats)
+router.get('/my-review-stats',verifyToken ,getMyReviewStats)
+router.get('/my-review',verifyToken,getMyReview)
 export default router
