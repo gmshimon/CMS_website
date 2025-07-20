@@ -33,6 +33,7 @@ import ManageRegistrationCommittee from "../Pages/Dashboard/ManageRegistrationCo
 import Review from "../Layout/Review.jsx";
 import AdminReview from "../Pages/Dashboard/AdminReview/AdminReview.jsx";
 import ReviewDetailsPage from "../Component/ReviewDetailsPage/ReviewDetailsPage.jsx";
+import HomePage from "../Pages/HomePage/HomePage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <h1>Home</h1>,
+        element: <HomePage/>,
       },
       {
         path: "login",
@@ -108,6 +109,9 @@ export const router = createBrowserRouter([
       {
         path: "create-conference",
         element: <CreateConference />,
+      },
+      {
+
       },
       {
         path:'submission',
