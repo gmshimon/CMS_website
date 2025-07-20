@@ -14,7 +14,10 @@ import { LuMessageSquare } from 'react-icons/lu'
 import { FaMessage } from 'react-icons/fa6'
 import MessageList from '../Component/MessageList/MessageList'
 import CurrentUser from '../Utilis/CurrentUser'
-import { getConference, setSelectedConference } from '../Redux/Slice/conferenceSlice'
+import {
+  getConference,
+  setSelectedConference
+} from '../Redux/Slice/conferenceSlice'
 import socket from '../Socket/socket'
 import {
   addNotification,
@@ -25,7 +28,9 @@ import axiosSecure from '../Utilis/axiosSecure'
 import { adminNavOptions, presenterNavOptions } from '../Utilis/navOptions'
 
 const Dashboard = () => {
-  const { conferences,selectedConference } = useSelector(state => state.conference)
+  const { conferences, selectedConference } = useSelector(
+    state => state.conference
+  )
   const { list } = useSelector(state => state.notifications)
   const { user } = useSelector(state => state.user)
   const [navOptions, setNavOptions] = useState([])
@@ -36,7 +41,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (sessionStorage.getItem('selectedConference')) {
-      dispatch(setSelectedConference(sessionStorage.getItem('selectedConference')))
+      dispatch(
+        setSelectedConference(sessionStorage.getItem('selectedConference'))
+      )
     }
     if (!socket.connected) {
       socket.connect()
@@ -99,148 +106,203 @@ const Dashboard = () => {
   return (
     <section>
       <ToastContainer />
-      <div className='navbar bg-slate-500 shadow-sm'>
-        <div className='navbar-start'>
-          <div className='dropdown'>
-            <div className='flex items-center'>
-              <div
-                tabIndex={0}
-                role='button'
-                className='btn btn-ghost btn-circle'
+      <div className='drawer lg:drawer-open'>
+        <input id='my-drawer-3' type='checkbox' className='drawer-toggle' />
+        <div className='drawer-content flex flex-col'>
+          {/* Navbar */}
+          <div className=' navbar bg-slate-500 text-white w-full '>
+            <div className='flex-none lg:hidden'>
+              <label
+                htmlFor='my-drawer-3'
+                aria-label='open sidebar'
+                className='btn btn-square btn-ghost'
               >
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
-                  className='h-5 w-5'
                   fill='none'
                   viewBox='0 0 24 24'
-                  stroke='currentColor'
+                  className='inline-block h-6 w-6 stroke-current'
                 >
-                  {' '}
                   <path
                     strokeLinecap='round'
                     strokeLinejoin='round'
                     strokeWidth='2'
-                    d='M4 6h16M4 12h16M4 18h7'
-                  />{' '}
+                    d='M4 6h16M4 12h16M4 18h16'
+                  ></path>
                 </svg>
-              </div>
-              <p className='text-2xl ml-3 font-semibold'>EGE CMS</p>
+              </label>
             </div>
-            <ul
-              tabIndex={0}
-              className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow bg-gray-400'
-            >
-              {navOptions?.map((option, index) => (
-                <Link key={index} to={option.path}>
-                  <div
-                    onClick={() => {
-                      sessionStorage.setItem('navOptions', option.label)
-                      setActiveOptions(option.label)
+            <div className='mx-2 flex-1 px-2'>CMS</div>
+            <div className='navbar-end'>
+              {/* Dropdown Select */}
+              {user?.role !== 'Admin' && (
+                <div className='ml-2'>
+                  <select
+                    value={selectedConference}
+                    className='border border-black p-1 rounded-lg w-44 text-sm'
+                    onChange={e => {
+                      dispatch(setSelectedConference(e.target.value))
+                      sessionStorage.setItem(
+                        'selectedConference',
+                        e.target.value
+                      )
                     }}
-                    className={`flex items-center text-[14px] hover:bg-gray-800 hover:text-orange-500 cursor-pointer border-b border-gray-700 py-3 px-2 transition-all duration-200 ${
-                      option.label === sessionStorage.getItem('navOptions')
-                        ? 'bg-gray-800 text-orange-500'
-                        : ''
-                    }`}
+                    defaultValue='default'
                   >
-                    <span className='text-lg mr-2'>{option.icon}</span>
-                    <span className=''>{option.label}</span>
+                    <option value='default' disabled>
+                      Select Conference
+                    </option>
+                    {conferences?.map((opt, index) => (
+                      <option key={index} value={opt._id}>
+                        {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {/* Message Dropdown */}
+              <div className='flex-none'>
+                <div className='dropdown dropdown-end'>
+                  <div
+                    tabIndex={0}
+                    role='button'
+                    className='btn btn-black btn-circle'
+                  >
+                    <div className='indicator'>
+                      <LuMessageSquare className='text-xl' />
+                      <span className='badge badge-xs indicator-item'>
+                        {list?.length}
+                      </span>
+                    </div>
                   </div>
-                </Link>
-              ))}
-            </ul>
-          </div>
-        </div>
-        {/* <button
-          onClick={handleTestNotification}
-          className='btn btn-sm bg-orange-500 hover:bg-orange-600 text-white mr-2'
-        >
-          Send Test Notification
-        </button> */}
-        <div className='navbar-end'>
-          {/* Dropdown Select */}
-          {user?.role !== 'Admin' && (
-            <div className='ml-2'>
-              <select
-                value={selectedConference}
-                className='border border-black p-1 rounded-lg w-44 text-sm'
-                onChange={e => {
-                  dispatch(setSelectedConference(e.target.value))
-                  sessionStorage.setItem('selectedConference', e.target.value)
-                }}
-                defaultValue='default'
-              >
-                <option value='default' disabled>
-                  Select Conference
-                </option>
-                {conferences?.map((opt, index) => (
-                  <option key={index} value={opt._id}>
-                    {opt.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          {/* Message Dropdown */}
-          <div className='flex-none'>
-            <div className='dropdown dropdown-end'>
-              <div
-                tabIndex={0}
-                role='button'
-                className='btn btn-ghost btn-circle'
-              >
-                <div className='indicator'>
-                  <LuMessageSquare className='text-xl' />
-                  <span className='badge badge-xs indicator-item'>
-                    {list?.length}
-                  </span>
+                  <div
+                    tabIndex={0}
+                    className='card card-compact dropdown-content bg-base-100 z-1 mt-3 w-52 shadow'
+                  >
+                    <div>
+                      <MessageList />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div
-                tabIndex={0}
-                className='card card-compact dropdown-content bg-base-100 z-1 mt-3 w-52 shadow'
-              >
-                <div>
-                  <MessageList />
+              {/* Profile Dropdown */}
+              <div className='dropdown dropdown-end ml-2'>
+                <div
+                  tabIndex={0}
+                  role='button'
+                  className='btn btn-ghost btn-circle avatar'
+                >
+                  <div className='w-8 rounded-full'>
+                    <img
+                      alt='Tailwind CSS Navbar component'
+                      src='https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+                    />
+                  </div>
                 </div>
+                <ul
+                  tabIndex={0}
+                  className='menu menu-sm dropdown-content bg-slate-500 rounded-box z-1 mt-3 w-52 p-2 shadow'
+                >
+                  <li>
+                    <Link to='/admin/profile'>
+                      <a className='justify-between'>Profile</a>
+                    </Link>
+                  </li>
+                  <li>
+                    <a>Settings</a>
+                  </li>
+                  <li>
+                    <a>Logout</a>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-          {/* Profile Dropdown */}
-          <div className='dropdown dropdown-end ml-2'>
-            <div
-              tabIndex={0}
-              role='button'
-              className='btn btn-ghost btn-circle avatar'
-            >
-              <div className='w-8 rounded-full'>
-                <img
-                  alt='Tailwind CSS Navbar component'
-                  src='https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
-                />
-              </div>
-            </div>
-            <ul
-              tabIndex={0}
-              className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow'
-            >
-              <li>
-                <Link to='/admin/profile'>
-                  <a className='justify-between'>Profile</a>
-                </Link>
-              </li>
-              <li>
-                <a>Settings</a>
-              </li>
-              <li>
-                <a>Logout</a>
-              </li>
-            </ul>
+          {/* Page content here */}
+          <div>
+            {' '}
+            <Outlet />
           </div>
         </div>
-      </div>
-      <div>
-        <Outlet />
+        <div className='drawer-side'>
+          <label
+            htmlFor='my-drawer-3'
+            aria-label='close sidebar'
+            className='drawer-overlay'
+          ></label>
+          <ul className='menu bg-slate-600 text-white min-h-full w-56 flex flex-col'>
+            {/* <h1 className='text-2xl py-7 text-center border-b'></h1> */}
+            {/* <Link to='/'> */}
+            {/* <img className='py-7 cursor-pointer' src={logo} alt='' /> */}
+            {/* </Link> */}
+            {/* Sidebar content here */}
+            {navOptions.map((option, index) => (
+              <Link key={index} to={option.path}>
+                <p
+                  onClick={() => {
+                    sessionStorage.setItem('navOptions', option.label)
+                    setActiveOptions(option.label)
+                  }}
+                  className={`flex items-center text-[17px] hover:text-orange-500 cursor-pointer border-b py-4 pl-5 ${
+                    option.label === sessionStorage.getItem('navOptions')
+                      ? 'text-orange-500'
+                      : ''
+                  }`}
+                >
+                  {option.icon} <span className='pl-4'>{option.label}</span>
+                </p>
+              </Link>
+            ))}
+            {/* Push this div to the bottom */}
+            <div className='dropdown mt-auto relative'>
+              {/* Dropdown menu positioned higher */}
+              {isDropdownOpen && (
+                <ul
+                  tabIndex={0}
+                  className='dropdown-content text-[17px] menu bg-base-100 rounded-box z-[1] w-48 p-2 shadow mb-4 relative top-[-90px] text-black'
+                >
+                  <Link to={'/admin/admin-profile'}>
+                    <li onClick={() => setIsDropdownOpen(false)}>
+                      <a>Profile</a>
+                    </li>
+                  </Link>
+                  <li
+                    onClick={() => {
+                      // dispatch(logOut());
+                      setIsDropdownOpen(false)
+                    }}
+                  >
+                    <a>Logout</a>
+                  </li>
+                </ul>
+              )}
+              <div tabIndex={0} role='button'>
+                <p
+                  onClick={() => {
+                    setIsDropdownOpen(!isDropdownOpen)
+                    setActiveOptions('Name')
+                  }}
+                  className={`flex items-center text-[17px] hover:text-orange-500 cursor-pointer border-t py-4 pl-4 ${
+                    'Name' === activeOptions ? 'text-orange-500' : ''
+                  }`}
+                >
+                  <div className='avatar placeholder'>
+                    <div className='bg-neutral text-neutral-content w-8 rounded-full'>
+                      <span className='text-xs'>
+                        <img src={user?.image} alt='' />
+                      </span>
+                    </div>
+                  </div>
+                  <p title={name} className='cursor-pointer ml-3'>
+                    {user?.name.length > 9
+                      ? user?.name.slice(0, 14) + ' ...'
+                      : user?.name}
+                  </p>
+                </p>
+              </div>
+            </div>
+          </ul>
+        </div>
       </div>
     </section>
   )
