@@ -28,7 +28,7 @@ const AdminReview = () => {
       title: 'Pending Reviews',
       count: reviewStats?.pendingReviews || 0,
       icon: FaHourglassHalf,
-      link: '/admin/reviews/pending',
+      link: '/admin/review/details/pending',
       color: 'bg-yellow-100',
       iconColor: 'text-yellow-600',
       description: 'Accepted but not yet reviewed'

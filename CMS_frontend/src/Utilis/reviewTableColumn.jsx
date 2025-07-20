@@ -3,6 +3,7 @@ import { FaEye } from 'react-icons/fa'
 
 export const abstractReviewColumns = ({
   onViewSubmission,
+  handleSendReminder,
   maxReviewers = 3
 }) => {
   const baseColumns = [
@@ -78,7 +79,7 @@ export const abstractReviewColumns = ({
             </span>
             {noResponse && (
               <button
-                onClick={() => row.onSendReminder(reviewer, row)}
+                onClick={() =>handleSendReminder(row?.reviews[index]?._id)}
                 className='btn btn-xs btn-outline btn-warning mt-1'
               >
                 Reminder

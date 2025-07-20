@@ -63,15 +63,15 @@ const ReviewersModal = ({
                   <td>{r.contact || 'N/A'}</td>
                   <td>
                     <button
-                    //   disabled={row?.reviews.map(
-                    //     item => item.reviewer === r._id
-                    //   )}
+                      disabled={row?.reviews.find(
+                        item => item.reviewer._id === r._id
+                      )}
                       className='btn btn-sm btn-warning'
                       onClick={() => {
                         onClose()
                         handleInviteReview({
-                            abstractId:row._id,
-                            reviewerId:r._id
+                          abstractId: row._id,
+                          reviewerId: r._id
                         })
                       }}
                     >

@@ -19,6 +19,10 @@ const initialState = {
   assigningReviewerSuccess: false,
   assigningReviewerError: false,
 
+  sentReviewerReminderLoading: false,
+  sentReviewerReminderSuccess: false,
+  sentReviewerReminderError: false,
+
   getReviewStatsError: null
 }
 export const fetchReviewStats = createAsyncThunk(
@@ -48,7 +52,7 @@ export const getAbstractsByCategory = createAsyncThunk(
       const response = await axiosSecure.get(`/review/abstract${query}`)
       return response.data.data
     } catch (error) {
-      rejectWithValue(error.response.data.message)
+      return rejectWithValue(error.response.data.message)
     }
   }
 )
@@ -60,7 +64,19 @@ export const assignReviewer = createAsyncThunk(
       const response = await axiosSecure.post('/review/assign-reviewer', data)
       return response.data.data
     } catch (error) {
-      rejectWithValue(error.response.data.message)
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
+export const sendReminderToReviewer = createAsyncThunk(
+  'sendReminderToReviewer',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('/review/send-reminder', data)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
     }
   }
 )
@@ -81,6 +97,10 @@ const adminSlice = createSlice({
       state.assigningReviewerLoading = false
       state.assigningReviewerSuccess = false
       state.assigningReviewerError = false
+
+      state.sentReviewerReminderLoading = false
+      state.sentReviewerReminderSuccess = false
+      state.sentReviewerReminderError = false
 
       state.getReviewStatsError = null
     }
@@ -124,21 +144,37 @@ const adminSlice = createSlice({
         state.isGetAbstractReviewError = true
       })
 
-      .addCase(assignReviewer.pending,state=>{
-      state.assigningReviewerLoading = true
-      state.assigningReviewerSuccess = false
-      state.assigningReviewerError = false
+      .addCase(assignReviewer.pending, state => {
+        state.assigningReviewerLoading = true
+        state.assigningReviewerSuccess = false
+        state.assigningReviewerError = false
       })
-      .addCase(assignReviewer.fulfilled,state=>{
-      state.assigningReviewerLoading = false
-      state.assigningReviewerSuccess = true
-      state.assigningReviewerError = false
+      .addCase(assignReviewer.fulfilled, state => {
+        state.assigningReviewerLoading = false
+        state.assigningReviewerSuccess = true
+        state.assigningReviewerError = false
       })
-      .addCase(assignReviewer.rejected,(state,action)=>{
-      state.assigningReviewerLoading = false
-      state.assigningReviewerSuccess = false
-      state.assigningReviewerError = true
-      state.getReviewStatsError = action.payload
+      .addCase(assignReviewer.rejected, (state, action) => {
+        state.assigningReviewerLoading = false
+        state.assigningReviewerSuccess = false
+        state.assigningReviewerError = true
+        state.getReviewStatsError = action.payload
+      })
+      .addCase(sendReminderToReviewer.pending, state => {
+        state.sentReviewerReminderLoading = true
+        state.sentReviewerReminderSuccess = false
+        state.sentReviewerReminderError = false
+      })
+      .addCase(sendReminderToReviewer.fulfilled, state => {
+        state.sentReviewerReminderLoading = false
+        state.sentReviewerReminderSuccess = true
+        state.sentReviewerReminderError = false
+      })
+      .addCase(sendReminderToReviewer.rejected, (state, action) => {
+        state.sentReviewerReminderLoading = false
+        state.sentReviewerReminderSuccess = false
+        state.sentReviewerReminderError = true
+        state.getReviewStatsError = action.payload
       })
   }
 })

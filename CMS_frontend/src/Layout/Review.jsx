@@ -12,6 +12,9 @@ const Review = () => {
     assigningReviewerLoading,
     assigningReviewerSuccess,
     assigningReviewerError,
+    sentReviewerReminderLoading,
+    sentReviewerReminderSuccess,
+    sentReviewerReminderError,
     getReviewStatsError
   } = useSelector(state => state.review)
   const [yearInput, setYearInput] = useState('')
@@ -27,14 +30,24 @@ const Review = () => {
       showErrorToast(getReviewStatsError)
       dispatch(clearReviewStats())
     }
-    
+    if (sentReviewerReminderSuccess) {
+      showSuccessToast('Successfully sent the reminder')
+      dispatch(clearReviewStats())
+    }
+    if (sentReviewerReminderError) {
+      showErrorToast(getReviewStatsError)
+      dispatch(clearReviewStats())
+    }
   }, [
     assigningReviewerError,
     assigningReviewerSuccess,
     dispatch,
-    getReviewStatsError
+    getReviewStatsError,
+    sentReviewerReminderError,
+    sentReviewerReminderSuccess
   ])
 
+  console.log(sentReviewerReminderError)
   const handleSearch = () => {
     if (!yearInput || yearInput < 1900 || yearInput > 3000) {
       alert('Please enter a valid year')
@@ -44,7 +57,7 @@ const Review = () => {
     dispatch(setSelectedYear(yearInput))
   }
 
-  if (assigningReviewerLoading) {
+  if (assigningReviewerLoading || sentReviewerReminderLoading) {
     return (
       <div className='flex justify-center h-[calc(100vh-100px)] items-center'>
         <Loading />

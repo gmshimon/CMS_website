@@ -1,6 +1,7 @@
 import {
   authorReviewAssignedTemplate,
-  reviewerAssignmentTemplate
+  reviewerAssignmentTemplate,
+  reviewerReminderTemplate
 } from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
@@ -8,6 +9,7 @@ import { createNotificationService } from '../Notification/notification.service.
 import Users from '../User/user.model.js'
 import Reviews from './review.model.js'
 
+// admin assign reviewer to a abstract
 export const assignReviewer = async (req, res, next) => {
   try {
     // Extract abstractId and reviewerId from request body
@@ -88,7 +90,11 @@ export const assignReviewer = async (req, res, next) => {
       const authorMessage = ` We are pleased to inform you that your abstract titled "${abstract.paper_title}" has been assigned to reviewers for evaluation as part of the ${abstract?.conference?.name}.`
 
       // sending notification to the author of the abstract
-      await createNotificationService(authorUser._id, message, emailHtml)
+      await createNotificationService(
+        authorUser._id,
+        authorMessage,
+        authorEmailHtml
+      )
       // Send email to abstract author
       await sendEmail({
         to: authorUser.email,
@@ -107,6 +113,7 @@ export const assignReviewer = async (req, res, next) => {
   }
 }
 
+// reviewer accept the invite link
 export const acceptReviewInvitation = async (req, res, next) => {
   try {
     const { reviewId } = req.body
@@ -152,6 +159,7 @@ export const acceptReviewInvitation = async (req, res, next) => {
   }
 }
 
+// the reviewer add the review
 export const submitReview = async (req, res, next) => {
   try {
     const { reviewId, score, comments } = req.body
@@ -196,6 +204,7 @@ export const submitReview = async (req, res, next) => {
   }
 }
 
+// admin fetch the review Dashboard
 export const getReviewDashboardsStats = async (req, res, next) => {
   try {
     const { year } = req.query
@@ -210,7 +219,7 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 
     // 2. Pending reviews (status = 'Accepted' but no completedAt)
     const pendingReviews = await Reviews.countDocuments({
-      status: 'Accepted',
+      status: { $in: ['Accepted', 'Pending'] },
       completedAt: { $exists: false }
     })
 
@@ -269,6 +278,7 @@ export const getReviewDashboardsStats = async (req, res, next) => {
   }
 }
 
+// fetch the different abstract with review data based on satus
 export const getAbstractsByCategory = async (req, res, next) => {
   try {
     const { category, year } = req.query // from query string e.g., /abstracts?category=unassigned
@@ -314,6 +324,25 @@ export const getAbstractsByCategory = async (req, res, next) => {
 
       return res.status(200).json({ success: true, data: unassignedAbstracts })
     }
+    if (category === 'pending') {
+      const abstracts = await Abstracts.find(matchQuery)
+        .populate('conference')
+        .populate('conference_reg')
+        .populate('createdBy')
+        .lean()
+
+      // Attach reviews to each abstract
+      const abstractsWithReviews = await Promise.all(
+        abstracts.map(async abstract => {
+          const reviews = await Reviews.find({
+            abstract: abstract._id,
+            status: category
+          }).populate('reviewer')
+          return { ...abstract, reviews }
+        })
+      )
+      return res.status(200).json({ success: true, data: abstractsWithReviews })
+    }
 
     // Any other specific category
     const filteredAbstracts = await Abstracts.find({ category })
@@ -336,5 +365,53 @@ export const getAbstractsByCategory = async (req, res, next) => {
   } catch (error) {
     console.error('Error in getAbstractsByCategory:', error)
     return res.status(500).json({ success: false, message: 'Server Error' })
+  }
+}
+
+export const sendReminderToReviewer = async (req, res, next) => {
+  try {
+    const { reviewId } = req.body
+
+    const review = await Reviews.findOne({
+      _id: reviewId,
+      status: { $in: ['Accepted', 'pending'] },
+      completedAt: { $exists: false }
+    }).populate('reviewer')
+
+    if (!review) {
+      const error = new Error('Reviewer not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    const abstract = await Abstracts.findOne({
+      _id: review.abstract
+    }).populate('conference')
+
+    // create the email template for reminder
+
+    const emailHtml = reviewerReminderTemplate({
+      reviewerName: review.reviewer.name,
+      abstractTitle: abstract.paper_title,
+      conferenceName: abstract.conference.name
+    })
+
+    // sending notification to the reviewer
+    const message = `Reminder: You have been invited to review the abstract titled "${abstract?.paper_title}" for the ${abstract?.conference?.name} conference. We kindly request you to accept or decline the invitation as soon as possible to help us proceed with the review process.`
+
+    await createNotificationService(review.reviewer._id, message, emailHtml)
+
+    await sendEmail({
+      to: review.reviewer.email,
+      subject: `Reminder: Review Invitation for "${abstract?.paper_title}" – ${abstract?.conference?.name}`,
+      html: emailHtml
+    })
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Reminder sent'
+    })
+  } catch (error) {
+    next(error)
   }
 }

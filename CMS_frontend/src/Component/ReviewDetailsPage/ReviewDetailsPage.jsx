@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { abstractReviewColumns } from '../../Utilis/reviewTableColumn'
 import ReviewTable from '../ReviewTable/ReviewTable'
 import useReview from '../../Hooks/useReview'
@@ -11,8 +11,12 @@ const ReviewDetailsPage = () => {
   const { reviews } = useSelector(state => state.review)
   const { reviewers } = useSelector(state => state.admin)
   const [selectedAbstract, setSelectedAbstract] = useState(null)
+
+  // the params of the routes
   const { category } = useParams()
-  const { handleInviteReview } = useReview(category)
+
+  // call the custom hooks
+  const { handleInviteReview ,handleSendReminder} = useReview(category)
   useCreateUser('Reviewer')
 
   const handleOpenReviewerModal = row => {
@@ -20,9 +24,9 @@ const ReviewDetailsPage = () => {
   }
   const columns = abstractReviewColumns({
     onViewSubmission: row => setSelectedAbstract(row),
+    handleSendReminder,
     maxReviewers: 3
   })
-
   return (
     <div>
       <div>

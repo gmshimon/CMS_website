@@ -1,4 +1,8 @@
-export const authorReviewAssignedTemplate = ({ authorName, abstractTitle, conferenceName }) => {
+export const authorReviewAssignedTemplate = ({
+  authorName,
+  abstractTitle,
+  conferenceName
+}) => {
   return `
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
       <h2 style="color: #2c3e50;">Dear ${authorName},</h2>
@@ -11,7 +15,12 @@ export const authorReviewAssignedTemplate = ({ authorName, abstractTitle, confer
     </div>
   `
 }
-export const reviewerAssignmentTemplate = ({ reviewerName, abstractTitle, conferenceName, acceptanceLink }) => {
+export const reviewerAssignmentTemplate = ({
+  reviewerName,
+  abstractTitle,
+  conferenceName,
+  acceptanceLink
+}) => {
   return `
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
       <h2 style="color: #2c3e50;">Dear ${reviewerName},</h2>
@@ -23,6 +32,25 @@ export const reviewerAssignmentTemplate = ({ reviewerName, abstractTitle, confer
       <p style="color: #888;">Thank you very much for your valuable contribution.</p>
       <hr />
       <p style="font-size: 12px; color: #aaa;">This is an automated message from ${conferenceName} Conference System.</p>
+    </div>
+  `
+}
+
+export const reviewerReminderTemplate = ({
+  reviewerName,
+  abstractTitle,
+  conferenceName
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+      <h2 style="color: #2c3e50;">Dear ${reviewerName},</h2>
+      <p>This is a gentle reminder that you have been invited to review the abstract titled <strong>"${abstractTitle}"</strong> for the <strong>${conferenceName}</strong>.</p>
+    
+      <p>Your contribution is highly valued and essential for the success of the review process.</p>
+      <br />
+      <p style="color: #888;">Thank you for your attention and support.</p>
+      <hr />
+      <p style="font-size: 12px; color: #aaa;">This is an automated reminder from ${conferenceName} Conference System.</p>
     </div>
   `
 }

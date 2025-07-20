@@ -3,27 +3,35 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   assignReviewer,
   fetchReviewStats,
-  getAbstractsByCategory
+  getAbstractsByCategory,
+  sendReminderToReviewer
 } from '../Redux/Slice/ReviewSlice'
 
 const useReview = (category = 'all') => {
-    const {
-      assigningReviewerSuccess
-    } = useSelector(state => state.review)
+  const { assigningReviewerSuccess } = useSelector(state => state.review)
   const { selectedYear } = useSelector(state => state.admin)
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getAbstractsByCategory({ category }))
     dispatch(fetchReviewStats(selectedYear))
-  }, [category, dispatch, selectedYear,assigningReviewerSuccess])
+  }, [category, dispatch, selectedYear, assigningReviewerSuccess])
 
   const handleInviteReview = data => {
     dispatch(assignReviewer(data))
   }
 
+  const handleSendReminder = id => {
+    dispatch(
+      sendReminderToReviewer({
+        reviewId: id
+      })
+    )
+  }
+
   return {
-    handleInviteReview
+    handleInviteReview,
+    handleSendReminder
   }
 }
 
