@@ -124,19 +124,19 @@ const reviewerNavOptions = [
    {
     id: 2,
     label: 'Invitation',
-    path: '/admin/invitation',
+    path: '/admin/my-review/pending',
     icon: <MdOutlineInsertInvitation />
   },
   {
     id:3,
     label:'Reviews',
-    path:'/admin/review',
+    path:'/admin/my-review/reviewed',
     icon:<MdOutlineReviews />
   },
   {
     id:4,
     label:'Certificates',
-    path:'/admin/certificate',
+    path:'/admin/my-review/certificate',
     icon:<FaAward />
   }
 

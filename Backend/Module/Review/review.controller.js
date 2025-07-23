@@ -219,7 +219,7 @@ export const acceptReviewInvitation = async (req, res, next) => {
 // the reviewer add the review
 export const submitReview = async (req, res, next) => {
   try {
-    const { reviewId, score, comments,responses,correctionLevel } = req.body
+    const { reviewId, score, comments, responses, correctionLevel } = req.body
     const userId = req.user._id // assuming you have authentication middleware that sets req.user
 
     if (!reviewId || score == null || comments == null) {
@@ -519,10 +519,13 @@ export const getMyReview = async (req, res, next) => {
   try {
     const { conference, status } = req.query
     const { _id } = req.user
-    let getReview = await Reviews.find({
-      status: status,
+    const query = {
       reviewer: _id
-    })
+    }
+    if (status !== 'certificate') {
+      query.status = status
+    }
+    let getReview = await Reviews.find(query)
       .populate({
         path: 'abstract',
         populate: {

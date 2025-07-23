@@ -21,7 +21,7 @@ const MyReviewDetailPage = () => {
     submitReviewError
   } = useSelector(state => state.review)
   const [openModal, setOpenModal] = useState(false)
-  const [isEditable,setIsEditable] = useState(true)
+  const [isEditable, setIsEditable] = useState(true)
   const [selectedReview, setSelectedReview] = useState(null)
   const { category } = useParams()
   const location = useLocation()
@@ -46,7 +46,6 @@ const MyReviewDetailPage = () => {
       showErrorToast(getMyReviewStatsError)
       dispatch(clearReviewStats())
     }
-
   }, [
     dispatch,
     getMyReviewStatsError,
@@ -56,7 +55,7 @@ const MyReviewDetailPage = () => {
     submitReviewSuccess
   ])
 
-  const handleOpenReviewModal = (row,edit) => {
+  const handleOpenReviewModal = (row, edit) => {
     setIsEditable(edit)
     setSelectedReview(row)
     setOpenModal(true)
@@ -75,24 +74,10 @@ const MyReviewDetailPage = () => {
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/my-review/pending'
           ? 'New Invitation'
-          : location?.pathname === '/admin/users/authors'
-          ? 'Manage Authors'
-          : location.pathname === '/admin/users/reviewers'
-          ? 'Manage Reviewers'
-          : location.pathname === '/admin/users/session-chairs'
-          ? 'Manage Session Chair'
-          : location.pathname === '/admin/users/keynote-speakers'
-          ? 'Manage Key Note Speaker'
-          : location.pathname === '/admin/users/moderators'
-          ? 'Manage Moderator'
-          : location.pathname === '/admin/users/committee'
-          ? 'Manage Committee'
-          : location.pathname === '/admin/users/committee/scientific'
-          ? 'Manage Scientific Committee'
-          : location.pathname === '/admin/users/committee/technical'
-          ? 'Manage Technical Committee'
-          : location.pathname === '/admin/users/committee/registration'
-          ? 'Manage Registration Committee'
+          : location?.pathname === '/admin/my-review/reviewed'
+          ? 'Completed Review'
+          : location.pathname === '/admin/my-review/accepted'
+          ? 'Pending Review'
           : 'User Overview'}
       </h2>
       <div>

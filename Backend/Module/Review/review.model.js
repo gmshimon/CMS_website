@@ -75,7 +75,11 @@ const reviewSchema = new mongoose.Schema(
         answer: { type: String, required: true },       // Yes / No / Partly
         explanation: { type: String }                   // optional explanation per answer
       }
-    ]
+    ],
+    certificate:{
+      type:String,
+      default:''
+    }
   },
   { timestamps: true }
 )

@@ -82,7 +82,7 @@ const ReviewTable = ({
                         Review
                       </button>
                     </>
-                  ) : (
+                  ) : category==="reviewed"?(
                     <>
                       <button
                         onClick={() => handleOpenReviewModal(row,false)}
@@ -91,7 +91,14 @@ const ReviewTable = ({
                         Review report
                       </button>
                     </>
-                  )}
+                  ):(
+                    <>
+                      <a href="https://www.programiz.com/javascript/online-compiler/" target="_blank">
+                        <button className='btn btn-sm bg-gray-500 hover:bg-gray-600 text-white rounded-md shadow'>View Certificate</button>
+                      </a>
+                    </>
+                  )
+                }
                 </td>
               )}
             </tr>
