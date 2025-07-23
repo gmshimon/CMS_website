@@ -73,13 +73,22 @@ const ReviewTable = ({
                         Reject
                       </button>
                     </>
-                  ) : (
+                  ) : category === 'accepted' ? (
                     <>
                       <button
-                        onClick={() => handleOpenReviewModal(row)}
+                        onClick={() => handleOpenReviewModal(row,true)}
                         className='btn btn-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow'
                       >
                         Review
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleOpenReviewModal(row,false)}
+                        className='btn btn-sm bg-orange-500 hover:bg-orange-600 text-white rounded-md shadow'
+                      >
+                        Review report
                       </button>
                     </>
                   )}

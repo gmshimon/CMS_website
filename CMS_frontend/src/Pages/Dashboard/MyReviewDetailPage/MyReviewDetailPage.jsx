@@ -21,6 +21,7 @@ const MyReviewDetailPage = () => {
     submitReviewError
   } = useSelector(state => state.review)
   const [openModal, setOpenModal] = useState(false)
+  const [isEditable,setIsEditable] = useState(true)
   const [selectedReview, setSelectedReview] = useState(null)
   const { category } = useParams()
   const location = useLocation()
@@ -55,7 +56,8 @@ const MyReviewDetailPage = () => {
     submitReviewSuccess
   ])
 
-  const handleOpenReviewModal = row => {
+  const handleOpenReviewModal = (row,edit) => {
+    setIsEditable(edit)
     setSelectedReview(row)
     setOpenModal(true)
   }
@@ -98,12 +100,14 @@ const MyReviewDetailPage = () => {
           columns={reviewHomeColumn}
           data={myReviewData}
           mode='reviewer'
+          category={category}
           handleRespondReview={handleRespondReview}
           handleOpenReviewModal={handleOpenReviewModal}
         />
 
         <ReviewModal
           isOpen={openModal}
+          isEditable={isEditable}
           onClose={() => setOpenModal(false)}
           onSubmit={handleSubmitReview}
           paper={selectedReview}

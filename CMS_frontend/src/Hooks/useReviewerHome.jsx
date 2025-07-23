@@ -39,20 +39,20 @@ const useReviewerHome = (category=null) => {
     },
     {
       title: 'Completed Assignments',
-      path: '/admin/my-review/overdue',
+      path: '/admin/my-review/reviewed',
       icon: FaCheckDouble,
       color: 'bg-green-50 hover:bg-green-100',
       stat: `${myReviewStat.reviewed || 0} Reviewed`,
       description: 'View all completed reviewer assignments'
     },
-    {
-      title: 'Overdue Review',
-      path: '/admin/my-review/pending',
-      icon: MdOutlineAssignmentLate,
-      color: 'bg-purple-50 hover:bg-purple-100',
-      stat: `${myReviewStat.overdue || 0}`,
-      description: 'Access reviewer performance and analytics'
-    }
+    // {
+    //   title: 'Overdue Review',
+    //   path: '/admin/my-review/pending',
+    //   icon: MdOutlineAssignmentLate,
+    //   color: 'bg-purple-50 hover:bg-purple-100',
+    //   stat: `${myReviewStat.overdue || 0}`,
+    //   description: 'Access reviewer performance and analytics'
+    // }
   ]
 
   const handleRespondReview = (reviewId,status)=>{
@@ -60,7 +60,6 @@ const useReviewerHome = (category=null) => {
   }
 
 const handleSubmitReview = data=>{
-  console.log(data)
   dispatch(submitReview(data))
 }
 

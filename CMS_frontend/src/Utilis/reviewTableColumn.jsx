@@ -79,7 +79,7 @@ export const abstractReviewColumns = ({
             </span>
             {noResponse && (
               <button
-                onClick={() =>handleSendReminder(row?.reviews[index]?._id)}
+                onClick={() => handleSendReminder(row?.reviews[index]?._id)}
                 className='btn btn-xs btn-outline btn-warning mt-1'
               >
                 Reminder
@@ -109,36 +109,67 @@ export const abstractReviewColumns = ({
 }
 
 export const reviewHomeColumn = [
-    {
-      key: '_id',
-      label: 'Abstract ID',
-      render: (_, row) => row?.abstract?._id
-    },
-    {
-      key: 'abstract.paper_title',
-      label: 'Title',
-      render: (_, row) => row?.abstract?.paper_title
-    },
-    {
-      key: 'theme',
-      label: 'Theme',
-      render: (_, row) => row?.abstract?.theme
-    },
-    {
-      key: 'conference.name',
-      label: 'Conference',
-      render: (_, row) => row?.abstract?.conference?.name || 'N/A'
-    },
-    {
-      key: 'abstract.createdAt',
-      label: 'Submission Date',
-      render: (_, row) =>
-        row.abstract?.createdAt ? (
-          <span className='text-sm text-gray-700'>
-            {format(new Date(row?.abstract?.createdAt), 'dd MMM yyyy')}
-          </span>
-        ) : (
-          <span className='text-sm text-gray-400'>N/A</span>
-        )
+  {
+    key: '_id',
+    label: 'Abstract ID',
+    render: (_, row) => row?.abstract?._id
+  },
+  {
+    key: 'abstract.paper_title',
+    label: 'Title',
+    render: (_, row) => row?.abstract?.paper_title
+  },
+  {
+    key: 'theme',
+    label: 'Theme',
+    render: (_, row) => row?.abstract?.theme
+  },
+  {
+    key: 'conference.name',
+    label: 'Conference',
+    render: (_, row) => row?.abstract?.conference?.name || 'N/A'
+  },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (_, row) => {
+      const status = row?.status?.toLowerCase() || ''
+      let color = ''
+
+      // Set colors based on status
+      switch (status) {
+        case 'accepted':
+          color = 'green'
+          break
+        case 'reviewed':
+          color = 'blue'
+          break
+        case 'pending':
+          color = 'orange'
+          break
+        case 'overdue':
+          color = 'red'
+          break
+        default:
+          color = 'gray'
+      }
+
+      // Capitalize first letter
+      const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1)
+
+      return <span style={{ color }}>{formattedStatus}</span>
     }
-  ]
+  },
+  {
+    key: 'abstract.createdAt',
+    label: 'Submission Date',
+    render: (_, row) =>
+      row.abstract?.createdAt ? (
+        <span className='text-sm text-gray-700'>
+          {format(new Date(row?.abstract?.createdAt), 'dd MMM yyyy')}
+        </span>
+      ) : (
+        <span className='text-sm text-gray-400'>N/A</span>
+      )
+  }
+]
