@@ -16,7 +16,7 @@ const reviewSchema = new mongoose.Schema(
 
     round: {
       type: Number,
-      default: 1
+      default: 0
     },
 
     accepted: {
@@ -56,6 +56,7 @@ const reviewSchema = new mongoose.Schema(
       type: String,
       enum: [
         'None',
+        'Accept',
         'Minor',
         'Moderate', // Optional middle ground
         'Major',
@@ -67,7 +68,14 @@ const reviewSchema = new mongoose.Schema(
     },
     comments: {
       type: String
-    }
+    },
+    responses: [
+      {
+        question: { type: String, required: true },     // e.g. "Is it technically sound?"
+        answer: { type: String, required: true },       // Yes / No / Partly
+        explanation: { type: String }                   // optional explanation per answer
+      }
+    ]
   },
   { timestamps: true }
 )

@@ -3,10 +3,11 @@ import ReviewTable from '../../../Component/ReviewTable/ReviewTable'
 import useReviewerHome from '../../../Hooks/useReviewerHome'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../../Component/Loading/Loading'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { reviewHomeColumn } from '../../../Utilis/reviewTableColumn'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 import { clearReviewStats } from '../../../Redux/Slice/ReviewSlice'
+import ReviewModal from '../../../Component/ReviewModal/ReviewModal'
 
 const MyReviewDetailPage = () => {
   const {
@@ -14,11 +15,16 @@ const MyReviewDetailPage = () => {
     respondReviewError,
     respondReviewSuccess,
     respondReviewLoading,
-    getMyReviewStatsError
+    getMyReviewStatsError,
+    submitReviewLoading,
+    submitReviewSuccess,
+    submitReviewError
   } = useSelector(state => state.review)
+  const [openModal, setOpenModal] = useState(false)
+  const [selectedReview, setSelectedReview] = useState(null)
   const { category } = useParams()
   const location = useLocation()
-  const { handleRespondReview } = useReviewerHome(category)
+  const { handleRespondReview, handleSubmitReview } = useReviewerHome(category)
 
   const dispatch = useDispatch()
 
@@ -31,14 +37,30 @@ const MyReviewDetailPage = () => {
       showErrorToast(getMyReviewStatsError)
       dispatch(clearReviewStats())
     }
+    if (submitReviewSuccess) {
+      showSuccessToast('Successful')
+      dispatch(clearReviewStats())
+    }
+    if (submitReviewError) {
+      showErrorToast(getMyReviewStatsError)
+      dispatch(clearReviewStats())
+    }
+
   }, [
     dispatch,
     getMyReviewStatsError,
     respondReviewError,
-    respondReviewSuccess
+    respondReviewSuccess,
+    submitReviewError,
+    submitReviewSuccess
   ])
 
-  if (respondReviewLoading) {
+  const handleOpenReviewModal = row => {
+    setSelectedReview(row)
+    setOpenModal(true)
+  }
+
+  if (respondReviewLoading || submitReviewLoading) {
     return (
       <div className='flex justify-center h-[calc(100vh-100px)] items-center'>
         <Loading />
@@ -77,6 +99,14 @@ const MyReviewDetailPage = () => {
           data={myReviewData}
           mode='reviewer'
           handleRespondReview={handleRespondReview}
+          handleOpenReviewModal={handleOpenReviewModal}
+        />
+
+        <ReviewModal
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
+          onSubmit={handleSubmitReview}
+          paper={selectedReview}
         />
       </div>
     </div>

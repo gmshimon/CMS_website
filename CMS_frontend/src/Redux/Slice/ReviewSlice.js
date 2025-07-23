@@ -38,6 +38,10 @@ const initialState = {
   respondReviewSuccess: false,
   respondReviewError: false,
 
+  submitReviewLoading: false,
+  submitReviewSuccess: false,
+  submitReviewError: false,
+
   getReviewStatsError: null
 }
 export const fetchReviewStats = createAsyncThunk(
@@ -140,6 +144,21 @@ export const acceptReviewInvitation = createAsyncThunk(
   }
 )
 
+export const submitReview = createAsyncThunk(
+  'submitReview',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.post('/review/submit-review', data)
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          'Something went wrong while responding to review.'
+      )
+    }
+  }
+)
+
 const adminSlice = createSlice({
   name: 'review',
   initialState,
@@ -172,6 +191,10 @@ const adminSlice = createSlice({
       state.respondReviewLoading = false
       state.respondReviewSuccess = false
       state.respondReviewError = false
+
+      state.submitReviewLoading = false
+      state.submitReviewSuccess = false
+      state.submitReviewError = false
 
       state.getReviewStatsError = null
     }
@@ -297,6 +320,29 @@ const adminSlice = createSlice({
         state.respondReviewLoading = false
         state.respondReviewSuccess = false
         state.respondReviewError = true
+        state.getMyReviewStatsError = action.payload
+      })
+      .addCase(submitReview.pending, state => {
+        state.submitReviewLoading = true
+        state.submitReviewSuccess = false
+        state.submitReviewError = false
+      })
+      .addCase(submitReview.fulfilled, (state, action) => {
+        state.submitReviewLoading = false
+        state.submitReviewSuccess = true
+        state.submitReviewError = false
+
+        const index = state.myReviewData.findIndex(
+          item => item._id === action.payload._id
+        )
+        if (index !== -1) {
+          state.myReviewData.splice(index, 1)
+        }
+      })
+      .addCase(submitReview.rejected, (state, action) => {
+        state.submitReviewLoading = false
+        state.submitReviewSuccess = false
+        state.submitReviewError = true
         state.getMyReviewStatsError = action.payload
       })
   }

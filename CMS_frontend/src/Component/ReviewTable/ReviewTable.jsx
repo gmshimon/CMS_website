@@ -5,7 +5,9 @@ const ReviewTable = ({
   columns,
   handleOpenReviewerModal,
   mode,
-  handleRespondReview
+  handleRespondReview,
+  category = null,
+  handleOpenReviewModal
 }) => {
   return (
     <div className='overflow-x-auto bg-white shadow rounded-lg'>
@@ -52,18 +54,35 @@ const ReviewTable = ({
                 </td>
               ) : (
                 <td className='px-4 py-2 flex gap-2'>
-                  <button
-                    onClick={() => handleRespondReview(row?._id, 'accepted')}
-                    className='btn btn-sm bg-green-500 hover:bg-green-600 text-white rounded-md shadow'
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => handleRespondReview(row?._id, 'rejected')}
-                    className='btn btn-sm bg-red-500 hover:bg-red-600 text-white rounded-md shadow'
-                  >
-                    Reject
-                  </button>
+                  {category === 'pending' ? (
+                    <>
+                      <button
+                        onClick={() =>
+                          handleRespondReview(row?._id, 'accepted')
+                        }
+                        className='btn btn-sm bg-green-500 hover:bg-green-600 text-white rounded-md shadow'
+                      >
+                        Accept
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleRespondReview(row?._id, 'rejected')
+                        }
+                        className='btn btn-sm bg-red-500 hover:bg-red-600 text-white rounded-md shadow'
+                      >
+                        Reject
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleOpenReviewModal(row)}
+                        className='btn btn-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow'
+                      >
+                        Review
+                      </button>
+                    </>
+                  )}
                 </td>
               )}
             </tr>

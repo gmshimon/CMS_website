@@ -219,7 +219,7 @@ export const acceptReviewInvitation = async (req, res, next) => {
 // the reviewer add the review
 export const submitReview = async (req, res, next) => {
   try {
-    const { reviewId, score, comments } = req.body
+    const { reviewId, score, comments,responses,correctionLevel } = req.body
     const userId = req.user._id // assuming you have authentication middleware that sets req.user
 
     if (!reviewId || score == null || comments == null) {
@@ -233,7 +233,7 @@ export const submitReview = async (req, res, next) => {
     const review = await Reviews.findOne({
       _id: reviewId,
       reviewer: userId,
-      status: 'reviewed'
+      status: 'accepted'
     })
 
     if (!review) {
@@ -246,8 +246,11 @@ export const submitReview = async (req, res, next) => {
     // Update review fields
     review.score = score
     review.comments = comments
+    review.round = review.round + 1
+    review.correctionLevel = correctionLevel
+    review.responses = responses
     review.completedAt = new Date()
-    review.status = 'Reviewed'
+    review.status = 'reviewed'
 
     await review.save()
 

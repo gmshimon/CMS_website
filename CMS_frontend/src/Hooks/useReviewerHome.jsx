@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { acceptReviewInvitation, getMyReview, getMyReviewStats } from '../Redux/Slice/ReviewSlice'
+import { acceptReviewInvitation, getMyReview, getMyReviewStats, submitReview } from '../Redux/Slice/ReviewSlice'
 import { FaUserPlus, FaClipboardList, FaCheckDouble } from 'react-icons/fa'
 import { MdOutlineAssignmentLate } from 'react-icons/md'
 
@@ -56,13 +56,18 @@ const useReviewerHome = (category=null) => {
   ]
 
   const handleRespondReview = (reviewId,status)=>{
-    console.log(reviewId,status)
     dispatch(acceptReviewInvitation({reviewId,status}))
   }
 
+const handleSubmitReview = data=>{
+  console.log(data)
+  dispatch(submitReview(data))
+}
+
   return {
     reviewActions,
-    handleRespondReview
+    handleRespondReview,
+    handleSubmitReview
   }
 }
 
