@@ -4,6 +4,8 @@ import { FaEye } from 'react-icons/fa'
 export const abstractReviewColumns = ({
   onViewSubmission,
   handleSendReminder,
+  handleViewReview,
+  handleViewPaperList,
   maxReviewers = 3
 }) => {
   const baseColumns = [
@@ -18,6 +20,10 @@ export const abstractReviewColumns = ({
     {
       key: 'theme',
       label: 'Theme'
+    },
+    {
+      key:"status",
+      label:"Status"
     },
     {
       key: 'conference.name',
@@ -49,10 +55,9 @@ export const abstractReviewColumns = ({
           return <span className='text-sm text-gray-400'>—</span>
         }
 
-        const { name, email, status, completedAt } = reviewer
-
-        const hasReviewed = !!completedAt
-        const hasAccepted = status === 'Accepted'
+        const { name, email, status } = reviewer
+        const hasReviewed = row?.reviews[index]?.completedAt
+        const hasAccepted = status === 'accepted'
         const noResponse = !hasAccepted && !hasReviewed
 
         let statusLabel = ''
@@ -77,10 +82,15 @@ export const abstractReviewColumns = ({
             <span className={`text-xs font-semibold ${statusColor}`}>
               {statusLabel}
             </span>
+            {
+              hasReviewed&&<button onClick={()=>handleViewReview(row?.reviews[index])} className='btn btn-xs btn-accent mt-1'>
+                View Review
+              </button>
+            }
             {noResponse && (
               <button
                 onClick={() => handleSendReminder(row?.reviews[index]?._id)}
-                className='btn btn-xs btn-outline btn-warning mt-1'
+                className='btn btn-xs btn-warning mt-1'
               >
                 Reminder
               </button>
@@ -96,9 +106,9 @@ export const abstractReviewColumns = ({
     label: 'View',
     render: (_, row) => (
       <button
-        onClick={() => onViewSubmission(row)}
+        onClick={() =>handleViewPaperList(row.papers)}
         className='btn btn-sm btn-outline text-blue-600 tooltip'
-        data-tip='View Submission'
+        data-tip='View Submission Paper'
       >
         <FaEye />
       </button>

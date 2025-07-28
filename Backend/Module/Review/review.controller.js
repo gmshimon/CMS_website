@@ -7,6 +7,7 @@ import {
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
+import Paper from '../Paper/paper.model.js'
 import Users from '../User/user.model.js'
 import Reviews from './review.model.js'
 
@@ -341,38 +342,44 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 // fetch the different abstract with review data based on satus
 export const getAbstractsByCategory = async (req, res, next) => {
   try {
-    const { category, year } = req.query // from query string e.g., /abstracts?category=unassigned
-    const matchQuery = {}
+    const { category, year } = req.query;
+    const matchQuery = {};
     if (year) {
       matchQuery.$expr = {
         $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+      };
     }
+
+    // Helper to attach reviews and papers to each abstract
+    const attachReviewsAndPapers = async (abstracts, reviewsQuery = {}) => {
+      return await Promise.all(
+        abstracts.map(async abstract => {
+          const [reviews, papers] = await Promise.all([
+            Reviews.find({
+              abstract: abstract._id,
+              ...reviewsQuery
+            }).populate('reviewer'),
+            Paper.find({ abstract: abstract._id }) // adjust if your key is abstractId
+          ]);
+          return { ...abstract, reviews, papers };
+        })
+      );
+    };
+
     if (category === 'all') {
-      // Get all abstracts with their reviews
       const abstracts = await Abstracts.find(matchQuery)
         .populate('conference')
         .populate('conference_reg')
         .populate('createdBy')
-        .lean()
+        .lean();
 
-      // Attach reviews to each abstract
-      const abstractsWithReviews = await Promise.all(
-        abstracts.map(async abstract => {
-          const reviews = await Reviews.find({
-            abstract: abstract._id
-          }).populate('reviewer')
-          return { ...abstract, reviews }
-        })
-      )
+      const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(abstracts);
 
-      return res.status(200).json({ success: true, data: abstractsWithReviews })
+      return res.status(200).json({ success: true, data: abstractsWithReviewsAndPapers });
     }
 
     if (category === 'unassigned') {
-      // Find abstracts that do not have any review
-      const reviewedAbstractIds = await Reviews.distinct('abstract')
-
+      const reviewedAbstractIds = await Reviews.distinct('abstract');
       const unassignedAbstracts = await Abstracts.find({
         _id: { $nin: reviewedAbstractIds },
         ...matchQuery
@@ -380,28 +387,26 @@ export const getAbstractsByCategory = async (req, res, next) => {
         .populate('conference')
         .populate('conference_reg')
         .populate('createdBy')
-        .lean()
+        .lean();
 
-      return res.status(200).json({ success: true, data: unassignedAbstracts })
+      // If you also want papers here, uncomment next line
+      // const unassignedWithPapers = await Promise.all(unassignedAbstracts.map(async abstract => ({ ...abstract, papers: await Paper.find({ abstract: abstract._id }) })));
+      // return res.status(200).json({ success: true, data: unassignedWithPapers });
+
+      // If not, just:
+      return res.status(200).json({ success: true, data: unassignedAbstracts });
     }
+
     if (category === 'pending') {
       const abstracts = await Abstracts.find(matchQuery)
         .populate('conference')
         .populate('conference_reg')
         .populate('createdBy')
-        .lean()
+        .lean();
 
-      // Attach reviews to each abstract
-      const abstractsWithReviews = await Promise.all(
-        abstracts.map(async abstract => {
-          const reviews = await Reviews.find({
-            abstract: abstract._id,
-            status: category
-          }).populate('reviewer')
-          return { ...abstract, reviews }
-        })
-      )
-      return res.status(200).json({ success: true, data: abstractsWithReviews })
+      const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(abstracts, { status: category });
+
+      return res.status(200).json({ success: true, data: abstractsWithReviewsAndPapers });
     }
 
     // Any other specific category
@@ -409,24 +414,16 @@ export const getAbstractsByCategory = async (req, res, next) => {
       .populate('conference')
       .populate('conference_reg')
       .populate('createdBy')
-      .lean()
+      .lean();
 
-    // Attach reviews to each
-    const abstractsWithReviews = await Promise.all(
-      filteredAbstracts.map(async abstract => {
-        const reviews = await Reviews.find({ abstract: abstract._id }).populate(
-          'reviewer'
-        )
-        return { ...abstract, reviews }
-      })
-    )
+    const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(filteredAbstracts);
 
-    return res.status(200).json({ success: true, data: abstractsWithReviews })
+    return res.status(200).json({ success: true, data: abstractsWithReviewsAndPapers });
   } catch (error) {
-    console.error('Error in getAbstractsByCategory:', error)
-    return res.status(500).json({ success: false, message: 'Server Error' })
+    console.error('Error in getAbstractsByCategory:', error);
+    return res.status(500).json({ success: false, message: 'Server Error' });
   }
-}
+};
 
 export const sendReminderToReviewer = async (req, res, next) => {
   try {

@@ -37,7 +37,7 @@ const AdminReview = () => {
       title: 'Unassigned Submissions',
       count: reviewStats?.unassignedSubmissions || 0,
       icon: FaTimesCircle,
-      link: '/admin/abstracts/unassigned',
+      link: '/admin/review/details/unassigned',
       color: 'bg-gray-100',
       iconColor: 'text-gray-600',
       description: 'Submissions with no reviewers assigned'
@@ -46,7 +46,7 @@ const AdminReview = () => {
       title: 'Reviews Completed',
       count: reviewStats?.completedReviews || 0,
       icon: FaCheckCircle,
-      link: '/admin/reviews/completed',
+      link: '/admin/review/details/completed',
       color: 'bg-green-100',
       iconColor: 'text-green-600',
       description: 'Successfully submitted reviews'
