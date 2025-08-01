@@ -1,4 +1,7 @@
-import { abstractCreatedTemplate } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
+import {
+  abstractCreatedTemplate,
+  abstractStatusChangeTemplate
+} from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
@@ -101,5 +104,51 @@ export const getAbstract = async (req, res, next) => {
       status: 'Failed',
       message: error.message
     })
+  }
+}
+
+export const changeAbstractStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { status } = req.body
+    const getAbstract = await Abstracts.findOne({ _id: id }).populate([
+      { path: 'conference' },
+      { path: 'createdBy' }
+    ])
+    if (!getAbstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    getAbstract.status = status
+    await getAbstract.save()
+
+    const emailHtml = abstractStatusChangeTemplate({
+      authorName: getAbstract.createdBy.name,
+      abstractTitle: getAbstract.title,
+      conferenceName: getAbstract.conference.name,
+      newStatus: status
+    })
+    const shortMsg = `Your abstract "${getAbstract.title}" status has been updated to: ${status}.`
+    await createNotificationService(
+      getAbstract.createdBy._id,
+      shortMsg,
+      emailHtml
+    )
+    // Send invitation email to the reviewer
+    await sendEmail({
+      to: getAbstract.createdBy.email,
+      subject: 'Update on Your Abstract Submission Status',
+      html: emailHtml
+    })
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Successfully updated the status of the',
+      data: getAbstract
+    })
+  } catch (error) {
+    next(error)
   }
 }

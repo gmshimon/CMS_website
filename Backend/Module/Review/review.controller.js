@@ -410,14 +410,13 @@ export const getAbstractsByCategory = async (req, res, next) => {
     }
 
     // Any other specific category
-    const filteredAbstracts = await Abstracts.find({ category })
+    const filteredAbstracts = await Abstracts.find(matchQuery)
       .populate('conference')
       .populate('conference_reg')
       .populate('createdBy')
       .lean();
 
-    const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(filteredAbstracts);
-
+    const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(filteredAbstracts,{ status: category });
     return res.status(200).json({ success: true, data: abstractsWithReviewsAndPapers });
   } catch (error) {
     console.error('Error in getAbstractsByCategory:', error);

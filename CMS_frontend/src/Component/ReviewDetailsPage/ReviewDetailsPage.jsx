@@ -17,19 +17,12 @@ const ReviewDetailsPage = () => {
   const [papers,setPapers] = useState([])
   const [selectedReview, setSelectedReview] = useState(null)
   const [selectedAbstract, setSelectedAbstract] = useState(null)
-  const examplePapers = [
-    { _id: '1', title: 'AI in 2025', submissionDate: '2025-07-25T10:00:00Z' },
-    {
-      _id: '2',
-      title: 'Quantum Computing',
-      submissionDate: '2025-07-26T09:30:00Z'
-    }
-  ]
+console.log(reviews)
   // the params of the routes
   const { category } = useParams()
 
   // call the custom hooks
-  const { handleInviteReview, handleSendReminder } = useReview(category)
+  const { handleInviteReview, handleSendReminder,handleChangeStatusOfAbstract } = useReview(category)
   useCreateUser('Reviewer')
 
   const handleOpenReviewerModal = row => {
@@ -55,6 +48,7 @@ const ReviewDetailsPage = () => {
     handleSendReminder,
     handleViewReview,
     handleViewPaperList,
+    handleChangeStatusOfAbstract,
     maxReviewers: 3
   })
   return (

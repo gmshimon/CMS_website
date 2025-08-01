@@ -46,29 +46,29 @@ const AdminReview = () => {
       title: 'Reviews Completed',
       count: reviewStats?.completedReviews || 0,
       icon: FaCheckCircle,
-      link: '/admin/review/details/completed',
+      link: '/admin/review/details/reviewed',
       color: 'bg-green-100',
       iconColor: 'text-green-600',
       description: 'Successfully submitted reviews'
     },
-    {
-      title: 'Overdue Reviews',
-      count: reviewStats?.overdueReviews || 0,
-      icon: FaExclamationTriangle,
-      link: '/admin/reviews/overdue',
-      color: 'bg-red-100',
-      iconColor: 'text-red-600',
-      description: 'Past deadline and not submitted'
-    },
-    {
-      title: 'Multiple Review Rounds',
-      count: reviewStats?.multiRoundAbstracts || 0,
-      icon: FaSyncAlt,
-      link: '/admin/abstracts/multi-round',
-      color: 'bg-purple-100',
-      iconColor: 'text-purple-600',
-      description: 'Abstracts with more than 1 review round'
-    }
+    // {
+    //   title: 'Overdue Reviews',
+    //   count: reviewStats?.overdueReviews || 0,
+    //   icon: FaExclamationTriangle,
+    //   link: '/admin/reviews/overdue',
+    //   color: 'bg-red-100',
+    //   iconColor: 'text-red-600',
+    //   description: 'Past deadline and not submitted'
+    // },
+    // {
+    //   title: 'Multiple Review Rounds',
+    //   count: reviewStats?.multiRoundAbstracts || 0,
+    //   icon: FaSyncAlt,
+    //   link: '/admin/abstracts/multi-round',
+    //   color: 'bg-purple-100',
+    //   iconColor: 'text-purple-600',
+    //   description: 'Abstracts with more than 1 review round'
+    // }
   ]
 
   

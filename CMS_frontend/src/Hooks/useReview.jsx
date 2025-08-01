@@ -29,9 +29,14 @@ const useReview = (category = 'all') => {
     )
   }
 
+  const handleChangeStatusOfAbstract =(id,value) =>{
+    console.log(id,value)
+  }
+
   return {
     handleInviteReview,
-    handleSendReminder
+    handleSendReminder,
+    handleChangeStatusOfAbstract
   }
 }
 

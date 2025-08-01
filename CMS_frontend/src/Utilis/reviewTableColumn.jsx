@@ -1,11 +1,22 @@
 import { format } from 'date-fns'
 import { FaEye } from 'react-icons/fa'
-
+const statuses = [
+  'Abstract Submitted',
+  'Paper Submitted',
+  'In Review',
+  'Accepted',
+  'Rejected',
+  'Minor Revision',
+  'Major Revision',
+  'Revision Submitted',
+  'Camera Ready Copy Submitted',
+  'Withdraw'
+]
 export const abstractReviewColumns = ({
-  onViewSubmission,
   handleSendReminder,
   handleViewReview,
   handleViewPaperList,
+  handleChangeStatusOfAbstract,
   maxReviewers = 3
 }) => {
   const baseColumns = [
@@ -22,8 +33,29 @@ export const abstractReviewColumns = ({
       label: 'Theme'
     },
     {
-      key:"status",
-      label:"Status"
+      key: 'status',
+      label: 'Status',
+      render: (_, row) => {
+        return (
+          <>
+            <select
+              className='border border-black rounded-md'
+              value={row.status}
+              onChange={(e) => handleChangeStatusOfAbstract(row._id,e.target.value)}
+            >
+              {statuses.map(status => (
+                <option
+                  key={status}
+                  value={status}
+                  disabled={status === 'Paper Submitted'}
+                >
+                  {status}
+                </option>
+              ))}
+            </select>
+          </>
+        )
+      }
     },
     {
       key: 'conference.name',
@@ -82,11 +114,14 @@ export const abstractReviewColumns = ({
             <span className={`text-xs font-semibold ${statusColor}`}>
               {statusLabel}
             </span>
-            {
-              hasReviewed&&<button onClick={()=>handleViewReview(row?.reviews[index])} className='btn btn-xs btn-accent mt-1'>
+            {hasReviewed && (
+              <button
+                onClick={() => handleViewReview(row?.reviews[index])}
+                className='btn btn-xs btn-accent mt-1'
+              >
                 View Review
               </button>
-            }
+            )}
             {noResponse && (
               <button
                 onClick={() => handleSendReminder(row?.reviews[index]?._id)}
@@ -106,7 +141,7 @@ export const abstractReviewColumns = ({
     label: 'View',
     render: (_, row) => (
       <button
-        onClick={() =>handleViewPaperList(row.papers)}
+        onClick={() => handleViewPaperList(row.papers)}
         className='btn btn-sm btn-outline text-blue-600 tooltip'
         data-tip='View Submission Paper'
       >
