@@ -3,7 +3,7 @@ import { IoClose, IoCloudUpload, IoDocument } from 'react-icons/io5'
 import { FaFilePdf, FaFileWord } from 'react-icons/fa'
 import { toast } from 'react-toastify'
 import { useDispatch, useSelector } from 'react-redux'
-import { postPaper } from '../../Redux/Slice/paperSlice'
+import { postPaper } from '../../Redux/Slice/PaperSlice'
 
 const UploadPaperModal = ({ isOpen, onClose, abstractData }) => {
   const { createPostPaperLoading,createPostPaperSuccess } = useSelector(state => state.paper)

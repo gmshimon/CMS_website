@@ -4,7 +4,7 @@ import 'react-responsive-pagination/themes/classic.css'
 import { IoMdEye } from 'react-icons/io'
 import PaperModal from '../../../Component/PaperModal/PaperModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPaper } from '../../../Redux/Slice/paperSlice'
+import { getPaper } from '../../../Redux/Slice/PaperSlice'
 import Loading from '../../../Component/Loading/Loading'
 
 const MyPaper = () => {
