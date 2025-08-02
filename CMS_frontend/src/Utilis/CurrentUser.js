@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 import auth from "../Firebase/firebase.config";
-import { fetchUser, getRole, startLoading } from "../Redux/Slice/authSlice";
+import { fetchUser, getRole, startLoading } from "../Redux/Slice/AuthSlice";
 
 // TODO:: Remove this function in Hooks
 
