@@ -4,7 +4,7 @@ import 'react-responsive-pagination/themes/classic.css'
 import { IoMdEye } from 'react-icons/io'
 import { Link } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { getConferenceRegs } from '../../../Redux/Slice/Conference_regSlice'
+import { getConferenceRegs } from '../../../Redux/Slice/conference_regSlice'
 import Loading from '../../../Component/Loading/Loading'
 
 const ConferenceList = () => {

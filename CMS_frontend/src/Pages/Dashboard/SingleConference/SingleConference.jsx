@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams, Link } from 'react-router-dom'
-import { getSingleConferenceReg } from '../../../Redux/Slice/Conference_regSlice'
+import { getSingleConferenceReg } from '../../../Redux/Slice/conference_regSlice'
 import Loading from '../../../Component/Loading/Loading'
 import {
   FaBed,
