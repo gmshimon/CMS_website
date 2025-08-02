@@ -126,11 +126,11 @@ export const changeAbstractStatus = async (req, res, next) => {
 
     const emailHtml = abstractStatusChangeTemplate({
       authorName: getAbstract.createdBy.name,
-      abstractTitle: getAbstract.title,
+      abstractTitle: getAbstract.paper_title,
       conferenceName: getAbstract.conference.name,
       newStatus: status
     })
-    const shortMsg = `Your abstract "${getAbstract.title}" status has been updated to: ${status}.`
+    const shortMsg = `Your abstract "${getAbstract.paper_title}" status has been updated to: ${status}.`
     await createNotificationService(
       getAbstract.createdBy._id,
       shortMsg,

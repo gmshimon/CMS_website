@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   assignReviewer,
+  changeAbstractStatus,
   fetchReviewStats,
   getAbstractsByCategory,
   sendReminderToReviewer
@@ -29,8 +30,8 @@ const useReview = (category = 'all') => {
     )
   }
 
-  const handleChangeStatusOfAbstract =(id,value) =>{
-    console.log(id,value)
+  const handleChangeStatusOfAbstract = (id, value) => {
+    dispatch(changeAbstractStatus({ id: id, status: value }))
   }
 
   return {

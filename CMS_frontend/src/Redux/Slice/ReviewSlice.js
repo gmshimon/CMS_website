@@ -42,6 +42,10 @@ const initialState = {
   submitReviewSuccess: false,
   submitReviewError: false,
 
+  changeAbstractStatusLoading: false,
+  changeAbstractStatusSuccess: false,
+  changeAbstractStatusError: false,
+
   getReviewStatsError: null
 }
 export const fetchReviewStats = createAsyncThunk(
@@ -159,6 +163,26 @@ export const submitReview = createAsyncThunk(
   }
 )
 
+export const changeAbstractStatus = createAsyncThunk(
+  'changeAbstractStatus',
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.post(`/abstract/change-status/${id}`, {
+        status: status
+      })
+      return {
+        id,
+        status
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          'Something went wrong while responding to review.'
+      )
+    }
+  }
+)
+
 const adminSlice = createSlice({
   name: 'review',
   initialState,
@@ -195,6 +219,10 @@ const adminSlice = createSlice({
       state.submitReviewLoading = false
       state.submitReviewSuccess = false
       state.submitReviewError = false
+
+      state.changeAbstractStatusLoading = false
+      state.changeAbstractStatusSuccess = false
+      state.changeAbstractStatusError = false
 
       state.getReviewStatsError = null
     }
@@ -344,6 +372,31 @@ const adminSlice = createSlice({
         state.submitReviewSuccess = false
         state.submitReviewError = true
         state.getMyReviewStatsError = action.payload
+      })
+
+      .addCase(changeAbstractStatus.pending, state => {
+        state.changeAbstractStatusLoading = true
+        state.changeAbstractStatusSuccess = false
+        state.changeAbstractStatusError = false
+      })
+
+      .addCase(changeAbstractStatus.fulfilled, (state, action) => {
+        state.changeAbstractStatusLoading = false
+        state.changeAbstractStatusSuccess = true
+        state.changeAbstractStatusError = false
+        const { id, status } = action.payload
+
+        const index = state.reviews.findIndex(item => item._id == id)
+        if (index !== -1) {
+          state.reviews[index].status = status
+        }
+      })
+
+      .addCase(changeAbstractStatus.rejected, (state, action) => {
+        state.changeAbstractStatusLoading = false
+        state.changeAbstractStatusSuccess = false
+        state.changeAbstractStatusError = true
+        state.getReviewStatsError = action.payload
       })
   }
 })

@@ -5,16 +5,17 @@ import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
-  roleCounts :{},
+  roleCounts: {},
   users: [],
   reviewers: [],
   session_chairs: [],
   keynote_speakers: [],
+  presentationStats: [],
   moderators: [],
   scientificCommittee: [],
   technicalCommittee: [],
   registrationCommittee: [],
-  selectedYear:null,
+  selectedYear: null,
   adminErrorMessage: null,
   isAdminCreateUserLoading: false,
   isAdminCreateUserSuccess: false,
@@ -27,7 +28,10 @@ const initialState = {
   isDeleteUserError: false,
   isUpdateUserLoading: false,
   isUpdateUserSuccess: false,
-  isUpdateUserError: false
+  isUpdateUserError: false,
+  getPresentationStatsLoading: false,
+  getPresentationStatsSuccess: false,
+  getPresentationStatsError: false
 }
 
 export const adminCreateUser = createAsyncThunk(
@@ -49,8 +53,8 @@ export const getUserRoleCounts = createAsyncThunk(
   'getUserRoleCounts',
   async (year, { rejectWithValue }) => {
     try {
-      const query = year ? `?year=${year}`:'' 
-      const response = await axios.get(`/admin/total-user${query}`,)
+      const query = year ? `?year=${year}` : ''
+      const response = await axios.get(`/admin/total-user${query}`)
       return response.data.data
     } catch (error) {
       const message =
@@ -143,6 +147,22 @@ export const updateUserImage = createAsyncThunk(
   }
 )
 
+export const getPresentationMethodStats = createAsyncThunk(
+  'getPresentationMethodStats',
+  async (year, { rejectWithValue }) => {
+    try {
+      const query = year ? `?year=${year}` : ''
+      const response = await axiosSecure.get(`/admin/presentation-stats/${query}`)
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating user image'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const adminSlice = createSlice({
   name: 'admin',
   initialState,
@@ -164,8 +184,12 @@ const adminSlice = createSlice({
       state.isUpdateUserLoading = false
       state.isUpdateUserSuccess = false
       state.isUpdateUserError = false
+
+      state.getPresentationStatsLoading = false
+      state.getPresentationStatsSuccess = false
+      state.getPresentationStatsError = false
     },
-    setSelectedYear:(state,action)=>{
+    setSelectedYear: (state, action) => {
       state.selectedYear = action.payload
     }
   },
@@ -223,7 +247,7 @@ const adminSlice = createSlice({
         state.isGetUserLoading = false
         state.isGetUserSuccess = true
         state.isGetUserError = false
-        state.roleCounts  = action.payload
+        state.roleCounts = action.payload
       })
       .addCase(getUserRoleCounts.rejected, (state, action) => {
         state.isGetUserLoading = false
@@ -386,7 +410,24 @@ const adminSlice = createSlice({
         ;(state.isUpdateUserError = true),
           (state.adminErrorMessage = action.payload)
       })
+
+      .addCase(getPresentationMethodStats.pending, state => {
+        state.getPresentationStatsLoading = true
+        state.getPresentationStatsSuccess = false
+        state.getPresentationStatsError = false
+      })
+      .addCase(getPresentationMethodStats.fulfilled, (state, action) => {
+        state.getPresentationStatsLoading = false
+        state.getPresentationStatsSuccess = true
+        state.getPresentationStatsError = false
+        state.presentationStats = action.payload
+      })
+      .addCase(getPresentationMethodStats.rejected, (state) => {
+        state.getPresentationStatsLoading = false
+        state.getPresentationStatsSuccess = false
+        state.getPresentationStatsError = true
+      })
   }
 })
-export const { reset ,setSelectedYear} = adminSlice.actions
+export const { reset, setSelectedYear } = adminSlice.actions
 export default adminSlice.reducer

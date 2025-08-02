@@ -41,7 +41,9 @@ export const abstractReviewColumns = ({
             <select
               className='border border-black rounded-md'
               value={row.status}
-              onChange={(e) => handleChangeStatusOfAbstract(row._id,e.target.value)}
+              onChange={e =>
+                handleChangeStatusOfAbstract(row._id, e.target.value)
+              }
             >
               {statuses.map(status => (
                 <option
@@ -117,7 +119,7 @@ export const abstractReviewColumns = ({
             {hasReviewed && (
               <button
                 onClick={() => handleViewReview(row?.reviews[index])}
-                className='btn btn-xs btn-accent mt-1'
+                className='btn btn-sm text-xs btn-accent mt-1'
               >
                 View Review
               </button>

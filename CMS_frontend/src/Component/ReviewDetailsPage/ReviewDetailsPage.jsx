@@ -14,22 +14,26 @@ const ReviewDetailsPage = () => {
   const { reviewers } = useSelector(state => state.admin)
   const [openModal, setOpenModal] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const [papers,setPapers] = useState([])
+  const [papers, setPapers] = useState([])
   const [selectedReview, setSelectedReview] = useState(null)
   const [selectedAbstract, setSelectedAbstract] = useState(null)
-console.log(reviews)
+
   // the params of the routes
   const { category } = useParams()
 
   // call the custom hooks
-  const { handleInviteReview, handleSendReminder,handleChangeStatusOfAbstract } = useReview(category)
+  const {
+    handleInviteReview,
+    handleSendReminder,
+    handleChangeStatusOfAbstract
+  } = useReview(category)
   useCreateUser('Reviewer')
 
   const handleOpenReviewerModal = row => {
     setSelectedAbstract(row)
   }
 
-  const handleViewPaperList = papers =>{
+  const handleViewPaperList = papers => {
     setPapers(papers)
     setModalOpen(true)
   }
@@ -42,7 +46,6 @@ console.log(reviews)
   const handleView = paper => {
     window.open(paper.link, '_blank')
   }
-
   const columns = abstractReviewColumns({
     onViewSubmission: row => setSelectedAbstract(row),
     handleSendReminder,

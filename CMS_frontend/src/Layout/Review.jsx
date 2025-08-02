@@ -15,6 +15,9 @@ const Review = () => {
     sentReviewerReminderLoading,
     sentReviewerReminderSuccess,
     sentReviewerReminderError,
+    changeAbstractStatusLoading,
+    changeAbstractStatusSuccess,
+    changeAbstractStatusError,
     getReviewStatsError
   } = useSelector(state => state.review)
   const [yearInput, setYearInput] = useState('')
@@ -38,9 +41,19 @@ const Review = () => {
       showErrorToast(getReviewStatsError)
       dispatch(clearReviewStats())
     }
+    if (changeAbstractStatusSuccess) {
+      showSuccessToast('Successfully change the abstract status')
+      dispatch(clearReviewStats())
+    }
+    if (changeAbstractStatusError) {
+      showErrorToast(getReviewStatsError)
+      dispatch(clearReviewStats())
+    }
   }, [
     assigningReviewerError,
     assigningReviewerSuccess,
+    changeAbstractStatusError,
+    changeAbstractStatusSuccess,
     dispatch,
     getReviewStatsError,
     sentReviewerReminderError,
@@ -56,7 +69,11 @@ const Review = () => {
     dispatch(setSelectedYear(yearInput))
   }
 
-  if (assigningReviewerLoading || sentReviewerReminderLoading) {
+  if (
+    assigningReviewerLoading ||
+    sentReviewerReminderLoading ||
+    changeAbstractStatusLoading
+  ) {
     return (
       <div className='flex justify-center h-[calc(100vh-100px)] items-center'>
         <Loading />

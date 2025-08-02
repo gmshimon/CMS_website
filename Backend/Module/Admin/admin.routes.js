@@ -6,6 +6,7 @@ import {
   AdminCreateUser,
   deleteUser,
   deleteUserImage,
+  getPresentationMethodStats,
   getRoleBasedUser,
   getUserRoleCounts,
   updateUser,
@@ -36,5 +37,7 @@ router
 
 // TODO:: add validation of user
 router.route('/get/:role').get(getRoleBasedUser)
+
+router.get('/presentation-stats', getPresentationMethodStats)
 
 export default router

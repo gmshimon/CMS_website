@@ -35,6 +35,9 @@ import AdminReview from "../Pages/Dashboard/AdminReview/AdminReview.jsx";
 import ReviewDetailsPage from "../Component/ReviewDetailsPage/ReviewDetailsPage.jsx";
 import HomePage from "../Pages/HomePage/HomePage.jsx";
 import MyReviewDetailPage from "../Pages/Dashboard/MyReviewDetailPage/MyReviewDetailPage.jsx";
+import Scheduling from "../Layout/Scheduling.jsx";
+import SchedulingHome from "../Pages/Dashboard/Scheduling/SchedulingHome/SchedulingHome.jsx";
+import SchedulingCategory from "../Pages/Dashboard/Scheduling/SchedulingCategory/SchedulingCategory.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -114,6 +117,20 @@ export const router = createBrowserRouter([
       {
         path:'my-review/:category',
         element:<MyReviewDetailPage/>
+      },
+      {
+        path:'scheduling',
+        element:<Scheduling/>,
+        children:[
+          {
+            path:'',
+            element:<SchedulingHome/>
+          },
+          {
+            path:':category',
+            element:<SchedulingCategory/>
+          }
+        ]
       },
       {
         path:'submission',

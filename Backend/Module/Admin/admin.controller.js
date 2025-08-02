@@ -7,6 +7,7 @@ import {
   accountCreateTemplate
 } from '../../Utilis/EmailTemplate/createUserTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
+import Abstracts from '../Abstract/abstract.model.js'
 
 const serviceAccount = JSON.parse(
   await readFile(
@@ -337,5 +338,53 @@ export const updateUserImage = async (req, res, next) => {
       await deleteImageFromS3(req.file.key)
     }
     next(error)
+  }
+}
+
+export const getPresentationMethodStats = async (req, res) => {
+  try {
+    const { year } = req.query
+    const matchQuery = {}
+    if (year) {
+      matchQuery.$expr = {
+        $eq: [{ $year: '$createdAt' }, parseInt(year)]
+      }
+    }
+    const stats = await Abstracts.aggregate([
+      {
+        $group: {
+          _id: '$presentation_method',
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          method: '$_id',
+          count: 1
+        }
+      }
+    ])
+
+    // Optional: Ensure all types are returned (even if count is 0)
+    const methods = [
+      'Paper Presentation Online',
+      'Paper Presentation Physical',
+      'Poster Presentation Online',
+      'Poster Presentation Physical'
+    ]
+
+    const completeStats = methods.map(method => {
+      const found = stats.find(s => s.method === method)
+      return {
+        method,
+        count: found ? found.count : 0
+      }
+    })
+
+    res.status(200).json({ success: true, data: completeStats })
+  } catch (error) {
+    console.error('Error fetching presentation stats:', error)
+    res.status(500).json({ success: false, message: 'Server error' })
   }
 }
