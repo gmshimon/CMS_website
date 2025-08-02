@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router'
 import { toast, ToastContainer } from 'react-toastify'
-import { loginUser, reset } from '../../Redux/Slice/authSlice'
+import { loginUser, reset } from '../../Redux/Slice/AuthSlice'
 
 const Login = () => {
   const {isLoginSuccess,isLoginLoading,isLoginError} = useSelector(state=>state.user)

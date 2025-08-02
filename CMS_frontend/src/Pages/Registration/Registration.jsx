@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router'
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getRole, reset } from '../../Redux/Slice/authSlice'
-import { createUser } from '../../Redux/Slice/authSlice'
+import { getRole, reset,createUser } from '../../Redux/Slice/AuthSlice'
 
 const countries = [
   'Afghanistan',
