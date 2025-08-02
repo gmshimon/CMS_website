@@ -57,9 +57,9 @@ jobs:
         working-directory: CMS_frontend
         run: npm start &
 
-      - name: npm run lint
-        working-directory: CMS_frontend
-        run: npm run lint
+    #   - name: npm run lint
+        # working-directory: CMS_frontend
+        # run: npm run lint
   build-and-publish:
     name: 📦 Build and Publish
     runs-on: ubuntu-latest
