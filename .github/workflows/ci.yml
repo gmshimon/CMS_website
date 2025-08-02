@@ -82,7 +82,7 @@ jobs:
             username: ${{ secrets.DOCKER_USERNAME }}
             password: ${{ secrets.DOCKER_PASSWORD }}
         
-      - name: Build and Push Docker Image
+      - name: Build and Push Backend Docker Image
         uses: docker/build-push-action@v4
         with: 
             context: Backend
