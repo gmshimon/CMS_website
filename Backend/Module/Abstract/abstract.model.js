@@ -13,12 +13,24 @@ const abstractSchema = new mongoose.Schema(
     member_id: {
       type: String
     },
+    payment_status: {
+      type: String,
+      enum: ['Paid', 'Unpaid'],
+      default: 'Unpaid'
+    },
+    review_status: {
+      type: String,
+      enum: ['Pending', 'Reviewed'],
+      default: 'Pending'
+    },
+    payment_proof: {
+      type: String
+    },
     status: {
       type: String,
       enum: [
         'Abstract Submitted',
         'Paper Submitted',
-        'In Review',
         'Accepted',
         'Rejected',
         'Minor Revision',

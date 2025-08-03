@@ -370,10 +370,10 @@ export const getPresentationMethodStats = async (req, res) => {
 
     // Optional: Ensure all types are returned (even if count is 0)
     const methods = [
-      'Paper Presentation Online',
       'Paper Presentation Physical',
+      'Paper Presentation Online',
+      'Poster Presentation Physical',
       'Poster Presentation Online',
-      'Poster Presentation Physical'
     ]
 
     const completeStats = methods.map(method => {

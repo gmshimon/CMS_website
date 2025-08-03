@@ -142,31 +142,31 @@ const Dashboard = () => {
             <div className='mx-2 flex-1 px-2'>CMS</div>
             <div className='navbar-end'>
               {/* Dropdown Select */}
-              {user?.role !== 'Admin' && (
-                <div className='ml-2'>
-                  <select
-                    value={selectedConference}
-                    className='border border-black p-1 rounded-lg w-44 text-sm bg-slate-600'
-                    onChange={e => {
-                      dispatch(setSelectedConference(e.target.value))
-                      sessionStorage.setItem(
-                        'selectedConference',
-                        e.target.value
-                      )
-                    }}
-                    defaultValue='default'
-                  >
-                    <option value='default' className='text-black' disabled>
-                      Select Conference
+
+              <div className='ml-2'>
+                <select
+                  value={selectedConference}
+                  className='border border-black p-1 rounded-lg w-44 text-sm bg-slate-600'
+                  onChange={e => {
+                    dispatch(setSelectedConference(e.target.value))
+                    sessionStorage.setItem('selectedConference', e.target.value)
+                  }}
+                  defaultValue='default'
+                >
+                  <option value='default' className='text-black' disabled>
+                    Select Conference
+                  </option>
+                  <option value={null} className='text-white'>
+                    All Conferences
+                  </option>
+                  {conferences?.map((opt, index) => (
+                    <option key={index} value={opt._id}>
+                      {opt.name}
                     </option>
-                    {conferences?.map((opt, index) => (
-                      <option key={index} value={opt._id}>
-                        {opt.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
+                  ))}
+                </select>
+              </div>
+
               {/* Message Dropdown */}
               <div className='flex-none'>
                 <div className='dropdown dropdown-end'>

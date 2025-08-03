@@ -5,6 +5,7 @@ import {
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
+import Paper from '../Paper/paper.model.js'
 import Abstracts from './abstract.model.js'
 import {
   s3AbstractGraphicalAbstract,
@@ -147,6 +148,48 @@ export const changeAbstractStatus = async (req, res, next) => {
       status: 'Success',
       message: 'Successfully updated the status of the',
       data: getAbstract
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getAbstractByCategory = async (req, res, next) => {
+  try {
+    const { conference_id, presentation_method } = req.query
+    const match = {
+      presentation_method
+    }
+    if (conference_id && conference_id !== 'all' && conference_id !== undefined) {
+      match.conference = conference_id
+    }
+
+    const getAbstract = await Abstracts.find(match)
+      .populate('conference')
+      .populate('createdBy')
+      .lean(); // Returns plain JS objects
+
+    if (!getAbstract || getAbstract.length === 0) {
+      const error = new Error('No abstracts found for this category')
+      error.statusCode = 404
+      return next(error)
+    }
+
+
+      const abstractsWithPapers = await Promise.all(
+      getAbstract.map(async (abstract) => {
+        const papers = await Paper.find({ abstract: abstract._id }).lean();
+        return {
+          ...abstract,
+          papers, // Will be empty array if none found
+        };
+      })
+    );
+    
+    return res.status(200).json({
+      status: 'Success',
+      message: 'Fetched the abstract by category successfully',
+      data:abstractsWithPapers
     })
   } catch (error) {
     next(error)

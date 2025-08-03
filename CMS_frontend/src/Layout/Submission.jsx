@@ -3,9 +3,11 @@ import { FaSearch } from 'react-icons/fa'
 import { Outlet, useLocation } from 'react-router'
 
 const Submission = () => {
+  // eslint-disable-next-line no-unused-vars
   const [yearInput, setYearInput] = useState('')
 
   const location = useLocation()
+  // eslint-disable-next-line no-unused-vars
   const handleSearch = () => {
     if (!yearInput || yearInput < 1900 || yearInput > 3000) {
       alert('Please enter a valid year')
@@ -14,21 +16,20 @@ const Submission = () => {
     // TODO: Trigger API or filter logic using yearInput
     console.log('Searching submissions for year:', yearInput)
   }
-  console.log(location.pathname)
   return (
     <div className='p-6'>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/submission'
           ? 'Submission Overview'
-          : location?.pathname === '/admin/submission/physical'
-          ? 'Physical Presentation'
-          : location.pathname === '/admin/submission/poster'
-          ? 'Poster Overview'
-          : 'overview'}
+          : location?.pathname === '/admin/submission/presentation_method/physical-paper'
+          ? 'Paper Submissions (Physical Mode)'
+          : location.pathname === '/admin/submission/presentation_method/online-paper'
+          ? 'Paper Submissions (Online Mode)'
+          : location.pathname === '/admin/submission/presentation_method/physical-poster'?'Poster Submissions (Physical Mode)': location.pathname === '/admin/submission/presentation_method/online-poster'?'Poster Submissions (Online Mode)':'overview'}
       </h2>
 
       {/* Standard Year Search Field */}
-      <div className='mb-8 max-w-md'>
+      {/* <div className='mb-8 max-w-md'>
         <label
           htmlFor='year'
           className='block text-sm font-medium text-gray-700 mb-2'
@@ -52,7 +53,7 @@ const Submission = () => {
             Search
           </button>
         </div>
-      </div>
+      </div> */}
       <Outlet />
     </div>
   )

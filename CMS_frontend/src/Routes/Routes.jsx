@@ -141,7 +141,7 @@ export const router = createBrowserRouter([
             element:<AdminSubmission/>
           },
           {
-            path:'physical',
+            path:'presentation_method/:method',
             element:<PhysicalSubmission/>
           },
           {

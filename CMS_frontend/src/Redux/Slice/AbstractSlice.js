@@ -69,6 +69,30 @@ export const getAbstract = createAsyncThunk(
   }
 )
 
+export const getAbstractByCategory = createAsyncThunk(
+  'getAbstractByCategory',
+  async ({ conference_id, presentation_method }, { rejectWithValue }) => {
+    try {
+      let query = ''
+      const params = []
+      if (conference_id) params.push(`conference_id=${conference_id}`)
+      if (presentation_method)
+        params.push(`presentation_method=${presentation_method}`)
+      if (params.length) query = '?' + params.join('&')
+
+      const response = await axiosSecure.get(
+        `/abstract/get-abstract-category${query}`
+      )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while fetching abstracts by category'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const abstractSlice = createSlice({
   name: 'abstract',
   initialState,
@@ -82,7 +106,7 @@ const abstractSlice = createSlice({
       state.getAbstractSuccess = false
       state.getAbstractError = false
     },
-    resetForm: (state, action) => {
+    resetForm: (state) => {
       state.conference = null
       state.member_id = null
       state.theme = null
@@ -219,6 +243,22 @@ const abstractSlice = createSlice({
         state.getAbstractError = false
       })
       .addCase(getAbstract.rejected, state => {
+        state.getAbstractLoading = false
+        state.getAbstractSuccess = false
+        state.getAbstractError = true
+      })
+      .addCase(getAbstractByCategory.pending, state => {
+        state.getAbstractLoading = true
+        state.getAbstractSuccess = false
+        state.getAbstractError = false
+      })
+      .addCase(getAbstractByCategory.fulfilled, (state, action) => {
+        state.abstracts = action.payload
+        state.getAbstractLoading = false
+        state.getAbstractSuccess = true
+        state.getAbstractError = false
+      })
+      .addCase(getAbstractByCategory.rejected, state => {
         state.getAbstractLoading = false
         state.getAbstractSuccess = false
         state.getAbstractError = true

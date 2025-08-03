@@ -8,7 +8,7 @@ const useScheduling = () => {
 
   useEffect(() => {
     dispatch(getPresentationMethodStats(selectedYear))
-  }, [])
+  }, [dispatch, selectedYear])
 }
 
 export default useScheduling

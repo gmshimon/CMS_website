@@ -1,6 +1,8 @@
 import React from 'react'
 import PhysicalPresentationTable from '../../../../Component/SubmissionTable/SubmissionTable'
 import SubmissionTable from '../../../../Component/SubmissionTable/SubmissionTable'
+import { useParams } from 'react-router'
+import useSubmissions from '../../../../Hooks/useSubmissions'
 const dummyPresentationList = [
   {
     _id: 'ABS2025001',
@@ -60,6 +62,10 @@ const dummyPresentationList = [
 ]
 
 const PhysicalSubmission = () => {
+
+  const {method} = useParams()
+  useSubmissions(method)
+  console.log('PhysicalSubmission params:', method)
   function getStatusColor (status) {
     switch (status) {
       case 'Accepted':
