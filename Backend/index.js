@@ -29,8 +29,8 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }))
 app.use(bodyParser.json())
 // app.use(sessionMiddleware)
 
-const uri = 'mongodb://127.0.0.1:27017/cms_website'
-// const uri = process.env.MONGODB_URI
+// const uri = 'mongodb://127.0.0.1:27017/cms_website'
+const uri = process.env.MONGODB_URI
 
 mongoose.connect(uri).then(() => {
   console.log('🛢️ Connected to MongoDB')
