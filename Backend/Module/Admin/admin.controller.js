@@ -19,8 +19,7 @@ import "dotenv/config";
 // )
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
-console.log('RAW ENV VALUE:', process.env.FIREBASE_ADMIN_CREDENTIALS);
-console.log('FIRST CHAR:', process.env.FIREBASE_ADMIN_CREDENTIALS[0]);
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
