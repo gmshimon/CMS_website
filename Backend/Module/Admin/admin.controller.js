@@ -8,16 +8,17 @@ import {
 } from '../../Utilis/EmailTemplate/createUserTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
+import "dotenv/config"; 
+// const serviceAccount = JSON.parse(
+//   await readFile(
+//     new URL(
+//       '../../cms-website-efbff-firebase-adminsdk-fbsvc-ea47fb1749.json',
+//       import.meta.url
+//     )
+//   )
+// )
 
-const serviceAccount = JSON.parse(
-  await readFile(
-    new URL(
-      '../../cms-website-efbff-firebase-adminsdk-fbsvc-ea47fb1749.json',
-      import.meta.url
-    )
-  )
-)
-
+const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
