@@ -19,6 +19,7 @@ import "dotenv/config";
 // )
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
+console.log("Service Account Loaded:", serviceAccount);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
