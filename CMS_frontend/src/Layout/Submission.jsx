@@ -1,11 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
+import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
+import Loading from '../Component/Loading/Loading'
+import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
+import { reset } from '../Redux/Slice/AbstractSlice'
 
 const Submission = () => {
+  const {
+    changeAbstractDecisionLoading,
+    changeAbstractDecisionSuccess,
+    changeAbstractDecisionError,
+    editAbstractLoading,
+    editAbstractSuccess,
+    editAbstractError
+  } = useSelector(state => state.abstract)
   // eslint-disable-next-line no-unused-vars
   const [yearInput, setYearInput] = useState('')
-
+  const dispatch = useDispatch()
   const location = useLocation()
   // eslint-disable-next-line no-unused-vars
   const handleSearch = () => {
@@ -16,16 +28,57 @@ const Submission = () => {
     // TODO: Trigger API or filter logic using yearInput
     console.log('Searching submissions for year:', yearInput)
   }
+
+  useEffect(() => {
+    if (changeAbstractDecisionSuccess) {
+      showSuccessToast('Abstract decision updated successfully')
+      dispatch(reset())
+    }
+    if (changeAbstractDecisionError) {
+      showErrorToast('Failed to update abstract decision')
+      dispatch(reset())
+    }
+    if (editAbstractSuccess) {
+      showSuccessToast('Submission edited successfully')
+      dispatch(reset())
+    }
+    if (editAbstractError) {
+      showErrorToast('Failed to edit submission')
+      dispatch(reset())
+    }
+  }, [
+    changeAbstractDecisionError,
+    changeAbstractDecisionSuccess,
+    editAbstractSuccess,
+    editAbstractError,
+    dispatch
+  ])
+
+  if (changeAbstractDecisionLoading || editAbstractLoading) {
+    return (
+      <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
+        <Loading />
+      </div>
+    )
+  }
   return (
     <div className='p-6'>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/submission'
           ? 'Submission Overview'
-          : location?.pathname === '/admin/submission/presentation_method/physical-paper'
+          : location?.pathname ===
+            '/admin/submission/presentation_method/physical-paper'
           ? 'Paper Submissions (Physical Mode)'
-          : location.pathname === '/admin/submission/presentation_method/online-paper'
+          : location.pathname ===
+            '/admin/submission/presentation_method/online-paper'
           ? 'Paper Submissions (Online Mode)'
-          : location.pathname === '/admin/submission/presentation_method/physical-poster'?'Poster Submissions (Physical Mode)': location.pathname === '/admin/submission/presentation_method/online-poster'?'Poster Submissions (Online Mode)':'overview'}
+          : location.pathname ===
+            '/admin/submission/presentation_method/physical-poster'
+          ? 'Poster Submissions (Physical Mode)'
+          : location.pathname ===
+            '/admin/submission/presentation_method/online-poster'
+          ? 'Poster Submissions (Online Mode)'
+          : 'overview'}
       </h2>
 
       {/* Standard Year Search Field */}

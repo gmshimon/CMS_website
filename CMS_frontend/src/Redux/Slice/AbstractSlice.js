@@ -36,7 +36,15 @@ const initialState = {
 
   getAbstractLoading: false,
   getAbstractSuccess: false,
-  getAbstractError: false
+  getAbstractError: false,
+
+  editAbstractLoading: false,
+  editAbstractSuccess: false,
+  editAbstractError: false,
+
+  changeAbstractDecisionLoading: false,
+  changeAbstractDecisionSuccess: false,
+  changeAbstractDecisionError: false
 }
 
 export const createAbstract = createAsyncThunk(
@@ -93,6 +101,44 @@ export const getAbstractByCategory = createAsyncThunk(
   }
 )
 
+export const changeAbstractDecision = createAsyncThunk(
+  'changeAbstractStatus',
+  async ({ id, status }, { rejectWithValue }) => {
+    try {
+      await axiosSecure.post(`/abstract/change-status/${id}`, {
+        status: status
+      })
+      return {
+        id,
+        status
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          'Something went wrong while responding to review.'
+      )
+    }
+  }
+)
+
+export const updateAbstract = createAsyncThunk(
+  'updateAbstract',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.put(
+        `/abstract/update-abstract/${id}`,
+        data
+      )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating abstract'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const abstractSlice = createSlice({
   name: 'abstract',
   initialState,
@@ -105,8 +151,14 @@ const abstractSlice = createSlice({
       state.getAbstractLoading = false
       state.getAbstractSuccess = false
       state.getAbstractError = false
+      state.changeAbstractDecisionLoading = false
+      state.changeAbstractDecisionSuccess = false
+      state.changeAbstractDecisionError = false
+      state.editAbstractLoading = false
+      state.editAbstractSuccess = false
+      state.editAbstractError = false
     },
-    resetForm: (state) => {
+    resetForm: state => {
       state.conference = null
       state.member_id = null
       state.theme = null
@@ -262,6 +314,48 @@ const abstractSlice = createSlice({
         state.getAbstractLoading = false
         state.getAbstractSuccess = false
         state.getAbstractError = true
+      })
+      .addCase(changeAbstractDecision.pending, state => {
+        state.changeAbstractDecisionLoading = true
+        state.changeAbstractDecisionSuccess = false
+        state.changeAbstractDecisionError = false
+      })
+      .addCase(changeAbstractDecision.fulfilled, (state, action) => {
+        const { id, status } = action.payload
+        const index = state.abstracts.findIndex(abstract => abstract._id === id)
+        if (index !== -1) {
+          state.abstracts[index].status = status
+        }
+        state.changeAbstractDecisionLoading = false
+        state.changeAbstractDecisionSuccess = true
+        state.changeAbstractDecisionError = false
+      })
+      .addCase(changeAbstractDecision.rejected, state => {
+        state.changeAbstractDecisionLoading = false
+        state.changeAbstractDecisionSuccess = false
+        state.changeAbstractDecisionError = true
+      })
+      .addCase(updateAbstract.pending, state => {
+        state.editAbstractLoading = true
+        state.editAbstractSuccess = false
+        state.editAbstractError = false
+      })
+      .addCase(updateAbstract.fulfilled, (state, action) => {
+        const updatedAbstract = action.payload
+        const index = state.abstracts.findIndex(
+          abstract => abstract._id === updatedAbstract._id
+        )
+        if (index !== -1) {
+          state.abstracts[index] = updatedAbstract
+        }
+        state.editAbstractLoading = false
+        state.editAbstractSuccess = true
+        state.editAbstractError = false
+      })
+      .addCase(updateAbstract.rejected, state => {
+        state.editAbstractLoading = false
+        state.editAbstractSuccess = false
+        state.editAbstractError = true
       })
   }
 })

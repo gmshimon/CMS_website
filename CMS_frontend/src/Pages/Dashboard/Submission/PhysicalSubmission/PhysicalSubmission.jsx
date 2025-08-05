@@ -1,71 +1,24 @@
-import React from 'react'
-import PhysicalPresentationTable from '../../../../Component/SubmissionTable/SubmissionTable'
+import React, { useState } from 'react'
 import SubmissionTable from '../../../../Component/SubmissionTable/SubmissionTable'
 import { useParams } from 'react-router'
 import useSubmissions from '../../../../Hooks/useSubmissions'
-const dummyPresentationList = [
-  {
-    _id: 'ABS2025001',
-    theme: 'Artificial Intelligence',
-    authors: [{ name: 'Dr. Alice Johnson' }],
-    title: 'Deep Learning Techniques for Medical Imaging',
-    createdAt: '2025-05-15T10:30:00Z',
-    status: 'Accepted',
-    paymentStatus: 'Paid',
-    paymentProofUrl: 'https://example.com/payment-proof1.pdf',
-    reviewStatus: 'Reviewed'
-  },
-  {
-    _id: 'ABS2025002',
-    theme: 'Renewable Energy',
-    authors: [{ name: 'Prof. Bob Smith' }],
-    title: 'Solar Panel Efficiency Optimization',
-    createdAt: '2025-05-18T12:45:00Z',
-    status: 'Under Review',
-    paymentStatus: 'Unpaid',
-    paymentProofUrl: '',
-    reviewStatus: 'Pending'
-  },
-  {
-    _id: 'ABS2025003',
-    theme: 'Cybersecurity',
-    authors: [{ name: 'Ms. Clara Williams' }],
-    title: 'Blockchain for Secure Data Sharing',
-    createdAt: '2025-05-20T09:15:00Z',
-    status: 'Rejected',
-    paymentStatus: 'Paid',
-    paymentProofUrl: 'https://example.com/payment-proof3.pdf',
-    reviewStatus: 'Reviewed'
-  },
-  {
-    _id: 'ABS2025004',
-    theme: 'Robotics',
-    authors: [{ name: 'Mr. Daniel Lee' }],
-    title: 'Autonomous Navigation in Unstructured Environments',
-    createdAt: '2025-05-22T14:00:00Z',
-    status: 'Accepted',
-    paymentStatus: 'Paid',
-    paymentProofUrl: 'https://example.com/payment-proof4.pdf',
-    reviewStatus: 'Reviewed'
-  },
-  {
-    _id: 'ABS2025005',
-    theme: 'Data Science',
-    authors: [{ name: 'Dr. Emily Davis' }],
-    title: 'Big Data Analytics for Smart Cities',
-    createdAt: '2025-05-25T11:30:00Z',
-    status: 'Under Review',
-    paymentStatus: 'Unpaid',
-    paymentProofUrl: '',
-    reviewStatus: 'Pending'
-  }
-]
+import { useSelector } from 'react-redux'
+import EditSubmissionModal from '../../../../Component/EditSubmissionModal/EditSubmissionModal'
 
 const PhysicalSubmission = () => {
+  const { abstracts } = useSelector(state => state.abstract)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [data, setData] = useState()
 
-  const {method} = useParams()
-  useSubmissions(method)
-  console.log('PhysicalSubmission params:', method)
+  const { method } = useParams()
+  const { handleAbstractDecision, handleEditSubmission } =
+    useSubmissions(method)
+
+  const handleOpenEditModal = row => {
+    setData(row)
+    setModalOpen(true)
+  }
+
   function getStatusColor (status) {
     switch (status) {
       case 'Accepted':
@@ -82,12 +35,20 @@ const PhysicalSubmission = () => {
   return (
     <div>
       <SubmissionTable
-        data={dummyPresentationList}
+        data={abstracts}
         getStatusColor={getStatusColor}
         onView={item => alert(`View details: ${item.title}`)}
-        onEdit={item => alert(`Edit: ${item._id}`)}
+        onEdit={handleOpenEditModal}
         onDelete={item => alert(`Delete: ${item._id}`)}
         onViewFiles={item => alert(`View files for: ${item.title}`)}
+        handleAbstractDecision={handleAbstractDecision}
+      />
+
+      <EditSubmissionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSave={handleEditSubmission}
+        initialData={data}
       />
     </div>
   )

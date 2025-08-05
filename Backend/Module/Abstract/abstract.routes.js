@@ -3,7 +3,8 @@ import {
   changeAbstractStatus,
   createAbstract,
   getAbstract,
-  getAbstractByCategory
+  getAbstractByCategory,
+  updateAbstract
 } from './abstract.controller.js'
 import abstractUploaded from '../../Middleware/FileUpload/abstractUploaded.js'
 import verifyToken from '../../Middleware/verifyToken.js'
@@ -23,7 +24,8 @@ router.post(
   createAbstract
 )
 
-router.post('/change-status/:id', verifyToken, changeAbstractStatus)
+router.put('/update-abstract/:id', verifyToken, updateAbstract)
 
+router.post('/change-status/:id', verifyToken, changeAbstractStatus)
 
 export default router

@@ -160,14 +160,18 @@ export const getAbstractByCategory = async (req, res, next) => {
     const match = {
       presentation_method
     }
-    if (conference_id && conference_id !== 'all' && conference_id !== undefined) {
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
       match.conference = conference_id
     }
 
     const getAbstract = await Abstracts.find(match)
       .populate('conference')
       .populate('createdBy')
-      .lean(); // Returns plain JS objects
+      .lean() // Returns plain JS objects
 
     if (!getAbstract || getAbstract.length === 0) {
       const error = new Error('No abstracts found for this category')
@@ -175,21 +179,47 @@ export const getAbstractByCategory = async (req, res, next) => {
       return next(error)
     }
 
-
-      const abstractsWithPapers = await Promise.all(
-      getAbstract.map(async (abstract) => {
-        const papers = await Paper.find({ abstract: abstract._id }).lean();
+    const abstractsWithPapers = await Promise.all(
+      getAbstract.map(async abstract => {
+        const papers = await Paper.find({ abstract: abstract._id }).lean()
         return {
           ...abstract,
-          papers, // Will be empty array if none found
-        };
+          papers // Will be empty array if none found
+        }
       })
-    );
-    
+    )
+
     return res.status(200).json({
       status: 'Success',
       message: 'Fetched the abstract by category successfully',
-      data:abstractsWithPapers
+      data: abstractsWithPapers
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateAbstract = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { paper_title, abstract, authors } = req.body
+
+    const getAbstract = await Abstracts.findOne({ _id: id })
+    if (!getAbstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    const updatedSubmission = await Abstracts.findByIdAndUpdate(
+      id,
+      { paper_title, abstract, authors },
+      { new: true, runValidators: true }
+    )
+
+    res.status(200).json({
+      message: 'Submission updated successfully',
+      data: updatedSubmission
     })
   } catch (error) {
     next(error)
