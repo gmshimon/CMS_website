@@ -148,6 +148,11 @@ const Dashboard = () => {
                   value={selectedConference}
                   className='border border-black p-1 rounded-lg w-44 text-sm bg-slate-600'
                   onChange={e => {
+                    if (e.target.value === 'All Conferences') {
+                      dispatch(setSelectedConference(null)) 
+                      sessionStorage.removeItem('selectedConference')
+                      return
+                    }
                     dispatch(setSelectedConference(e.target.value))
                     sessionStorage.setItem('selectedConference', e.target.value)
                   }}
@@ -156,7 +161,7 @@ const Dashboard = () => {
                   <option value='default' className='text-black' disabled>
                     Select Conference
                   </option>
-                  <option value={null} className='text-white'>
+                  <option value={'all'} className='text-white'>
                     All Conferences
                   </option>
                   {conferences?.map((opt, index) => (

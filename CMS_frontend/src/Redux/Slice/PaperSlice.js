@@ -1,6 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-
-import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
@@ -34,7 +32,6 @@ export const getPaper = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axiosSecure.get(`/paper/${id}`)
-      console.log(response.data.data)
       return response.data.data
     } catch (error) {
       const message =

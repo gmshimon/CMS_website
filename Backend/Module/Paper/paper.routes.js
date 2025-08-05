@@ -5,7 +5,7 @@ import { getPaper, postPaper } from './paper.controller.js';
 
 const router = express.Router()
 
-router.get('/:conferenceId',verifyToken,getPaper)
+router.get('/:abstractId',verifyToken,getPaper)
 router.post('/create-paper/:abstractId',verifyToken,paperUploader.single('file'),postPaper)
 
 export default router;

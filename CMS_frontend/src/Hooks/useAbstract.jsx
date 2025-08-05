@@ -4,6 +4,7 @@ import { getAbstract } from '../Redux/Slice/AbstractSlice'
 import { getSingleConference } from '../Redux/Slice/conferenceSlice'
 
 const useAbstract = () => {
+  const { createPostPaperSuccess } = useSelector(state => state.paper)
   const { selectedConference } = useSelector(state => state.conference)
   const dispatch = useDispatch()
   useEffect(() => {
@@ -11,7 +12,7 @@ const useAbstract = () => {
       dispatch(getAbstract(selectedConference))
       dispatch(getSingleConference(selectedConference))
     }
-  }, [dispatch, selectedConference])
+  }, [dispatch, selectedConference, createPostPaperSuccess])
 }
 
 export default useAbstract

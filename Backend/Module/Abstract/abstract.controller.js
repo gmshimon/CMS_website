@@ -88,16 +88,24 @@ export const getAbstract = async (req, res, next) => {
   try {
     const { conference_id } = req.params
 
-    const getAbstract = await Abstracts.find({
-      conference: conference_id
-    }).populate({
-      path: 'conference',
-      path: 'createdBy'
-    })
+    const matchQuery = {}
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined &&
+      conference_id !== 'All Conferences'
+    ) {
+      console.log('conference_id:', conference_id, typeof conference_id)
+      matchQuery.conference = conference_id
+    }
+    const getAbstract = await Abstracts.find(matchQuery)
+      .populate('conference')
+      .populate('createdBy')
+      .lean() // Returns plain JS objects
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'Success',
-      message: 'fetched the abstract successfully',
+      message: 'Fetched the abstract by category successfully',
       data: getAbstract
     })
   } catch (error) {

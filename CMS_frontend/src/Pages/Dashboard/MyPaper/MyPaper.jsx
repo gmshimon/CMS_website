@@ -1,136 +1,89 @@
-import  { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
 import { IoMdEye } from 'react-icons/io'
 import PaperModal from '../../../Component/PaperModal/PaperModal'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPaper } from '../../../Redux/Slice/PaperSlice'
+import {  getPaper, paperReset } from '../../../Redux/Slice/PaperSlice'
 import Loading from '../../../Component/Loading/Loading'
+import useAbstract from '../../../Hooks/useAbstract'
+import { FaUpload } from 'react-icons/fa'
+import UploadPaperModal from '../../../Component/UploadPaperModal/UploadPaperModal'
+import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 
 const MyPaper = () => {
-  const { conferences } = useSelector(state => state.conference)
-  const { papers,getPaperLoading } = useSelector(state => state.paper)
+  const { abstracts } = useSelector(state => state.abstract)
+  const {
+    createPostPaperSuccess,
+    createPostPaperError,
+    getPaperLoading
+  } = useSelector(state => state.paper)
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedAbstractForUpload, setSelectedAbstractForUpload] =
+    useState(null)
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [selectedPaper, setSelectedPaper] = useState(null)
+  const [selectedAbstract, setSelectedAbstract] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const dispatch = useDispatch()
+  useAbstract()
+
 
   useEffect(() => {
-    if (conferences?._id) {
-      dispatch(getPaper(conferences?._id))
+    if (createPostPaperSuccess) {
+      showSuccessToast('Paper uploaded successfully')
+      dispatch(paperReset())
     }
-  }, [conferences?._id, dispatch])
+    if (createPostPaperError) {
+      showErrorToast('Paper Upload failed')
+      dispatch(paperReset())
+    }
+  }, [createPostPaperSuccess, createPostPaperError, dispatch])
 
-  const papersPerPage = 6
-
-  // Sample papers data
-  // const [papers] = useState([
-  //   {
-  //     id: 1,
-  //     abstractId: 'ABS-2024-001',
-  //     title: 'Machine Learning Applications in Healthcare',
-  //     author: 'Dr. John Smith',
-  //     abstract:
-  //       'This paper explores the innovative applications of machine learning algorithms in healthcare, focusing on early disease detection and personalized treatment planning. The study demonstrates significant improvements in diagnostic accuracy and patient outcomes through the implementation of advanced AI techniques.',
-  //     keywords: ['Machine Learning', 'Healthcare', 'AI', 'Disease Detection'],
-  //     status: 'Approved',
-  //     downloadUrl: '/papers/machine-learning-healthcare.pdf'
-  //   },
-  //   {
-  //     id: 2,
-  //     abstractId: 'ABS-2024-002',
-  //     title: 'Sustainable Energy Systems',
-  //     author: 'Prof. Maria Garcia',
-  //     abstract:
-  //       'An analysis of next-generation sustainable energy systems, examining the integration of renewable sources and smart grid technologies. The research presents novel approaches to energy storage and distribution, addressing key challenges in the transition to clean energy.',
-  //     keywords: [
-  //       'Sustainable Energy',
-  //       'Renewable Sources',
-  //       'Smart Grid',
-  //       'Energy Storage'
-  //     ],
-  //     status: 'Under Review',
-  //     downloadUrl: '/papers/sustainable-energy-systems.pdf'
-  //   },
-  //   {
-  //     id: 3,
-  //     abstractId: 'ABS-2024-003',
-  //     title: 'Quantum Computing Advances',
-  //     author: 'Dr. David Chen',
-  //     abstract:
-  //       'This study presents recent breakthroughs in quantum computing architecture and applications. The research explores novel quantum algorithms and their potential impact on cryptography, optimization problems, and molecular simulation.',
-  //     keywords: ['Quantum Computing', 'Quantum Algorithms', 'Cryptography'],
-  //     status: 'Approved',
-  //     downloadUrl: '/papers/quantum-computing-advances.pdf'
-  //   },
-  //   {
-  //     id: 4,
-  //     abstractId: 'ABS-2024-004',
-  //     title: 'Cybersecurity in IoT Devices',
-  //     author: 'Prof. Sarah Johnson',
-  //     abstract:
-  //       'An examination of security challenges and solutions in Internet of Things (IoT) devices. The paper proposes a new framework for enhancing device security while maintaining efficiency and user experience.',
-  //     keywords: ['Cybersecurity', 'IoT', 'Security Framework'],
-  //     status: 'Pending',
-  //     downloadUrl: '/papers/cybersecurity-iot.pdf'
-  //   },
-  //   {
-  //     id: 5,
-  //     abstractId: 'ABS-2024-005',
-  //     title: 'Blockchain in Supply Chain',
-  //     author: 'Dr. Michael Brown',
-  //     abstract:
-  //       'This research investigates the implementation of blockchain technology in supply chain management. The study presents case studies and empirical evidence of improved transparency and efficiency in global supply chains.',
-  //     keywords: ['Blockchain', 'Supply Chain', 'Transparency'],
-  //     status: 'Under Review',
-  //     downloadUrl: '/papers/blockchain-supply-chain.pdf'
-  //   },
-  //   {
-  //     id: 6,
-  //     abstractId: 'ABS-2024-006',
-  //     title: 'Neural Networks in Natural Language Processing',
-  //     author: 'Prof. Emily Wilson',
-  //     abstract:
-  //       'An analysis of advanced neural network architectures for natural language processing tasks. The research demonstrates improved performance in language understanding and generation through novel architectural modifications.',
-  //     keywords: ['Neural Networks', 'NLP', 'Language Processing'],
-  //     status: 'Approved',
-  //     downloadUrl: '/papers/neural-networks-nlp.pdf'
-  //   }
-  // ])
+  const abstractPerPage = 6
 
   // Filter papers based on search query
-  const filteredPapers = papers.filter(
-    paper =>
-      paper.abstract.paper_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      paper.abstract.authors[0].name.toLowerCase().includes(searchQuery.toLowerCase()) 
-      // paper.abstractId.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAbstracts = abstracts.filter(
+    abstract =>
+      abstract.paper_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      abstract.authors[0].name.toLowerCase().includes(searchQuery.toLowerCase())
+    // paper.abstractId.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   // Calculate pagination
-  const indexOfLastPaper = currentPage * papersPerPage
-  const indexOfFirstPaper = indexOfLastPaper - papersPerPage
-  const currentPapers = filteredPapers.slice(
+  const indexOfLastPaper = currentPage * abstractPerPage
+  const indexOfFirstPaper = indexOfLastPaper - abstractPerPage
+  const currentAbstracts = filteredAbstracts.slice(
     indexOfFirstPaper,
     indexOfLastPaper
   )
-  const totalPages = Math.ceil(filteredPapers.length / papersPerPage)
+  const totalPages = Math.ceil(filteredAbstracts.length / abstractPerPage)
 
   // Modal handlers
-  const handleOpenModal = paper => {
-    setSelectedPaper(paper)
+  const handleOpenModal = abstract => {
+    setSelectedAbstract(abstract)
+    dispatch(getPaper(abstract._id))
     setIsModalOpen(true)
   }
 
   const handleCloseModal = () => {
-    setSelectedPaper(null)
+    setSelectedAbstract(null)
     setIsModalOpen(false)
   }
 
-
-   // Function to get status color classes
-  const getStatusColor = (status) => {
+  // open upload modal
+  const handleOpenUploadModal = abstract => {
+    setSelectedAbstractForUpload(abstract)
+    setIsUploadModalOpen(true)
+  }
+  // close upload modal
+  const handleCloseUploadModal = () => {
+    setSelectedAbstractForUpload(null)
+    setIsUploadModalOpen(false)
+  }
+  // Function to get status color classes
+  const getStatusColor = status => {
     switch (status) {
       case 'Abstract Submitted':
         return 'bg-blue-100 text-blue-800'
@@ -200,42 +153,62 @@ const MyPaper = () => {
                   </tr>
                 </thead>
                 <tbody className='bg-white divide-y divide-gray-200'>
-                  {currentPapers.map(paper => (
+                  {currentAbstracts.map(abstract => (
                     <tr
-                      key={paper._id}
+                      key={abstract._id}
                       className='hover:bg-gray-50 transition-colors duration-200'
                     >
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm font-medium text-gray-900'>
-                          {paper.abstract._id}
+                          {abstract._id}
                         </div>
                       </td>
                       <td className='px-6 py-4'>
                         <div className='text-sm text-gray-900 line-clamp-2'>
-                          {paper.abstract.paper_title}
+                          {abstract.paper_title}
                         </div>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm text-gray-500'>
-                          {paper.abstract.authors[0].name}
+                          {abstract.authors[0].name}
                         </div>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${getStatusColor(paper.abstract.status)}`}
+                        ${getStatusColor(abstract.status)}`}
                         >
-                          {paper.abstract.status}
+                          {abstract.status}
                         </span>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
                         <div className='flex space-x-4'>
                           <button
-                            onClick={() => handleOpenModal(paper)}
+                            onClick={() => handleOpenModal(abstract)}
                             className='cursor-pointer hover:text-blue-500 transition-colors duration-200'
                           >
                             <IoMdEye className='text-xl' />
                           </button>
+
+                          {abstract.status === 'Abstract Submitted' ||
+                          abstract.status === 'Accepted' ||
+                          abstract.status === 'Minor Revision' ||
+                          abstract.status === 'Major Revision' ? (
+                            <button
+                              onClick={() => handleOpenUploadModal(abstract)}
+                              className='cursor-pointer hover:text-green-500 transition-colors duration-200 p-1 rounded-full hover:bg-green-50'
+                              title='Upload Paper'
+                            >
+                              <FaUpload className='text-lg' />
+                            </button>
+                          ) : (
+                            <span
+                              className='text-gray-400 cursor-not-allowed'
+                              title='Upload Paper not available'
+                            >
+                              Uploaded
+                            </span>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -253,9 +226,14 @@ const MyPaper = () => {
             </div>
           </div>
           <PaperModal
-            paper={selectedPaper}
+            abstract={selectedAbstract}
             isOpen={isModalOpen}
             onClose={handleCloseModal}
+          />
+          <UploadPaperModal
+            isOpen={isUploadModalOpen}
+            onClose={handleCloseUploadModal}
+            abstractData={selectedAbstractForUpload}
           />
         </>
       )}

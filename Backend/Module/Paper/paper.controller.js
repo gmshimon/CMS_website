@@ -31,15 +31,6 @@ export const postPaper = async (req, res, next) => {
         }
       )
 
-      await Abstracts.updateOne(
-        { _id: abstractId },
-        {
-          $set: {
-            status: 'Paper Submitted '
-          }
-        }
-      )
-
       const getPaper = await Paper.findOne({ _id: isPaperExist._id })
       return res.status(200).json({
         status: 'Success',
@@ -55,6 +46,14 @@ export const postPaper = async (req, res, next) => {
 
     const result = await Paper.create(data)
 
+    await Abstracts.updateOne(
+      { _id: abstractId },
+      {
+        $set: {
+          status: 'Paper Submitted'
+        }
+      }
+    )
     res.status(200).json({
       status: 'Success',
       message: 'Paper Uploaded Successfully',
@@ -74,15 +73,13 @@ export const postPaper = async (req, res, next) => {
 
 export const getPaper = async (req, res, next) => {
   try {
-    const { conferenceId } = req.params
-    const { _id } = req.user
+    const { abstractId } = req.params
+    // const { _id } = req.user
 
-    const getPaper = await Paper.find({
-      conference: conferenceId,
-      createdBy: _id
-    }).populate([
-        {path:'abstract'}
-    ])
+    const getPaper = await Paper.findOne({
+      abstract: abstractId
+      // createdBy: _id
+    }).populate([{ path: 'abstract' }])
 
     res.status(200).json({
       status: 'Success',

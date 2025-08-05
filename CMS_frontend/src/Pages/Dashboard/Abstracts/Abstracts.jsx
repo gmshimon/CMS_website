@@ -26,9 +26,6 @@ const Abstracts = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedPaper, setSelectedPaper] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
-  const [selectedAbstractForUpload, setSelectedAbstractForUpload] =
-    useState(null)
   const [filterStatus, setFilterStatus] = useState('all')
 
   // call custom hook
@@ -103,15 +100,7 @@ const Abstracts = () => {
     setIsModalOpen(false)
   }
 
-  const handleOpenUploadModal = abstract => {
-    setSelectedAbstractForUpload(abstract)
-    setIsUploadModalOpen(true)
-  }
-
-  const handleCloseUploadModal = () => {
-    setSelectedAbstractForUpload(null)
-    setIsUploadModalOpen(false)
-  }
+  
 
   // Function to get status color classes
   const getStatusColor = status => {
@@ -262,7 +251,7 @@ const Abstracts = () => {
                           </button>
 
                           {/* Upload Paper Button - Show for specific statuses */}
-                          {(abstract.status === 'Abstract Submitted' ||
+                          {/* {(abstract.status === 'Abstract Submitted' ||
                             abstract.status === 'Accepted' ||
                             abstract.status === 'Minor Revision' ||
                             abstract.status === 'Major Revision') && (
@@ -273,7 +262,7 @@ const Abstracts = () => {
                             >
                               <FaUpload className='text-lg' />
                             </button>
-                          )}
+                          )} */}
 
                           {/* Download Paper - Show when paper is available */}
                           {abstract.paperUrl && (
@@ -321,16 +310,12 @@ const Abstracts = () => {
       )}
 
       <PaperModal
-        paper={selectedPaper}
+        abstract={selectedPaper}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
 
-      <UploadPaperModal
-        isOpen={isUploadModalOpen}
-        onClose={handleCloseUploadModal}
-        abstractData={selectedAbstractForUpload}
-      />
+      
     </div>
   )
 }

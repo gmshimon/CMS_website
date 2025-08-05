@@ -6,17 +6,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { postPaper } from '../../Redux/Slice/PaperSlice'
 
 const UploadPaperModal = ({ isOpen, onClose, abstractData }) => {
-  const { createPostPaperLoading,createPostPaperSuccess } = useSelector(state => state.paper)
+  const { createPostPaperLoading, createPostPaperSuccess } = useSelector(
+    state => state.paper
+  )
   const [selectedFile, setSelectedFile] = useState(null)
   const [dragActive, setDragActive] = useState(false)
 
   const dispatch = useDispatch()
 
-  useEffect(()=>{
-    if(createPostPaperSuccess){
+  useEffect(() => {
+    if (createPostPaperSuccess) {
       onClose()
     }
-  },[createPostPaperSuccess])
+  }, [createPostPaperSuccess, onClose])
 
   // Handle file selection
   const handleFileSelect = file => {
@@ -84,7 +86,7 @@ const UploadPaperModal = ({ isOpen, onClose, abstractData }) => {
       const formData = new FormData()
       formData.append('file', selectedFile)
       formData.append('abstract', abstractData?._id)
-      formData.append('conference', abstractData?.conference)
+      formData.append('conference', abstractData?.conference._id)
       formData.append('category', abstractData?.category)
       formData.append('theme', abstractData?.theme)
 
@@ -92,7 +94,7 @@ const UploadPaperModal = ({ isOpen, onClose, abstractData }) => {
       // const response = await axiosSecure.post('/papers/upload', formData)
       dispatch(postPaper({ id: abstractData?._id, data: formData }))
       setSelectedFile(null)
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       toast.error('Failed to upload paper. Please try again.')
     }

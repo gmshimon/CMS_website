@@ -40,8 +40,16 @@ export const getConference = async (req, res, next) => {
 export const getSingleConference = async (req, res, next) => {
   try {
     const { id } = req.params
-
-    const data = await conference.findOne({ _id: id }).lean()
+    const matchQuery = {}
+    if (
+      id &&
+      id !== 'all' &&
+      id !== undefined &&
+      id !== 'All Conferences'
+    ) {
+      matchQuery._id = id
+    }
+    const data = await conference.findOne(matchQuery).lean()
 
     res.status(200).json({
       status: 'Success',
@@ -77,8 +85,8 @@ export const updateConference = async (req, res, next) => {
     })
   } catch (error) {
     res.status(200).json({
-      status:'success',
-      message:error.message
+      status: 'success',
+      message: error.message
     })
   }
 }
