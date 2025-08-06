@@ -4,7 +4,7 @@ import 'react-responsive-pagination/themes/classic.css'
 import { IoMdEye } from 'react-icons/io'
 import PaperModal from '../../../Component/PaperModal/PaperModal'
 import { useDispatch, useSelector } from 'react-redux'
-import {  getPaper, paperReset } from '../../../Redux/Slice/PaperSlice'
+import { getPaper, paperReset } from '../../../Redux/Slice/PaperSlice'
 import Loading from '../../../Component/Loading/Loading'
 import useAbstract from '../../../Hooks/useAbstract'
 import { FaUpload } from 'react-icons/fa'
@@ -13,11 +13,8 @@ import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 
 const MyPaper = () => {
   const { abstracts } = useSelector(state => state.abstract)
-  const {
-    createPostPaperSuccess,
-    createPostPaperError,
-    getPaperLoading
-  } = useSelector(state => state.paper)
+  const { createPostPaperSuccess, createPostPaperError, getPaperLoading } =
+    useSelector(state => state.paper)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedAbstractForUpload, setSelectedAbstractForUpload] =
     useState(null)
@@ -27,8 +24,9 @@ const MyPaper = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const dispatch = useDispatch()
-  useAbstract()
-
+  useAbstract({
+    payment_status: 'Paid'
+  })
 
   useEffect(() => {
     if (createPostPaperSuccess) {
@@ -130,101 +128,114 @@ const MyPaper = () => {
             </div>
           </div>
 
-          <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-            <div className='overflow-x-auto h-[400px] overflow-y-auto'>
-              <table className='min-w-full divide-y divide-gray-200 table-zebra'>
-                <thead className='bg-slate-500'>
-                  <tr>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Abstract ID
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Title
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Author
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Status
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className='bg-white divide-y divide-gray-200'>
-                  {currentAbstracts.map(abstract => (
-                    <tr
-                      key={abstract._id}
-                      className='hover:bg-gray-50 transition-colors duration-200'
-                    >
-                      <td className='px-6 py-4 whitespace-nowrap'>
-                        <div className='text-sm font-medium text-gray-900'>
-                          {abstract._id}
-                        </div>
-                      </td>
-                      <td className='px-6 py-4'>
-                        <div className='text-sm text-gray-900 line-clamp-2'>
-                          {abstract.paper_title}
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 whitespace-nowrap'>
-                        <div className='text-sm text-gray-500'>
-                          {abstract.authors[0].name}
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 whitespace-nowrap'>
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${getStatusColor(abstract.status)}`}
-                        >
-                          {abstract.status}
-                        </span>
-                      </td>
-                      <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
-                        <div className='flex space-x-4'>
-                          <button
-                            onClick={() => handleOpenModal(abstract)}
-                            className='cursor-pointer hover:text-blue-500 transition-colors duration-200'
-                          >
-                            <IoMdEye className='text-xl' />
-                          </button>
+          {/* Show if no abstracts */}
+          {!getPaperLoading && currentAbstracts.length === 0 && (
+            <div className='text-center text-gray-600 py-10 text-lg'>
+              No abstracts found. Please submit your abstract first or check if your payment has been completed.
+            </div>
+          )}
 
-                          {abstract.status === 'Abstract Submitted' ||
-                          abstract.status === 'Accepted' ||
-                          abstract.status === 'Minor Revision' ||
-                          abstract.status === 'Major Revision' ? (
-                            <button
-                              onClick={() => handleOpenUploadModal(abstract)}
-                              className='cursor-pointer hover:text-green-500 transition-colors duration-200 p-1 rounded-full hover:bg-green-50'
-                              title='Upload Paper'
-                            >
-                              <FaUpload className='text-lg' />
-                            </button>
-                          ) : (
-                            <span
-                              className='text-gray-400 cursor-not-allowed'
-                              title='Upload Paper not available'
-                            >
-                              Uploaded
-                            </span>
-                          )}
-                        </div>
-                      </td>
+          {/* Show table if abstracts are available */}
+          {currentAbstracts.length > 0 && (
+            <div className='bg-white rounded-lg shadow-md overflow-hidden'>
+              <div className='overflow-x-auto h-[400px] overflow-y-auto'>
+                <table className='min-w-full divide-y divide-gray-200 table-zebra'>
+                  <thead className='bg-slate-500'>
+                    <tr>
+                      <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                        Abstract ID
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                        Title
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                        Author
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                        Status
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className='bg-white divide-y divide-gray-200'>
+                    {currentAbstracts.map(abstract => (
+                      <tr
+                        key={abstract._id}
+                        className='hover:bg-gray-50 transition-colors duration-200'
+                      >
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <div className='text-sm font-medium text-gray-900'>
+                            {abstract._id}
+                          </div>
+                        </td>
+                        <td className='px-6 py-4'>
+                          <div className='text-sm text-gray-900 line-clamp-2'>
+                            {abstract.paper_title}
+                          </div>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <div className='text-sm text-gray-500'>
+                            {abstract.authors[0].name}
+                          </div>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <span
+                            className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                          ${getStatusColor(abstract.status)}`}
+                          >
+                            {abstract.status}
+                          </span>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-500'>
+                          <div className='flex space-x-4'>
+                            <button
+                              onClick={() => handleOpenModal(abstract)}
+                              className='cursor-pointer hover:text-blue-500 transition-colors duration-200'
+                            >
+                              <IoMdEye className='text-xl' />
+                            </button>
 
-            <div className='px-4 py-3 border-t border-gray-200'>
-              <ResponsivePagination
-                current={currentPage}
-                total={totalPages}
-                onPageChange={setCurrentPage}
-              />
+                            {[
+                              'Abstract Submitted',
+                              'Accepted',
+                              'Minor Revision',
+                              'Major Revision'
+                            ].includes(abstract.status) ? (
+                              <button
+                                onClick={() => handleOpenUploadModal(abstract)}
+                                className='cursor-pointer hover:text-green-500 transition-colors duration-200 p-1 rounded-full hover:bg-green-50'
+                                title='Upload Paper'
+                              >
+                                <FaUpload className='text-lg' />
+                              </button>
+                            ) : (
+                              <span
+                                className='text-gray-400 cursor-not-allowed'
+                                title='Upload Paper not available'
+                              >
+                                Uploaded
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className='px-4 py-3 border-t border-gray-200'>
+                <ResponsivePagination
+                  current={currentPage}
+                  total={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
             </div>
-          </div>
+          )}
+
           <PaperModal
             abstract={selectedAbstract}
             isOpen={isModalOpen}

@@ -1,71 +1,27 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
 import { IoMdEye } from 'react-icons/io'
+import useAbstract from '../../../Hooks/useAbstract'
+import { useSelector } from 'react-redux'
+import Loading from '../../../Component/Loading/Loading'
+import { format } from 'date-fns'
+import PaymentModal from '../../../Component/PaymentModal/PaymentModal'
 
 const MyInvoice = () => {
+  const { getAbstractLoading, abstracts } = useSelector(state => state.abstract)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const invoicesPerPage = 6
-
-  // Sample invoices data
-  const [invoices] = useState([
-    {
-      id: 1,
-      invoiceNumber: 'INV-2024-001',
-      amount: 500,
-      status: 'Paid',
-      dueDate: '2024-02-15',
-      description: 'Conference Registration Fee'
-    },
-    {
-      id: 2,
-      invoiceNumber: 'INV-2024-002',
-      amount: 750,
-      status: 'Pending',
-      dueDate: '2024-02-20',
-      description: 'Paper Publication Fee'
-    },
-    {
-      id: 3,
-      invoiceNumber: 'INV-2024-003',
-      amount: 300,
-      status: 'Overdue',
-      dueDate: '2024-01-30',
-      description: 'Workshop Registration'
-    },
-    {
-      id: 4,
-      invoiceNumber: 'INV-2024-004',
-      amount: 1000,
-      status: 'Paid',
-      dueDate: '2024-02-10',
-      description: 'Premium Membership Fee'
-    },
-    {
-      id: 5,
-      invoiceNumber: 'INV-2024-005',
-      amount: 250,
-      status: 'Pending',
-      dueDate: '2024-02-25',
-      description: 'Abstract Submission Fee'
-    },
-    {
-      id: 6,
-      invoiceNumber: 'INV-2024-006',
-      amount: 800,
-      status: 'Paid',
-      dueDate: '2024-02-05',
-      description: 'Early Bird Registration'
-    }
-  ])
-
+  useAbstract()
+ 
   // Filter invoices based on search query
-  const filteredInvoices = invoices.filter(
-    invoice =>
-      invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      invoice.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      invoice.status.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredInvoices = abstracts.filter(
+    item =>
+      item.paper_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.payment_status.toLowerCase().includes(searchQuery.toLowerCase())
+    // item.status.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   // Calculate pagination
@@ -91,6 +47,19 @@ const MyInvoice = () => {
     }
   }
 
+  const handleSubmitReceipt = file => {
+    // send to backend using FormData
+    console.log('Uploaded file:', file)
+  }
+
+  if (getAbstractLoading) {
+    return (
+      <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
+        <Loading />
+      </div>
+    )
+  }
+  console.log(abstracts)
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       <div className='mb-6'>
@@ -112,16 +81,19 @@ const MyInvoice = () => {
             <thead className='bg-slate-500'>
               <tr>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Invoice Number
+                  Abstract ID
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Description
+                  Title
+                </th>
+                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                  Theme
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Amount
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Due Date
+                  Date
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Status
@@ -132,44 +104,77 @@ const MyInvoice = () => {
               </tr>
             </thead>
             <tbody className='bg-white divide-y divide-gray-200'>
-              {currentInvoices.map(invoice => (
+              {currentInvoices.map(item => (
                 <tr
-                  key={invoice.id}
+                  key={item._id}
                   className='hover:bg-blue-50 transition-colors duration-200 cursor-pointer'
                 >
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {invoice.invoiceNumber}
+                      {item._id}
+                    </div>
+                  </td>
+                  <td className='px-6 py-4 whitespace-nowrap'>
+                    <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
+                      {item.paper_title}
                     </div>
                   </td>
                   <td className='px-6 py-4'>
                     <div className='text-sm text-gray-500 line-clamp-2'>
-                      {invoice.description}
+                      {item.theme}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-semibold text-gray-900'>
-                      ${invoice.amount}
+                      ${item.amount}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm text-gray-500'>
-                      {invoice.dueDate}
+                      {format(item.createdAt, 'MMM d, yyyy')}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                        invoice.status
+                        item.status
                       )}`}
                     >
-                      {invoice.status}
+                      {item.status}
                     </span>
                   </td>
                   <td className='px-10 whitespace-nowrap text-sm text-gray-500'>
-                    <button className='cursor-pointer hover:text-blue-500 transition-colors duration-200'>
-                      <IoMdEye className='text-xl' />
-                    </button>
+                    <div className='flex space-x-2'>
+                      {item.payment_status === 'Paid' ? (
+                        <button
+                          title='Payment Details'
+                          className='cursor-pointer hover:text-blue-500 transition-colors duration-200'
+                        >
+                          <IoMdEye className='text-xl' />
+                        </button>
+                      ) : item.payment_status === 'Unpaid' ? (
+                        <button
+                          onClick={() => setIsModalOpen(true)}
+                          disabled={item.status === 'Abstract Submitted'}
+                          title={`${
+                            item.status === 'Abstract Submitted'
+                              ? 'Payment not allowed'
+                              : 'Pay Invoice'
+                          }`}
+                          className={`px-6 py-2 text-sm font-medium rounded-md transition-colors duration-200 shadow-md
+                          ${
+                            item.status !== 'Abstract Submitted'
+                              ? 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer hover:shadow-lg'
+                              : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-60'
+                          }
+                        `}
+                        >
+                          Pay
+                        </button>
+                      ) : (
+                        <span className='text-red-500'>Pending</span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -185,6 +190,11 @@ const MyInvoice = () => {
           />
         </div>
       </div>
+      <PaymentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmitReceipt}
+      />
     </div>
   )
 }

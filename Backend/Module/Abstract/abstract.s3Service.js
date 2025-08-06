@@ -4,7 +4,7 @@ import {
   DeleteObjectCommand
 } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
-import 'dotenv/config'; 
+import 'dotenv/config'
 
 const s3client = new S3Client({
   region: process.env.AWS_REGION,
@@ -71,3 +71,38 @@ export const deleteAbstractFile = async fileKey => {
     throw error
   }
 }
+
+export const s3PaymentReceiptUploadService = async file => {
+  try {
+    const param = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: `payment/${file.originalname}`,
+      Body: file.buffer,
+      ContentType: file.mimetype
+    }
+
+    const result = await s3client.send(new PutObjectCommand(param))
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/payment/${file.originalname}`
+    return fileUrl
+  } catch (error) {
+    console.error('Error uploading payment receipt:', error)
+    throw error
+  }
+}
+
+export const s3PaymentReceiptDeleteService = async fileKey => {
+  try {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME,
+      Key: fileKey
+    }
+    const result = await s3client.send(new DeleteObjectCommand(params))
+    return {
+      success: true,
+      message: 'Payment receipt deleted successfully'
+    }
+  } catch (error) {
+    console.error('Error deleting payment receipt from S3:', error)
+    throw error
+  }
+} 

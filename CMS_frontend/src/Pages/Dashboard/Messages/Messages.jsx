@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../../Component/Loading/Loading'
 import socket from '../../../Socket/socket'
-import { updateNotification } from '../../../Redux/Slice/notificationSlice'
+import {
+  getNotifications,
+  updateNotification
+} from '../../../Redux/Slice/notificationSlice'
 
 const Messages = () => {
   const { list, getNotificationLoading } = useSelector(
@@ -16,7 +19,9 @@ const Messages = () => {
   const messagesPerPage = 4
 
   const [selectedMessage, setSelectedMessage] = useState(null)
-
+  useEffect(() => {
+    dispatch(getNotifications())
+  }, [dispatch])
   // Calculate pagination
   const indexOfLastMessage = currentPage * messagesPerPage
   const indexOfFirstMessage = indexOfLastMessage - messagesPerPage
@@ -51,9 +56,11 @@ const Messages = () => {
                         : ''
                     }`}
                     onClick={() => {
-                      if(!message?.isRead){
+                      if (!message?.isRead) {
                         dispatch(updateNotification(message?._id))
-                        socket.emit('markAsRead', { notificationId:message?._id });
+                        socket.emit('markAsRead', {
+                          notificationId: message?._id
+                        })
                       }
                       setSelectedMessage(message)
                     }}
@@ -66,9 +73,9 @@ const Messages = () => {
                         {format(message.createdAt, 'MMM d, yyyy')}
                       </span>
                     </div>
-                    <div className='text-gray-900 font-medium hover:text-blue-700 transition-colors duration-200'>
+                    {/* <div className='text-gray-900 font-medium hover:text-blue-700 transition-colors duration-200'>
                       {message.type}
-                    </div>
+                    </div> */}
                     <div className='text-gray-600 text-sm truncate hover:text-gray-800 transition-colors duration-200'>
                       {message.title}
                     </div>

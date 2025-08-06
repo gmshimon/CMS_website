@@ -28,4 +28,11 @@ router.put('/update-abstract/:id', verifyToken, updateAbstract)
 
 router.post('/change-status/:id', verifyToken, changeAbstractStatus)
 
+router.post(
+  '/upload-payment-receipt/:id',
+  verifyToken,
+  abstractUploaded.single('file'),
+  changeAbstractStatus
+)
+
 export default router

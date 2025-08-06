@@ -11,7 +11,7 @@ const ConferenceList = () => {
   const { conference_regs, getConferenceRegLoading } = useSelector(
     state => state.conferenceReg
   )
-  const { conferences, getConferenceLoading } = useSelector(
+  const { selectedConference, getConferenceLoading } = useSelector(
     state => state.conference
   )
   const [searchQuery, setSearchQuery] = useState('')
@@ -20,10 +20,8 @@ const ConferenceList = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (conferences?._id) {
-      dispatch(getConferenceRegs(conferences?._id))
-    }
-  }, [conferences?._id, dispatch])
+    dispatch(getConferenceRegs(selectedConference))
+  }, [selectedConference, dispatch])
 
   // Filter conferences based on search query
   const filteredConferences = conference_regs.filter(

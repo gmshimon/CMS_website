@@ -15,7 +15,7 @@ const abstractSchema = new mongoose.Schema(
     },
     payment_status: {
       type: String,
-      enum: ['Paid', 'Unpaid'],
+      enum: ['Paid', 'Pending', 'Unpaid'],
       default: 'Unpaid'
     },
     review_status: {

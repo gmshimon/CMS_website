@@ -64,10 +64,17 @@ export const createAbstract = createAsyncThunk(
 
 export const getAbstract = createAsyncThunk(
   'createAbstract',
-  async (id, { rejectWithValue }) => {
+  async ({ id, payment_status=null }, { rejectWithValue }) => {
     try {
-      const response = await axiosSecure.get(`/abstract/${id}`)
-      return response.data.data
+      let url = `/abstract/${id}`;
+
+      // Append payment_status as query param if it exists
+      if (payment_status) {
+        url += `?payment_status=${payment_status}`;
+      }
+
+      const response = await axiosSecure.get(url);
+      return response.data.data;
     } catch (error) {
       const message =
         error.response?.data?.message ||

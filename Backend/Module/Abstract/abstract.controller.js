@@ -9,7 +9,8 @@ import Paper from '../Paper/paper.model.js'
 import Abstracts from './abstract.model.js'
 import {
   s3AbstractGraphicalAbstract,
-  s3AbstractPresentationProfilePicture
+  s3AbstractPresentationProfilePicture,
+  s3PaymentReceiptUploadService
 } from './abstract.s3Service.js'
 
 export const createAbstract = async (req, res, next) => {
@@ -86,6 +87,7 @@ export const createAbstract = async (req, res, next) => {
 
 export const getAbstract = async (req, res, next) => {
   try {
+    const { payment_status } = req.query
     const { conference_id } = req.params
 
     const matchQuery = {}
@@ -95,14 +97,15 @@ export const getAbstract = async (req, res, next) => {
       conference_id !== undefined &&
       conference_id !== 'All Conferences'
     ) {
-      console.log('conference_id:', conference_id, typeof conference_id)
       matchQuery.conference = conference_id
+    }
+    if (payment_status) {
+      matchQuery.payment_status = payment_status
     }
     const getAbstract = await Abstracts.find(matchQuery)
       .populate('conference')
       .populate('createdBy')
       .lean() // Returns plain JS objects
-
     return res.status(200).json({
       status: 'Success',
       message: 'Fetched the abstract by category successfully',
@@ -230,6 +233,45 @@ export const updateAbstract = async (req, res, next) => {
       data: updatedSubmission
     })
   } catch (error) {
+    next(error)
+  }
+}
+
+export const makePayment = async (req, res, next) => {
+  try {
+    const { abstractId } = req.params
+
+    const file = req.file
+    let fileUrl = null
+
+    const isAbstract = await Paper.findOne({
+      _id: abstractId
+    })
+
+    if (!isAbstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    if (file) {
+      fileUrl = await s3PaymentReceiptUploadService(file)
+    }
+
+    isAbstract.payment_proof = fileUrl
+    isAbstract.payment_status = 'Paid'
+
+    await isAbstract.save()
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Payment made successfully',
+      data: isAbstract
+    })
+  } catch (error) {
+    if (req.file) {
+      await s3PaymentReceiptUploadService(`/payment/${req.file.originalname}`)
+    }
     next(error)
   }
 }

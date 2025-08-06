@@ -43,7 +43,7 @@ const PresenterHome = () => {
           link='/admin/my-paper'
           color='bg-green-50 hover:bg-green-100'
         />
-        <div className='block' onClick={() => setIsPaymentModalOpen(true)}>
+        <div onClick={() => setIsPaymentModalOpen(true)}>
           <div
             className={`p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-all duration-300 bg-purple-50 hover:bg-purple-100`}
           >
