@@ -1,21 +1,43 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
 import { IoMdEye } from 'react-icons/io'
 import useAbstract from '../../../Hooks/useAbstract'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../../Component/Loading/Loading'
 import { format } from 'date-fns'
 import PaymentModal from '../../../Component/PaymentModal/PaymentModal'
+import { makePayment, reset } from '../../../Redux/Slice/AbstractSlice'
+import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 
 const MyInvoice = () => {
-  const { getAbstractLoading, abstracts } = useSelector(state => state.abstract)
+  const {
+    getAbstractLoading,
+    abstracts,
+    makePaymentLoading,
+    makePaymentSuccess,
+    makePaymentError
+  } = useSelector(state => state.abstract)
+  const [selectedAbstract, setSelectedAbstract] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const dispatch = useDispatch()
   const invoicesPerPage = 6
   useAbstract()
- 
+  useEffect(() => {
+    if (makePaymentSuccess) {
+      showSuccessToast('Payment receipt uploaded successfully!')
+      dispatch(reset())
+      setSelectedAbstract(null)
+    }
+    if (makePaymentError) {
+      dispatch(reset())
+      setSelectedAbstract(null)
+      showErrorToast('Failed to upload payment receipt. Please try again.')
+    }
+  }, [makePaymentSuccess, makePaymentError, dispatch])
+
   // Filter invoices based on search query
   const filteredInvoices = abstracts.filter(
     item =>
@@ -48,11 +70,17 @@ const MyInvoice = () => {
   }
 
   const handleSubmitReceipt = file => {
-    // send to backend using FormData
-    console.log('Uploaded file:', file)
+    const formData = new FormData()
+    formData.append('file', file)
+    dispatch(
+      makePayment({
+        abstractId: selectedAbstract._id,
+        data: formData
+      })
+    )
   }
 
-  if (getAbstractLoading) {
+  if (getAbstractLoading || makePaymentLoading) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
         <Loading />
@@ -146,15 +174,20 @@ const MyInvoice = () => {
                   <td className='px-10 whitespace-nowrap text-sm text-gray-500'>
                     <div className='flex space-x-2'>
                       {item.payment_status === 'Paid' ? (
-                        <button
+                        <a
+                          href={item.payment_proof}
+                          target='_blank'
                           title='Payment Details'
                           className='cursor-pointer hover:text-blue-500 transition-colors duration-200'
                         >
                           <IoMdEye className='text-xl' />
-                        </button>
+                        </a>
                       ) : item.payment_status === 'Unpaid' ? (
                         <button
-                          onClick={() => setIsModalOpen(true)}
+                          onClick={() => {
+                            setSelectedAbstract(item)
+                            setIsModalOpen(true)
+                          }}
                           disabled={item.status === 'Abstract Submitted'}
                           title={`${
                             item.status === 'Abstract Submitted'

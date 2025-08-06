@@ -4,10 +4,12 @@ import {
   createAbstract,
   getAbstract,
   getAbstractByCategory,
+  makePayment,
   updateAbstract
 } from './abstract.controller.js'
 import abstractUploaded from '../../Middleware/FileUpload/abstractUploaded.js'
 import verifyToken from '../../Middleware/verifyToken.js'
+import paperUploader from '../../Middleware/FileUpload/paperUpload.js'
 
 const router = express.Router()
 
@@ -29,10 +31,10 @@ router.put('/update-abstract/:id', verifyToken, updateAbstract)
 router.post('/change-status/:id', verifyToken, changeAbstractStatus)
 
 router.post(
-  '/upload-payment-receipt/:id',
+  '/upload-payment-receipt/:abstractId',
   verifyToken,
-  abstractUploaded.single('file'),
-  changeAbstractStatus
+  paperUploader.single('file'),
+  makePayment
 )
 
 export default router

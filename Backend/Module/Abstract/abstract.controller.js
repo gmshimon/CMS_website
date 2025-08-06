@@ -244,7 +244,7 @@ export const makePayment = async (req, res, next) => {
     const file = req.file
     let fileUrl = null
 
-    const isAbstract = await Paper.findOne({
+    const isAbstract = await Abstracts.findOne({
       _id: abstractId
     })
 
@@ -259,7 +259,7 @@ export const makePayment = async (req, res, next) => {
     }
 
     isAbstract.payment_proof = fileUrl
-    isAbstract.payment_status = 'Paid'
+    isAbstract.payment_status = 'Pending'
 
     await isAbstract.save()
 

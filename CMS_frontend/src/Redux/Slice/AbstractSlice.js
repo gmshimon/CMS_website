@@ -42,6 +42,10 @@ const initialState = {
   editAbstractSuccess: false,
   editAbstractError: false,
 
+  makePaymentLoading: false,
+  makePaymentSuccess: false,
+  makePaymentError: false,
+
   changeAbstractDecisionLoading: false,
   changeAbstractDecisionSuccess: false,
   changeAbstractDecisionError: false
@@ -64,17 +68,17 @@ export const createAbstract = createAsyncThunk(
 
 export const getAbstract = createAsyncThunk(
   'createAbstract',
-  async ({ id, payment_status=null }, { rejectWithValue }) => {
+  async ({ id, payment_status = null }, { rejectWithValue }) => {
     try {
-      let url = `/abstract/${id}`;
+      let url = `/abstract/${id}`
 
       // Append payment_status as query param if it exists
       if (payment_status) {
-        url += `?payment_status=${payment_status}`;
+        url += `?payment_status=${payment_status}`
       }
 
-      const response = await axiosSecure.get(url);
-      return response.data.data;
+      const response = await axiosSecure.get(url)
+      return response.data.data
     } catch (error) {
       const message =
         error.response?.data?.message ||
@@ -146,6 +150,24 @@ export const updateAbstract = createAsyncThunk(
   }
 )
 
+export const makePayment = createAsyncThunk(
+  'makePayment',
+  async ({ abstractId, data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.post(
+        `/abstract/upload-payment-receipt/${abstractId}`,
+        data
+      )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while making payment'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const abstractSlice = createSlice({
   name: 'abstract',
   initialState,
@@ -155,15 +177,22 @@ const abstractSlice = createSlice({
       state.createAbstractLoading = false
       state.createAbstractSuccess = false
       state.createAbstractError = false
+
       state.getAbstractLoading = false
       state.getAbstractSuccess = false
       state.getAbstractError = false
+
       state.changeAbstractDecisionLoading = false
       state.changeAbstractDecisionSuccess = false
       state.changeAbstractDecisionError = false
+
       state.editAbstractLoading = false
       state.editAbstractSuccess = false
       state.editAbstractError = false
+
+      state.makePaymentLoading = false
+      state.makePaymentSuccess = false
+      state.makePaymentError = false
     },
     resetForm: state => {
       state.conference = null
@@ -363,6 +392,29 @@ const abstractSlice = createSlice({
         state.editAbstractLoading = false
         state.editAbstractSuccess = false
         state.editAbstractError = true
+      })
+      .addCase(makePayment.pending, state => {
+        state.makePaymentLoading = true
+        state.makePaymentSuccess = false
+        state.makePaymentError = false
+      })
+      .addCase(makePayment.fulfilled, (state, action) => {
+        const { _id, payment_proof, payment_status } = action.payload
+        const index = state.abstracts.findIndex(
+          abstract => abstract._id === _id
+        )
+        if (index !== -1) {
+          state.abstracts[index].payment_status = payment_status
+          state.abstracts[index].payment_proof = payment_proof
+        }
+        state.makePaymentLoading = false
+        state.makePaymentSuccess = true
+        state.makePaymentError = false
+      })
+      .addCase(makePayment.rejected, state => {
+        state.makePaymentLoading = false
+        state.makePaymentSuccess = false
+        state.makePaymentError = true
       })
   }
 })
