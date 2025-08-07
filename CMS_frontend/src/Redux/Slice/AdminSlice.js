@@ -5,6 +5,7 @@ import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
+  dashboardStats:[],
   roleCounts: {},
   users: [],
   reviewers: [],
@@ -31,7 +32,10 @@ const initialState = {
   isUpdateUserError: false,
   getPresentationStatsLoading: false,
   getPresentationStatsSuccess: false,
-  getPresentationStatsError: false
+  getPresentationStatsError: false,
+  getAdminDashboardLoading: false,
+  getAdminDashboardSuccess: false,
+  getAdminDashboardError: false
 }
 
 export const adminCreateUser = createAsyncThunk(
@@ -152,7 +156,25 @@ export const getPresentationMethodStats = createAsyncThunk(
   async (year, { rejectWithValue }) => {
     try {
       const query = year ? `?year=${year}` : ''
-      const response = await axiosSecure.get(`/admin/presentation-stats/${query}`)
+      const response = await axiosSecure.get(
+        `/admin/presentation-stats/${query}`
+      )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating user image'
+      return rejectWithValue(message)
+    }
+  }
+)
+
+export const adminDashboardStats = createAsyncThunk(
+  'adminDashboardStats',
+  async (conferenceId=null, { rejectWithValue }) => {
+    try {
+      const query = conferenceId ? `?conferenceId=${conferenceId}` : ''
+      const response = await axiosSecure.get(`/admin/dashboard${query}`)
       return response.data.data
     } catch (error) {
       const message =
@@ -188,6 +210,10 @@ const adminSlice = createSlice({
       state.getPresentationStatsLoading = false
       state.getPresentationStatsSuccess = false
       state.getPresentationStatsError = false
+
+      state.getAdminDashboardLoading = false
+      state.getAdminDashboardSuccess = false
+      state.getAdminDashboardError = false
     },
     setSelectedYear: (state, action) => {
       state.selectedYear = action.payload
@@ -422,10 +448,26 @@ const adminSlice = createSlice({
         state.getPresentationStatsError = false
         state.presentationStats = action.payload
       })
-      .addCase(getPresentationMethodStats.rejected, (state) => {
+      .addCase(getPresentationMethodStats.rejected, state => {
         state.getPresentationStatsLoading = false
         state.getPresentationStatsSuccess = false
         state.getPresentationStatsError = true
+      })
+      .addCase(adminDashboardStats.pending, state => {
+        state.getAdminDashboardLoading = true
+        state.getAdminDashboardSuccess = false
+        state.getAdminDashboardError = false
+      })
+      .addCase(adminDashboardStats.fulfilled, (state,action) => {
+        state.dashboardStats = action.payload
+        state.getAdminDashboardLoading = false
+        state.getAdminDashboardSuccess = true
+        state.getAdminDashboardError = false
+      })
+      .addCase(adminDashboardStats.rejected, (state,action) => {
+        state.getAdminDashboardLoading = false
+        state.getAdminDashboardSuccess = false
+        state.getAdminDashboardError = true
       })
   }
 })

@@ -4,6 +4,7 @@ import userImageUploader from '../../Middleware/FileUpload/userImage.js'
 import verifyToken from '../../Middleware/verifyToken.js'
 import {
   AdminCreateUser,
+  adminDashboardStats,
   deleteUser,
   deleteUserImage,
   getPresentationMethodStats,
@@ -37,6 +38,8 @@ router
 
 // TODO:: add validation of user
 router.route('/get/:role').get(getRoleBasedUser)
+
+router.route('/dashboard').get(verifyToken,adminDashboardStats)
 
 router.get('/presentation-stats', getPresentationMethodStats)
 

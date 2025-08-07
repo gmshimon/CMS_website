@@ -61,7 +61,7 @@ const conferenceSchema = mongoose.Schema(
     status: {
       type: String,
       enum: ['Active', 'Disable'],
-      default: 'active'
+      default: 'Active'
     }
   },
   {

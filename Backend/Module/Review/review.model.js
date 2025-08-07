@@ -7,7 +7,11 @@ const reviewSchema = new mongoose.Schema(
       ref: 'abstract',
       required: true
     },
-
+    conference: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'conference',
+      required: true
+    },
     reviewer: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users',
@@ -71,14 +75,14 @@ const reviewSchema = new mongoose.Schema(
     },
     responses: [
       {
-        question: { type: String, required: true },     // e.g. "Is it technically sound?"
-        answer: { type: String, required: true },       // Yes / No / Partly
-        explanation: { type: String }                   // optional explanation per answer
+        question: { type: String, required: true }, // e.g. "Is it technically sound?"
+        answer: { type: String, required: true }, // Yes / No / Partly
+        explanation: { type: String } // optional explanation per answer
       }
     ],
-    certificate:{
-      type:String,
-      default:''
+    certificate: {
+      type: String,
+      default: ''
     }
   },
   { timestamps: true }

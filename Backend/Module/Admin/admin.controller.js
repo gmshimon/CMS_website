@@ -8,7 +8,9 @@ import {
 } from '../../Utilis/EmailTemplate/createUserTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
-import "dotenv/config"; 
+import 'dotenv/config'
+import conference from '../Conference/conference.model.js'
+import Reviews from '../Review/review.model.js'
 // const serviceAccount = JSON.parse(
 //   await readFile(
 //     new URL(
@@ -18,7 +20,7 @@ import "dotenv/config";
 //   )
 // )
 
-const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS);
+const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS)
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -373,7 +375,7 @@ export const getPresentationMethodStats = async (req, res) => {
       'Paper Presentation Physical',
       'Paper Presentation Online',
       'Poster Presentation Physical',
-      'Poster Presentation Online',
+      'Poster Presentation Online'
     ]
 
     const completeStats = methods.map(method => {
@@ -388,5 +390,54 @@ export const getPresentationMethodStats = async (req, res) => {
   } catch (error) {
     console.error('Error fetching presentation stats:', error)
     res.status(500).json({ success: false, message: 'Server error' })
+  }
+}
+
+export const adminDashboardStats = async (req, res, next) => {
+  try {
+    const { conferenceId } = req.query
+    const matchQuery = {}
+    if (
+      conferenceId &&
+      conferenceId !== 'all' &&
+      conferenceId !== undefined &&
+      conferenceId !== 'All Conferences'
+    ) {
+      matchQuery.conference = conferenceId
+    }
+    const activeConference = await conference.countDocuments({
+      status: 'Active'
+    })
+
+    const [stats] = await Reviews.aggregate([
+      { $match: matchQuery }, // Step 1: filter based on query
+      {
+        $group: {
+          _id: null,
+          total: { $sum: 1 },
+          pending: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'pending'] }, 1, 0]
+            }
+          }
+        }
+      }
+    ]);
+    const submission = await Abstracts.countDocuments(matchQuery)
+
+    const data = {
+      active_conference: activeConference,
+      totalReviews: stats?.total || 0,
+      pendingReviews: stats?.pending || 0,
+      total_submission: submission || 0
+    }
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Successfully get Admin dashboard',
+      data
+    })
+  } catch (error) {
+    next(error)
   }
 }
