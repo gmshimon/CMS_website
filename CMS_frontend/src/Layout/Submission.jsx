@@ -16,7 +16,10 @@ const Submission = () => {
     editAbstractError,
     makePaymentLoading,
     makePaymentSuccess,
-    makePaymentError
+    makePaymentError,
+    paymentReminderLoading,
+    paymentReminderSuccess,
+    paymentReminderError
   } = useSelector(state => state.abstract)
   // eslint-disable-next-line no-unused-vars
   const [yearInput, setYearInput] = useState('')
@@ -57,6 +60,14 @@ const Submission = () => {
       showErrorToast('Something went wrong')
       dispatch(reset())
     }
+    if (paymentReminderSuccess) {
+      showSuccessToast('Payment Reminder Sent')
+      dispatch(reset())
+    }
+    if (paymentReminderError) {
+      showErrorToast('Something went wrong')
+      dispatch(reset())
+    }
   }, [
     changeAbstractDecisionError,
     changeAbstractDecisionSuccess,
@@ -64,13 +75,16 @@ const Submission = () => {
     editAbstractError,
     dispatch,
     makePaymentSuccess,
-    makePaymentError
+    makePaymentError,
+    paymentReminderSuccess,
+    paymentReminderError
   ])
 
   if (
     changeAbstractDecisionLoading ||
     editAbstractLoading ||
-    makePaymentLoading
+    makePaymentLoading ||
+    paymentReminderLoading
   ) {
     return (
       <div className='flex h-[calc(100vh-100px)] items-center justify-center'>

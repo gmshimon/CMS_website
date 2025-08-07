@@ -11,7 +11,7 @@ const PhysicalSubmission = () => {
   const [data, setData] = useState()
 
   const { method } = useParams()
-  const { handleAbstractDecision,handlePaymentDecision ,handleEditSubmission } =
+  const { handleAbstractDecision,handlePaymentDecision ,handleEditSubmission ,handlePaymentReminder} =
     useSubmissions(method)
 
   const handleOpenEditModal = row => {
@@ -40,9 +40,9 @@ const PhysicalSubmission = () => {
         onView={item => alert(`View details: ${item.title}`)}
         onEdit={handleOpenEditModal}
         onDelete={item => alert(`Delete: ${item._id}`)}
-        onViewFiles={item => alert(`View files for: ${item.title}`)}
         handleAbstractDecision={handleAbstractDecision}
         handlePaymentDecision={handlePaymentDecision}
+        handlePaymentReminder={handlePaymentReminder}
       />
 
       <EditSubmissionModal

@@ -90,3 +90,41 @@ export const paymentStatusChangeTemplate = ({
     </div>
   `
 }
+
+// templates/paymentReminderTemplate.ts
+
+export const paymentReminderEmailTemplate = ({
+  authorName,
+  abstractTitle,
+  conferenceName
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+      <h2 style="color: #2c3e50;">Dear ${authorName},</h2>
+      
+      <p>
+        This is a gentle reminder that the payment for your abstract titled 
+        <strong>"${abstractTitle}"</strong> submitted to the 
+        <strong>${conferenceName}</strong> is still pending.
+      </p>
+
+      <p>
+        Kindly complete your payment at the earliest to ensure your participation and abstract processing.
+      </p>
+
+      <p>
+        If you have already made the payment recently, please disregard this message.
+      </p>
+
+      <br />
+      <p>
+        Thank you for your attention and your contribution to <strong>${conferenceName}</strong>.
+      </p>
+      
+      <hr />
+      <p style="font-size: 12px; color: #aaa;">
+        This is an automated email from the ${conferenceName} Conference System.
+      </p>
+    </div>
+  `
+}

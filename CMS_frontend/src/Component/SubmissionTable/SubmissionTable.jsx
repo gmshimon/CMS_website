@@ -1,22 +1,15 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { format } from 'date-fns'
-import {
-  FaCheckCircle,
-  FaTimesCircle,
-  FaFileAlt,
-  FaEdit,
-  FaTrash
-} from 'react-icons/fa'
-import { Tooltip as ReactTooltip } from 'react-tooltip'
+import { FaCheckCircle, FaTimesCircle, FaEdit, FaTrash } from 'react-icons/fa'
 
 const SubmissionTable = ({
   data,
   getStatusColor,
   onEdit,
   onDelete,
-  onViewFiles,
   handleAbstractDecision,
-  handlePaymentDecision
+  handlePaymentDecision,
+  handlePaymentReminder
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
@@ -99,7 +92,18 @@ const SubmissionTable = ({
                         <option value='Unpaid'>Reject</option>
                       </select>
                     ) : (
-                      item.payment_status || 'Pending'
+                      <>
+                        {item.payment_status}
+                        <br />
+                        {item.payment_status === 'Unpaid' && (
+                          <button
+                            className='mt-1 px-2 w-full py-1 text-xs text-white bg-blue-600 hover:bg-blue-700 rounded'
+                            onClick={() => handlePaymentReminder(item._id)}
+                          >
+                            Payment_Reminder
+                          </button>
+                        )}
+                      </>
                     )}
                   </td>
                   <td className='px-4 py-3 text-center'>
@@ -110,7 +114,9 @@ const SubmissionTable = ({
                         title='View Proof'
                         download
                       >
-                        <FaCheckCircle className='text-green-500 text-lg mx-auto' />
+                        <span className='text-green-500 text-sm mx-auto'>
+                          View
+                        </span>
                       </a>
                     ) : (
                       <FaTimesCircle className='text-red-400 text-lg mx-auto' />
@@ -128,9 +134,20 @@ const SubmissionTable = ({
                     </span>
                     <br />
                     <p>
-                      {/* {
-                    !item?.paper && span 
-                  } */}
+                      {item?.papers
+                        ? item.papers.paper.map((paper, index) => (
+                            <a
+                              key={index}
+                              className='text-blue-600 cursor-pointer hover:text-blue-800 hover:underline text-xs'
+                              target='_blank'
+                              href={paper}
+                            >
+                              View paper {index + 1}
+                              {/* {paper.split('/')[4]} */}
+                              {index < item.papers.length - 1 ? ', ' : ''}
+                            </a>
+                          ))
+                        : 'No files uploaded'}
                     </p>
                   </td>
                   <td className='px-4 py-3 text-center'>

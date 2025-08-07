@@ -46,6 +46,10 @@ const initialState = {
   makePaymentSuccess: false,
   makePaymentError: false,
 
+  paymentReminderLoading: false,
+  paymentReminderSuccess: false,
+  paymentReminderError: false,
+
   changeAbstractDecisionLoading: false,
   changeAbstractDecisionSuccess: false,
   changeAbstractDecisionError: false
@@ -187,6 +191,20 @@ export const updatePaymentStatus = createAsyncThunk(
   }
 )
 
+export const sendPaymentReminder = createAsyncThunk(
+  'sendPaymentReminder',
+  async (id, { rejectWithValue }) => {
+    try {
+      await axiosSecure.post(`/abstract/payment-reminder/${id}`)
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating payment status'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const abstractSlice = createSlice({
   name: 'abstract',
   initialState,
@@ -212,6 +230,10 @@ const abstractSlice = createSlice({
       state.makePaymentLoading = false
       state.makePaymentSuccess = false
       state.makePaymentError = false
+
+      state.paymentReminderLoading = false
+      state.paymentReminderSuccess = false
+      state.paymentReminderError = false
     },
     resetForm: state => {
       state.conference = null
@@ -456,6 +478,21 @@ const abstractSlice = createSlice({
         state.makePaymentLoading = false
         state.makePaymentSuccess = false
         state.makePaymentError = true
+      })
+      .addCase(sendPaymentReminder.pending, state => {
+        state.paymentReminderLoading = true
+        state.paymentReminderSuccess = false
+        state.paymentReminderError = false
+      })
+      .addCase(sendPaymentReminder.fulfilled, state => {
+        state.paymentReminderLoading = false
+        state.paymentReminderSuccess = true
+        state.paymentReminderError = false
+      })
+      .addCase(sendPaymentReminder.rejected, state => {
+        state.paymentReminderLoading = false
+        state.paymentReminderSuccess = false
+        state.paymentReminderError = true
       })
   }
 })

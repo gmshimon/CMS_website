@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   changeAbstractDecision,
   getAbstractByCategory,
+  sendPaymentReminder,
   updateAbstract,
   updatePaymentStatus
 } from '../Redux/Slice/AbstractSlice'
@@ -42,14 +43,18 @@ const useSubmissions = (method = null) => {
     const updatedData = {
       payment_status: paymentStatus
     }
-    console.log('Updated Data:', updatedData)
     dispatch(updatePaymentStatus({ id: abstractId, data: updatedData }))
+  }
+
+  const handlePaymentReminder=(id)=>{
+    dispatch(sendPaymentReminder(id))
   }
 
   return {
     handleAbstractDecision,
     handleEditSubmission,
-    handlePaymentDecision
+    handlePaymentDecision,
+    handlePaymentReminder
   }
 }
 

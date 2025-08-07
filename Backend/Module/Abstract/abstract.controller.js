@@ -1,6 +1,7 @@
 import {
   abstractCreatedTemplate,
   abstractStatusChangeTemplate,
+  paymentReminderEmailTemplate,
   paymentStatusChangeTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
@@ -193,7 +194,7 @@ export const getAbstractByCategory = async (req, res, next) => {
 
     const abstractsWithPapers = await Promise.all(
       getAbstract.map(async abstract => {
-        const papers = await Paper.find({ abstract: abstract._id }).lean()
+        const papers = await Paper.findOne({ abstract: abstract._id }).lean()
         return {
           ...abstract,
           papers // Will be empty array if none found
@@ -322,5 +323,57 @@ export const updatePaymentStatus = async (req, res, next) => {
     })
   } catch (error) {
     next(error)
+  }
+}
+
+export const sendPaymentReminder = async (req, res, next) => {
+  try {
+    const { abstractId } = req.params
+
+    // 1. Find abstract by ID and populate createdBy (to get user email)
+    const abstract = await Abstracts.findById(abstractId).populate(
+      'createdBy conference'
+    )
+
+    if (!abstract) {
+      return res.status(404).json({ message: 'Abstract not found.' })
+    }
+
+    // 2. Check payment status
+    if (abstract.payment_status !== 'Unpaid') {
+      return res
+        .status(400)
+        .json({ message: 'Payment has already been processed.' })
+    }
+
+    // 3. Prepare email content
+    const emailHtml = paymentReminderEmailTemplate({
+      authorName: abstract.createdBy.name,
+      abstractTitle: abstract.paper_title,
+      conferenceName: abstract.conference.name
+    })
+
+    const shortMsg = `Reminder: Your payment for the abstract "${abstract.paper_title}" is still pending.`
+
+    // 4. Send the email
+    await sendEmail({
+      to: abstract.createdBy.email,
+      subject: 'Payment Reminder - ' + abstract.conference.name,
+      html: emailHtml
+    })
+
+    await createNotificationService(
+      abstract.createdBy._id,
+      shortMsg,
+      emailHtml,
+      'Payment Reminder'
+    )
+
+    return res
+      .status(200)
+      .json({ message: 'Payment reminder email sent successfully.' })
+  } catch (error) {
+    console.error('Error sending payment reminder:', error)
+    return res.status(500).json({ message: 'Internal server error.' })
   }
 }

@@ -5,6 +5,7 @@ import {
   getAbstract,
   getAbstractByCategory,
   makePayment,
+  sendPaymentReminder,
   updateAbstract,
   updatePaymentStatus
 } from './abstract.controller.js'
@@ -15,6 +16,7 @@ import paperUploader from '../../Middleware/FileUpload/paperUpload.js'
 const router = express.Router()
 
 router.get('/get-abstract-category', verifyToken, getAbstractByCategory)
+router.post('/payment-reminder/:abstractId', verifyToken, sendPaymentReminder)
 // TODO: add the token validation of admin token
 router.get('/:conference_id', getAbstract)
 router.post(
@@ -30,7 +32,11 @@ router.post(
 router.put('/update-abstract/:id', verifyToken, updateAbstract)
 
 router.post('/change-status/:id', verifyToken, changeAbstractStatus)
-router.put('/update-payment-status/:abstractId', verifyToken, updatePaymentStatus)
+router.put(
+  '/update-payment-status/:abstractId',
+  verifyToken,
+  updatePaymentStatus
+)
 router.post(
   '/upload-payment-receipt/:abstractId',
   verifyToken,
