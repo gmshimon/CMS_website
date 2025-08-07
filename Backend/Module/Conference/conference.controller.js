@@ -22,7 +22,12 @@ export const createConference = async (req, res, next) => {
 
 export const getConference = async (req, res, next) => {
   try {
-    const data = await conference.find({}).lean()
+    const{status} = req.query
+    const matchQuery = {}
+    if (status) {
+      matchQuery.status = status
+    }
+    const data = await conference.find(matchQuery).lean()
 
     res.status(200).json({
       status: 'success',

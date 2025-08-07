@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   changeAbstractDecision,
   getAbstractByCategory,
-  updateAbstract
+  updateAbstract,
+  updatePaymentStatus
 } from '../Redux/Slice/AbstractSlice'
 
 const useSubmissions = (method = null) => {
@@ -37,9 +38,18 @@ const useSubmissions = (method = null) => {
 
   }
 
+  const handlePaymentDecision = (abstractId, paymentStatus) => {
+    const updatedData = {
+      payment_status: paymentStatus
+    }
+    console.log('Updated Data:', updatedData)
+    dispatch(updatePaymentStatus({ id: abstractId, data: updatedData }))
+  }
+
   return {
     handleAbstractDecision,
-    handleEditSubmission
+    handleEditSubmission,
+    handlePaymentDecision
   }
 }
 

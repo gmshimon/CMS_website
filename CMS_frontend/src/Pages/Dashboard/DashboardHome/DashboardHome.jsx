@@ -1,19 +1,13 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PresenterHome from '../../../Component/PresenterHome/PresenterHome'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Loading from '../../../Component/Loading/Loading'
 import AdminHome from '../../../Component/AdminHome/AdminHome'
-import { getConference } from '../../../Redux/Slice/conferenceSlice'
+
 import ReviewerHome from '../../../Component/ReviewerHome/ReviewerHome'
 
 const DashboardHome = () => {
   const { user, isLoading } = useSelector(state => state.user)
-
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(getConference())
-  }, [dispatch])
 
   return (
     <>

@@ -1,6 +1,7 @@
 import {
   abstractCreatedTemplate,
-  abstractStatusChangeTemplate
+  abstractStatusChangeTemplate,
+  paymentStatusChangeTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
@@ -272,6 +273,54 @@ export const makePayment = async (req, res, next) => {
     if (req.file) {
       await s3PaymentReceiptUploadService(`/payment/${req.file.originalname}`)
     }
+    next(error)
+  }
+}
+
+export const updatePaymentStatus = async (req, res, next) => {
+  try {
+    const { abstractId } = req.params
+    const { payment_status } = req.body
+    const isAbstract = await Abstracts.findOne({
+      _id: abstractId
+    }).populate('createdBy conference')
+
+    if (!isAbstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    const htmlEmail = paymentStatusChangeTemplate({
+      authorName: isAbstract.createdBy.name,
+      abstractTitle: isAbstract.paper_title,
+      conferenceName: isAbstract.conference.name,
+      paymentStatus: payment_status
+    })
+    await sendEmail({
+      to: isAbstract.createdBy.email,
+      subject: 'Payment Status Update',
+      html: htmlEmail
+    })
+
+    const shortMsg = `Payment status for your abstract "${isAbstract.paper_title}" has been updated to: ${payment_status}.`
+    await createNotificationService(
+      isAbstract.createdBy._id,
+      shortMsg,
+      htmlEmail,
+      'Payment Status Change'
+    )
+
+    isAbstract.payment_status = payment_status
+
+    await isAbstract.save()
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Payment status updated successfully',
+      data: isAbstract
+    })
+  } catch (error) {
     next(error)
   }
 }

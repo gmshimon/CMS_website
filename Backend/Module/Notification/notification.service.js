@@ -1,12 +1,13 @@
 import { io } from '../../socket/index.js'
 import notification from './notification.model.js'
 
-export const createNotificationService = async (user, title, message) => {
+export const createNotificationService = async (user, title, message,type=null) => {
   try {
     const data = {
       user,
       message,
-      title
+      title,
+      type: type || 'abstract_created',
     }
 
     const result = await notification.create(data)

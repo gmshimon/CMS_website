@@ -43,5 +43,50 @@ export const abstractStatusChangeTemplate = ({
         This is an automated notification from the ${conferenceName} Conference System.
       </p>
     </div>
-  `;
-};
+  `
+}
+
+export const paymentStatusChangeTemplate = ({
+  authorName,
+  abstractTitle,
+  conferenceName,
+  paymentStatus
+}) => {
+  const statusColor =
+    paymentStatus.toLowerCase() === 'paid' ? '#27ae60' : '#c0392b'
+  const statusMessage =
+    paymentStatus.toLowerCase() === 'paid'
+      ? 'We are pleased to inform you that your payment has been successfully received and accepted.'
+      : 'We regret to inform you that your payment has been rejected. Please review your payment details or contact the conference support team.'
+
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+      <h2 style="color: #2c3e50;">Dear ${authorName},</h2>
+      
+      <p>
+        This is to notify you that the payment status for your abstract titled 
+        <strong>"${abstractTitle}"</strong> submitted to the 
+        <strong>${conferenceName}</strong> has been updated to: 
+        <span style="color: ${statusColor}; font-weight: bold;">${paymentStatus}</span>.
+      </p>
+      
+      <p>
+        ${statusMessage}
+      </p>
+
+      <p>
+        If you have any questions or concerns, feel free to contact us for assistance.
+      </p>
+
+      <p>
+        Thank you for your interest and contribution to <strong>${conferenceName}</strong>.
+      </p>
+      
+      <br />
+      <hr />
+      <p style="font-size: 12px; color: #aaa;">
+        This is an automated notification from the ${conferenceName} Conference System.
+      </p>
+    </div>
+  `
+}

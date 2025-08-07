@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate()
   useEffect(()=>{
     if(isLoginSuccess){
-      navigate('/admin/home')
+      navigate('/admin')
     }
     if(isLoginError){
       toast.error('Failed', {

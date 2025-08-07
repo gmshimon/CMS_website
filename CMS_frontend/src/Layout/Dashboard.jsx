@@ -91,8 +91,12 @@ const Dashboard = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    dispatch(getConference())
-  }, [dispatch])
+    if (user?.role === 'Admin') {
+      dispatch(getConference())
+    } else {
+      dispatch(getConference('Active'))
+    }
+  }, [dispatch, user?.role])
 
   //   const handleTestNotification = async () => {
   //   const testNotification = {
@@ -149,7 +153,7 @@ const Dashboard = () => {
                   className='border border-black p-1 rounded-lg w-44 text-sm bg-slate-600'
                   onChange={e => {
                     if (e.target.value === 'All Conferences') {
-                      dispatch(setSelectedConference(null)) 
+                      dispatch(setSelectedConference(null))
                       sessionStorage.removeItem('selectedConference')
                       return
                     }

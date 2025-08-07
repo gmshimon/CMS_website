@@ -5,7 +5,8 @@ import {
   getAbstract,
   getAbstractByCategory,
   makePayment,
-  updateAbstract
+  updateAbstract,
+  updatePaymentStatus
 } from './abstract.controller.js'
 import abstractUploaded from '../../Middleware/FileUpload/abstractUploaded.js'
 import verifyToken from '../../Middleware/verifyToken.js'
@@ -29,7 +30,7 @@ router.post(
 router.put('/update-abstract/:id', verifyToken, updateAbstract)
 
 router.post('/change-status/:id', verifyToken, changeAbstractStatus)
-
+router.put('/update-payment-status/:abstractId', verifyToken, updatePaymentStatus)
 router.post(
   '/upload-payment-receipt/:abstractId',
   verifyToken,

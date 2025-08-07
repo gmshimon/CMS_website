@@ -168,6 +168,25 @@ export const makePayment = createAsyncThunk(
   }
 )
 
+export const updatePaymentStatus = createAsyncThunk(
+  'updatePaymentStatus',
+
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.put(
+        `/abstract/update-payment-status/${id}`,
+        data
+      )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating payment status'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const abstractSlice = createSlice({
   name: 'abstract',
   initialState,
@@ -412,6 +431,28 @@ const abstractSlice = createSlice({
         state.makePaymentError = false
       })
       .addCase(makePayment.rejected, state => {
+        state.makePaymentLoading = false
+        state.makePaymentSuccess = false
+        state.makePaymentError = true
+      })
+      .addCase(updatePaymentStatus.pending, state => {
+        state.makePaymentLoading = true
+        state.makePaymentSuccess = false
+        state.makePaymentError = false
+      })
+      .addCase(updatePaymentStatus.fulfilled, (state, action) => {
+        const { _id, payment_status } = action.payload
+        const index = state.abstracts.findIndex(
+          abstract => abstract._id === _id
+        )
+        if (index !== -1) {
+          state.abstracts[index].payment_status = payment_status
+        }
+        state.makePaymentLoading = false
+        state.makePaymentSuccess = true
+        state.makePaymentError = false
+      })
+      .addCase(updatePaymentStatus.rejected, state => {
         state.makePaymentLoading = false
         state.makePaymentSuccess = false
         state.makePaymentError = true

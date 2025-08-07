@@ -13,7 +13,10 @@ const Submission = () => {
     changeAbstractDecisionError,
     editAbstractLoading,
     editAbstractSuccess,
-    editAbstractError
+    editAbstractError,
+    makePaymentLoading,
+    makePaymentSuccess,
+    makePaymentError
   } = useSelector(state => state.abstract)
   // eslint-disable-next-line no-unused-vars
   const [yearInput, setYearInput] = useState('')
@@ -46,15 +49,29 @@ const Submission = () => {
       showErrorToast('Failed to edit submission')
       dispatch(reset())
     }
+    if (makePaymentSuccess) {
+      showSuccessToast('Payment status updated successfully')
+      dispatch(reset())
+    }
+    if (makePaymentError) {
+      showErrorToast('Something went wrong')
+      dispatch(reset())
+    }
   }, [
     changeAbstractDecisionError,
     changeAbstractDecisionSuccess,
     editAbstractSuccess,
     editAbstractError,
-    dispatch
+    dispatch,
+    makePaymentSuccess,
+    makePaymentError
   ])
 
-  if (changeAbstractDecisionLoading || editAbstractLoading) {
+  if (
+    changeAbstractDecisionLoading ||
+    editAbstractLoading ||
+    makePaymentLoading
+  ) {
     return (
       <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
         <Loading />

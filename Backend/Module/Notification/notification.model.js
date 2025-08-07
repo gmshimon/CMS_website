@@ -10,13 +10,7 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: [
-        'abstract_created',
-        'abstract_approved',
-        'abstract_rejected',
-        'reminder',
-        'general'
-      ],
+
       default: 'abstract_created'
     },
     isRead: { type: Boolean, default: false }

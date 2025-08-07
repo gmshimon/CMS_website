@@ -15,7 +15,8 @@ const SubmissionTable = ({
   onEdit,
   onDelete,
   onViewFiles,
-  handleAbstractDecision
+  handleAbstractDecision,
+  handlePaymentDecision
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
@@ -86,11 +87,29 @@ const SubmissionTable = ({
                     </span>
                   </td>
                   <td className='px-4 py-3 text-sm text-gray-700'>
-                    {item.payment_status || 'Pending'}
+                    {item.payment_status === 'Pending' ? (
+                      <select
+                        onChange={e =>
+                          handlePaymentDecision(item._id, e.target.value)
+                        }
+                        className='border border-gray-300 rounded-md p-1 text-xs'
+                      >
+                        <option value=''>Select Payment Status</option>
+                        <option value='Paid'>Accept</option>
+                        <option value='Unpaid'>Reject</option>
+                      </select>
+                    ) : (
+                      item.payment_status || 'Pending'
+                    )}
                   </td>
                   <td className='px-4 py-3 text-center'>
                     {item.payment_proof ? (
-                      <a href={item.payment_proof} title='View Proof' download>
+                      <a
+                        href={item.payment_proof}
+                        target='_blank'
+                        title='View Proof'
+                        download
+                      >
                         <FaCheckCircle className='text-green-500 text-lg mx-auto' />
                       </a>
                     ) : (
@@ -115,15 +134,24 @@ const SubmissionTable = ({
                     </p>
                   </td>
                   <td className='px-4 py-3 text-center'>
-                    {
-                      item.status ==='Abstract Submitted'?<select 
-                      onChange={e => handleAbstractDecision(item._id, e.target.value)}
-                     className='border border-gray-300 rounded-md p-1 text-xs'>
-                      <option value=''>Select Action</option>
-                      <option value="Accepted">Accept</option>
-                      <option value="Rejected">Reject</option>
-                    </select>:<span className='text-sm'>{item.status==="Rejected"?"Abstract Rejected":"Abstract Accepted"}</span>
-                    }
+                    {item.status === 'Abstract Submitted' ? (
+                      <select
+                        onChange={e =>
+                          handleAbstractDecision(item._id, e.target.value)
+                        }
+                        className='border border-gray-300 rounded-md p-1 text-xs'
+                      >
+                        <option value=''>Select Action</option>
+                        <option value='Accepted'>Accept</option>
+                        <option value='Rejected'>Reject</option>
+                      </select>
+                    ) : (
+                      <span className='text-sm'>
+                        {item.status === 'Rejected'
+                          ? 'Abstract Rejected'
+                          : 'Abstract Accepted'}
+                      </span>
+                    )}
                   </td>
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
