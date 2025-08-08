@@ -30,6 +30,7 @@ import {
   presenterNavOptions,
   reviewerNavOptions
 } from '../Utilis/navOptions'
+import { logOut } from '../Redux/Slice/AuthSlice'
 
 const Dashboard = () => {
   const { conferences, selectedConference } = useSelector(
@@ -228,7 +229,10 @@ const Dashboard = () => {
                     <a>Settings</a>
                   </li>
                   <li>
-                    <a>Logout</a>
+                    <a onClick={()=>{
+                      navigate('/login')
+                      dispatch(logOut())
+                    }}>Logout</a>
                   </li>
                 </ul>
               </div>

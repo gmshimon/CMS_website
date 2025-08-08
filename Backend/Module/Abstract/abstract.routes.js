@@ -5,6 +5,7 @@ import {
   getAbstract,
   getAbstractByCategory,
   makePayment,
+  sendPaperSubmitReminder,
   sendPaymentReminder,
   updateAbstract,
   updatePaymentStatus
@@ -17,6 +18,7 @@ const router = express.Router()
 
 router.get('/get-abstract-category', verifyToken, getAbstractByCategory)
 router.post('/payment-reminder/:abstractId', verifyToken, sendPaymentReminder)
+router.post('/paper-reminder/:abstractId', verifyToken, sendPaperSubmitReminder)
 // TODO: add the token validation of admin token
 router.get('/:conference_id', getAbstract)
 router.post(

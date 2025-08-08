@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   changeAbstractDecision,
   getAbstractByCategory,
+  sendPaperSubmitReminder,
   sendPaymentReminder,
   updateAbstract,
   updatePaymentStatus
@@ -50,11 +51,15 @@ const useSubmissions = (method = null) => {
     dispatch(sendPaymentReminder(id))
   }
 
+  const handlePaperSubmitReminder = (id)=>{
+    dispatch(sendPaperSubmitReminder(id))
+  }
   return {
     handleAbstractDecision,
     handleEditSubmission,
     handlePaymentDecision,
-    handlePaymentReminder
+    handlePaymentReminder,
+    handlePaperSubmitReminder
   }
 }
 

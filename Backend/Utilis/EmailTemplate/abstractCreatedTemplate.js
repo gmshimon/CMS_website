@@ -128,3 +128,38 @@ export const paymentReminderEmailTemplate = ({
     </div>
   `
 }
+
+export const paperSubmitReminderEmailTemplate = ({
+  authorName,
+  abstractTitle,
+  conferenceName
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto;">
+      <h2 style="color: #2c3e50;">Dear ${authorName},</h2>
+
+      <p>
+        This is a kind reminder to submit your full paper for the abstract
+        titled <strong>"${abstractTitle}"</strong>, submitted to <strong>${conferenceName}</strong>.
+      </p>
+
+      <p>
+        Please log in to the conference portal to upload your full paper.
+        Timely submission is important to ensure your paper is considered for review.
+      </p>
+
+      <p>
+        If you have already submitted your paper, kindly disregard this message.
+      </p>
+
+      <p>
+        Thank you for your contribution to <strong>${conferenceName}</strong>.
+      </p>
+
+      <hr />
+      <p style="font-size: 12px; color: #aaa; text-align: center;">
+        This is an automated email from the ${conferenceName} Conference System.
+      </p>
+    </div>
+  `
+}

@@ -50,6 +50,10 @@ const initialState = {
   paymentReminderSuccess: false,
   paymentReminderError: false,
 
+  paperReminderLoading: false,
+  paperReminderSuccess: false,
+  paperReminderError: false,
+
   changeAbstractDecisionLoading: false,
   changeAbstractDecisionSuccess: false,
   changeAbstractDecisionError: false
@@ -204,6 +208,19 @@ export const sendPaymentReminder = createAsyncThunk(
     }
   }
 )
+export const sendPaperSubmitReminder = createAsyncThunk(
+  'sendPaperSubmitReminder',
+  async (id, { rejectWithValue }) => {
+    try {
+      await axiosSecure.post(`/abstract/paper-reminder/${id}`)
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating payment status'
+      return rejectWithValue(message)
+    }
+  }
+)
 
 const abstractSlice = createSlice({
   name: 'abstract',
@@ -234,6 +251,10 @@ const abstractSlice = createSlice({
       state.paymentReminderLoading = false
       state.paymentReminderSuccess = false
       state.paymentReminderError = false
+
+      state.paperReminderLoading = false
+      state.paperReminderSuccess = false
+      state.paperReminderError = false
     },
     resetForm: state => {
       state.conference = null
@@ -391,6 +412,7 @@ const abstractSlice = createSlice({
         state.getAbstractLoading = false
         state.getAbstractSuccess = false
         state.getAbstractError = true
+        state.abstracts = []
       })
       .addCase(changeAbstractDecision.pending, state => {
         state.changeAbstractDecisionLoading = true
@@ -493,6 +515,21 @@ const abstractSlice = createSlice({
         state.paymentReminderLoading = false
         state.paymentReminderSuccess = false
         state.paymentReminderError = true
+      })
+      .addCase(sendPaperSubmitReminder.pending, state => {
+        state.paperReminderLoading = true
+        state.paperReminderSuccess = false
+        state.paperReminderError = false
+      })
+      .addCase(sendPaperSubmitReminder.fulfilled, state => {
+        state.paperReminderLoading = false
+        state.paperReminderSuccess = true
+        state.paperReminderError = false
+      })
+      .addCase(sendPaperSubmitReminder.rejected, state => {
+        state.paperReminderLoading = false
+        state.paperReminderSuccess = false
+        state.paperReminderError = true
       })
   }
 })

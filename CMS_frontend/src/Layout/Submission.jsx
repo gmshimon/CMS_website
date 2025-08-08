@@ -19,7 +19,10 @@ const Submission = () => {
     makePaymentError,
     paymentReminderLoading,
     paymentReminderSuccess,
-    paymentReminderError
+    paymentReminderError,
+    paperReminderLoading,
+    paperReminderSuccess,
+    paperReminderError
   } = useSelector(state => state.abstract)
   // eslint-disable-next-line no-unused-vars
   const [yearInput, setYearInput] = useState('')
@@ -68,6 +71,14 @@ const Submission = () => {
       showErrorToast('Something went wrong')
       dispatch(reset())
     }
+    if (paperReminderSuccess) {
+      showSuccessToast('Paper Submit Reminder Sent')
+      dispatch(reset())
+    }
+    if (paperReminderError) {
+      showErrorToast('Something went wrong')
+      dispatch(reset())
+    }
   }, [
     changeAbstractDecisionError,
     changeAbstractDecisionSuccess,
@@ -77,14 +88,17 @@ const Submission = () => {
     makePaymentSuccess,
     makePaymentError,
     paymentReminderSuccess,
-    paymentReminderError
+    paymentReminderError,
+    paperReminderSuccess,
+    paperReminderError
   ])
 
   if (
     changeAbstractDecisionLoading ||
     editAbstractLoading ||
     makePaymentLoading ||
-    paymentReminderLoading
+    paymentReminderLoading ||
+    paperReminderLoading
   ) {
     return (
       <div className='flex h-[calc(100vh-100px)] items-center justify-center'>

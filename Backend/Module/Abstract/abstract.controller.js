@@ -1,6 +1,7 @@
 import {
   abstractCreatedTemplate,
   abstractStatusChangeTemplate,
+  paperSubmitReminderEmailTemplate,
   paymentReminderEmailTemplate,
   paymentStatusChangeTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
@@ -336,14 +337,16 @@ export const sendPaymentReminder = async (req, res, next) => {
     )
 
     if (!abstract) {
-      return res.status(404).json({ message: 'Abstract not found.' })
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
     }
 
     // 2. Check payment status
     if (abstract.payment_status !== 'Unpaid') {
-      return res
-        .status(400)
-        .json({ message: 'Payment has already been processed.' })
+      const error = new Error('Already Payment done')
+      error.statusCode = 400
+      return next(error)
     }
 
     // 3. Prepare email content
@@ -374,6 +377,57 @@ export const sendPaymentReminder = async (req, res, next) => {
       .json({ message: 'Payment reminder email sent successfully.' })
   } catch (error) {
     console.error('Error sending payment reminder:', error)
-    return res.status(500).json({ message: 'Internal server error.' })
+    next(error)
+  }
+}
+
+export const sendPaperSubmitReminder = async (req, res, next) => {
+  try {
+    const { abstractId } = req.params
+    // 1) Fetch abstract with author + conference populated
+    const abstract = await Abstracts.findById(abstractId).populate(
+      'createdBy conference'
+    )
+    if (!abstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    // 2. Check payment status
+    if (abstract.status !== 'Abstract Submitted') {
+      const error = new Error('Something went wrong')
+      error.statusCode = 400
+      return next(error)
+    }
+
+    // 3. Prepare email content
+    const emailHtml = paperSubmitReminderEmailTemplate({
+      authorName: abstract.createdBy.name,
+      abstractTitle: abstract.paper_title,
+      conferenceName: abstract.conference.name
+    })
+
+    const shortMsg = `Reminder: Your paper for "${abstract.paper_title}" has not been submitted yet. Please submit it through the portal.`
+
+    // 4. Send the email
+    await sendEmail({
+      to: abstract.createdBy.email,
+      subject: 'Paper Submit Reminder - ' + abstract.conference.name,
+      html: emailHtml
+    })
+
+    await createNotificationService(
+      abstract.createdBy._id,
+      shortMsg,
+      emailHtml,
+      'Paper Submit Reminder'
+    )
+    return res
+      .status(200)
+      .json({ message: 'Payment reminder email sent successfully.' })
+
+  } catch (error) {
+    next(error)
   }
 }

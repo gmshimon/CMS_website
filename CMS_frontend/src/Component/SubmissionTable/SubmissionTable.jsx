@@ -9,7 +9,8 @@ const SubmissionTable = ({
   onDelete,
   handleAbstractDecision,
   handlePaymentDecision,
-  handlePaymentReminder
+  handlePaymentReminder,
+  handlePaperSubmitReminder
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
@@ -78,6 +79,16 @@ const SubmissionTable = ({
                     >
                       {item.status}
                     </span>
+                    <br />
+                    {item?.status === 'Abstract Submitted' &&
+                      item.payment_status === 'Paid' && (
+                        <button
+                          onClick={() => handlePaperSubmitReminder(item._id)}
+                          className='mt-2 px-2 w-full py-1 text-xs text-white bg-blue-600 hover:bg-blue-700 rounded'
+                        >
+                          Paper Reminder
+                        </button>
+                      )}
                   </td>
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.payment_status === 'Pending' ? (
