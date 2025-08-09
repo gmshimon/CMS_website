@@ -8,7 +8,9 @@ import {
   BookOpen
 } from 'lucide-react'
 import { useNavigate } from 'react-router'
-
+import ConferenceHighlights from '../../Component/ConferenceHighlights/ConferenceHighlights'
+import SpeakersLineup from '../../Component/SpeakersLineup/SpeakersLineup'
+import ConferenceTracks from '../../Component/ConferenceTracks/ConferenceTracks'
 const HomePage = () => {
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
@@ -194,6 +196,9 @@ const HomePage = () => {
           }
         `}</style>
       </div>
+      <ConferenceHighlights/>
+      <SpeakersLineup/>
+      <ConferenceTracks />
     </>
   )
 }
