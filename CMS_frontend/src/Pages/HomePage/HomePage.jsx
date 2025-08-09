@@ -11,6 +11,11 @@ import { useNavigate } from 'react-router'
 import ConferenceHighlights from '../../Component/ConferenceHighlights/ConferenceHighlights'
 import SpeakersLineup from '../../Component/SpeakersLineup/SpeakersLineup'
 import ConferenceTracks from '../../Component/ConferenceTracks/ConferenceTracks'
+import ImportantDatesPublication from '../../Component/ImportantDatesPublication/ImportantDatesPublication'
+import UnmissableBenefits from '../../Component/UnmissableBenefits/UnmissableBenefits'
+import OurPartners from '../../Component/OurPartners/OurPartners'
+import UpcomingConferences from '../../Component/UpcomingConferences/UpcomingConferences'
+
 const HomePage = () => {
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
@@ -80,9 +85,6 @@ const HomePage = () => {
             }}
           ></div>
         </div>
-
-        {/* Navigation */}
-     
 
         {/* Hero Section */}
         <div className='relative z-10 container mx-auto px-4 pt-12 pb-20'>
@@ -199,6 +201,10 @@ const HomePage = () => {
       <ConferenceHighlights/>
       <SpeakersLineup/>
       <ConferenceTracks />
+      <ImportantDatesPublication/>
+      <UnmissableBenefits/>
+      <OurPartners/>
+      <UpcomingConferences/>
     </>
   )
 }
