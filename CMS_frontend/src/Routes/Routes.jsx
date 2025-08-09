@@ -40,6 +40,8 @@ import SchedulingHome from "../Pages/Dashboard/Scheduling/SchedulingHome/Schedul
 import SchedulingCategory from "../Pages/Dashboard/Scheduling/SchedulingCategory/SchedulingCategory.jsx";
 import AboutPage from "../Pages/AboutPage/AboutPage.jsx";
 import CallForPapersPage from "../Pages/CallForPapersPage/CallForPapersPage.jsx";
+import SubmissionPage from "../Pages/SubmissionPage.jsx";
+import RegistrationDetailsPage from "../Pages/RegistrationDetailsPage/RegistrationDetailsPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -57,6 +59,14 @@ export const router = createBrowserRouter([
       {
         path:'/call-for-papers',
         element:<CallForPapersPage/>
+      },
+      {
+        path:'/submissions',
+        element:<SubmissionPage/>
+      },
+      {
+        path:'/registration-details',
+        element:<RegistrationDetailsPage/>
       },
       {
         path: "login",

@@ -9,7 +9,7 @@ const Navbar = () => {
     { label: 'About', path: '/about' },
     { label: 'Call for Papers', path: '/call-for-papers' },
     { label: 'Submissions', path: '/submissions' },
-    { label: 'Registration', path: '/registration' },
+    { label: 'Registration', path: '/registration-details' },
     { label: 'Keynote Speakers', path: '/keynote-speakers' },
     { label: 'Publications', path: '/publications' },
     { label: 'Committee', path: '/committee' },
