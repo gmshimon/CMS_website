@@ -44,6 +44,7 @@ import SubmissionPage from "../Pages/SubmissionPage.jsx";
 import RegistrationDetailsPage from "../Pages/RegistrationDetailsPage/RegistrationDetailsPage.jsx";
 import PublicationsPage from "../Pages/PublicationsPage/PublicationsPage.jsx";
 import ContactPage from "../Pages/ContactPage/ContactPage.jsx";
+import LastEventPage from "../Pages/LastEventPage/LastEventPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
       {
         path:'/publications',
         element:<PublicationsPage/>
+      },
+      {
+        path:'/past-events',
+        element:<LastEventPage/>
       },
       {
         path:'/contact',
