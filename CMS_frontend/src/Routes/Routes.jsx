@@ -38,6 +38,7 @@ import MyReviewDetailPage from "../Pages/Dashboard/MyReviewDetailPage/MyReviewDe
 import Scheduling from "../Layout/Scheduling.jsx";
 import SchedulingHome from "../Pages/Dashboard/Scheduling/SchedulingHome/SchedulingHome.jsx";
 import SchedulingCategory from "../Pages/Dashboard/Scheduling/SchedulingCategory/SchedulingCategory.jsx";
+import AboutPage from "../Pages/AboutPage/AboutPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <HomePage/>,
+      },
+      {
+        path:'/about',
+        element:<AboutPage/>
       },
       {
         path: "login",
