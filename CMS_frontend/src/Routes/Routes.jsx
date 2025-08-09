@@ -45,6 +45,8 @@ import RegistrationDetailsPage from "../Pages/RegistrationDetailsPage/Registrati
 import PublicationsPage from "../Pages/PublicationsPage/PublicationsPage.jsx";
 import ContactPage from "../Pages/ContactPage/ContactPage.jsx";
 import LastEventPage from "../Pages/LastEventPage/LastEventPage.jsx";
+import CommitteePage from "../Pages/CommitteePage/CommitteePage.jsx";
+import KeynoteSpeakersPage from "../Pages/KeynoteSpeakersPage/KeynoteSpeakersPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -78,6 +80,14 @@ export const router = createBrowserRouter([
       {
         path:'/past-events',
         element:<LastEventPage/>
+      },
+      {
+        path:'/committee',
+        element:<CommitteePage/>
+      },
+      {
+        path:'/keynote-speakers',
+        element:<KeynoteSpeakersPage/>
       },
       {
         path:'/contact',
