@@ -5,6 +5,7 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 import auth from '../../Firebase/firebase.config.js'
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateProfile
@@ -31,7 +32,10 @@ const initialState = {
   isGetUsersError: false,
   getRoleLoading: false,
   getRoleSuccess: false,
-  getRoleError: false
+  getRoleError: false,
+  sendResetPasswordLoading: false,
+  sendResetPasswordSuccess: false,
+  sendResetPasswordError: false
 }
 
 // Save user data in backend and localStorage
@@ -104,6 +108,17 @@ export const updateImage = createAsyncThunk(
   }
 )
 
+export const resetPassword = createAsyncThunk(
+  'resetPassword',
+  async (email, { rejectWithValue }) => {
+    try {
+      await sendPasswordResetEmail(auth, email)
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
 // Logout
 export const logOut = createAsyncThunk('logOut', async () => {
   await signOut(auth)
@@ -122,24 +137,34 @@ const userSlice = createSlice({
   reducers: {
     reset: state => {
       state.isLoading = false
+
       state.isLoginLoading = false
       state.isLoginSuccess = false
       state.isLoginError = false
+
       state.isCreateUserLoading = false
       state.isCreateUserSuccess = false
       state.isCreateUserError = false
+
       state.isUpdateUserLoading = false
       state.isUpdateUserSuccess = false
       state.isUpdateUserError = false
+
       state.isGetUserDataLoading = true
       state.isGetUserDataSuccess = false
       state.isGetUserDataError = false
+
       state.isGetUsersLoading = false
       state.isGetUsersSuccess = false
       state.isGetUsersError = false
+
       state.getRoleLoading = false
       state.getRoleSuccess = false
       state.getRoleError = false
+
+      state.sendResetPasswordLoading = false
+      state.sendResetPasswordSuccess = false
+      state.sendResetPasswordError = false
     },
     startLoading: (state, action) => {
       state.isLoading = action.payload
@@ -266,6 +291,22 @@ const userSlice = createSlice({
         state.getRoleLoading = false
         state.getRoleSuccess = false
         state.getRoleError = true
+      })
+
+      .addCase(resetPassword.pending, state => {
+        state.sendResetPasswordLoading = true
+        state.sendResetPasswordSuccess = false
+        state.sendResetPasswordError = false
+      })
+      .addCase(resetPassword.fulfilled, state => {
+        state.sendResetPasswordLoading = false
+        state.sendResetPasswordSuccess = true
+        state.sendResetPasswordError = false
+      })
+      .addCase(resetPassword.rejected, state => {
+        state.sendResetPasswordLoading = false
+        state.sendResetPasswordSuccess = false
+        state.sendResetPasswordError = true
       })
   }
 })

@@ -4,11 +4,21 @@ import ChangePasswordModal from '../../Component/ChangePasswordModal/ChangePassw
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
-import { reset, updateImage, updateUserProfile } from '../../Redux/Slice/AuthSlice'
+import {
+  reset,
+  updateImage,
+  updateUserProfile
+} from '../../Redux/Slice/AuthSlice'
 
 const Profile = () => {
-  const { user, isUpdateUserSuccess, isUpdateUserError, isUpdateUserLoading } =
-    useSelector(state => state.user)
+  const {
+    user,
+    isUpdateUserSuccess,
+    isUpdateUserError,
+    isUpdateUserLoading,
+    sendResetPasswordSuccess,
+    sendResetPasswordError
+  } = useSelector(state => state.user)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
 
@@ -19,11 +29,24 @@ const Profile = () => {
       showSuccessToast('Profile updated successfully')
       dispatch(reset())
     }
+    if (sendResetPasswordSuccess) {
+      showSuccessToast('Password reset link sent')
+      dispatch(reset())
+    }
     if (isUpdateUserError) {
       showErrorToast('Something went wrong')
-      dispatch()
+      dispatch(reset())
     }
-  }, [dispatch, isUpdateUserError, isUpdateUserSuccess])
+    if(sendResetPasswordError){
+      showErrorToast('Something went wrong')
+      dispatch(reset())
+    }
+  }, [
+    dispatch,
+    isUpdateUserError,
+    isUpdateUserSuccess,
+    sendResetPasswordSuccess
+  ])
 
   const handleUpdateUserProfile = data => {
     dispatch(updateUserProfile(data))
@@ -34,7 +57,7 @@ const Profile = () => {
     if (file) {
       const formData = new FormData()
       formData.append('image', file)
-        dispatch(updateImage(formData))
+      dispatch(updateImage(formData))
     }
   }
 
