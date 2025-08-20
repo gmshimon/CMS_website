@@ -17,7 +17,6 @@ const Navbar = () => {
     { label: 'Past Events', path: '/past-events' },
     { label: 'Contact', path: '/contact' }
   ]
-console.log(logo)
   return (
     <nav className='relative z-50 bg-white/95 backdrop-blur-sm shadow-lg'>
       <div className='container mx-auto px-4'>

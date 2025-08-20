@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-
 import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 import auth from '../../Firebase/firebase.config.js'
@@ -10,6 +9,7 @@ import {
   signOut,
   updateProfile
 } from 'firebase/auth'
+
 const initialState = {
   user: null,
   roles: null,
@@ -34,11 +34,11 @@ const initialState = {
   getRoleError: false
 }
 
+// Save user data in backend and localStorage
 export const saveUserData = async userData => {
   const response = await axios.post('user/', userData)
-
   const data = response.data.data
-  const tokenExpiration = new Date().getTime() + 3 * 60 * 60 * 1000 // 8 hours from now
+  const tokenExpiration = new Date().getTime() + 3 * 60 * 60 * 1000 // 3 hours
   localStorage.setItem(
     'userToken',
     JSON.stringify({
@@ -49,6 +49,7 @@ export const saveUserData = async userData => {
   return data
 }
 
+// Firebase login
 export const loginUser = createAsyncThunk(
   'loginUser',
   async ({ email, password }) => {
@@ -61,30 +62,43 @@ export const loginUser = createAsyncThunk(
   }
 )
 
+// Firebase user creation
 export const createUser = createAsyncThunk('createUser', async formdata => {
   const email = formdata.get('email')
   const password = formdata.get('password')
   const name = formdata.get('name')
-  console.log('signing in with', email, password)
   const res = await createUserWithEmailAndPassword(auth, email, password)
-  const result = updateProfile(auth.currentUser, {
-    displayName: name
-  })
+  await updateProfile(auth.currentUser, { displayName: name })
   const data = await saveUserData(formdata)
   return data
 })
 
+// Fetch single user
 export const fetchUser = createAsyncThunk('fetchUser', async email => {
-  const response = await axios.post(`/user/get-user`, { email: email })
+  const response = await axios.post(`/user/get-user`, { email })
   return response.data.data
 })
 
+// Update user profile
+export const updateUserProfile = createAsyncThunk(
+  'updateUserProfile',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.put('/user/update-profile', data)
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
+// Logout
 export const logOut = createAsyncThunk('logOut', async () => {
-  const response = await signOut(auth)
+  await signOut(auth)
   localStorage.removeItem('userToken')
-  return response
 })
 
+// Get roles
 export const getRole = createAsyncThunk('getRole', async () => {
   const response = await axios.get('/role')
   return response.data.data
@@ -95,42 +109,41 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     reset: state => {
+      state.isLoading = false
       state.isLoginLoading = false
-      state.isLoginError = false
       state.isLoginSuccess = false
+      state.isLoginError = false
       state.isCreateUserLoading = false
-      state.isCreateUserError = false
       state.isCreateUserSuccess = false
-      state.isGetUserDataLoading = false
+      state.isCreateUserError = false
+      state.isUpdateUserLoading = false
+      state.isUpdateUserSuccess = false
+      state.isUpdateUserError = false
+      state.isGetUserDataLoading = true
       state.isGetUserDataSuccess = false
       state.isGetUserDataError = false
       state.isGetUsersLoading = false
       state.isGetUsersSuccess = false
       state.isGetUsersError = false
-      state.isUpdateUserLoading = false
-      state.isUpdateUserSuccess = false
-      state.isUpdateUserError = false
       state.getRoleLoading = false
       state.getRoleSuccess = false
       state.getRoleError = false
     },
     startLoading: (state, action) => {
-      state.isGetUserDataLoading = false
       state.isLoading = action.payload
     },
     setUser: (state, action) => {
       state.isLoading = false
       state.user = action.payload
     },
-    logout: async (state, action) => {
-      signOut(auth).then(() => {
-        state.user = null
-        localStorage.removeItem('userToken')
-      })
+    logout: state => {
+      state.user = null
+      localStorage.removeItem('userToken')
     }
   },
   extraReducers: builder => {
     builder
+      // Login User
       .addCase(loginUser.pending, state => {
         state.isLoginLoading = true
         state.isLoginSuccess = false
@@ -142,58 +155,84 @@ const userSlice = createSlice({
         state.isLoginSuccess = true
         state.isLoginError = false
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, state => {
         state.isLoginLoading = false
         state.isLoginError = true
         state.isLoginSuccess = false
       })
-      .addCase(fetchUser.pending, (state, action) => {
+
+      // Create User
+      .addCase(createUser.pending, state => {
+        state.isCreateUserLoading = true
+        state.isCreateUserError = false
+        state.isCreateUserSuccess = false
+      })
+      .addCase(createUser.fulfilled, (state, action) => {
+        state.user = action.payload
+        state.isCreateUserLoading = false
+        state.isCreateUserSuccess = true
+        state.isCreateUserError = false
+      })
+      .addCase(createUser.rejected, state => {
+        state.isCreateUserLoading = false
+        state.isCreateUserSuccess = false
+        state.isCreateUserError = true
+      })
+
+      // Fetch User
+      .addCase(fetchUser.pending, state => {
         state.isGetUserDataLoading = true
         state.isGetUserDataSuccess = false
         state.isGetUserDataError = false
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.user = action.payload
-        state.isLoading = false
         state.isGetUserDataLoading = false
         state.isGetUserDataSuccess = true
         state.isGetUserDataError = false
       })
-      .addCase(fetchUser.rejected, (state, action) => {
+      .addCase(fetchUser.rejected, state => {
         state.isGetUserDataLoading = false
         state.isGetUserDataSuccess = false
         state.isGetUserDataError = true
       })
-      .addCase(createUser.pending, (state, action) => {
-        state.isCreateUserLoading = true
-        state.isCreateUserError = false
-        state.isCreateUserSuccess = false
+
+      // Update User Profile
+      .addCase(updateUserProfile.pending, state => {
+        state.isUpdateUserLoading = true
+        state.isUpdateUserSuccess = false
+        state.isUpdateUserError = false
       })
-      .addCase(createUser.fulfilled, (state, action) => {
-        state.isCreateUserError = false
-        state.isCreateUserSuccess = true
-        state.isCreateUserLoading = false
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.user = action.payload
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = true
+        state.isUpdateUserError = false
       })
-      .addCase(createUser.rejected, (state, action) => {
-        state.isCreateUserLoading = false
-        state.isCreateUserError = true
-        state.isCreateUserSuccess = false
+      .addCase(updateUserProfile.rejected, state => {
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = false
+        state.isUpdateUserError = true
       })
-      .addCase(logOut.rejected, (state, action) => {})
+
+      // Logout
+      .addCase(logOut.fulfilled, state => {
+        state.user = null
+      })
+
+      // Get Roles
       .addCase(getRole.pending, state => {
         state.getRoleLoading = true
         state.getRoleSuccess = false
         state.getRoleError = false
       })
-      .addCase(getRole.fulfilled, (state,action) => {
-        action.payload
+      .addCase(getRole.fulfilled, (state, action) => {
         state.roles = action.payload
         state.getRoleLoading = false
         state.getRoleSuccess = true
         state.getRoleError = false
       })
-      .addCase(getRole.rejected, (state) => {
+      .addCase(getRole.rejected, state => {
         state.getRoleLoading = false
         state.getRoleSuccess = false
         state.getRoleError = true

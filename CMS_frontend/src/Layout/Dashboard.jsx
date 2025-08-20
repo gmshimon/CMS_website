@@ -30,9 +30,11 @@ import {
   presenterNavOptions,
   reviewerNavOptions
 } from '../Utilis/navOptions'
-import { logOut } from '../Redux/Slice/AuthSlice'
+import { logOut, reset } from '../Redux/Slice/AuthSlice'
+import { showSuccessToast } from '../Utilis/toastUtils'
 
 const Dashboard = () => {
+  const { isLoginSuccess } = useSelector(state => state.user)
   const { conferences, selectedConference } = useSelector(
     state => state.conference
   )
@@ -43,6 +45,14 @@ const Dashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   CurrentUser()
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (isLoginSuccess) {
+      showSuccessToast('Login Successful')
+      dispatch(reset())
+    }
+  }, [dispatch, isLoginSuccess])
+
   useEffect(() => {
     if (sessionStorage.getItem('selectedConference')) {
       dispatch(
@@ -226,13 +236,14 @@ const Dashboard = () => {
                     </Link>
                   </li>
                   <li>
-                    <a>Settings</a>
-                  </li>
-                  <li>
-                    <a onClick={()=>{
-                      navigate('/login')
-                      dispatch(logOut())
-                    }}>Logout</a>
+                    <a
+                      onClick={() => {
+                        navigate('/login')
+                        dispatch(logOut())
+                      }}
+                    >
+                      Logout
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -288,8 +299,8 @@ const Dashboard = () => {
                   </Link>
                   <li
                     onClick={() => {
-                      // dispatch(logOut());
-                      setIsDropdownOpen(false)
+                      navigate('/login')
+                      dispatch(logOut())
                     }}
                   >
                     <a>Logout</a>

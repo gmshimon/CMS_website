@@ -74,3 +74,53 @@ export const fetchUser = async (req, res, next) => {
     })
   }
 }
+
+export const updateUserProfile = async (req, res, next) => {
+  try {
+    const { email } = req.user // assuming you have auth middleware setting req.user
+    const user = await Users.findOne({ email })
+
+    if (!user) {
+      const error = new Error('User not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    // Update user fields from req.body
+    const {
+      name,
+      contact,
+      address,
+      country,
+      state,
+      city,
+      zip_code,
+      affiliation,
+      faculty,
+      position,
+      domain
+    } = req.body
+
+    user.name = name || user.name
+    user.contact = contact || user.contact
+    user.address = address || user.address
+    user.country = country || user.country
+    user.state = state || user.state
+    user.city = city || user.city
+    user.zip_code = zip_code || user.zip_code
+    user.affiliation = affiliation || user.affiliation
+    user.faculty = faculty || user.faculty
+    user.position = position || user.position
+    user.domain = domain || user.domain
+
+    const updatedUser = await user.save()
+console.log(updatedUser)
+    res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: updatedUser
+    })
+  } catch (error) {
+    next(error)
+  }
+}

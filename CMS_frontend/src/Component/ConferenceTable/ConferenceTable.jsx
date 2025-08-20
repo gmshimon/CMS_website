@@ -21,7 +21,6 @@ const ConferenceTable = ({
         return "bg-gray-100 text-gray-800";
     }
   };
-
   return (
     <div className="px-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]">
       <div className="bg-white rounded-lg shadow-md overflow-hidden">

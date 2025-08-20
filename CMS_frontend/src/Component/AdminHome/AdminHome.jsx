@@ -27,7 +27,7 @@ const AdminHome = () => {
   const adminActions = [
     {
       title: 'Active Conference',
-      path: '/admin/active-conference',
+      path: '/admin/conference?status=Active',
       icon: IoTimeOutline,
       color: 'bg-blue-50 hover:bg-blue-100',
       stat: `${dashboardStats?.active_conference || 0} Active`,
