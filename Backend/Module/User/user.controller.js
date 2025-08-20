@@ -145,7 +145,7 @@ export const updateImage = async (req, res, next) => {
       { email },
       {
         $set: {
-          image: image
+          photo: image
         }
       }
     )

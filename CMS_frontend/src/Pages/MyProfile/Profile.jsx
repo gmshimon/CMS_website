@@ -35,7 +35,6 @@ const Profile = () => {
       const formData = new FormData()
       formData.append('image', file)
         dispatch(updateImage(formData))
-      console.log('Hello from file change handler')
     }
   }
 
@@ -61,7 +60,7 @@ const Profile = () => {
               />
             </div> */}
             <div className='relative avatar'>
-              <div className='w-24 rounded-full'>
+              <div className='w-40 rounded-full'>
                 <img
                   src={
                     user?.photo ||

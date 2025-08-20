@@ -34,12 +34,11 @@ import { logOut, reset } from '../Redux/Slice/AuthSlice'
 import { showSuccessToast } from '../Utilis/toastUtils'
 
 const Dashboard = () => {
-  const { isLoginSuccess } = useSelector(state => state.user)
+  const { isLoginSuccess,user } = useSelector(state => state.user)
   const { conferences, selectedConference } = useSelector(
     state => state.conference
   )
   const { list } = useSelector(state => state.notifications)
-  const { user } = useSelector(state => state.user)
   const [navOptions, setNavOptions] = useState([])
   const [activeOptions, setActiveOptions] = useState('Home')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -222,7 +221,7 @@ const Dashboard = () => {
                   <div className='w-8 rounded-full'>
                     <img
                       alt='Tailwind CSS Navbar component'
-                      src='https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+                      src={user?.photo||'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'}
                     />
                   </div>
                 </div>
@@ -307,30 +306,6 @@ const Dashboard = () => {
                   </li>
                 </ul>
               )}
-              <div tabIndex={0} role='button'>
-                <p
-                  onClick={() => {
-                    setIsDropdownOpen(!isDropdownOpen)
-                    setActiveOptions('Name')
-                  }}
-                  className={`flex items-center text-[17px] hover:text-orange-500 cursor-pointer border-t py-4 pl-4 ${
-                    'Name' === activeOptions ? 'text-orange-500' : ''
-                  }`}
-                >
-                  <div className='avatar placeholder'>
-                    <div className='bg-neutral text-neutral-content w-8 rounded-full'>
-                      <span className='text-xs'>
-                        <img src={user?.image} alt='' />
-                      </span>
-                    </div>
-                  </div>
-                  <p title={name} className='cursor-pointer ml-3'>
-                    {user?.name.length > 9
-                      ? user?.name.slice(0, 14) + ' ...'
-                      : user?.name}
-                  </p>
-                </p>
-              </div>
             </div>
           </ul>
         </div>
