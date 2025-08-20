@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import logo from '../../assets/EGE_logo.png'
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -16,25 +17,21 @@ const Navbar = () => {
     { label: 'Past Events', path: '/past-events' },
     { label: 'Contact', path: '/contact' }
   ]
-
+console.log(logo)
   return (
     <nav className='relative z-50 bg-white/95 backdrop-blur-sm shadow-lg'>
       <div className='container mx-auto px-4'>
-        <div className='flex items-center justify-between h-16'>
+        <div className='flex items-center justify-between h-12 md:h-16'>
           {/* Logo */}
           <div className='flex items-center space-x-3'>
-            <div className='w-12 h-12 bg-gradient-to-r from-blue-600 to-orange-500 rounded-full flex items-center justify-center'>
-              <span className='text-white font-bold text-sm'>EGE</span>
-            </div>
-            <div className='hidden md:block'>
-              <h1 className='text-xl font-bold text-gray-800'>ELITE GLOBAL</h1>
-              <p className='text-sm text-orange-500 font-semibold'>EXCELLENCE</p>
+            <div>
+              <img src={'../../assets/EGE_logo.png'} alt='Conference Logo' className='h-12 w-auto' />
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <div className='hidden lg:flex space-x-8'>
-            {navItems.map((item) => (
+          <div className='hidden md:flex space-x-6'>
+            {navItems.map(item => (
               <NavLink
                 key={item.path}
                 to={item.path}
@@ -76,7 +73,7 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className='lg:hidden py-4 border-t border-gray-200'>
             <div className='grid grid-cols-2 gap-2'>
-              {navItems.map((item) => (
+              {navItems.map(item => (
                 <NavLink
                   key={item.path}
                   to={item.path}
