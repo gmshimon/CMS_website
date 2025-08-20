@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import EditProfileModal from '../../Component/EditProfileModal/EditProfileModal'
 import ChangePasswordModal from '../../Component/ChangePasswordModal/ChangePasswordModal'
 import { useDispatch, useSelector } from 'react-redux'
 import Loading from '../../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
-import { reset, updateUserProfile } from '../../Redux/Slice/AuthSlice'
+import { reset, updateImage, updateUserProfile } from '../../Redux/Slice/AuthSlice'
 
 const Profile = () => {
   const { user, isUpdateUserSuccess, isUpdateUserError, isUpdateUserLoading } =
@@ -29,6 +29,16 @@ const Profile = () => {
     dispatch(updateUserProfile(data))
   }
 
+  const handleFileChange = e => {
+    const file = e.target.files[0]
+    if (file) {
+      const formData = new FormData()
+      formData.append('image', file)
+        dispatch(updateImage(formData))
+      console.log('Hello from file change handler')
+    }
+  }
+
   if (isUpdateUserLoading) {
     return (
       <div className='flex justify-center items-center h-[calc(100ch-60px)]'>
@@ -43,11 +53,39 @@ const Profile = () => {
       <div className='hero bg-base-100 rounded-lg shadow-xl p-6 mb-8'>
         <div className='hero-content flex-col lg:flex-row'>
           <div className='avatar'>
-            <div className='w-48 h-48 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden'>
+            {/* <div className='w-48 h-48 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden'>
               <img
                 src='https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
                 alt='Profile'
                 className='w-full h-full object-cover'
+              />
+            </div> */}
+            <div className='relative avatar'>
+              <div className='w-24 rounded-full'>
+                <img
+                  src={
+                    user?.photo ||
+                    'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
+                  }
+                  alt='Avatar'
+                />
+              </div>
+              <label
+                htmlFor='file-input'
+                className='absolute top-0 right-0 p-1 bg-white rounded-full cursor-pointer'
+              >
+                <span role='img' aria-label='Edit'>
+                  ✏️
+                </span>
+              </label>
+              <input
+                id='file-input'
+                type='file'
+                className='hidden'
+                accept='image/*'
+                onChange={e => {
+                  handleFileChange(e)
+                }}
               />
             </div>
           </div>

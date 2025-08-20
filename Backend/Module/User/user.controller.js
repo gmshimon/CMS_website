@@ -114,13 +114,51 @@ export const updateUserProfile = async (req, res, next) => {
     user.domain = domain || user.domain
 
     const updatedUser = await user.save()
-console.log(updatedUser)
     res.status(200).json({
       success: true,
       message: 'Profile updated successfully',
       data: updatedUser
     })
   } catch (error) {
+    next(error)
+  }
+}
+
+export const updateImage = async (req, res, next) => {
+  try {
+    const { email } = req.user // assuming you have auth middleware setting req.user
+    const user = await Users.findOne({ email })
+    if (!user) {
+      const error = new Error('User not found')
+      error.statusCode = 404
+      return next(error)
+    }
+    const file = req.file
+    const image = await s3UserUpload(file)
+
+    if (user?.photo) {
+      const oldImageKey = user.photo.split('.com/')[1] // Extract key from URL
+      await deleteImageFromS3(oldImageKey)
+    }
+
+    const result = await Users.updateOne(
+      { email },
+      {
+        $set: {
+          image: image
+        }
+      }
+    )
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfully registered',
+      data: image
+    })
+  } catch (error) {
+    if (req.file) {
+      await deleteImageFromS3(`users/${req.file.originalname}`)
+    }
     next(error)
   }
 }

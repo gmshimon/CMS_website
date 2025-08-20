@@ -92,6 +92,18 @@ export const updateUserProfile = createAsyncThunk(
   }
 )
 
+export const updateImage = createAsyncThunk(
+  'updateImage',
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.put('/user/update-image', data)
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
 // Logout
 export const logOut = createAsyncThunk('logOut', async () => {
   await signOut(auth)
@@ -210,6 +222,24 @@ const userSlice = createSlice({
         state.isUpdateUserError = false
       })
       .addCase(updateUserProfile.rejected, state => {
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = false
+        state.isUpdateUserError = true
+      })
+
+      // Update User image
+      .addCase(updateImage.pending, state => {
+        state.isUpdateUserLoading = true
+        state.isUpdateUserSuccess = false
+        state.isUpdateUserError = false
+      })
+      .addCase(updateImage.fulfilled, (state, action) => {
+        state.user.photo = action.payload
+        state.isUpdateUserLoading = false
+        state.isUpdateUserSuccess = true
+        state.isUpdateUserError = false
+      })
+      .addCase(updateImage.rejected, state => {
         state.isUpdateUserLoading = false
         state.isUpdateUserSuccess = false
         state.isUpdateUserError = true
