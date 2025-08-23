@@ -14,28 +14,43 @@ import {
 const initialState = {
   user: null,
   roles: null,
+
+  session_chairs: [],
+  moderators: [],
+
   isLoading: false,
+
   isLoginLoading: false,
   isLoginSuccess: false,
   isLoginError: false,
+
   isCreateUserLoading: false,
   isCreateUserSuccess: false,
   isCreateUserError: false,
+
   isUpdateUserLoading: false,
   isUpdateUserSuccess: false,
   isUpdateUserError: false,
+
   isGetUserDataLoading: true,
   isGetUserDataSuccess: false,
   isGetUserDataError: false,
+
   isGetUsersLoading: false,
   isGetUsersSuccess: false,
   isGetUsersError: false,
+
   getRoleLoading: false,
   getRoleSuccess: false,
   getRoleError: false,
+
   sendResetPasswordLoading: false,
   sendResetPasswordSuccess: false,
-  sendResetPasswordError: false
+  sendResetPasswordError: false,
+
+  getChairsAndModeratorsLoading: false,
+  getChairsAndModeratorsSuccess: false,
+  getChairsAndModeratorsError: false
 }
 
 // Save user data in backend and localStorage
@@ -131,6 +146,18 @@ export const getRole = createAsyncThunk('getRole', async () => {
   return response.data.data
 })
 
+export const getChairsAndModerators = createAsyncThunk(
+  'getChairsAndModerators',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.get('/user/chairs-moderators')
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -165,6 +192,10 @@ const userSlice = createSlice({
       state.sendResetPasswordLoading = false
       state.sendResetPasswordSuccess = false
       state.sendResetPasswordError = false
+
+      state.getChairsAndModeratorsLoading = false
+      state.getChairsAndModeratorsSuccess = false
+      state.getChairsAndModeratorsError = false
     },
     startLoading: (state, action) => {
       state.isLoading = action.payload
@@ -307,6 +338,24 @@ const userSlice = createSlice({
         state.sendResetPasswordLoading = false
         state.sendResetPasswordSuccess = false
         state.sendResetPasswordError = true
+      })
+      .addCase(getChairsAndModerators.pending, state => {
+        state.getChairsAndModeratorsLoading = true
+        state.getChairsAndModeratorsSuccess = false
+        state.getChairsAndModeratorsError = false
+      })
+      .addCase(getChairsAndModerators.fulfilled, (state,action) => {
+        const {sessionChairs,moderators} = action.payload
+        state.getChairsAndModeratorsLoading = false
+        state.getChairsAndModeratorsSuccess = true
+        state.getChairsAndModeratorsError = false
+        state.session_chairs = sessionChairs
+        state.moderators = moderators
+      })
+      .addCase(getChairsAndModerators.rejected, (state) => {
+        state.getChairsAndModeratorsLoading = false
+        state.getChairsAndModeratorsSuccess = false
+        state.getChairsAndModeratorsError = true
       })
   }
 })

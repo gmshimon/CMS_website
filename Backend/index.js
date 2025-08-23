@@ -56,7 +56,7 @@ app.use('/api/v1/notification', notificationRouter)
 app.use('/api/v1/role', roleRouter)
 app.use('/api/v1/admin',adminRouter)
 app.use('/api/v1/review',reviewRouter)
-app.use('/api/v1/schedule',scheduleRouter)
+app.use('/api/v1/schedules',scheduleRouter)
 
 app.get('/', async (req, res) => {
   res.send('API is running')

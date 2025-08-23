@@ -6,14 +6,15 @@ import {
   getScheduleById,
   updateSchedule
 } from './schedule.controller.js'
+import verifyToken from '../../Middleware/verifyToken.js'
 
 const router = express.Router()
 
 // Routes
-router.post('/', createSchedule) // Create a schedule
-router.get('/', getAllSchedules) // Get all schedules
-router.get('/:id', getScheduleById) // Get schedule by ID
-router.put('/:id', updateSchedule) // Update schedule
-router.delete('/:id', deleteSchedule) // Delete schedule
+router.post('/', verifyToken, createSchedule) // Create a schedule
+router.get('/', verifyToken, getAllSchedules) // Get all schedules
+router.get('/:id', verifyToken, getScheduleById) // Get schedule by ID
+router.put('/:id', verifyToken, updateSchedule) // Update schedule
+router.delete('/:id', verifyToken, deleteSchedule) // Delete schedule
 
 export default router

@@ -347,13 +347,16 @@ export const updateUserImage = async (req, res, next) => {
 
 export const getPresentationMethodStats = async (req, res) => {
   try {
-    const { year } = req.query
-    const matchQuery = {}
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+    const { conference_id } = req.query
+    const match = {}
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      match.conference = conference_id
     }
+
     const stats = await Abstracts.aggregate([
       {
         $group: {
@@ -422,7 +425,7 @@ export const adminDashboardStats = async (req, res, next) => {
           }
         }
       }
-    ]);
+    ])
     const submission = await Abstracts.countDocuments(matchQuery)
 
     const data = {

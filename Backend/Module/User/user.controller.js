@@ -162,3 +162,23 @@ export const updateImage = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getChairsAndModerators = async (req, res) => {
+  try {
+    // Find users where role is either "Session Chair" or "Moderator"
+    const sessionChairs = await Users.find({ role: 'Session Chair' })
+    const moderators = await Users.find({ role: 'Moderator' })
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Successfully fetched the session chair and moderator',
+      data: {
+        sessionChairs: sessionChairs || [],
+        moderators: moderators || []
+      }
+    })
+  } catch (error) {
+    console.error('Error fetching users:', error)
+    res.status(500).json({ message: 'Server error', error })
+  }
+}

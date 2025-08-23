@@ -3,6 +3,7 @@ import userImageUploader from '../../Middleware/FileUpload/userImage.js'
 import {
   createUser,
   fetchUser,
+  getChairsAndModerators,
   updateImage,
   updateUserProfile
 } from './user.controller.js'
@@ -17,4 +18,6 @@ router.route('/update-profile').put(verifyToken, updateUserProfile)
 router
   .route('/update-image')
   .put(verifyToken, userImageUploader.single('image'), updateImage)
+
+router.get('/chairs-moderators', verifyToken, getChairsAndModerators)
 export default router

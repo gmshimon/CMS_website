@@ -5,7 +5,7 @@ import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
-  dashboardStats:[],
+  dashboardStats: [],
   roleCounts: {},
   users: [],
   reviewers: [],
@@ -153,9 +153,9 @@ export const updateUserImage = createAsyncThunk(
 
 export const getPresentationMethodStats = createAsyncThunk(
   'getPresentationMethodStats',
-  async (year, { rejectWithValue }) => {
+  async (conferenceId = null, { rejectWithValue }) => {
     try {
-      const query = year ? `?year=${year}` : ''
+      const query = conferenceId ? `?conferenceId=${conferenceId}` : ''
       const response = await axiosSecure.get(
         `/admin/presentation-stats/${query}`
       )
@@ -171,7 +171,7 @@ export const getPresentationMethodStats = createAsyncThunk(
 
 export const adminDashboardStats = createAsyncThunk(
   'adminDashboardStats',
-  async (conferenceId=null, { rejectWithValue }) => {
+  async (conferenceId = null, { rejectWithValue }) => {
     try {
       const query = conferenceId ? `?conferenceId=${conferenceId}` : ''
       const response = await axiosSecure.get(`/admin/dashboard${query}`)
@@ -458,13 +458,13 @@ const adminSlice = createSlice({
         state.getAdminDashboardSuccess = false
         state.getAdminDashboardError = false
       })
-      .addCase(adminDashboardStats.fulfilled, (state,action) => {
+      .addCase(adminDashboardStats.fulfilled, (state, action) => {
         state.dashboardStats = action.payload
         state.getAdminDashboardLoading = false
         state.getAdminDashboardSuccess = true
         state.getAdminDashboardError = false
       })
-      .addCase(adminDashboardStats.rejected, (state,action) => {
+      .addCase(adminDashboardStats.rejected, (state, action) => {
         state.getAdminDashboardLoading = false
         state.getAdminDashboardSuccess = false
         state.getAdminDashboardError = true

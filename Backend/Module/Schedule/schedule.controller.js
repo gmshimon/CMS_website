@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose'
 import Schedule from './schedule.model.js'
 
@@ -84,8 +83,8 @@ export const createSchedule = async (req, res) => {
 // GET All Schedules
 export const getAllSchedules = async (req, res) => {
   try {
-    const { conference_id } = req.query
-    const match = {}
+    const { conference_id, abstractType } = req.query
+    const match = { abstractType }
     if (
       conference_id &&
       conference_id !== 'all' &&

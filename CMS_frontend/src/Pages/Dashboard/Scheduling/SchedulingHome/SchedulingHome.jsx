@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion'
 import {
@@ -8,8 +8,8 @@ import {
   FaProjectDiagram
 } from 'react-icons/fa'
 import StatCard from '../../../../Component/StatCard/StatCard'
-import { useSelector } from 'react-redux'
-import useScheduling from '../../../../Hooks/useScheduling'
+import { useDispatch, useSelector } from 'react-redux'
+import { getPresentationMethodStats } from '../../../../Redux/Slice/AdminSlice'
 
 const methodMeta = {
   'Paper Presentation Physical': {
@@ -43,8 +43,18 @@ const methodMeta = {
 }
 
 const SchedulingHome = () => {
-  const { presentationStats } = useSelector((state) => state.admin)
-  useScheduling()
+  const { selectedConference } = useSelector(state => state.conference)
+  const { presentationStats } = useSelector(state => state.admin)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (selectedConference) {
+      dispatch(getPresentationMethodStats(selectedConference))
+    } else {
+      dispatch(getPresentationMethodStats())
+    }
+  }, [dispatch, selectedConference])
 
   return (
     <div>
