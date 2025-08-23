@@ -88,9 +88,11 @@ const scheduleSchema = new mongoose.Schema(
 
     // Location info for physical sessions
     venue: {
-      building: { type: String },
-      hall: { type: String },
-      room: { type: String },
+      type: new mongoose.Schema({
+        building: String,
+        hall: String,
+        room: String
+      }),
       required: function () {
         return this.abstractType.includes('Physical')
       }

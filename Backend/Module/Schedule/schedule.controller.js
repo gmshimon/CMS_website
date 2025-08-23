@@ -1,5 +1,6 @@
-import Schedule from '../models/schedule.js'
+
 import mongoose from 'mongoose'
+import Schedule from './schedule.model.js'
 
 // CREATE Schedule
 export const createSchedule = async (req, res) => {

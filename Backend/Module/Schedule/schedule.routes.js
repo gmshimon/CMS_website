@@ -5,7 +5,7 @@ import {
   getAllSchedules,
   getScheduleById,
   updateSchedule
-} from './schedule.controller'
+} from './schedule.controller.js'
 
 const router = express.Router()
 
