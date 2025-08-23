@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
-import { setSelectedYear } from '../Redux/Slice/AdminSlice'
-import { FaSearch } from 'react-icons/fa'
 import Loading from '../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
 import { clearReviewStats } from '../Redux/Slice/ReviewSlice'
@@ -20,7 +18,7 @@ const Review = () => {
     changeAbstractStatusError,
     getReviewStatsError
   } = useSelector(state => state.review)
-  const [yearInput, setYearInput] = useState('')
+  // const [yearInput, setYearInput] = useState('')
   const location = useLocation()
   const dispatch = useDispatch()
 
@@ -60,14 +58,14 @@ const Review = () => {
     sentReviewerReminderSuccess
   ])
 
-  const handleSearch = () => {
-    if (!yearInput || yearInput < 1900 || yearInput > 3000) {
-      alert('Please enter a valid year')
-      dispatch(setSelectedYear(null))
-      return
-    }
-    dispatch(setSelectedYear(yearInput))
-  }
+  // const handleSearch = () => {
+  //   if (!yearInput || yearInput < 1900 || yearInput > 3000) {
+  //     alert('Please enter a valid year')
+  //     dispatch(setSelectedYear(null))
+  //     return
+  //   }
+  //   dispatch(setSelectedYear(yearInput))
+  // }
 
   if (
     assigningReviewerLoading ||
@@ -107,7 +105,7 @@ const Review = () => {
       </h2>
 
       {/* Standard Year Search Field */}
-      <div className='mb-4 max-w-md'>
+      {/* <div className='mb-4 max-w-md'>
         <label
           htmlFor='year'
           className='block text-sm font-medium text-gray-700 mb-2'
@@ -131,7 +129,7 @@ const Review = () => {
             Search
           </button>
         </div>
-      </div>
+      </div> */}
       <Outlet />
     </div>
   )

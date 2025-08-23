@@ -43,7 +43,7 @@ const AdminHome = () => {
     },
     {
       title: 'Review Workflow',
-      path: '/admin/review-workflow',
+      path: '/admin/review/details/pending',
       icon: FaFileAlt,
       color: 'bg-purple-50 hover:bg-purple-100',
       stat: `${dashboardStats?.pendingReviews || 0} Pending`,
@@ -51,7 +51,7 @@ const AdminHome = () => {
     },
     {
       title: 'Submissions Received',
-      path: '/admin/submissions',
+      path: '/admin/submission',
       icon: FaUsers,
       color: 'bg-orange-50 hover:bg-orange-100',
       stat: `${dashboardStats?.total_submission || 0} New`,
