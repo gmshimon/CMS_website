@@ -198,9 +198,9 @@ const ScheduleModal = ({
               onChange={handleChange}
               className='w-full border rounded px-3 py-2 h-28'
             >
-              {abstracts.map(a => (
+              {abstracts?.map(a => (
                 <option key={a._id} value={a._id}>
-                  {a.title}
+                  {a.paper_title}
                 </option>
               ))}
             </select>

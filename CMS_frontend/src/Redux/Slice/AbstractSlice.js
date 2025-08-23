@@ -4,6 +4,8 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
   abstracts: [],
+  unscheduleAbstract: [],
+
   conference: null,
   member_id: null,
   theme: null,
@@ -56,7 +58,11 @@ const initialState = {
 
   changeAbstractDecisionLoading: false,
   changeAbstractDecisionSuccess: false,
-  changeAbstractDecisionError: false
+  changeAbstractDecisionError: false,
+
+  getUnscheduledAbstractsLoading: false,
+  getUnscheduledAbstractsSuccess: false,
+  getUnscheduledAbstractsError: false
 }
 
 export const createAbstract = createAsyncThunk(
@@ -110,6 +116,22 @@ export const getAbstractByCategory = createAsyncThunk(
       const response = await axiosSecure.get(
         `/abstract/get-abstract-category${query}`
       )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while fetching abstracts by category'
+      return rejectWithValue(message)
+    }
+  }
+)
+
+export const getUnscheduledAbstracts = createAsyncThunk(
+  'getUnscheduledAbstracts',
+  async (conference_id = null, { rejectWithValue }) => {
+    try {
+      const query = conference_id ? `?conferenceId=${conference_id}` : ''
+      const response = await axiosSecure.get(`/abstract/unscheduled/${query}`)
       return response.data.data
     } catch (error) {
       const message =
@@ -255,6 +277,10 @@ const abstractSlice = createSlice({
       state.paperReminderLoading = false
       state.paperReminderSuccess = false
       state.paperReminderError = false
+
+      state.getUnscheduledAbstractsLoading = false
+      state.getUnscheduledAbstractsSuccess = false
+      state.getUnscheduledAbstractsError = false
     },
     resetForm: state => {
       state.conference = null
@@ -530,6 +556,22 @@ const abstractSlice = createSlice({
         state.paperReminderLoading = false
         state.paperReminderSuccess = false
         state.paperReminderError = true
+      })
+      .addCase(getUnscheduledAbstracts.pending, state => {
+        state.getUnscheduledAbstractsLoading = true
+        state.getUnscheduledAbstractsSuccess = false
+        state.getUnscheduledAbstractsError = false
+      })
+      .addCase(getUnscheduledAbstracts.fulfilled, (state, action) => {
+        state.getUnscheduledAbstractsLoading = false
+        state.getUnscheduledAbstractsSuccess = true
+        state.getUnscheduledAbstractsError = false
+        state.unscheduleAbstract = action.payload
+      })
+      .addCase(getUnscheduledAbstracts.rejected, state => {
+        state.getUnscheduledAbstractsLoading = false
+        state.getUnscheduledAbstractsSuccess = false
+        state.getUnscheduledAbstractsError = true
       })
   }
 })

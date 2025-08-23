@@ -9,6 +9,7 @@ import { sendEmail } from '../../Utilis/sendEmail.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
+import Schedule from '../Schedule/schedule.model.js'
 import Abstracts from './abstract.model.js'
 import {
   s3AbstractGraphicalAbstract,
@@ -240,6 +241,40 @@ export const updateAbstract = async (req, res, next) => {
   }
 }
 
+export const getUnscheduledAbstracts = async (req, res) => {
+  try {
+    const { conference_id } = req.query
+    const match = {}
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      match.conference = conference_id
+    }
+
+    // Find all abstract IDs that are already scheduled
+    const scheduledAbstracts = await Schedule.distinct('abstracts')
+
+    // Find abstracts whose _id is NOT in scheduledAbstracts
+    const unscheduledAbstracts = await Abstracts.find({
+      _id: { $nin: scheduledAbstracts },
+      ...match
+    })
+
+    console.log(unscheduledAbstracts)
+
+    return res.status(200).json({
+      status: 'Success',
+      message: 'Successfully get the unscheduled abstract',
+      data: unscheduledAbstracts
+    })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 export const makePayment = async (req, res, next) => {
   try {
     const { abstractId } = req.params
@@ -426,7 +461,6 @@ export const sendPaperSubmitReminder = async (req, res, next) => {
     return res
       .status(200)
       .json({ message: 'Payment reminder email sent successfully.' })
-
   } catch (error) {
     next(error)
   }

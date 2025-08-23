@@ -4,6 +4,7 @@ import {
   createAbstract,
   getAbstract,
   getAbstractByCategory,
+  getUnscheduledAbstracts,
   makePayment,
   sendPaperSubmitReminder,
   sendPaymentReminder,
@@ -16,6 +17,7 @@ import paperUploader from '../../Middleware/FileUpload/paperUpload.js'
 
 const router = express.Router()
 
+router.get('/unscheduled', verifyToken, getUnscheduledAbstracts)
 router.get('/get-abstract-category', verifyToken, getAbstractByCategory)
 router.post('/payment-reminder/:abstractId', verifyToken, sendPaymentReminder)
 router.post('/paper-reminder/:abstractId', verifyToken, sendPaperSubmitReminder)

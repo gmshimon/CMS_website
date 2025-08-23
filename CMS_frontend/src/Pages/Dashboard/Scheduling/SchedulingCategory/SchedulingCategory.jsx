@@ -3,9 +3,14 @@ import { useParams } from 'react-router'
 import useScheduling from '../../../../Hooks/useScheduling'
 import ScheduleModal from '../../../../Component/ScheduleModal/ScheduleModal'
 import { useSelector } from 'react-redux'
+import Loading from '../../../../Component/Loading/Loading'
 
 const SchedulingCategory = () => {
-    const {session_chairs,moderators} = useSelector(state=>state.user)
+  const { unscheduleAbstract, updateScheduleLoading } = useSelector(
+    state => state.abstract
+  )
+  const { session_chairs, moderators, getChairsAndModeratorsLoading } =
+    useSelector(state => state.user)
   const { conferences } = useSelector(state => state.conference)
   const { schedules } = useSelector(state => state.schedule)
   const [modalOpen, setModalOpen] = useState(false)
@@ -16,6 +21,14 @@ const SchedulingCategory = () => {
     console.log('Schedule Data:', data)
     setModalOpen(false)
     // dispatch(createSchedule(data)) // connect to Redux thunk
+  }
+
+  if (getChairsAndModeratorsLoading || updateScheduleLoading) {
+    return (
+      <div className='flex justify-center items-center h-[calc(100vh-200px)]'>
+        <Loading />
+      </div>
+    )
   }
 
   return (
@@ -34,6 +47,7 @@ const SchedulingCategory = () => {
         onSubmit={handleCreateSchedule}
         session_chairs={session_chairs}
         moderators={moderators}
+        abstracts={unscheduleAbstract}
       />
 
       {/* Render schedules */}
