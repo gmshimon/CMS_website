@@ -45,7 +45,7 @@ export const createSchedule = createAsyncThunk(
   'schedule/createSchedule',
   async (scheduleData, { rejectWithValue }) => {
     try {
-      const response = await axiosSecure.post('/api/schedules', scheduleData)
+      const response = await axiosSecure.post('/schedules', scheduleData)
       return response.data
     } catch (error) {
       return rejectWithValue(
@@ -116,6 +116,7 @@ const scheduleSlice = createSlice({
       .addCase(createSchedule.fulfilled, (state, action) => {
         state.createScheduleLoading = false
         state.createScheduleSuccess = true
+        state.createScheduleError = false
         state.schedules.push(action.payload)
       })
       .addCase(createSchedule.rejected, (state, action) => {

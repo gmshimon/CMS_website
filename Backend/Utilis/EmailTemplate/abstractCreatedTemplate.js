@@ -163,3 +163,139 @@ export const paperSubmitReminderEmailTemplate = ({
     </div>
   `
 }
+
+
+export const scheduleUpdateTemplate = ({
+  userName,
+  abstractTitle,
+  conference,
+  session,
+  track,
+  subTrack,
+  day,
+  date,
+  startTime,
+  endTime,
+  abstractType,
+  meetingLink,
+  venue
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+      <h2 style="color: #2c3e50;">Hi ${userName},</h2>
+
+      <p>We are excited to inform you that your abstract titled 
+        <strong>"${abstractTitle}"</strong> has been scheduled in 
+        the <strong>${conference}</strong>.
+      </p>
+
+      <h3 style="color: #2c3e50; margin-top: 20px;">📅 Schedule Details:</h3>
+      <ul style="list-style: none; padding: 0;">
+        <li><strong>Session:</strong> ${session}</li>
+        ${track ? `<li><strong>Track:</strong> ${track}</li>` : ""}
+        ${subTrack ? `<li><strong>Sub-Track:</strong> ${subTrack}</li>` : ""}
+        <li><strong>Day:</strong> ${day}</li>
+        <li><strong>Date:</strong> ${date}</li>
+        <li><strong>Time:</strong> ${startTime} - ${endTime}</li>
+        <li><strong>Type:</strong> ${abstractType}</li>
+        ${
+          abstractType.includes("Online") && meetingLink
+            ? `<li><strong>Meeting Link:</strong> <a href="${meetingLink}" target="_blank">${meetingLink}</a></li>`
+            : ""
+        }
+        ${
+          abstractType.includes("Physical") && venue
+            ? `<li><strong>Venue:</strong> ${venue.building}, ${venue.hall}, Room ${venue.room}</li>`
+            : ""
+        }
+      </ul>
+
+      <p style="margin-top: 20px;">
+        Please make a note of the schedule. We look forward to your presentation.
+      </p>
+
+      <br/>
+      <p style="color: #888;">Thank you for contributing to our conference!</p>
+      <hr />
+      <p style="font-size: 12px; color: #aaa;">
+        This is an automated message from ConferenceX. Please do not reply directly.
+      </p>
+    </div>
+  `;
+};
+
+export const sessionNotificationTemplate = ({
+  userName,
+  role, // "Session Chair" or "Moderator"
+  conference,
+  session,
+  track,
+  subTrack,
+  day,
+  date,
+  startTime,
+  endTime,
+  abstractType,
+  meetingLink,
+  venue,
+  abstracts // array of { title, author }
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+      <h2 style="color: #2c3e50;">Hi ${userName},</h2>
+
+      <p>
+        You have been assigned as the <strong>${role}</strong> for the following session 
+        in <strong>${conference}</strong>.
+      </p>
+
+      <h3 style="color: #2c3e50; margin-top: 20px;">📅 Session Details:</h3>
+      <ul style="list-style: none; padding: 0;">
+        <li><strong>Session:</strong> ${session}</li>
+        ${track ? `<li><strong>Track:</strong> ${track}</li>` : ""}
+        ${subTrack ? `<li><strong>Sub-Track:</strong> ${subTrack}</li>` : ""}
+        <li><strong>Day:</strong> ${day}</li>
+        <li><strong>Date:</strong> ${date}</li>
+        <li><strong>Time:</strong> ${startTime} - ${endTime}</li>
+        <li><strong>Type:</strong> ${abstractType}</li>
+        ${
+          abstractType.includes("Online") && meetingLink
+            ? `<li><strong>Meeting Link:</strong> <a href="${meetingLink}" target="_blank">${meetingLink}</a></li>`
+            : ""
+        }
+        ${
+          abstractType.includes("Physical") && venue
+            ? `<li><strong>Venue:</strong> ${venue.building}, ${venue.hall}, Room ${venue.room}</li>`
+            : ""
+        }
+      </ul>
+
+      ${
+        abstracts && abstracts.length
+          ? `
+          <h3 style="color: #2c3e50; margin-top: 20px;">📑 Abstracts in this Session:</h3>
+          <ol style="padding-left: 20px;">
+            ${abstracts
+              .map(
+                (abs) =>
+                  `<li><strong>${abs.title}</strong> by ${abs.author}</li>`
+              )
+              .join("")}
+          </ol>
+        `
+          : ""
+      }
+
+      <p style="margin-top: 20px;">
+        Thank you for your valuable contribution in ensuring the success of this session.
+      </p>
+
+      <br/>
+      <p style="color: #888;">We appreciate your support in our conference!</p>
+      <hr />
+      <p style="font-size: 12px; color: #aaa;">
+        This is an automated message from ConferenceX. Please do not reply directly.
+      </p>
+    </div>
+  `;
+};

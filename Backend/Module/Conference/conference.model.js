@@ -69,6 +69,6 @@ const conferenceSchema = mongoose.Schema(
   }
 )
 
-const conference = mongoose.model('conference', conferenceSchema)
+const Conference = mongoose.model('conference', conferenceSchema)
 
-export default conference
+export default Conference

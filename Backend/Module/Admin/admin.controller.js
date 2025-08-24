@@ -9,9 +9,9 @@ import {
 import { sendEmail } from '../../Utilis/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import 'dotenv/config'
-import conference from '../Conference/conference.model.js'
 import Reviews from '../Review/review.model.js'
 import mongoose from 'mongoose'
+import Conference from '../Conference/conference.model.js'
 // const serviceAccount = JSON.parse(
 //   await readFile(
 //     new URL(
@@ -408,7 +408,7 @@ export const adminDashboardStats = async (req, res, next) => {
     ) {
       matchQuery.conference = new mongoose.Types.ObjectId(conferenceId)
     }
-    const activeConference = await conference.countDocuments({
+    const activeConference = await Conference.countDocuments({
       status: 'Active'
     })
 

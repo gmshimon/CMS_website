@@ -1,5 +1,15 @@
 import mongoose from 'mongoose'
 import Schedule from './schedule.model.js'
+import { sendEmail } from '../../Utilis/sendEmail.js'
+import Users from '../User/user.model.js'
+import Abstracts from '../Abstract/abstract.model.js'
+import {
+  scheduleUpdateTemplate,
+  sessionNotificationTemplate
+} from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
+import { createNotificationService } from '../Notification/notification.service.js'
+import Conference from '../Conference/conference.model.js'
+
 
 // CREATE Schedule
 export const createSchedule = async (req, res) => {
@@ -22,38 +32,7 @@ export const createSchedule = async (req, res) => {
       createdBy
     } = req.body
 
-    // Validate required fields
-    if (
-      !conference ||
-      !day ||
-      !date ||
-      !session ||
-      !track ||
-      !startTime ||
-      !endTime ||
-      !abstractType
-    ) {
-      return res
-        .status(400)
-        .json({ message: 'Please fill all required fields.' })
-    }
-
-    // Conditional validation for online/offline sessions
-    if (abstractType.includes('Online') && !meetingLink) {
-      return res
-        .status(400)
-        .json({ message: 'Online sessions require a meeting link.' })
-    }
-
-    if (
-      abstractType.includes('Physical') &&
-      (!venue || !venue.building || !venue.hall || !venue.room)
-    ) {
-      return res
-        .status(400)
-        .json({ message: 'Physical sessions require complete venue info.' })
-    }
-
+    // ✅ Save schedule
     const schedule = new Schedule({
       conference,
       day,
@@ -73,7 +52,123 @@ export const createSchedule = async (req, res) => {
     })
 
     await schedule.save()
-    return res.status(201).json(schedule)
+
+    // ✅ Fetch the conference
+    const conferenceData = await Conference.findOne({ _id: conference })
+
+    // ✅ Fetch abstracts with presenter info
+    const abstractDocs = await Abstracts.find({ _id: { $in: abstracts } })
+
+    // ✅ Notify each abstract presenter
+    await Promise.all(
+      abstractDocs.map(async abs => {
+        const emailHtml = scheduleUpdateTemplate({
+          userName: abs.presenter.presenter_name,
+          abstractTitle: abs.paper_title,
+          conference: conferenceData.name,
+          session,
+          track,
+          subTrack,
+          day,
+          date,
+          startTime,
+          endTime,
+          abstractType,
+          meetingLink,
+          venue
+        })
+
+        const message = `Your abstract "${abs.paper_title}" has been scheduled in ${conferenceData.name}.`
+        const type = 'schedule_update'
+
+        // Send email
+        await sendEmail({
+          to: abs.presenter.presenter_email,
+          subject: `Schedule Update for Your Abstract - ${conferenceData.name}`,
+          html: emailHtml
+        })
+
+        // Save notification (to DB & frontend)
+        await createNotificationService(abs.createdBy, message, emailHtml, type)
+      })
+    )
+
+    // ✅ Fetch session chair and moderator info
+    const chair = await Users.findById(sessionChair)
+    const mod = await Users.findById(moderator)
+
+    const sessionAbstracts = abstractDocs.map(abs => ({
+      title: abs.paper_title,
+      author: abs.presenter.presenter_name
+    }))
+
+    // ✅ Notify Session Chair
+    if (chair) {
+      const chairHtml = sessionNotificationTemplate({
+        userName: chair.name,
+        role: 'Session Chair',
+        conference: conferenceData.name,
+        session,
+        track,
+        subTrack,
+        day,
+        date,
+        startTime,
+        endTime,
+        abstractType,
+        meetingLink,
+        venue,
+        abstracts: sessionAbstracts
+      })
+
+      const message = `You have been assigned as Session Chair for "${session}" in ${conferenceData.name}.`
+      const type = 'chair_assignment'
+
+      await sendEmail({
+        to: chair.email,
+        subject: `You are assigned as Session Chair - ${conferenceData.name}`,
+        html: chairHtml
+      })
+
+      await createNotificationService(chair._id, message, chairHtml, type)
+    }
+
+    // ✅ Notify Moderator
+    if (mod) {
+      const modHtml = sessionNotificationTemplate({
+        userName: mod.name,
+        role: 'Moderator',
+        conference: conferenceData.name,
+        session,
+        track,
+        subTrack,
+        day,
+        date,
+        startTime,
+        endTime,
+        abstractType,
+        meetingLink,
+        venue,
+        abstracts: sessionAbstracts
+      })
+
+      const message = `You have been assigned as Moderator for "${session}" in ${conferenceData.name}.`
+      const type = 'moderator_assignment'
+
+      await sendEmail({
+        to: mod.email,
+        subject: `You are assigned as Moderator - ${conferenceData.name}`,
+        html: modHtml
+      })
+
+      await createNotificationService(mod._id, message, modHtml, type)
+    }
+
+    return res.status(201).json({
+      status: 'success',
+      message: 'Schedule created and notifications sent',
+      data: schedule
+    })
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Server Error' })

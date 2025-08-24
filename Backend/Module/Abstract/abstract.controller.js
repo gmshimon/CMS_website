@@ -244,7 +244,6 @@ export const updateAbstract = async (req, res, next) => {
 export const getUnscheduledAbstracts = async (req, res) => {
   try {
     const { conference_id, presentation_method } = req.query
-    console.log({ conference_id, presentation_method })
     const match = { presentation_method }
     if (
       conference_id &&
@@ -253,7 +252,6 @@ export const getUnscheduledAbstracts = async (req, res) => {
     ) {
       match.conference = conference_id
     }
-console.log(match)
     // Find all abstract IDs that are already scheduled
     const scheduledAbstracts = await Schedule.distinct('abstracts')
 
@@ -262,8 +260,6 @@ console.log(match)
       _id: { $nin: scheduledAbstracts },
       ...match
     })
-
-    console.log(unscheduledAbstracts)
 
     return res.status(200).json({
       status: 'Success',

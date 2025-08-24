@@ -24,13 +24,13 @@ const scheduleSchema = new mongoose.Schema(
       type: String, // e.g., "Session 1", "Session 2"
       required: true
     },
-    track: {
-      type: String, // e.g., "Computer Science"
-      required: true
-    },
-    subTrack: {
-      type: String // e.g., "Artificial Intelligence"
-    },
+    // track: {
+    //   type: String, // e.g., "Computer Science"
+    //   required: true
+    // },
+    // subTrack: {
+    //   type: String // e.g., "Artificial Intelligence"
+    // },
 
     // Timing
     startTime: {

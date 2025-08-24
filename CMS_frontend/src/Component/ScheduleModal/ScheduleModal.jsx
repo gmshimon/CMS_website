@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import { setSelectedConference } from '../../Redux/Slice/conferenceSlice'
+import { useDispatch } from 'react-redux'
 
 const ScheduleModal = ({
   isOpen,
@@ -8,10 +10,11 @@ const ScheduleModal = ({
   session_chairs = [],
   moderators = [],
   abstracts = [],
-  abstractType
+  abstractType,
+  selectedConference = null
 }) => {
   const [formData, setFormData] = useState({
-    conference: '',
+    conference: selectedConference || '',
     day: '',
     date: '',
     session: '',
@@ -25,12 +28,12 @@ const ScheduleModal = ({
     venue: { building: '', hall: '', room: '' }
   })
 
+  const [errors, setErrors] = useState({})
+  const dispatch = useDispatch()
+
   const handleChange = e => {
-    const { name, value, type, selectedOptions } = e.target
-    if (name === 'abstracts') {
-      const values = Array.from(selectedOptions, option => option.value)
-      setFormData(prev => ({ ...prev, abstracts: values }))
-    } else if (name.startsWith('venue.')) {
+    const { name, value } = e.target
+    if (name.startsWith('venue.')) {
       const key = name.split('.')[1]
       setFormData(prev => ({
         ...prev,
@@ -41,9 +44,36 @@ const ScheduleModal = ({
     }
   }
 
+  const handleCheckboxChange = (e, id) => {
+    const { checked } = e.target
+    setFormData(prev => ({
+      ...prev,
+      abstracts: checked
+        ? [...prev.abstracts, id]
+        : prev.abstracts.filter(v => v !== id)
+    }))
+  }
+
+  const validateForm = () => {
+    let newErrors = {}
+
+    if (!formData.conference) newErrors.conference = 'Conference is required.'
+    if (formData.abstracts.length === 0)
+      newErrors.abstracts = 'Please select at least one abstract.'
+    if (!formData.date) newErrors.date = 'Date is required.'
+    if (!formData.startTime) newErrors.startTime = 'Start time is required.'
+    if (!formData.endTime) newErrors.endTime = 'End time is required.'
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleSubmit = e => {
     e.preventDefault()
+    if (!validateForm()) return
+
     onSubmit(formData)
+    onClose()
   }
 
   if (!isOpen) return null
@@ -65,17 +95,26 @@ const ScheduleModal = ({
             <select
               name='conference'
               value={formData.conference}
-              onChange={handleChange}
-              className='w-full border rounded px-3 py-2'
-              required
+              onChange={e => {
+                handleChange(e)
+                dispatch(setSelectedConference(e.target.value))
+              }}
+              className={`w-full border rounded px-3 py-2 ${
+                errors.conference ? 'border-red-500' : ''
+              }`}
             >
-              <option value=''>Select Conference</option>
+              <option disabled value=''>
+                Select Conference
+              </option>
               {conferences.map(c => (
                 <option key={c._id} value={c._id}>
                   {c.name}
                 </option>
               ))}
             </select>
+            {errors.conference && (
+              <p className='text-red-500 text-xs mt-1'>{errors.conference}</p>
+            )}
           </div>
 
           {/* Abstract Type */}
@@ -117,9 +156,13 @@ const ScheduleModal = ({
               name='date'
               value={formData.date}
               onChange={handleChange}
-              className='w-full border rounded px-3 py-2'
-              required
+              className={`w-full border rounded px-3 py-2 ${
+                errors.date ? 'border-red-500' : ''
+              }`}
             />
+            {errors.date && (
+              <p className='text-red-500 text-xs mt-1'>{errors.date}</p>
+            )}
           </div>
 
           {/* Session */}
@@ -136,33 +179,6 @@ const ScheduleModal = ({
             />
           </div>
 
-          {/* Track */}
-          {/* <div>
-            <label className="block mb-1 font-medium">Track</label>
-            <input
-              type="text"
-              name="track"
-              value={formData.track}
-              onChange={handleChange}
-              placeholder="Computer Science"
-              className="w-full border rounded px-3 py-2"
-              required
-            />
-          </div> */}
-
-          {/* SubTrack */}
-          {/* <div>
-            <label className="block mb-1 font-medium">SubTrack</label>
-            <input
-              type="text"
-              name="subTrack"
-              value={formData.subTrack}
-              onChange={handleChange}
-              placeholder="Artificial Intelligence"
-              className="w-full border rounded px-3 py-2"
-            />
-          </div> */}
-
           {/* Start Time */}
           <div>
             <label className='block mb-1 font-medium'>Start Time</label>
@@ -171,9 +187,13 @@ const ScheduleModal = ({
               name='startTime'
               value={formData.startTime}
               onChange={handleChange}
-              className='w-full border rounded px-3 py-2'
-              required
+              className={`w-full border rounded px-3 py-2 ${
+                errors.startTime ? 'border-red-500' : ''
+              }`}
             />
+            {errors.startTime && (
+              <p className='text-red-500 text-xs mt-1'>{errors.startTime}</p>
+            )}
           </div>
 
           {/* End Time */}
@@ -184,31 +204,29 @@ const ScheduleModal = ({
               name='endTime'
               value={formData.endTime}
               onChange={handleChange}
-              className='w-full border rounded px-3 py-2'
-              required
+              className={`w-full border rounded px-3 py-2 ${
+                errors.endTime ? 'border-red-500' : ''
+              }`}
             />
+            {errors.endTime && (
+              <p className='text-red-500 text-xs mt-1'>{errors.endTime}</p>
+            )}
           </div>
 
           {/* Abstracts */}
-          <div>
+          <div className='col-span-2'>
             <label className='block mb-1 font-medium'>Abstracts</label>
-            <div className='border rounded px-3 py-2 h-28 overflow-y-auto'>
-              {abstracts?.map((a, index) => (
+            <div
+              className={`border rounded px-3 py-2 h-28 overflow-y-auto ${
+                errors.abstracts ? 'border-red-500' : ''
+              }`}
+            >
+              {abstracts?.map(a => (
                 <label key={a._id} className='flex items-center gap-2 mb-1'>
                   <input
                     type='checkbox'
-                    name='abstracts'
-                    value={a._id}
                     checked={formData.abstracts.includes(a._id)}
-                    onChange={e => {
-                      const { value, checked, name } = e.target
-                      setFormData(prev => ({
-                        ...prev,
-                        [name]: checked
-                          ? [...prev[name], value] // add if checked
-                          : prev[name].filter(v => v !== value) // remove if unchecked
-                      }))
-                    }}
+                    onChange={e => handleCheckboxChange(e, a._id)}
                     disabled={a.review_status === 'Pending'}
                   />
                   <span>
@@ -218,6 +236,9 @@ const ScheduleModal = ({
                 </label>
               ))}
             </div>
+            {errors.abstracts && (
+              <p className='text-red-500 text-xs mt-1'>{errors.abstracts}</p>
+            )}
           </div>
 
           {/* Session Chair */}

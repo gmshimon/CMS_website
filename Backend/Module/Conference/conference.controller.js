@@ -1,11 +1,12 @@
-import conference from './conference.model.js'
+import Conference from "./conference.model.js"
+
 
 export const createConference = async (req, res, next) => {
   try {
     const data = req.body
     const { _id } = req.user
     data.createdBy = _id
-    const response = await conference.create(data)
+    const response = await Conference.create(data)
 
     res.status(200).json({
       status: 200,
@@ -27,7 +28,7 @@ export const getConference = async (req, res, next) => {
     if (status) {
       matchQuery.status = status
     }
-    const data = await conference.find(matchQuery).lean()
+    const data = await Conference.find(matchQuery).lean()
 
     res.status(200).json({
       status: 'success',
@@ -54,7 +55,7 @@ export const getSingleConference = async (req, res, next) => {
     ) {
       matchQuery._id = id
     }
-    const data = await conference.findOne(matchQuery).lean()
+    const data = await Conference.findOne(matchQuery).lean()
 
     res.status(200).json({
       status: 'Success',
@@ -74,12 +75,12 @@ export const updateConference = async (req, res, next) => {
     const { id } = req.params
     const updateData = req.body
 
-    const existingConference = await conference.findById(id)
+    const existingConference = await Conference.findById(id)
     if (!existingConference) {
       throw new NotFoundError('Conference not found')
     }
 
-    const updatedConference = await conference.findByIdAndUpdate(id, {
+    const updatedConference = await Conference.findByIdAndUpdate(id, {
       $set: updateData
     })
 

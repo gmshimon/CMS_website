@@ -15,7 +15,7 @@ const Scheduling = () => {
   //     )
   //   }
   return (
-    <div className='p-6'>
+    <div className='p-3'>
       <h2 className='text-2xl font-bold text-gray-800 mb-4'>
         {location.pathname === '/admin/scheduling'
           ? 'Scheduling Management'
