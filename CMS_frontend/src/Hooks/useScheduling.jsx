@@ -3,30 +3,24 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAllSchedules } from '../Redux/Slice/ScheduleSlice'
 import { getChairsAndModerators } from '../Redux/Slice/AuthSlice'
 import { getUnscheduledAbstracts } from '../Redux/Slice/AbstractSlice'
+import decodeMethod from '../Utilis/decodeMethod'
 
 const useScheduling = (method = null) => {
   const { selectedConference } = useSelector(state => state.conference)
   const dispatch = useDispatch()
+
   useEffect(() => {
-    if (selectedConference) {
-      dispatch(getUnscheduledAbstracts(selectedConference))
-    } else {
-      dispatch(getUnscheduledAbstracts())
-    }
+    dispatch(
+      getUnscheduledAbstracts({
+        conference_id: selectedConference,
+        presentation_method: decodeMethod(method)
+      })
+    )
 
     dispatch(getChairsAndModerators())
     dispatch(
       getAllSchedules({
-        abstractType:
-          method == 'physical-paper'
-            ? 'Paper Presentation Physical'
-            : method === 'online-paper'
-            ? 'Paper Presentation Online'
-            : method == 'physical-poster'
-            ? 'Poster Presentation Physical'
-            : method === 'online-poster'
-            ? 'Poster Presentation Online'
-            : null,
+        abstractType: decodeMethod(method),
         conference_id: selectedConference
       })
     )

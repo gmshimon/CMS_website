@@ -14,28 +14,28 @@ import { getPresentationMethodStats } from '../../../../Redux/Slice/AdminSlice'
 const methodMeta = {
   'Paper Presentation Physical': {
     icon: FaChalkboardTeacher,
-    link: '/admin/scheduling/paper-physical',
+    link: '/admin/scheduling/physical-paper',
     color: 'bg-green-100',
     iconColor: 'text-green-600',
     description: 'Papers presented in person.'
   },
   'Paper Presentation Online': {
     icon: FaVideo,
-    link: '/admin/scheduling/paper-online',
+    link: '/admin/scheduling/online-paper',
     color: 'bg-blue-100',
     iconColor: 'text-blue-600',
     description: 'Papers presented virtually.'
   },
   'Poster Presentation Physical': {
     icon: FaImage,
-    link: '/admin/scheduling/poster-physical',
+    link: '/admin/scheduling/physical-poster',
     color: 'bg-yellow-100',
     iconColor: 'text-yellow-600',
     description: 'Posters displayed physically.'
   },
   'Poster Presentation Online': {
     icon: FaProjectDiagram,
-    link: '/admin/scheduling/poster-online',
+    link: '/admin/scheduling/online-poster',
     color: 'bg-purple-100',
     iconColor: 'text-purple-600',
     description: 'Poster presented virtually.'
@@ -55,7 +55,7 @@ const SchedulingHome = () => {
       dispatch(getPresentationMethodStats())
     }
   }, [dispatch, selectedConference])
-
+console.log(presentationStats)
   return (
     <div>
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>

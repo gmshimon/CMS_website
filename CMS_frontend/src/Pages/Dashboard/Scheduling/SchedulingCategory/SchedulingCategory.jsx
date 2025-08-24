@@ -4,6 +4,7 @@ import useScheduling from '../../../../Hooks/useScheduling'
 import ScheduleModal from '../../../../Component/ScheduleModal/ScheduleModal'
 import { useSelector } from 'react-redux'
 import Loading from '../../../../Component/Loading/Loading'
+import decodeMethod from '../../../../Utilis/decodeMethod'
 
 const SchedulingCategory = () => {
   const { unscheduleAbstract, updateScheduleLoading } = useSelector(
@@ -16,7 +17,6 @@ const SchedulingCategory = () => {
   const [modalOpen, setModalOpen] = useState(false)
   const { category } = useParams()
   useScheduling(category)
-
   const handleCreateSchedule = data => {
     console.log('Schedule Data:', data)
     setModalOpen(false)
@@ -30,6 +30,7 @@ const SchedulingCategory = () => {
       </div>
     )
   }
+  
 
   return (
     <div>
@@ -48,6 +49,7 @@ const SchedulingCategory = () => {
         session_chairs={session_chairs}
         moderators={moderators}
         abstracts={unscheduleAbstract}
+        abstractType = {decodeMethod(category)}
       />
 
       {/* Render schedules */}

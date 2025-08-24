@@ -7,7 +7,8 @@ const ScheduleModal = ({
   conferences = [],
   session_chairs = [],
   moderators = [],
-  abstracts = []
+  abstracts = [],
+  abstractType
 }) => {
   const [formData, setFormData] = useState({
     conference: '',
@@ -16,7 +17,7 @@ const ScheduleModal = ({
     session: '',
     startTime: '',
     endTime: '',
-    abstractType: 'Paper Presentation Online',
+    abstractType: abstractType,
     abstracts: [],
     sessionChair: '',
     moderator: '',
@@ -191,19 +192,32 @@ const ScheduleModal = ({
           {/* Abstracts */}
           <div>
             <label className='block mb-1 font-medium'>Abstracts</label>
-            <select
-              name='abstracts'
-              multiple
-              value={formData.abstracts}
-              onChange={handleChange}
-              className='w-full border rounded px-3 py-2 h-28'
-            >
-              {abstracts?.map(a => (
-                <option key={a._id} value={a._id}>
-                  {a.paper_title}
-                </option>
+            <div className='border rounded px-3 py-2 h-28 overflow-y-auto'>
+              {abstracts?.map((a, index) => (
+                <label key={a._id} className='flex items-center gap-2 mb-1'>
+                  <input
+                    type='checkbox'
+                    name='abstracts'
+                    value={a._id}
+                    checked={formData.abstracts.includes(a._id)}
+                    onChange={e => {
+                      const { value, checked, name } = e.target
+                      setFormData(prev => ({
+                        ...prev,
+                        [name]: checked
+                          ? [...prev[name], value] // add if checked
+                          : prev[name].filter(v => v !== value) // remove if unchecked
+                      }))
+                    }}
+                    disabled={a.review_status === 'Pending'}
+                  />
+                  <span>
+                    {a.paper_title} —{' '}
+                    {a.review_status === 'Pending' ? '⏳ Pending' : '✅ Done'}
+                  </span>
+                </label>
               ))}
-            </select>
+            </div>
           </div>
 
           {/* Session Chair */}

@@ -11,6 +11,7 @@ import Abstracts from '../Abstract/abstract.model.js'
 import 'dotenv/config'
 import conference from '../Conference/conference.model.js'
 import Reviews from '../Review/review.model.js'
+import mongoose from 'mongoose'
 // const serviceAccount = JSON.parse(
 //   await readFile(
 //     new URL(
@@ -354,10 +355,10 @@ export const getPresentationMethodStats = async (req, res) => {
       conference_id !== 'all' &&
       conference_id !== undefined
     ) {
-      match.conference = conference_id
+      match.conference = new mongoose.Types.ObjectId(conference_id)
     }
-
     const stats = await Abstracts.aggregate([
+      { $match: match },
       {
         $group: {
           _id: '$presentation_method',
@@ -372,7 +373,6 @@ export const getPresentationMethodStats = async (req, res) => {
         }
       }
     ])
-
     // Optional: Ensure all types are returned (even if count is 0)
     const methods = [
       'Paper Presentation Physical',
@@ -406,7 +406,7 @@ export const adminDashboardStats = async (req, res, next) => {
       conferenceId !== undefined &&
       conferenceId !== 'All Conferences'
     ) {
-      matchQuery.conference = conferenceId
+      matchQuery.conference = new mongoose.Types.ObjectId(conferenceId)
     }
     const activeConference = await conference.countDocuments({
       status: 'Active'

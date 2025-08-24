@@ -128,9 +128,17 @@ export const getAbstractByCategory = createAsyncThunk(
 
 export const getUnscheduledAbstracts = createAsyncThunk(
   'getUnscheduledAbstracts',
-  async (conference_id = null, { rejectWithValue }) => {
+  async (
+    { conference_id = null, presentation_method },
+    { rejectWithValue }
+  ) => {
     try {
-      const query = conference_id ? `?conferenceId=${conference_id}` : ''
+      let query = ''
+      const params = []
+      if (conference_id) params.push(`conference_id=${conference_id}`)
+      if (presentation_method)
+        params.push(`presentation_method=${presentation_method}`)
+      if (params.length) query = '?' + params.join('&')
       const response = await axiosSecure.get(`/abstract/unscheduled/${query}`)
       return response.data.data
     } catch (error) {

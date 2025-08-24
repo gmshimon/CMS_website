@@ -155,7 +155,7 @@ export const getPresentationMethodStats = createAsyncThunk(
   'getPresentationMethodStats',
   async (conferenceId = null, { rejectWithValue }) => {
     try {
-      const query = conferenceId ? `?conferenceId=${conferenceId}` : ''
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
       const response = await axiosSecure.get(
         `/admin/presentation-stats/${query}`
       )
