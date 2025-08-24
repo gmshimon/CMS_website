@@ -16,7 +16,11 @@ const initialState = {
 
   updateScheduleLoading: false,
   updateScheduleSuccess: false,
-  updateScheduleError: false
+  updateScheduleError: false,
+
+  deleteScheduleLoading: false,
+  deleteScheduleSuccess: false,
+  deleteScheduleError: false
 }
 
 // Async thunk to get all schedules
@@ -46,7 +50,7 @@ export const createSchedule = createAsyncThunk(
   async (scheduleData, { rejectWithValue }) => {
     try {
       const response = await axiosSecure.post('/schedules', scheduleData)
-      return response.data
+      return response.data.data
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: 'Failed to create schedule' }
@@ -61,6 +65,20 @@ export const updateSchedule = createAsyncThunk(
     try {
       const response = await axiosSecure.put(`/api/schedules/${id}`, updates)
       return response.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: 'Failed to update schedule' }
+      )
+    }
+  }
+)
+
+export const deleteSchedule = createAsyncThunk(
+  'deleteSchedule',
+  async (id, { rejectWithValue }) => {
+    try {
+      await axiosSecure.delete(`/schedules/${id}`)
+      return id
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: 'Failed to update schedule' }
@@ -85,6 +103,10 @@ const scheduleSlice = createSlice({
       state.updateScheduleLoading = false
       state.updateScheduleSuccess = false
       state.updateScheduleError = false
+
+      state.deleteScheduleLoading = false
+      state.deleteScheduleSuccess = false
+      state.deleteScheduleError = false
     }
   },
   extraReducers: builder => {
@@ -106,8 +128,7 @@ const scheduleSlice = createSlice({
         state.getScheduleSuccess = false
       })
 
-    // CREATE SCHEDULE
-    builder
+      // CREATE SCHEDULE
       .addCase(createSchedule.pending, state => {
         state.createScheduleLoading = true
         state.createScheduleSuccess = false
@@ -125,8 +146,7 @@ const scheduleSlice = createSlice({
         state.createScheduleSuccess = false
       })
 
-    // UPDATE SCHEDULE
-    builder
+      // UPDATE SCHEDULE
       .addCase(updateSchedule.pending, state => {
         state.updateScheduleLoading = true
         state.updateScheduleSuccess = false
@@ -144,6 +164,25 @@ const scheduleSlice = createSlice({
         state.updateScheduleLoading = false
         state.updateScheduleError = true
         state.updateScheduleSuccess = false
+      })
+      // ===== DELETE SCHEDULE =====
+      .addCase(deleteSchedule.pending, state => {
+        state.deleteScheduleLoading = true
+        state.deleteScheduleSuccess = false
+        state.deleteScheduleError = false
+      })
+      .addCase(deleteSchedule.fulfilled, (state, action) => {
+        state.deleteScheduleLoading = false
+        state.deleteScheduleSuccess = true
+        state.deleteScheduleError = false
+
+        // remove deleted schedule from state
+        state.schedules = state.schedules.filter(s => s._id !== action.payload)
+      })
+      .addCase(deleteSchedule.rejected, (state) => {
+        state.deleteScheduleLoading = false
+        state.deleteScheduleSuccess = false
+        state.deleteScheduleError = false
       })
   }
 })

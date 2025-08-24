@@ -23,12 +23,15 @@ const SchedulingCategory = () => {
     schedules,
     createScheduleLoading,
     createScheduleError,
-    createScheduleSuccess
+    createScheduleSuccess,
+    deleteScheduleLoading,
+    deleteScheduleSuccess,
+    deleteScheduleError
   } = useSelector(state => state.schedule)
 
   const [modalOpen, setModalOpen] = useState(false)
   const { category } = useParams()
-  const { handleCreateSchedule } = useScheduling(category)
+  const { handleCreateSchedule, handleDeleteSchedule } = useScheduling(category)
 
   const dispatch = useDispatch()
 
@@ -41,12 +44,27 @@ const SchedulingCategory = () => {
       showErrorToast('Something went wrong')
       dispatch(reset())
     }
-  }, [createScheduleError, createScheduleSuccess, dispatch])
+    if (deleteScheduleSuccess) {
+      showSuccessToast('Successfully Schedule deleted')
+      dispatch(reset())
+    }
+    if (deleteScheduleError) {
+      showErrorToast('Something went wrong')
+      dispatch(reset())
+    }
+  }, [
+    createScheduleError,
+    createScheduleSuccess,
+    deleteScheduleError,
+    deleteScheduleSuccess,
+    dispatch
+  ])
 
   if (
     getChairsAndModeratorsLoading ||
     updateScheduleLoading ||
-    createScheduleLoading
+    createScheduleLoading ||
+    deleteScheduleLoading
   ) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-200px)]'>
@@ -55,35 +73,10 @@ const SchedulingCategory = () => {
     )
   }
 
-  const columns = getScheduleColumns('physical')
-  const data = [
-    {
-      day: 'Monday',
-      date: '2025-09-01',
-      session: 'Keynote',
-      startTime: '09:00',
-      endTime: '10:00',
-      moderator: 'Dr. Rahman',
-      session_chair: 'Prof. Akter',
-      abstractList: 'Abstract 1, Abstract 2',
-      conference: 'ICSE 2025',
-      building: 'Main Block',
-      hall: 'Hall A',
-      room: '101'
-    },
-    {
-      day: 'Tuesday',
-      date: '2025-09-02',
-      session: 'Online Workshop',
-      startTime: '14:00',
-      endTime: '16:00',
-      moderator: 'Dr. Smith',
-      session_chair: 'Prof. Müller',
-      abstractList: 'Abstract 5',
-      conference: 'ICSE 2025',
-      meetingLink: 'https://zoom.us/j/123456789'
-    }
-  ]
+  const columns = getScheduleColumns(
+    category.includes('physical') ? 'physical' : 'online'
+  )
+
   return (
     <div>
       <button
@@ -106,15 +99,11 @@ const SchedulingCategory = () => {
           selectedConference !== 'all' ? selectedConference : null
         }
       />
-      <ScheduleTable columns={columns} data={data} />
-      {/* Render schedules */}
-      <div>
-        {schedules.map(s => (
-          <div key={s._id}>
-            {s.day} - {s.session} ({s.startTime} - {s.endTime})
-          </div>
-        ))}
-      </div>
+      <ScheduleTable
+        columns={columns}
+        data={schedules}
+        onDelete={handleDeleteSchedule}
+      />
     </div>
   )
 }

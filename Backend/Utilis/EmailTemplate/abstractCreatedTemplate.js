@@ -170,8 +170,6 @@ export const scheduleUpdateTemplate = ({
   abstractTitle,
   conference,
   session,
-  track,
-  subTrack,
   day,
   date,
   startTime,
@@ -192,8 +190,6 @@ export const scheduleUpdateTemplate = ({
       <h3 style="color: #2c3e50; margin-top: 20px;">📅 Schedule Details:</h3>
       <ul style="list-style: none; padding: 0;">
         <li><strong>Session:</strong> ${session}</li>
-        ${track ? `<li><strong>Track:</strong> ${track}</li>` : ""}
-        ${subTrack ? `<li><strong>Sub-Track:</strong> ${subTrack}</li>` : ""}
         <li><strong>Day:</strong> ${day}</li>
         <li><strong>Date:</strong> ${date}</li>
         <li><strong>Time:</strong> ${startTime} - ${endTime}</li>
@@ -229,8 +225,6 @@ export const sessionNotificationTemplate = ({
   role, // "Session Chair" or "Moderator"
   conference,
   session,
-  track,
-  subTrack,
   day,
   date,
   startTime,
@@ -252,8 +246,6 @@ export const sessionNotificationTemplate = ({
       <h3 style="color: #2c3e50; margin-top: 20px;">📅 Session Details:</h3>
       <ul style="list-style: none; padding: 0;">
         <li><strong>Session:</strong> ${session}</li>
-        ${track ? `<li><strong>Track:</strong> ${track}</li>` : ""}
-        ${subTrack ? `<li><strong>Sub-Track:</strong> ${subTrack}</li>` : ""}
         <li><strong>Day:</strong> ${day}</li>
         <li><strong>Date:</strong> ${date}</li>
         <li><strong>Time:</strong> ${startTime} - ${endTime}</li>

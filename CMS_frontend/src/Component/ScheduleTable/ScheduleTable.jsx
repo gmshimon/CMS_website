@@ -1,6 +1,6 @@
 import { FaEdit, FaTrash } from 'react-icons/fa'
 
-const ScheduleTable = ({ columns, data }) => {
+const ScheduleTable = ({ columns, data,onDelete }) => {
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>
@@ -21,7 +21,7 @@ const ScheduleTable = ({ columns, data }) => {
             </tr>
           </thead>
           <tbody>
-            {data?.length !== 0 ? (
+            {data?.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length + 1}
@@ -53,7 +53,7 @@ const ScheduleTable = ({ columns, data }) => {
                       <FaEdit />
                     </button>
                     <button
-                      // onClick={() => onDelete(user, role)}
+                      onClick={() => onDelete(row._id)}
                       className='text-red-600 hover:text-red-800 transition-colors p-1 rounded-full hover:bg-red-100'
                       title='Delete'
                       // aria-label={`Delete ${user.name}`}

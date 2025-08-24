@@ -10,7 +10,6 @@ import {
 import { createNotificationService } from '../Notification/notification.service.js'
 import Conference from '../Conference/conference.model.js'
 
-
 // CREATE Schedule
 export const createSchedule = async (req, res) => {
   try {
@@ -67,8 +66,6 @@ export const createSchedule = async (req, res) => {
           abstractTitle: abs.paper_title,
           conference: conferenceData.name,
           session,
-          track,
-          subTrack,
           day,
           date,
           startTime,
@@ -82,14 +79,14 @@ export const createSchedule = async (req, res) => {
         const type = 'schedule_update'
 
         // Send email
-        await sendEmail({
-          to: abs.presenter.presenter_email,
-          subject: `Schedule Update for Your Abstract - ${conferenceData.name}`,
-          html: emailHtml
-        })
+        // await sendEmail({
+        //   to: abs.presenter.presenter_email,
+        //   subject: `Schedule Update for Your Abstract - ${conferenceData.name}`,
+        //   html: emailHtml
+        // })
 
-        // Save notification (to DB & frontend)
-        await createNotificationService(abs.createdBy, message, emailHtml, type)
+        // // Save notification (to DB & frontend)
+        // await createNotificationService(abs.createdBy, message, emailHtml, type)
       })
     )
 
@@ -109,8 +106,6 @@ export const createSchedule = async (req, res) => {
         role: 'Session Chair',
         conference: conferenceData.name,
         session,
-        track,
-        subTrack,
         day,
         date,
         startTime,
@@ -124,13 +119,13 @@ export const createSchedule = async (req, res) => {
       const message = `You have been assigned as Session Chair for "${session}" in ${conferenceData.name}.`
       const type = 'chair_assignment'
 
-      await sendEmail({
-        to: chair.email,
-        subject: `You are assigned as Session Chair - ${conferenceData.name}`,
-        html: chairHtml
-      })
+      // await sendEmail({
+      //   to: chair.email,
+      //   subject: `You are assigned as Session Chair - ${conferenceData.name}`,
+      //   html: chairHtml
+      // })
 
-      await createNotificationService(chair._id, message, chairHtml, type)
+      // await createNotificationService(chair._id, message, chairHtml, type)
     }
 
     // ✅ Notify Moderator
@@ -155,16 +150,31 @@ export const createSchedule = async (req, res) => {
       const message = `You have been assigned as Moderator for "${session}" in ${conferenceData.name}.`
       const type = 'moderator_assignment'
 
-      await sendEmail({
-        to: mod.email,
-        subject: `You are assigned as Moderator - ${conferenceData.name}`,
-        html: modHtml
-      })
+      // await sendEmail({
+      //   to: mod.email,
+      //   subject: `You are assigned as Moderator - ${conferenceData.name}`,
+      //   html: modHtml
+      // })
 
-      await createNotificationService(mod._id, message, modHtml, type)
+      // await createNotificationService(mod._id, message, modHtml, type)
     }
 
-    return res.status(201).json({
+    await schedule.populate([
+      { path: 'conference' },
+      {
+        path: 'sessionChair',
+        select: 'name email'
+      },
+      {
+        path: 'moderator',
+        select: 'name email'
+      },
+      {
+        path: 'abstracts',
+        select: 'paper_title authors'
+      }
+    ])
+    return res.status(200).json({
       status: 'success',
       message: 'Schedule created and notifications sent',
       data: schedule
@@ -191,7 +201,7 @@ export const getAllSchedules = async (req, res) => {
       .populate('conference')
       .populate('sessionChair', 'name email')
       .populate('moderator', 'name email')
-      .populate('abstracts', 'title authors')
+      .populate('abstracts', 'paper_title authors')
     return res.status(200).json(schedules)
   } catch (error) {
     console.error(error)
