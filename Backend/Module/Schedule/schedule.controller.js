@@ -160,7 +160,7 @@ export const createSchedule = async (req, res) => {
     }
 
     await schedule.populate([
-      { path: 'conference' },
+      { path: 'conference', select: 'name' },
       {
         path: 'sessionChair',
         select: 'name email'
@@ -171,7 +171,7 @@ export const createSchedule = async (req, res) => {
       },
       {
         path: 'abstracts',
-        select: 'paper_title authors'
+        select: 'paper_title authors review_status'
       }
     ])
     return res.status(200).json({
@@ -198,10 +198,10 @@ export const getAllSchedules = async (req, res) => {
       match.conference = conference_id
     }
     const schedules = await Schedule.find(match)
-      .populate('conference')
+      .populate('conference', 'name')
       .populate('sessionChair', 'name email')
       .populate('moderator', 'name email')
-      .populate('abstracts', 'paper_title authors')
+      .populate('abstracts', 'paper_title authors review_status')
     return res.status(200).json(schedules)
   } catch (error) {
     console.error(error)
@@ -239,12 +239,267 @@ export const updateSchedule = async (req, res) => {
   try {
     const { id } = req.params
     const updates = req.body
+    const conferenceData = await Conference.findOne({ _id: updates.conference })
+    // Get the current schedule before updating
+    const existingSchedule = await Schedule.findById(id)
+      .populate('abstracts')
+      .populate('sessionChair')
+      .populate('moderator')
 
+    if (!existingSchedule) {
+      return res.status(404).json({ message: 'Schedule not found' })
+    }
+
+    const oldAbstracts = existingSchedule.abstracts.map(a => a._id.toString())
+    const newAbstracts = updates.abstracts || []
+
+    // find abstract differences
+    const addedAbstracts = newAbstracts.filter(
+      id => !oldAbstracts.includes(id.toString())
+    )
+    const removedAbstracts = oldAbstracts.filter(
+      id => !newAbstracts.includes(id.toString())
+    )
+
+    // --- session chair change ---
+    const oldChair = existingSchedule.sessionChair?._id?.toString() || null
+    const newChair = updates.sessionChair || null
+    const chairChanged = oldChair !== newChair
+
+    // --- moderator change ---
+    const oldModerator = existingSchedule.moderator?._id?.toString() || null
+    const newModerator = updates.moderator || null
+    const moderatorChanged = oldModerator !== newModerator
+
+    // update schedule
     const schedule = await Schedule.findByIdAndUpdate(id, updates, {
       new: true
     })
-    if (!schedule) {
-      return res.status(404).json({ message: 'Schedule not found' })
+      .populate('abstracts')
+      .populate('sessionChair')
+      .populate('moderator')
+
+    // --- emails for abstracts ---
+    if (addedAbstracts.length > 0) {
+      const abstracts = await Abstracts.find({ _id: { $in: addedAbstracts } })
+        .populate('presenter')
+        .populate('conference')
+      for (let a of abstracts) {
+        if (abs.presenter?.email) {
+          const emailHtml = scheduleUpdateTemplate({
+            userName: abs.presenter.presenter_name,
+            abstractTitle: abs.paper_title,
+            conference: abs.conference.name,
+            session,
+            day,
+            date,
+            startTime,
+            endTime,
+            abstractType,
+            meetingLink,
+            venue
+          })
+
+          const message = `Your abstract "${abs.paper_title}" has been scheduled in ${abs.conference.name}.`
+          const type = 'schedule_update'
+
+          // Send email
+          await sendEmail({
+            to: abs.presenter.presenter_email,
+            subject: `Schedule Update for Your Abstract - ${conferenceData.name}`,
+            html: emailHtml
+          })
+
+          // Save notification (to DB & frontend)
+          await createNotificationService(
+            abs.createdBy,
+            message,
+            emailHtml,
+            type
+          )
+        }
+      }
+    }
+
+    if (removedAbstracts.length > 0) {
+      const abstracts = await Abstract.find({
+        _id: { $in: removedAbstracts }
+      }).populate('author')
+      for (let abs of abstracts) {
+        if (abs.presenter?.presenter_email) {
+          const html = scheduleRemovalTemplate({
+            userName: abs.presenter.presenter_name,
+            role: 'abstract',
+            conference: abs.conference.name,
+            abstractTitle: abs.paper_title,
+            session: schedule.session,
+            day: schedule.day,
+            date: schedule.date,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            venue: schedule.venue,
+            meetingLink: schedule.meetingLink
+          })
+
+          const message = `Your abstract "${abs.paper_title}" has been removed from the schedule in ${abs.conference.name}.`
+          const type = 'schedule_removal'
+
+          await sendEmail({
+            to: abs.presenter.presenter_email,
+            subject: `Schedule Update - Abstract Removed from ${abs.conference.name}`,
+            html
+          })
+
+          await createNotificationService(abs.createdBy, message, html, type)
+        }
+      }
+    }
+
+    // --- emails for session chair change ---
+    if (chairChanged) {
+      // notify old chair (removed)
+      if (oldChair) {
+        const oldChairUser = await User.findById(oldChair)
+        if (oldChairUser?.email) {
+          const html = scheduleRemovalTemplate({
+            userName: oldChairUser.name,
+            role: 'Session Chair',
+            conference: conferenceData.name,
+            session: schedule.session,
+            day: schedule.day,
+            date: schedule.date,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            venue: schedule.venue,
+            meetingLink: schedule.meetingLink
+          })
+
+          const message = `You have been removed as Session Chair for "${schedule.session}" in ${conferenceData.name}.`
+          const type = 'chair_removal'
+
+          await sendEmail({
+            to: oldChairUser.email,
+            subject: `Removed as Session Chair - ${conferenceData.name}`,
+            html
+          })
+
+          await createNotificationService(oldChairUser._id, message, html, type)
+        }
+      }
+
+      // notify new chair (assigned)
+      if (newChair) {
+        const newChairUser = await User.findById(newChair)
+        if (newChairUser?.email) {
+          const chairHtml = sessionNotificationTemplate({
+            userName: newChairUser.name,
+            role: 'Session Chair',
+            conference: conferenceData.name,
+            session,
+            day,
+            date,
+            startTime,
+            endTime,
+            abstractType,
+            meetingLink,
+            venue,
+            abstracts: sessionAbstracts
+          })
+
+          const message = `You have been assigned as Session Chair for "${session}" in ${conferenceData.name}.`
+          const type = 'chair_assignment'
+
+          await sendEmail({
+            to: newChairUser.email,
+            subject: `You are assigned as Session Chair - ${conferenceData.name}`,
+            html: chairHtml
+          })
+
+          await createNotificationService(
+            newChairUser._id,
+            message,
+            chairHtml,
+            type
+          )
+        }
+      }
+    }
+
+    // --- emails for moderator change ---
+    if (moderatorChanged) {
+      // notify old moderator (removed)
+      if (oldModerator) {
+        const oldModeratorUser = await User.findById(oldModerator)
+        if (oldModeratorUser?.email) {
+          const html = scheduleRemovalTemplate({
+            userName: oldModeratorUser.name,
+            role: 'Moderator',
+            conference: conferenceData.name,
+            session: schedule.session,
+            day: schedule.day,
+            date: schedule.date,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            venue: schedule.venue,
+            meetingLink: schedule.meetingLink
+          })
+
+          const message = `You have been removed as Moderator for "${schedule.session}" in ${conferenceData.name}.`
+          const type = 'moderator_removal'
+
+          await sendEmail({
+            to: oldModeratorUser.email,
+            subject: `Removed as Moderator - ${conferenceData.name}`,
+            html
+          })
+
+          await createNotificationService(
+            oldModeratorUser._id,
+            message,
+            html,
+            type
+          )
+        }
+      }
+
+      // notify new moderator (assigned)
+      if (newModerator) {
+        const newModeratorUser = await User.findById(newModerator)
+        if (newModeratorUser?.email) {
+          const modHtml = sessionNotificationTemplate({
+            userName: newModeratorUser.name,
+            role: 'Moderator',
+            conference: conferenceData.name,
+            session,
+            track,
+            subTrack,
+            day,
+            date,
+            startTime,
+            endTime,
+            abstractType,
+            meetingLink,
+            venue,
+            abstracts: sessionAbstracts
+          })
+
+          const message = `You have been assigned as Moderator for "${session}" in ${conferenceData.name}.`
+          const type = 'moderator_assignment'
+
+          await sendEmail({
+            to: newModeratorUser.email,
+            subject: `You are assigned as Moderator - ${conferenceData.name}`,
+            html: modHtml
+          })
+
+          await createNotificationService(
+            newModeratorUser._id,
+            message,
+            modHtml,
+            type
+          )
+        }
+      }
     }
 
     return res.status(200).json(schedule)

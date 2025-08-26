@@ -9,6 +9,7 @@ import { getScheduleColumns } from '../../../../Utilis/useScheduleColumn'
 import ScheduleTable from '../../../../Component/ScheduleTable/ScheduleTable'
 import { showErrorToast, showSuccessToast } from '../../../../Utilis/toastUtils'
 import { reset } from '../../../../Redux/Slice/ScheduleSlice'
+import EditScheduleModal from '../../../../Component/EditScheduleModal/EditScheduleModal'
 
 const SchedulingCategory = () => {
   const { unscheduleAbstract, updateScheduleLoading } = useSelector(
@@ -30,8 +31,11 @@ const SchedulingCategory = () => {
   } = useSelector(state => state.schedule)
 
   const [modalOpen, setModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
+  const [selectedSchedule, setSelectedSchedule] = useState(null)
+
   const { category } = useParams()
-  const { handleCreateSchedule, handleDeleteSchedule } = useScheduling(category)
+  const { handleCreateSchedule, handleDeleteSchedule,handleEditSchedule } = useScheduling(category)
 
   const dispatch = useDispatch()
 
@@ -80,7 +84,10 @@ const SchedulingCategory = () => {
   return (
     <div>
       <button
-        onClick={() => setModalOpen(true)}
+        onClick={() => {
+          setModalOpen(true)
+          setSelectedSchedule(null)
+        }}
         className='bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 mb-2'
       >
         + Create Schedule
@@ -99,10 +106,30 @@ const SchedulingCategory = () => {
           selectedConference !== 'all' ? selectedConference : null
         }
       />
+
+      <EditScheduleModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        conferences={conferences}
+        onSubmit={handleEditSchedule}
+        session_chairs={session_chairs}
+        moderators={moderators}
+        abstracts={unscheduleAbstract}
+        abstractType={decodeMethod(category)}
+        selectedConference={
+          selectedConference !== 'all' ? selectedConference : null
+        }
+        schedule={selectedSchedule}
+      />
+
       <ScheduleTable
         columns={columns}
         data={schedules}
         onDelete={handleDeleteSchedule}
+        onEdit={data => {
+          setEditModalOpen(true)
+          setSelectedSchedule(data)
+        }}
       />
     </div>
   )

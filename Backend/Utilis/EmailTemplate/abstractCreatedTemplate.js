@@ -164,7 +164,6 @@ export const paperSubmitReminderEmailTemplate = ({
   `
 }
 
-
 export const scheduleUpdateTemplate = ({
   userName,
   abstractTitle,
@@ -195,14 +194,14 @@ export const scheduleUpdateTemplate = ({
         <li><strong>Time:</strong> ${startTime} - ${endTime}</li>
         <li><strong>Type:</strong> ${abstractType}</li>
         ${
-          abstractType.includes("Online") && meetingLink
+          abstractType.includes('Online') && meetingLink
             ? `<li><strong>Meeting Link:</strong> <a href="${meetingLink}" target="_blank">${meetingLink}</a></li>`
-            : ""
+            : ''
         }
         ${
-          abstractType.includes("Physical") && venue
+          abstractType.includes('Physical') && venue
             ? `<li><strong>Venue:</strong> ${venue.building}, ${venue.hall}, Room ${venue.room}</li>`
-            : ""
+            : ''
         }
       </ul>
 
@@ -217,8 +216,8 @@ export const scheduleUpdateTemplate = ({
         This is an automated message from ConferenceX. Please do not reply directly.
       </p>
     </div>
-  `;
-};
+  `
+}
 
 export const sessionNotificationTemplate = ({
   userName,
@@ -251,14 +250,14 @@ export const sessionNotificationTemplate = ({
         <li><strong>Time:</strong> ${startTime} - ${endTime}</li>
         <li><strong>Type:</strong> ${abstractType}</li>
         ${
-          abstractType.includes("Online") && meetingLink
+          abstractType.includes('Online') && meetingLink
             ? `<li><strong>Meeting Link:</strong> <a href="${meetingLink}" target="_blank">${meetingLink}</a></li>`
-            : ""
+            : ''
         }
         ${
-          abstractType.includes("Physical") && venue
+          abstractType.includes('Physical') && venue
             ? `<li><strong>Venue:</strong> ${venue.building}, ${venue.hall}, Room ${venue.room}</li>`
-            : ""
+            : ''
         }
       </ul>
 
@@ -269,13 +268,12 @@ export const sessionNotificationTemplate = ({
           <ol style="padding-left: 20px;">
             ${abstracts
               .map(
-                (abs) =>
-                  `<li><strong>${abs.title}</strong> by ${abs.author}</li>`
+                abs => `<li><strong>${abs.title}</strong> by ${abs.author}</li>`
               )
-              .join("")}
+              .join('')}
           </ol>
         `
-          : ""
+          : ''
       }
 
       <p style="margin-top: 20px;">
@@ -289,5 +287,41 @@ export const sessionNotificationTemplate = ({
         This is an automated message from ConferenceX. Please do not reply directly.
       </p>
     </div>
-  `;
-};
+  `
+}
+
+export const scheduleRemovalTemplate = ({
+  userName,
+  role,
+  conference,
+  abstractTitle,
+  session,
+  day,
+  date,
+  startTime,
+  endTime,
+  venue,
+  meetingLink
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+      <h2 style="color: #d9534f;">Schedule Update Notification</h2>
+      <p>Hello ${userName},</p>
+      
+      ${
+        role === 'abstract'
+          ? `<p>We wanted to inform you that your abstract <strong>"${abstractTitle}"</strong> has been <span style="color:#d9534f;">removed</span> from the schedule of <strong>${conference}</strong>.</p>`
+          : `<p>We wanted to inform you that you have been <span style="color:#d9534f;">removed</span> as <strong>${role}</strong> for the following session in <strong>${conference}</strong>.</p>`
+      }
+
+      <p><strong>Session:</strong> ${session || 'N/A'}<br/>
+      <strong>Day:</strong> ${day || 'N/A'}<br/>
+      <strong>Date:</strong> ${date || 'N/A'}<br/>
+      <strong>Time:</strong> ${startTime || 'N/A'} - ${endTime || 'N/A'}<br/>
+      <strong>Venue:</strong> ${venue || 'Online'}<br/>
+      ${meetingLink ? `<strong>Meeting Link:</strong> ${meetingLink}` : ''}</p>
+      
+      <p>Thank you for your contribution.<br/>- Conference Team</p>
+    </div>
+  `
+}

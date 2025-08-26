@@ -219,7 +219,7 @@ const EditConference = () => {
                     className="border border-black rounded-md p-2 w-full text-black"
                     required
                   >
-                    <option value="active">Active</option>
+                    <option value="Active">Active</option>
                     <option value="Disable">Disable</option>
                   </select>
                 </div>

@@ -1,6 +1,6 @@
 import { FaEdit, FaTrash } from 'react-icons/fa'
 
-const ScheduleTable = ({ columns, data,onDelete }) => {
+const ScheduleTable = ({ columns, data,onDelete ,onEdit}) => {
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>
@@ -45,7 +45,7 @@ const ScheduleTable = ({ columns, data,onDelete }) => {
                   ))}
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
-                      // onClick={() => onEdit(user)}
+                      onClick={() => onEdit(row)}
                       className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
                       title='Send Reminder'
                       // aria-label={`Send payment reminder to ${user.name}`}

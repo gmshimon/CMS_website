@@ -38,7 +38,13 @@ const useScheduling = (method = null) => {
     dispatch(deleteSchedule(id))
   }
 
-  return { handleCreateSchedule, handleDeleteSchedule }
+  const handleEditSchedule = (id,data)=>{
+    console.log({
+      id,data
+    })
+  }
+
+  return { handleCreateSchedule, handleDeleteSchedule ,handleEditSchedule}
 }
 
 export default useScheduling
