@@ -152,7 +152,6 @@ export const createSchedule = async (req, res) => {
         subject: `You are assigned as Moderator - ${conferenceData.name}`,
         html: modHtml
       })
-
     }
 
     await schedule.populate([
@@ -395,15 +394,15 @@ export const updateSchedule = async (req, res) => {
             userName: newChairUser.name,
             role: 'Session Chair',
             conference: conferenceData.name,
-            session,
-            day,
-            date,
-            startTime,
-            endTime,
-            abstractType,
-            meetingLink,
-            venue,
-            abstracts: sessionAbstracts
+            session: schedule.session,
+            day: schedule.day,
+            date: schedule.date,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            abstractType: schedule.abstractType,
+            venue: schedule.venue,
+            meetingLink: schedule.meetingLink,
+            abstracts: schedule.abstracts
           })
 
           const message = `You have been assigned as Session Chair for "${session}" in ${conferenceData.name}.`
@@ -444,21 +443,11 @@ export const updateSchedule = async (req, res) => {
             meetingLink: schedule.meetingLink
           })
 
-          const message = `You have been removed as Moderator for "${schedule.session}" in ${conferenceData.name}.`
-          const type = 'moderator_removal'
-
           await sendEmail({
             to: oldModeratorUser.email,
             subject: `Removed as Moderator - ${conferenceData.name}`,
             html
           })
-
-          await createNotificationService(
-            oldModeratorUser._id,
-            message,
-            html,
-            type
-          )
         }
       }
 
@@ -470,38 +459,135 @@ export const updateSchedule = async (req, res) => {
             userName: newModeratorUser.name,
             role: 'Moderator',
             conference: conferenceData.name,
-            session,
-            track,
-            subTrack,
-            day,
-            date,
-            startTime,
-            endTime,
-            abstractType,
-            meetingLink,
-            venue,
-            abstracts: sessionAbstracts
-          })
+            session: schedule.session,
+            day: schedule.day,
+            date: schedule.date,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            abstractType: schedule.abstractType,
+            venue: schedule.venue,
+            meetingLink: schedule.meetingLink,
 
-          const message = `You have been assigned as Moderator for "${session}" in ${conferenceData.name}.`
-          const type = 'moderator_assignment'
+            abstracts: schedule.abstracts
+          })
 
           await sendEmail({
             to: newModeratorUser.email,
             subject: `You are assigned as Moderator - ${conferenceData.name}`,
             html: modHtml
           })
+        }
+      }
+    }
+
+    // --- detect general schedule detail changes ---
+    const scheduleFieldsChanged =
+      existingSchedule.date?.toString() !== updates.date?.toString() ||
+      existingSchedule.day !== updates.day ||
+      existingSchedule.startTime !== updates.startTime ||
+      existingSchedule.endTime !== updates.endTime ||
+      existingSchedule.venue !== updates.venue ||
+      existingSchedule.meetingLink !== updates.meetingLink
+
+    if (
+      scheduleFieldsChanged &&
+      addedAbstracts.length === 0 &&
+      removedAbstracts.length === 0
+    ) {
+      for (let abs of schedule.abstracts) {
+        if (abs.presenter?.presenter_email) {
+          const emailHtml = scheduleUpdateTemplate({
+            userName: abs.presenter.presenter_name,
+            abstractTitle: abs.paper_title,
+            conference: conferenceData.name,
+            session: schedule.session,
+            day: schedule.day,
+            date: schedule.date,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            abstractType: schedule.abstractType,
+            venue: schedule.venue,
+            meetingLink: schedule.meetingLink,
+          })
+
+          const message = `Schedule details (time/venue/meeting link) for your abstract "${abs.paper_title}" have been updated in ${conferenceData.name}.`
+          const type = 'schedule_time_update'
+
+          await sendEmail({
+            to: abs.presenter.presenter_email,
+            subject: `Schedule Update - ${conferenceData.name}`,
+            html: emailHtml
+          })
 
           await createNotificationService(
-            newModeratorUser._id,
+            abs.createdBy,
             message,
-            modHtml,
+            emailHtml,
             type
           )
         }
       }
     }
 
+    // notify session chair
+    if (scheduleFieldsChanged && !chairChanged) {
+      if (schedule.sessionChair?.email) {
+        const chairHtml = sessionNotificationTemplate({
+          userName: schedule.sessionChair.name,
+          role: 'Session Chair',
+          conference: conferenceData.name,
+          session: schedule.session,
+          day: schedule.day,
+          date: schedule.date,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          abstractType: schedule.abstractType,
+          venue: schedule.venue,
+          meetingLink: schedule.meetingLink,
+          abstracts: schedule.abstracts
+        })
+
+        const message = `Schedule details for your session "${schedule.session}" have been updated in ${conferenceData.name}.`
+        const type = 'chair_schedule_update'
+
+        await sendEmail({
+          to: schedule.sessionChair.email,
+          subject: `Schedule Updated - ${conferenceData.name}`,
+          html: chairHtml
+        })
+
+        await createNotificationService(
+          schedule.sessionChair._id,
+          message,
+          chairHtml,
+          type
+        )
+      }
+    }
+
+    if (scheduleFieldsChanged && !moderatorChanged) {
+      if (schedule.sessionChair?.email) {
+        const chairHtml = sessionNotificationTemplate({
+          userName: schedule.sessionChair.name,
+          role: 'Session Chair',
+          conference: conferenceData.name,
+          session: schedule.session,
+          day: schedule.day,
+          date: schedule.date,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          abstractType: schedule.abstractType,
+          venue: schedule.venue,
+          meetingLink: schedule.meetingLink,
+          abstracts: schedule.abstracts
+        })
+        await sendEmail({
+          to: schedule.sessionChair.email,
+          subject: `Schedule Updated - ${conferenceData.name}`,
+          html: chairHtml
+        })
+      }
+    }
     return res.status(200).json({
       status: 'Success',
       data: schedule
