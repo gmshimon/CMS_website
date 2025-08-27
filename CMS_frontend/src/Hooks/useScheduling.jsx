@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   createSchedule,
   deleteSchedule,
-  getAllSchedules
+  getAllSchedules,
+  updateSchedule
 } from '../Redux/Slice/ScheduleSlice'
 import { getChairsAndModerators } from '../Redux/Slice/AuthSlice'
 import { getUnscheduledAbstracts } from '../Redux/Slice/AbstractSlice'
@@ -16,7 +17,9 @@ const useScheduling = (method = null) => {
   useEffect(() => {
     dispatch(
       getUnscheduledAbstracts({
-        conference_id: selectedConference,
+        conference_id: sessionStorage.getItem('selectedConference')
+          ? sessionStorage.getItem('selectedConference')
+          : selectedConference,
         presentation_method: decodeMethod(method)
       })
     )
@@ -38,13 +41,11 @@ const useScheduling = (method = null) => {
     dispatch(deleteSchedule(id))
   }
 
-  const handleEditSchedule = (id,data)=>{
-    console.log({
-      id,data
-    })
+  const handleEditSchedule = (id, data) => {
+    dispatch(updateSchedule({ id, data }))
   }
 
-  return { handleCreateSchedule, handleDeleteSchedule ,handleEditSchedule}
+  return { handleCreateSchedule, handleDeleteSchedule, handleEditSchedule }
 }
 
 export default useScheduling

@@ -61,10 +61,10 @@ export const createSchedule = createAsyncThunk(
 
 export const updateSchedule = createAsyncThunk(
   'schedule/updateSchedule',
-  async ({ id, updates }, { rejectWithValue }) => {
+  async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await axiosSecure.put(`/api/schedules/${id}`, updates)
-      return response.data
+      const response = await axiosSecure.put(`/schedules/${id}`, data)
+      return response.data.data
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: 'Failed to update schedule' }
@@ -155,6 +155,7 @@ const scheduleSlice = createSlice({
       .addCase(updateSchedule.fulfilled, (state, action) => {
         state.updateScheduleLoading = false
         state.updateScheduleSuccess = true
+        state.updateScheduleError = false
         const index = state.schedules.findIndex(
           s => s._id === action.payload._id
         )
@@ -179,7 +180,7 @@ const scheduleSlice = createSlice({
         // remove deleted schedule from state
         state.schedules = state.schedules.filter(s => s._id !== action.payload)
       })
-      .addCase(deleteSchedule.rejected, (state) => {
+      .addCase(deleteSchedule.rejected, state => {
         state.deleteScheduleLoading = false
         state.deleteScheduleSuccess = false
         state.deleteScheduleError = false

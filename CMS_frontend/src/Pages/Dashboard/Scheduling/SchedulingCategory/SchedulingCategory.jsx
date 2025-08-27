@@ -12,9 +12,7 @@ import { reset } from '../../../../Redux/Slice/ScheduleSlice'
 import EditScheduleModal from '../../../../Component/EditScheduleModal/EditScheduleModal'
 
 const SchedulingCategory = () => {
-  const { unscheduleAbstract, updateScheduleLoading } = useSelector(
-    state => state.abstract
-  )
+  const { unscheduleAbstract } = useSelector(state => state.abstract)
   const { session_chairs, moderators, getChairsAndModeratorsLoading } =
     useSelector(state => state.user)
   const { conferences, selectedConference } = useSelector(
@@ -27,7 +25,10 @@ const SchedulingCategory = () => {
     createScheduleSuccess,
     deleteScheduleLoading,
     deleteScheduleSuccess,
-    deleteScheduleError
+    deleteScheduleError,
+    updateScheduleLoading,
+    updateScheduleSuccess,
+    updateScheduleError
   } = useSelector(state => state.schedule)
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -35,7 +36,8 @@ const SchedulingCategory = () => {
   const [selectedSchedule, setSelectedSchedule] = useState(null)
 
   const { category } = useParams()
-  const { handleCreateSchedule, handleDeleteSchedule,handleEditSchedule } = useScheduling(category)
+  const { handleCreateSchedule, handleDeleteSchedule, handleEditSchedule } =
+    useScheduling(category)
 
   const dispatch = useDispatch()
 
@@ -56,12 +58,22 @@ const SchedulingCategory = () => {
       showErrorToast('Something went wrong')
       dispatch(reset())
     }
+    if (updateScheduleSuccess) {
+      showSuccessToast('Successfully updated the schedule')
+      dispatch(reset())
+    }
+    if (updateScheduleError) {
+      showErrorToast('Something went wrong')
+      dispatch(reset())
+    }
   }, [
     createScheduleError,
     createScheduleSuccess,
     deleteScheduleError,
     deleteScheduleSuccess,
-    dispatch
+    dispatch,
+    updateScheduleError,
+    updateScheduleSuccess
   ])
 
   if (
@@ -110,7 +122,6 @@ const SchedulingCategory = () => {
       <EditScheduleModal
         isOpen={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        conferences={conferences}
         onSubmit={handleEditSchedule}
         session_chairs={session_chairs}
         moderators={moderators}

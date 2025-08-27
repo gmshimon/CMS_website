@@ -4,6 +4,7 @@ import { sendEmail } from '../../Utilis/sendEmail.js'
 import Users from '../User/user.model.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import {
+  scheduleRemovalTemplate,
   scheduleUpdateTemplate,
   sessionNotificationTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
@@ -79,14 +80,14 @@ export const createSchedule = async (req, res) => {
         const type = 'schedule_update'
 
         // Send email
-        // await sendEmail({
-        //   to: abs.presenter.presenter_email,
-        //   subject: `Schedule Update for Your Abstract - ${conferenceData.name}`,
-        //   html: emailHtml
-        // })
+        await sendEmail({
+          to: abs.presenter.presenter_email,
+          subject: `Schedule Update for Your Abstract - ${conferenceData.name}`,
+          html: emailHtml
+        })
 
-        // // Save notification (to DB & frontend)
-        // await createNotificationService(abs.createdBy, message, emailHtml, type)
+        // Save notification (to DB & frontend)
+        await createNotificationService(abs.createdBy, message, emailHtml, type)
       })
     )
 
@@ -119,13 +120,13 @@ export const createSchedule = async (req, res) => {
       const message = `You have been assigned as Session Chair for "${session}" in ${conferenceData.name}.`
       const type = 'chair_assignment'
 
-      // await sendEmail({
-      //   to: chair.email,
-      //   subject: `You are assigned as Session Chair - ${conferenceData.name}`,
-      //   html: chairHtml
-      // })
+      await sendEmail({
+        to: chair.email,
+        subject: `You are assigned as Session Chair - ${conferenceData.name}`,
+        html: chairHtml
+      })
 
-      // await createNotificationService(chair._id, message, chairHtml, type)
+      await createNotificationService(chair._id, message, chairHtml, type)
     }
 
     // ✅ Notify Moderator
@@ -146,17 +147,12 @@ export const createSchedule = async (req, res) => {
         venue,
         abstracts: sessionAbstracts
       })
+      await sendEmail({
+        to: mod.email,
+        subject: `You are assigned as Moderator - ${conferenceData.name}`,
+        html: modHtml
+      })
 
-      const message = `You have been assigned as Moderator for "${session}" in ${conferenceData.name}.`
-      const type = 'moderator_assignment'
-
-      // await sendEmail({
-      //   to: mod.email,
-      //   subject: `You are assigned as Moderator - ${conferenceData.name}`,
-      //   html: modHtml
-      // })
-
-      // await createNotificationService(mod._id, message, modHtml, type)
     }
 
     await schedule.populate([
@@ -238,6 +234,7 @@ export const getScheduleById = async (req, res) => {
 export const updateSchedule = async (req, res) => {
   try {
     const { id } = req.params
+
     const updates = req.body
     const conferenceData = await Conference.findOne({ _id: updates.conference })
     // Get the current schedule before updating
@@ -284,20 +281,20 @@ export const updateSchedule = async (req, res) => {
       const abstracts = await Abstracts.find({ _id: { $in: addedAbstracts } })
         .populate('presenter')
         .populate('conference')
-      for (let a of abstracts) {
-        if (abs.presenter?.email) {
+      for (let abs of abstracts) {
+        if (abs.presenter?.presenter_email) {
           const emailHtml = scheduleUpdateTemplate({
             userName: abs.presenter.presenter_name,
             abstractTitle: abs.paper_title,
             conference: abs.conference.name,
-            session,
-            day,
-            date,
-            startTime,
-            endTime,
-            abstractType,
-            meetingLink,
-            venue
+            session: schedule.session,
+            day: schedule.day,
+            date: schedule.date,
+            startTime: schedule.startTime,
+            endTime: schedule.endTime,
+            abstractType: schedule.abstractType,
+            venue: schedule.venue,
+            meetingLink: schedule.meetingLink
           })
 
           const message = `Your abstract "${abs.paper_title}" has been scheduled in ${abs.conference.name}.`
@@ -322,9 +319,11 @@ export const updateSchedule = async (req, res) => {
     }
 
     if (removedAbstracts.length > 0) {
-      const abstracts = await Abstract.find({
+      const abstracts = await Abstracts.find({
         _id: { $in: removedAbstracts }
-      }).populate('author')
+      })
+        .populate('presenter')
+        .populate('conference')
       for (let abs of abstracts) {
         if (abs.presenter?.presenter_email) {
           const html = scheduleRemovalTemplate({
@@ -336,6 +335,7 @@ export const updateSchedule = async (req, res) => {
             day: schedule.day,
             date: schedule.date,
             startTime: schedule.startTime,
+            abstractType: schedule.abstractType,
             endTime: schedule.endTime,
             venue: schedule.venue,
             meetingLink: schedule.meetingLink
@@ -359,7 +359,7 @@ export const updateSchedule = async (req, res) => {
     if (chairChanged) {
       // notify old chair (removed)
       if (oldChair) {
-        const oldChairUser = await User.findById(oldChair)
+        const oldChairUser = await Users.findById(oldChair)
         if (oldChairUser?.email) {
           const html = scheduleRemovalTemplate({
             userName: oldChairUser.name,
@@ -389,7 +389,7 @@ export const updateSchedule = async (req, res) => {
 
       // notify new chair (assigned)
       if (newChair) {
-        const newChairUser = await User.findById(newChair)
+        const newChairUser = await Users.findById(newChair)
         if (newChairUser?.email) {
           const chairHtml = sessionNotificationTemplate({
             userName: newChairUser.name,
@@ -429,7 +429,7 @@ export const updateSchedule = async (req, res) => {
     if (moderatorChanged) {
       // notify old moderator (removed)
       if (oldModerator) {
-        const oldModeratorUser = await User.findById(oldModerator)
+        const oldModeratorUser = await Users.findById(oldModerator)
         if (oldModeratorUser?.email) {
           const html = scheduleRemovalTemplate({
             userName: oldModeratorUser.name,
@@ -464,7 +464,7 @@ export const updateSchedule = async (req, res) => {
 
       // notify new moderator (assigned)
       if (newModerator) {
-        const newModeratorUser = await User.findById(newModerator)
+        const newModeratorUser = await Users.findById(newModerator)
         if (newModeratorUser?.email) {
           const modHtml = sessionNotificationTemplate({
             userName: newModeratorUser.name,
@@ -502,7 +502,10 @@ export const updateSchedule = async (req, res) => {
       }
     }
 
-    return res.status(200).json(schedule)
+    return res.status(200).json({
+      status: 'Success',
+      data: schedule
+    })
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Server Error' })

@@ -5,7 +5,6 @@ const EditScheduleModal = ({
   onClose,
   onSubmit,
   schedule, // 👈 existing schedule to edit
-  conferences = [],
   session_chairs = [],
   moderators = [],
   abstracts = []
@@ -25,7 +24,6 @@ const EditScheduleModal = ({
     venue: { building: '', hall: '', room: '' }
   })
   const [errors, setErrors] = useState({})
-
   // preload schedule data when modal opens
   useEffect(() => {
     if (schedule) {
@@ -110,42 +108,17 @@ const EditScheduleModal = ({
           {/* Conference */}
           <div>
             <label className='block mb-1 font-medium'>Conference</label>
-            <select
-              name='conference'
-              value={formData.conference}
-              onChange={handleChange}
-              className={`w-full border rounded px-3 py-2 ${
-                errors.conference ? 'border-red-500' : ''
-              }`}
-              required
-            >
-              <option value=''>Select Conference</option>
-              {conferences.map(c => (
-                <option key={c._id} value={c._id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-            {errors.conference && (
-              <p className='text-red-500 text-xs mt-1'>{errors.conference}</p>
-            )}
+            <div className='w-full border rounded px-3 py-2'>
+              {schedule.conference.name}
+            </div>
           </div>
 
           {/* Abstract Type */}
           <div>
             <label className='block mb-1 font-medium'>Abstract Type</label>
-            <select
-              name='abstractType'
-              value={formData.abstractType}
-              onChange={handleChange}
-              className='w-full border rounded px-3 py-2'
-              required
-            >
-              <option>Paper Presentation Online</option>
-              <option>Paper Presentation Physical</option>
-              <option>Poster Presentation Online</option>
-              <option>Poster Presentation Physical</option>
-            </select>
+            <div className='w-full border rounded px-3 py-2'>
+              {schedule.abstractType}
+            </div>
           </div>
 
           {/* Day */}
@@ -233,7 +206,7 @@ const EditScheduleModal = ({
                 errors.abstracts ? 'border-red-500' : ''
               }`}
             >
-              {[...abstracts, ...schedule.abstracts]?.map(a => (
+              {[...abstracts,...schedule.abstracts]?.map(a => (
                 <label key={a._id} className='flex items-center gap-2 mb-1'>
                   <input
                     type='checkbox'

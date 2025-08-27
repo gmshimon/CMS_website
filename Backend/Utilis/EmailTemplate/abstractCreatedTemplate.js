@@ -299,6 +299,7 @@ export const scheduleRemovalTemplate = ({
   day,
   date,
   startTime,
+  abstractType,
   endTime,
   venue,
   meetingLink
@@ -313,14 +314,25 @@ export const scheduleRemovalTemplate = ({
           ? `<p>We wanted to inform you that your abstract <strong>"${abstractTitle}"</strong> has been <span style="color:#d9534f;">removed</span> from the schedule of <strong>${conference}</strong>.</p>`
           : `<p>We wanted to inform you that you have been <span style="color:#d9534f;">removed</span> as <strong>${role}</strong> for the following session in <strong>${conference}</strong>.</p>`
       }
+<h3 style="color: #2c3e50; margin-top: 20px;">📅 Schedule Details:</h3>
+      <<ul style="list-style: none; padding: 0;">
+        <li><strong>Session:</strong> ${session}</li>
+        <li><strong>Day:</strong> ${day}</li>
+        <li><strong>Date:</strong> ${date}</li>
+        <li><strong>Time:</strong> ${startTime} - ${endTime}</li>
+        <li><strong>Type:</strong> ${abstractType}</li>
+        ${
+          abstractType.includes('Online') && meetingLink
+            ? `<li><strong>Meeting Link:</strong> <a href="${meetingLink}" target="_blank">${meetingLink}</a></li>`
+            : ''
+        }
+        ${
+          abstractType.includes('Physical') && venue
+            ? `<li><strong>Venue:</strong> ${venue.building}, ${venue.hall}, Room ${venue.room}</li>`
+            : ''
+        }
+      </ul>
 
-      <p><strong>Session:</strong> ${session || 'N/A'}<br/>
-      <strong>Day:</strong> ${day || 'N/A'}<br/>
-      <strong>Date:</strong> ${date || 'N/A'}<br/>
-      <strong>Time:</strong> ${startTime || 'N/A'} - ${endTime || 'N/A'}<br/>
-      <strong>Venue:</strong> ${venue || 'Online'}<br/>
-      ${meetingLink ? `<strong>Meeting Link:</strong> ${meetingLink}` : ''}</p>
-      
       <p>Thank you for your contribution.<br/>- Conference Team</p>
     </div>
   `
