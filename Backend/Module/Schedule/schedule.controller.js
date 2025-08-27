@@ -507,7 +507,7 @@ export const updateSchedule = async (req, res) => {
             endTime: schedule.endTime,
             abstractType: schedule.abstractType,
             venue: schedule.venue,
-            meetingLink: schedule.meetingLink,
+            meetingLink: schedule.meetingLink
           })
 
           const message = `Schedule details (time/venue/meeting link) for your abstract "${abs.paper_title}" have been updated in ${conferenceData.name}.`
@@ -603,10 +603,116 @@ export const deleteSchedule = async (req, res) => {
   try {
     const { id } = req.params
 
-    const schedule = await Schedule.findByIdAndDelete(id)
+    // 1. Get the schedule with all details before deletion
+    const schedule = await Schedule.findById(id)
+      .populate('abstracts')
+      .populate('sessionChair')
+      .populate('moderator')
+      .populate('conference')
+
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' })
     }
+
+    const conferenceName = schedule.conference?.name || 'Conference'
+
+    // 2. Notify presenters of abstracts
+    for (let abs of schedule.abstracts) {
+      if (abs.presenter?.presenter_email) {
+        const html = scheduleRemovalTemplate({
+          userName: abs.presenter.presenter_name,
+          role: 'abstract',
+          conference: conferenceName,
+          abstractTitle: abs.paper_title,
+          session: schedule.session,
+          day: schedule.day,
+          date: schedule.date,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime,
+          abstractType: schedule.abstractType,
+          venue: schedule.venue,
+          meetingLink: schedule.meetingLink
+        })
+
+        const message = `Your abstract "${abs.paper_title}" has been removed because the session "${schedule.session}" was deleted from ${conferenceName}.`
+        const type = 'schedule_deletion'
+
+        await sendEmail({
+          to: abs.presenter.presenter_email,
+          subject: `Session Deleted - ${conferenceName}`,
+          html
+        })
+
+        await createNotificationService(abs.createdBy, message, html, type)
+      }
+    }
+
+    // 3. Notify session chair
+    if (schedule.sessionChair?.email) {
+      const html = scheduleRemovalTemplate({
+        userName: schedule.sessionChair.name,
+        role: 'Session Chair',
+        conference: conferenceName,
+        session: schedule.session,
+        day: schedule.day,
+        date: schedule.date,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        venue: schedule.venue,
+        meetingLink: schedule.meetingLink
+      })
+
+      const message = `The session "${schedule.session}" you were chairing has been deleted from ${conferenceName}.`
+      const type = 'chair_session_deleted'
+
+      await sendEmail({
+        to: schedule.sessionChair.email,
+        subject: `Session Deleted - ${conferenceName}`,
+        html
+      })
+
+      await createNotificationService(
+        schedule.sessionChair._id,
+        message,
+        html,
+        type
+      )
+    }
+
+    // 4. Notify moderator
+    if (schedule.moderator?.email) {
+      const html = scheduleRemovalTemplate({
+        userName: schedule.moderator.name,
+        role: 'Moderator',
+        conference: conferenceName,
+        session: schedule.session,
+        day: schedule.day,
+        date: schedule.date,
+        startTime: schedule.startTime,
+        endTime: schedule.endTime,
+        venue: schedule.venue,
+        meetingLink: schedule.meetingLink
+      })
+
+      const message = `The session "${schedule.session}" you were moderating has been deleted from ${conferenceName}.`
+      const type = 'moderator_session_deleted'
+
+      await sendEmail({
+        to: schedule.moderator.email,
+        subject: `Session Deleted - ${conferenceName}`,
+        html
+      })
+
+      await createNotificationService(
+        schedule.moderator._id,
+        message,
+        html,
+        type
+      )
+    }
+
+    // 5. Now delete the schedule from DB
+    await Schedule.findByIdAndDelete(id)
 
     return res.status(200).json({ message: 'Schedule deleted successfully' })
   } catch (error) {
