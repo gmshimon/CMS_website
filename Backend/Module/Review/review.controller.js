@@ -301,12 +301,11 @@ export const getReviewDashboardsStats = async (req, res, next) => {
       ...matchQuery
     })
 
-  
     const data = {
       totalSubmissions,
       pendingReviews,
       unassignedSubmissions,
-      completedReviews,
+      completedReviews
     }
 
     res.status(200).json({
@@ -322,12 +321,16 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 // fetch the different abstract with review data based on satus
 export const getAbstractsByCategory = async (req, res, next) => {
   try {
-    const { category, year } = req.query
+    const { category, conference_id } = req.query
+    console.log(category)
     const matchQuery = {}
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      matchQuery.conference = conference_id
     }
 
     // Helper to attach reviews and papers to each abstract
@@ -339,7 +342,7 @@ export const getAbstractsByCategory = async (req, res, next) => {
               abstract: abstract._id,
               ...reviewsQuery
             }).populate('reviewer'),
-            Paper.find({ abstract: abstract._id }) // adjust if your key is abstractId
+            Paper.findOne({ abstract: abstract._id }) // adjust if your key is abstractId
           ])
           return { ...abstract, reviews, papers }
         })
@@ -374,11 +377,14 @@ export const getAbstractsByCategory = async (req, res, next) => {
         .lean()
 
       // If you also want papers here, uncomment next line
-      // const unassignedWithPapers = await Promise.all(unassignedAbstracts.map(async abstract => ({ ...abstract, papers: await Paper.find({ abstract: abstract._id }) })));
-      // return res.status(200).json({ success: true, data: unassignedWithPapers });
-
-      // If not, just:
-      return res.status(200).json({ success: true, data: unassignedAbstracts })
+      const unassignedWithPapers = await Promise.all(
+        unassignedAbstracts.map(async abstract => ({
+          ...abstract,
+          papers: await Paper.find({ abstract: abstract._id }),
+          reviews:[]
+        }))
+      )
+      return res.status(200).json({ success: true, data: unassignedWithPapers })
     }
 
     if (category === 'pending') {
@@ -392,10 +398,15 @@ export const getAbstractsByCategory = async (req, res, next) => {
         abstracts,
         { status: category }
       )
+      // Filter abstracts that have at least one review with status 'pending'
+      const pendingAbstracts = abstractsWithReviewsAndPapers.filter(
+        abstract =>
+          abstract.reviews &&
+          abstract.reviews.length > 0 &&
+          abstract.reviews.some(review => review.status === 'pending')
+      )
 
-      return res
-        .status(200)
-        .json({ success: true, data: abstractsWithReviewsAndPapers })
+      return res.status(200).json({ success: true, data: pendingAbstracts })
     }
 
     // Any other specific category
