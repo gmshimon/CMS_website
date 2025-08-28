@@ -10,7 +10,7 @@ const presenterNavOptions = [
   {
     id: 1,
     label: 'Home',
-    path: '/admin/home',
+    path: '/admin',
     icon: <FaHome />
   },
   {

@@ -50,9 +50,9 @@ const initialState = {
 }
 export const fetchReviewStats = createAsyncThunk(
   'admin/fetchReviewStats',
-  async (year, { rejectWithValue }) => {
+  async (conferenceId = null, { rejectWithValue }) => {
     try {
-      const query = year ? `?year=${year}` : ''
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
       const response = await axiosSecure.get(`/review/review-stats${query}`)
       return response.data.data
     } catch (error) {

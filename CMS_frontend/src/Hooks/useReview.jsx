@@ -9,14 +9,20 @@ import {
 } from '../Redux/Slice/ReviewSlice'
 
 const useReview = (category = 'all') => {
+  const { selectedConference } = useSelector(state => state.conference)
   const { assigningReviewerSuccess } = useSelector(state => state.review)
-  const { selectedYear } = useSelector(state => state.admin)
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getAbstractsByCategory({ category }))
-    dispatch(fetchReviewStats(selectedYear))
-  }, [category, dispatch, selectedYear, assigningReviewerSuccess])
+    dispatch(
+      fetchReviewStats(
+        sessionStorage.getItem('selectedConference')
+          ? sessionStorage.getItem('selectedConference')
+          : selectedConference
+      )
+    )
+  }, [category, dispatch, assigningReviewerSuccess, selectedConference])
 
   const handleInviteReview = data => {
     dispatch(assignReviewer(data))
