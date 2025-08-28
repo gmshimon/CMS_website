@@ -16,20 +16,19 @@ const PaperListModal = ({ isOpen, onClose, papers, onView }) => {
           </button>
         </div>
 
-        {papers && papers.length ? (
+        {papers ? (
           <div className='divide-y'>
-            {papers.map(paper => (
+            {papers.paper.map(paper => (
               <div
                 key={paper._id}
                 className='py-3 flex items-center justify-between'
               >
                 <div>
                   <div className='font-medium'>
-                    {paper.title || 'Untitled Paper'}
+                    {paper.split('com/paper/')[1] || 'Untitled Paper'}
                   </div>
                   <div className='text-xs text-gray-500'>
-                    Submitted:{' '}
-                    {new Date(paper.submissionDate).toLocaleDateString()}
+                    Submitted: {new Date(papers.createdAt).toLocaleDateString()}
                   </div>
                 </div>
                 <button

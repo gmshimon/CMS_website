@@ -79,12 +79,12 @@ const Review = () => {
     )
   }
   return (
-    <div className='p-6'>
+    <div className='p-4'>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
-        {location.pathname === '/admin/users'
-          ? 'User Overview'
-          : location?.pathname === '/admin/users/authors'
-          ? 'Manage Authors'
+        {location.pathname === '/admin/review/details/all'
+          ? 'Total Submissions'
+          : location?.pathname === '/admin/review/details/pending'
+          ? 'Pending Reviews'
           : location.pathname === '/admin/users/reviewers'
           ? 'Manage Reviewers'
           : location.pathname === '/admin/users/session-chairs'

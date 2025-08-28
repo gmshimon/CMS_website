@@ -70,8 +70,12 @@ export const getAbstractsByCategory = createAsyncThunk(
   'getAbstractsByCategory',
   async (data, { rejectWithValue }) => {
     try {
-      const { category } = data
-      const query = category ? `?category=${category}` : ''
+      const { category, conferenceId } = data
+      let query = ''
+      const params = []
+      if (conferenceId) params.push(`conference_id=${conferenceId}`)
+      if (category) params.push(`category=${category}`)
+      if (params.length) query = '?' + params.join('&')
       const response = await axiosSecure.get(`/review/abstract${query}`)
       return response.data.data
     } catch (error) {

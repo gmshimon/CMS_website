@@ -14,7 +14,14 @@ const useReview = (category = 'all') => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getAbstractsByCategory({ category }))
+    dispatch(
+      getAbstractsByCategory({
+        category,
+        conferenceId: sessionStorage.getItem('selectedConference')
+          ? sessionStorage.getItem('selectedConference')
+          : selectedConference
+      })
+    )
     dispatch(
       fetchReviewStats(
         sessionStorage.getItem('selectedConference')

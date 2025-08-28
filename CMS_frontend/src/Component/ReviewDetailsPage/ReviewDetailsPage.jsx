@@ -8,9 +8,10 @@ import ReviewersModal from '../ReviewersModal/ReviewersModal'
 import useCreateUser from '../../Hooks/useCreateUser'
 import ReviewModal from '../ReviewModal/ReviewModal'
 import PaperListModal from '../PaperListModal/PaperListModal'
+import Loading from '../Loading/Loading'
 
 const ReviewDetailsPage = () => {
-  const { reviews } = useSelector(state => state.review)
+  const { reviews,isGetAbstractReviewLoading } = useSelector(state => state.review)
   const { reviewers } = useSelector(state => state.admin)
   const [openModal, setOpenModal] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
@@ -44,7 +45,7 @@ const ReviewDetailsPage = () => {
   }
 
   const handleView = paper => {
-    window.open(paper.link, '_blank')
+    window.open(paper, '_blank')
   }
   const columns = abstractReviewColumns({
     onViewSubmission: row => setSelectedAbstract(row),
@@ -54,6 +55,14 @@ const ReviewDetailsPage = () => {
     handleChangeStatusOfAbstract,
     maxReviewers: 3
   })
+
+  if(isGetAbstractReviewLoading){
+    return <div className='flex justify-center items-center h-[calc(100vh-160px)]'>
+      <Loading/>
+    </div>
+  }
+
+  console.log(reviews)
   return (
     <div>
       <div>
