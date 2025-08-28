@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 import Schedule from './schedule.model.js'
-import { sendEmail } from '../../Utilis/sendEmail.js'
 import Users from '../User/user.model.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import {
@@ -10,6 +9,7 @@ import {
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Conference from '../Conference/conference.model.js'
+import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 
 // CREATE Schedule
 export const createSchedule = async (req, res) => {
@@ -83,7 +83,6 @@ export const createSchedule = async (req, res) => {
         })
 
         const message = `Your abstract "${abs.paper_title}" has been scheduled in ${conferenceData.name}.`
-        const type = 'schedule_update'
 
         // Send email
         await sendEmail({
@@ -93,7 +92,7 @@ export const createSchedule = async (req, res) => {
         })
 
         // Save notification (to DB & frontend)
-        await createNotificationService(abs.createdBy, message, emailHtml, type)
+        await createNotificationService(abs.createdBy, message, emailHtml, 'schedule_update')
       })
     )
 
@@ -124,7 +123,6 @@ export const createSchedule = async (req, res) => {
       })
 
       const message = `You have been assigned as Session Chair for "${session}" in ${conferenceData.name}.`
-      const type = 'chair_assignment'
 
       await sendEmail({
         to: chair.email,
@@ -132,7 +130,7 @@ export const createSchedule = async (req, res) => {
         html: chairHtml
       })
 
-      await createNotificationService(chair._id, message, chairHtml, type)
+      await createNotificationService(chair._id, message, chairHtml, 'chair_assignment')
     }
 
     // ✅ Notify Moderator
@@ -753,7 +751,7 @@ export const getMySchedule = async (req, res, next) => {
     }
 
     const myAbstracts = await Abstracts.find(match).select(
-      'paper_title status presentation_method conference createdAt'
+      'paper_title status presentation_method conference scheduled createdAt'
     )
 
     // If no abstracts, return empty array
@@ -781,6 +779,7 @@ export const getMySchedule = async (req, res, next) => {
         status: abs.status,
         presentation_method: abs.presentation_method,
         conference: abs.conference,
+        scheduled:abs.scheduled,
         schedule: schedule
           ? {
               day: schedule.day,

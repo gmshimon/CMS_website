@@ -4,7 +4,7 @@ import {
   reviewerConfirmationTemplate,
   reviewerReminderTemplate
 } from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
-import { sendEmail } from '../../Utilis/sendEmail.js'
+import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
@@ -57,6 +57,7 @@ export const assignReviewer = async (req, res, next) => {
     const review = await Reviews.create({
       abstract: abstractId,
       reviewer: reviewerId,
+      conference: abstract.conference._id,
       status: 'pending',
       accepted: false
     })
@@ -268,12 +269,14 @@ export const submitReview = async (req, res, next) => {
 // admin fetch the review Dashboard
 export const getReviewDashboardsStats = async (req, res, next) => {
   try {
-    const { year } = req.query
+    const { conference_id } = req.query
     const matchQuery = {}
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      matchQuery.conference = conference_id
     }
     // 1. Total submissions
     const totalSubmissions = await Abstracts.countDocuments(matchQuery)
@@ -281,52 +284,29 @@ export const getReviewDashboardsStats = async (req, res, next) => {
     // 2. Pending reviews (status = 'Accepted' but no completedAt)
     const pendingReviews = await Reviews.countDocuments({
       status: { $in: ['accepted', 'pending'] },
-      completedAt: { $exists: false }
+      completedAt: { $exists: false },
+      ...matchQuery
     })
 
     // 3. Unassigned submissions = abstracts with no reviews
     const abstractsWithReviews = await Reviews.distinct('abstract')
     const unassignedSubmissions = await Abstracts.countDocuments({
-      _id: { $nin: abstractsWithReviews }
+      _id: { $nin: abstractsWithReviews },
+      ...matchQuery
     })
 
     // 4. Completed reviews
     const completedReviews = await Reviews.countDocuments({
-      status: 'reviewed'
+      status: 'reviewed',
+      ...matchQuery
     })
 
-    // 5. Overdue reviews = status = 'Overdue'
-    const overdueReviews = await Reviews.countDocuments({
-      status: 'overdue'
-    })
-
-    // 6. Multiple review rounds = abstracts that appear more than once in Reviews
-    const multiRoundAbstractsAgg = await Reviews.aggregate([
-      {
-        $group: {
-          _id: '$abstract',
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $match: {
-          count: { $gt: 1 }
-        }
-      },
-      {
-        $count: 'multiRoundAbstracts'
-      }
-    ])
-    const multiRoundAbstracts =
-      multiRoundAbstractsAgg[0]?.multiRoundAbstracts || 0
-
+  
     const data = {
       totalSubmissions,
       pendingReviews,
       unassignedSubmissions,
       completedReviews,
-      overdueReviews,
-      multiRoundAbstracts
     }
 
     res.status(200).json({
@@ -342,12 +322,12 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 // fetch the different abstract with review data based on satus
 export const getAbstractsByCategory = async (req, res, next) => {
   try {
-    const { category, year } = req.query;
-    const matchQuery = {};
+    const { category, year } = req.query
+    const matchQuery = {}
     if (year) {
       matchQuery.$expr = {
         $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      };
+      }
     }
 
     // Helper to attach reviews and papers to each abstract
@@ -360,26 +340,30 @@ export const getAbstractsByCategory = async (req, res, next) => {
               ...reviewsQuery
             }).populate('reviewer'),
             Paper.find({ abstract: abstract._id }) // adjust if your key is abstractId
-          ]);
-          return { ...abstract, reviews, papers };
+          ])
+          return { ...abstract, reviews, papers }
         })
-      );
-    };
+      )
+    }
 
     if (category === 'all') {
       const abstracts = await Abstracts.find(matchQuery)
         .populate('conference')
         .populate('conference_reg')
         .populate('createdBy')
-        .lean();
+        .lean()
 
-      const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(abstracts);
+      const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(
+        abstracts
+      )
 
-      return res.status(200).json({ success: true, data: abstractsWithReviewsAndPapers });
+      return res
+        .status(200)
+        .json({ success: true, data: abstractsWithReviewsAndPapers })
     }
 
     if (category === 'unassigned') {
-      const reviewedAbstractIds = await Reviews.distinct('abstract');
+      const reviewedAbstractIds = await Reviews.distinct('abstract')
       const unassignedAbstracts = await Abstracts.find({
         _id: { $nin: reviewedAbstractIds },
         ...matchQuery
@@ -387,14 +371,14 @@ export const getAbstractsByCategory = async (req, res, next) => {
         .populate('conference')
         .populate('conference_reg')
         .populate('createdBy')
-        .lean();
+        .lean()
 
       // If you also want papers here, uncomment next line
       // const unassignedWithPapers = await Promise.all(unassignedAbstracts.map(async abstract => ({ ...abstract, papers: await Paper.find({ abstract: abstract._id }) })));
       // return res.status(200).json({ success: true, data: unassignedWithPapers });
 
       // If not, just:
-      return res.status(200).json({ success: true, data: unassignedAbstracts });
+      return res.status(200).json({ success: true, data: unassignedAbstracts })
     }
 
     if (category === 'pending') {
@@ -402,11 +386,16 @@ export const getAbstractsByCategory = async (req, res, next) => {
         .populate('conference')
         .populate('conference_reg')
         .populate('createdBy')
-        .lean();
+        .lean()
 
-      const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(abstracts, { status: category });
+      const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(
+        abstracts,
+        { status: category }
+      )
 
-      return res.status(200).json({ success: true, data: abstractsWithReviewsAndPapers });
+      return res
+        .status(200)
+        .json({ success: true, data: abstractsWithReviewsAndPapers })
     }
 
     // Any other specific category
@@ -414,15 +403,20 @@ export const getAbstractsByCategory = async (req, res, next) => {
       .populate('conference')
       .populate('conference_reg')
       .populate('createdBy')
-      .lean();
+      .lean()
 
-    const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(filteredAbstracts,{ status: category });
-    return res.status(200).json({ success: true, data: abstractsWithReviewsAndPapers });
+    const abstractsWithReviewsAndPapers = await attachReviewsAndPapers(
+      filteredAbstracts,
+      { status: category }
+    )
+    return res
+      .status(200)
+      .json({ success: true, data: abstractsWithReviewsAndPapers })
   } catch (error) {
-    console.error('Error in getAbstractsByCategory:', error);
-    return res.status(500).json({ success: false, message: 'Server Error' });
+    console.error('Error in getAbstractsByCategory:', error)
+    return res.status(500).json({ success: false, message: 'Server Error' })
   }
-};
+}
 
 export const sendReminderToReviewer = async (req, res, next) => {
   try {

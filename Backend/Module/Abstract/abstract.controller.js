@@ -5,7 +5,7 @@ import {
   paymentReminderEmailTemplate,
   paymentStatusChangeTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
-import { sendEmail } from '../../Utilis/sendEmail.js'
+import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'

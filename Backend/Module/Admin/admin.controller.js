@@ -1,12 +1,11 @@
 import Users from '../User/user.model.js'
 import admin from 'firebase-admin'
-import { readFile } from 'fs/promises'
 import { deleteImageFromS3, s3UserUpload } from '../User/user.s3Uploader.js'
 import {
   accountCreatedTemplateLogin,
   accountCreateTemplate
 } from '../../Utilis/EmailTemplate/createUserTemplate.js'
-import { sendEmail } from '../../Utilis/sendEmail.js'
+import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import 'dotenv/config'
 import Reviews from '../Review/review.model.js'
