@@ -8,6 +8,7 @@ import { reviewHomeColumn } from '../../../Utilis/reviewTableColumn'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 import { clearReviewStats } from '../../../Redux/Slice/ReviewSlice'
 import ReviewModal from '../../../Component/ReviewModal/ReviewModal'
+import PaperListModal from '../../../Component/PaperListModal/PaperListModal'
 
 const MyReviewDetailPage = () => {
   const {
@@ -23,6 +24,10 @@ const MyReviewDetailPage = () => {
   const [openModal, setOpenModal] = useState(false)
   const [isEditable, setIsEditable] = useState(true)
   const [selectedReview, setSelectedReview] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [papers, setPapers] = useState([])
+  const [openAbstract, setOpenAbstract] = useState(false)
+  const [abstract, setAbstract] = useState('')
   const { category } = useParams()
   const location = useLocation()
   const { handleRespondReview, handleSubmitReview } = useReviewerHome(category)
@@ -55,10 +60,18 @@ const MyReviewDetailPage = () => {
     submitReviewSuccess
   ])
 
+  const handleViewPaperList = papers => {
+    setPapers(papers)
+    setModalOpen(true)
+  }
+
   const handleOpenReviewModal = (row, edit) => {
     setIsEditable(edit)
     setSelectedReview(row)
     setOpenModal(true)
+  }
+  const handleView = paper => {
+    window.open(paper, '_blank')
   }
 
   if (respondReviewLoading || submitReviewLoading) {
@@ -68,6 +81,15 @@ const MyReviewDetailPage = () => {
       </div>
     )
   }
+
+  const columns = reviewHomeColumn({
+    handleViewPaperList,
+    handleOpenAbstract: abstract => {
+      console.log(abstract)
+      setAbstract(abstract)
+      setOpenAbstract(true)
+    }
+  })
 
   return (
     <div className='p-6'>
@@ -82,7 +104,7 @@ const MyReviewDetailPage = () => {
       </h2>
       <div>
         <ReviewTable
-          columns={reviewHomeColumn}
+          columns={columns}
           data={myReviewData}
           mode='reviewer'
           category={category}
@@ -97,6 +119,33 @@ const MyReviewDetailPage = () => {
           onSubmit={handleSubmitReview}
           paper={selectedReview}
         />
+
+        <PaperListModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          papers={papers}
+          onView={handleView}
+        />
+
+        {openAbstract && (
+          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 '>
+            <div className='bg-white p-6 rounded-lg max-w-lg w-full shadow-lg relative h-96 overflow-y-auto'>
+              <h2 className='text-lg font-bold mb-4 sticky'>Abstract</h2>
+              <p className='text-gray-700 whitespace-pre-wrap'>
+                <div
+                  className='text-justify'
+                  dangerouslySetInnerHTML={{ __html: abstract }}
+                />
+              </p>
+              <button
+                onClick={() => setOpenAbstract(false)}
+                className='absolute top-2 right-2 text-gray-600 hover:text-black text-xl'
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

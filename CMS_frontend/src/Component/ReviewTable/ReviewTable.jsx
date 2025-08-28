@@ -9,6 +9,7 @@ const ReviewTable = ({
   category = null,
   handleOpenReviewModal
 }) => {
+  
   return (
     <div className='overflow-x-auto bg-white shadow rounded-lg'>
       <table className='min-w-full divide-y divide-gray-200'>
@@ -76,29 +77,33 @@ const ReviewTable = ({
                   ) : category === 'accepted' ? (
                     <>
                       <button
-                        onClick={() => handleOpenReviewModal(row,true)}
+                        onClick={() => handleOpenReviewModal(row, true)}
                         className='btn btn-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow'
                       >
                         Review
                       </button>
                     </>
-                  ) : category==="reviewed"?(
+                  ) : category === 'reviewed' ? (
                     <>
                       <button
-                        onClick={() => handleOpenReviewModal(row,false)}
+                        onClick={() => handleOpenReviewModal(row, false)}
                         className='btn btn-sm bg-orange-500 hover:bg-orange-600 text-white rounded-md shadow'
                       >
                         Review report
                       </button>
                     </>
-                  ):(
+                  ) : (
                     <>
-                      <a href="https://www.programiz.com/javascript/online-compiler/" target="_blank">
-                        <button className='btn btn-sm bg-gray-500 hover:bg-gray-600 text-white rounded-md shadow'>View Certificate</button>
+                      <a
+                        href='https://www.programiz.com/javascript/online-compiler/'
+                        target='_blank'
+                      >
+                        <button className='btn btn-sm bg-gray-500 hover:bg-gray-600 text-white rounded-md shadow'>
+                          View Certificate
+                        </button>
                       </a>
                     </>
-                  )
-                }
+                  )}
                 </td>
               )}
             </tr>

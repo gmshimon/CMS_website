@@ -62,7 +62,6 @@ const ReviewDetailsPage = () => {
     </div>
   }
 
-  console.log(reviews)
   return (
     <div>
       <div>

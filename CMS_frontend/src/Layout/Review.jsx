@@ -85,23 +85,10 @@ const Review = () => {
           ? 'Total Submissions'
           : location?.pathname === '/admin/review/details/pending'
           ? 'Pending Reviews'
-          : location.pathname === '/admin/users/reviewers'
-          ? 'Manage Reviewers'
-          : location.pathname === '/admin/users/session-chairs'
-          ? 'Manage Session Chair'
-          : location.pathname === '/admin/users/keynote-speakers'
-          ? 'Manage Key Note Speaker'
-          : location.pathname === '/admin/users/moderators'
-          ? 'Manage Moderator'
-          : location.pathname === '/admin/users/committee'
-          ? 'Manage Committee'
-          : location.pathname === '/admin/users/committee/scientific'
-          ? 'Manage Scientific Committee'
-          : location.pathname === '/admin/users/committee/technical'
-          ? 'Manage Technical Committee'
-          : location.pathname === '/admin/users/committee/registration'
-          ? 'Manage Registration Committee'
-          : 'User Overview'}
+          : location.pathname === '/admin/review/details/unassigned'
+          ? 'Unassigned Reviewers'
+          : location.pathname === '/admin/review/details/reviewed'
+          ? 'Completed Reviewers': 'Review Management'}
       </h2>
 
       {/* Standard Year Search Field */}
