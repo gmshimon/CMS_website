@@ -26,6 +26,10 @@ const abstractSchema = new mongoose.Schema(
     payment_proof: {
       type: String
     },
+    scheduled:{
+      type:Boolean,
+      default:false,
+    },
     status: {
       type: String,
       enum: [

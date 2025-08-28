@@ -59,6 +59,12 @@ export const createSchedule = async (req, res) => {
     // ✅ Fetch abstracts with presenter info
     const abstractDocs = await Abstracts.find({ _id: { $in: abstracts } })
 
+    // ✅ Mark abstracts as scheduled
+    await Abstracts.updateMany(
+      { _id: { $in: abstracts } },
+      { $set: { scheduled: true } }
+    )
+
     // ✅ Notify each abstract presenter
     await Promise.all(
       abstractDocs.map(async abs => {
@@ -280,6 +286,10 @@ export const updateSchedule = async (req, res) => {
       const abstracts = await Abstracts.find({ _id: { $in: addedAbstracts } })
         .populate('presenter')
         .populate('conference')
+      await Abstracts.updateMany(
+        { _id: { $in: addedAbstracts } },
+        { $set: { scheduled: true } }
+      )
       for (let abs of abstracts) {
         if (abs.presenter?.presenter_email) {
           const emailHtml = scheduleUpdateTemplate({
@@ -323,6 +333,10 @@ export const updateSchedule = async (req, res) => {
       })
         .populate('presenter')
         .populate('conference')
+      await Abstracts.updateMany(
+        { _id: { $in: removedAbstracts } },
+        { $set: { scheduled: false } }
+      )
       for (let abs of abstracts) {
         if (abs.presenter?.presenter_email) {
           const html = scheduleRemovalTemplate({
@@ -718,5 +732,76 @@ export const deleteSchedule = async (req, res) => {
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: 'Server Error' })
+  }
+}
+
+export const getMySchedule = async (req, res, next) => {
+  try {
+    const { conference_id } = req.query
+    const userId = req.user._id
+
+    // 1. Find all abstracts created by this user
+    const match = {
+      createdBy: userId
+    }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      match.conference = conference_id
+    }
+
+    const myAbstracts = await Abstracts.find(match).select(
+      'paper_title status presentation_method conference createdAt'
+    )
+
+    // If no abstracts, return empty array
+    if (myAbstracts.length === 0) {
+      return res.status(200).json({ data: [] })
+    }
+
+    const abstractIds = myAbstracts.map(a => a._id)
+
+    // 2. Find schedules that include these abstracts
+    const schedules = await Schedule.find({ abstracts: { $in: abstractIds } })
+      .populate('conference', 'name')
+      .populate('sessionChair', 'name email')
+      .populate('moderator', 'name email')
+      .select('day date session startTime endTime venue meetingLink abstracts')
+
+    // 3. Build abstract-wise response
+    const response = myAbstracts.map(abs => {
+      const schedule = schedules.find(s =>
+        s.abstracts.some(a => a.toString() === abs._id.toString())
+      )
+      return {
+        _id: abs._id,
+        paper_title: abs.paper_title,
+        status: abs.status,
+        presentation_method: abs.presentation_method,
+        conference: abs.conference,
+        schedule: schedule
+          ? {
+              day: schedule.day,
+              date: schedule.date,
+              session: schedule.session,
+              startTime: schedule.startTime,
+              endTime: schedule.endTime,
+              venue: schedule.venue,
+              meetingLink: schedule.meetingLink,
+              sessionChair: schedule.sessionChair,
+              moderator: schedule.moderator
+            }
+          : null // unscheduled
+      }
+    })
+
+    res.status(200).json({
+      status: 'Success',
+      data: response
+    })
+  } catch (error) {
+    next(error)
   }
 }
