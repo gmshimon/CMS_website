@@ -20,7 +20,11 @@ const initialState = {
 
   deleteScheduleLoading: false,
   deleteScheduleSuccess: false,
-  deleteScheduleError: false
+  deleteScheduleError: false,
+
+  getMyScheduleLoading: false,
+  getMyScheduleSuccess: false,
+  getMyScheduleError: false,
 }
 
 // Async thunk to get all schedules
@@ -87,6 +91,21 @@ export const deleteSchedule = createAsyncThunk(
   }
 )
 
+export const getMySchedule = createAsyncThunk(
+  'getMySchedule',
+  async (conferenceId = null, { rejectWithValue }) => {
+    try {
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
+      const response = await axiosSecure.get(`/schedules/my${query}`)
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: 'Failed to fetch schedules' }
+      )
+    }
+  }
+)
+
 const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
@@ -107,6 +126,10 @@ const scheduleSlice = createSlice({
       state.deleteScheduleLoading = false
       state.deleteScheduleSuccess = false
       state.deleteScheduleError = false
+
+      state.getMyScheduleLoading = false
+      state.getMyScheduleSuccess = false
+      state.getMyScheduleError = false
     }
   },
   extraReducers: builder => {
@@ -184,6 +207,24 @@ const scheduleSlice = createSlice({
         state.deleteScheduleLoading = false
         state.deleteScheduleSuccess = false
         state.deleteScheduleError = false
+      })
+
+      // ===== Get my Schedule =====
+      .addCase(getMySchedule.pending, state => {
+        state.getMyScheduleLoading = true
+        state.getMyScheduleSuccess = false
+        state.getMyScheduleError = false
+      })
+      .addCase(getMySchedule.fulfilled, (state, action) => {
+        state.getMyScheduleLoading = false
+        state.getMyScheduleSuccess = true
+        state.getMyScheduleError = false
+        state.schedules = action.payload
+      })
+      .addCase(getMySchedule.rejected, state => {
+        state.getMyScheduleLoading = false
+        state.getMyScheduleSuccess = false
+        state.getMyScheduleError = true
       })
   }
 })

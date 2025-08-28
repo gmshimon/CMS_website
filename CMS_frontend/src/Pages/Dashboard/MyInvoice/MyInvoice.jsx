@@ -87,7 +87,6 @@ const MyInvoice = () => {
       </div>
     )
   }
-  console.log(abstracts)
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       <div className='mb-6'>

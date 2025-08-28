@@ -47,6 +47,7 @@ import ContactPage from "../Pages/ContactPage/ContactPage.jsx";
 import LastEventPage from "../Pages/LastEventPage/LastEventPage.jsx";
 import CommitteePage from "../Pages/CommitteePage/CommitteePage.jsx";
 import KeynoteSpeakersPage from "../Pages/KeynoteSpeakersPage/KeynoteSpeakersPage.jsx";
+import MySchedule from "../Pages/Dashboard/MySchedule/MySchedule.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -126,6 +127,10 @@ export const router = createBrowserRouter([
       {
         path: "invoice",
         element: <MyInvoice />,
+      },
+      {
+        path:'presenter/scheduling',
+        element:<MySchedule/>
       },
       {
         path: "conference-list",

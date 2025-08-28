@@ -40,7 +40,7 @@ const presenterNavOptions = [
   {
     id: 6,
     label: 'Scheduling',
-    path: '/admin/scheduling',
+    path: '/admin/presenter/scheduling',
     icon: <IoNewspaperSharp />
   },
   {
