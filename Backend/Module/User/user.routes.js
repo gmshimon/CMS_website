@@ -4,6 +4,7 @@ import {
   createUser,
   fetchUser,
   getChairsAndModerators,
+  getMyDashboardStats,
   updateImage,
   updateUserProfile
 } from './user.controller.js'
@@ -20,4 +21,6 @@ router
   .put(verifyToken, userImageUploader.single('image'), updateImage)
 
 router.get('/chairs-moderators', verifyToken, getChairsAndModerators)
+
+router.get('/my-stats', verifyToken, getMyDashboardStats)
 export default router

@@ -138,6 +138,9 @@ export const changeAbstractStatus = async (req, res, next) => {
     }
 
     getAbstract.status = status
+    if(status=="Accepted" || status=="Minor Revision"){
+      getAbstract.review_status = 'Reviewed'
+    }
     await getAbstract.save()
 
     const emailHtml = abstractStatusChangeTemplate({

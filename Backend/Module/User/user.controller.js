@@ -1,4 +1,7 @@
 import generateToken from '../../Utilis/token.js'
+import Abstracts from '../Abstract/abstract.model.js'
+import Paper from '../Paper/paper.model.js'
+import Schedule from '../Schedule/schedule.model.js'
 import Users from './user.model.js'
 import { deleteImageFromS3, s3UserUpload } from './user.s3Uploader.js'
 
@@ -180,5 +183,67 @@ export const getChairsAndModerators = async (req, res) => {
   } catch (error) {
     console.error('Error fetching users:', error)
     res.status(500).json({ message: 'Server error', error })
+  }
+}
+
+export const getMyDashboardStats = async (req, res,next) => {
+  try {
+    const { conference_id } = req.query
+    const userId = req.user._id
+
+    // 1. Find all abstracts created by this user
+    const match = {
+      createdBy: userId
+    }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      match.conference = conference_id
+    }
+    // 2. Counts
+    const totalAbstracts = await Abstracts.countDocuments(match)
+    const totalPapers = await Paper.countDocuments(match)
+    const totalPayments = await Abstracts.countDocuments({
+      ...match,
+      payment_proof: { $exists: true, $ne: null }
+    })
+
+    // Total schedules → find abstracts created by this user that are scheduled
+    const scheduledAbstracts = await Abstracts.find({
+      ...match,
+      scheduled: true
+    }).select('_id')
+
+    const totalSchedules = await Schedule.countDocuments({
+      abstracts: { $in: scheduledAbstracts.map(a => a._id) }
+    })
+
+    // 3. Recent submissions (latest 5)
+    const recentSubmissions = await Abstracts.find(match)
+      .sort({ createdAt: -1 })
+      .limit(2)
+      .populate('conference', 'name') // optional: populate conference name
+      .lean()
+
+    // 4. Certificate history
+    // const certificateHistory = await Certificate.find({ user: userId })
+    //   .sort({ createdAt: -1 })
+    //   .lean()
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalAbstracts,
+        totalPapers,
+        totalPayments,
+        totalSchedules,
+        recentSubmissions,
+        certificateHistory:[]
+      },
+    })
+  } catch (error) {
+    next(error)
   }
 }
