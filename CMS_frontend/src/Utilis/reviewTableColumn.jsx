@@ -1,16 +1,10 @@
 import { format } from 'date-fns'
 import { FaEye } from 'react-icons/fa'
 const statuses = [
-  'Abstract Submitted',
-  'Paper Submitted',
-  'In Review',
   'Accepted',
   'Rejected',
   'Minor Revision',
   'Major Revision',
-  'Revision Submitted',
-  'Camera Ready Copy Submitted',
-  'Withdraw'
 ]
 export const abstractReviewColumns = ({
   handleSendReminder,
@@ -45,6 +39,7 @@ export const abstractReviewColumns = ({
                 handleChangeStatusOfAbstract(row._id, e.target.value)
               }
             >
+              <option disabled selected>Review Decision</option>
               {statuses.map(status => (
                 <option
                   key={status}

@@ -18,6 +18,8 @@ const initialState = {
   session_chairs: [],
   moderators: [],
 
+  myStats:null,
+
   isLoading: false,
 
   isLoginLoading: false,
@@ -50,7 +52,11 @@ const initialState = {
 
   getChairsAndModeratorsLoading: false,
   getChairsAndModeratorsSuccess: false,
-  getChairsAndModeratorsError: false
+  getChairsAndModeratorsError: false,
+
+  getMyStatsLoading: false,
+  getMyStatsSuccess: false,
+  getMyStatsError: false
 }
 
 // Save user data in backend and localStorage
@@ -158,6 +164,20 @@ export const getChairsAndModerators = createAsyncThunk(
   }
 )
 
+export const getMyDashboardStats = createAsyncThunk(
+  'getMyDashboardStats',
+  async (conferenceId = null, { rejectWithValue }) => {
+    try {
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
+      const response = await axiosSecure.get(`/user/my-stats/${query}`)
+
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -196,6 +216,10 @@ const userSlice = createSlice({
       state.getChairsAndModeratorsLoading = false
       state.getChairsAndModeratorsSuccess = false
       state.getChairsAndModeratorsError = false
+
+      state.getMyStatsLoading = false
+      state.getMyStatsSuccess = false
+      state.getMyStatsError = false
     },
     startLoading: (state, action) => {
       state.isLoading = action.payload
@@ -344,18 +368,35 @@ const userSlice = createSlice({
         state.getChairsAndModeratorsSuccess = false
         state.getChairsAndModeratorsError = false
       })
-      .addCase(getChairsAndModerators.fulfilled, (state,action) => {
-        const {sessionChairs,moderators} = action.payload
+      .addCase(getChairsAndModerators.fulfilled, (state, action) => {
+        const { sessionChairs, moderators } = action.payload
         state.getChairsAndModeratorsLoading = false
         state.getChairsAndModeratorsSuccess = true
         state.getChairsAndModeratorsError = false
         state.session_chairs = sessionChairs
         state.moderators = moderators
       })
-      .addCase(getChairsAndModerators.rejected, (state) => {
+      .addCase(getChairsAndModerators.rejected, state => {
         state.getChairsAndModeratorsLoading = false
         state.getChairsAndModeratorsSuccess = false
         state.getChairsAndModeratorsError = true
+      })
+
+      .addCase(getMyDashboardStats.pending, state => {
+        state.getMyStatsLoading = true
+        state.getMyStatsSuccess = false
+        state.getMyStatsError = false
+      })
+      .addCase(getMyDashboardStats.fulfilled, (state,action) => {
+        state.getMyStatsLoading = false
+        state.getMyStatsSuccess = true
+        state.getMyStatsError = false
+        state.myStats = action.payload
+      })
+      .addCase(getMyDashboardStats.rejected, state => {
+        state.getMyStatsLoading = false
+        state.getMyStatsSuccess = false
+        state.getMyStatsError = true
       })
   }
 })
