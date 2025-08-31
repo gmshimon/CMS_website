@@ -1,8 +1,16 @@
 import { FaHome, FaAward, FaChartBar, FaCog, FaBook } from 'react-icons/fa'
 import { IoIosPaper } from 'react-icons/io'
 import { FaMessage } from 'react-icons/fa6'
-import { IoDocumentAttachSharp, IoNewspaperSharp, IoPerson } from 'react-icons/io5'
-import { MdOutlineInsertInvitation, MdOutlineReviews, MdSchedule } from 'react-icons/md'
+import {
+  IoDocumentAttachSharp,
+  IoNewspaperSharp,
+  IoPerson
+} from 'react-icons/io5'
+import {
+  MdOutlineInsertInvitation,
+  MdOutlineReviews,
+  MdSchedule
+} from 'react-icons/md'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiBarChartSquare } from 'react-icons/bi'
 
@@ -120,26 +128,34 @@ const reviewerNavOptions = [
     label: 'Home',
     path: '/admin/',
     icon: <FaHome />
-  }, 
-   {
+  },
+  {
     id: 2,
     label: 'Invitation',
     path: '/admin/my-review/pending',
     icon: <MdOutlineInsertInvitation />
   },
   {
-    id:3,
-    label:'Reviews',
-    path:'/admin/my-review/reviewed',
-    icon:<MdOutlineReviews />
+    id: 3,
+    label: 'Reviews',
+    path: '/admin/my-review/reviewed',
+    icon: <MdOutlineReviews />
   },
   {
-    id:4,
-    label:'Certificates',
-    path:'/admin/my-review/certificate',
-    icon:<FaAward />
+    id: 4,
+    label: 'Certificates',
+    path: '/admin/my-review/certificate',
+    icon: <FaAward />
   }
-
 ]
 
-export { presenterNavOptions,adminNavOptions,reviewerNavOptions}
+const session_chair_navOptions = [
+  {
+    id: 1,
+    label: 'Home',
+    path: '/admin/',
+    icon: <FaHome />
+  }
+]
+
+export { presenterNavOptions, adminNavOptions, reviewerNavOptions,session_chair_navOptions }

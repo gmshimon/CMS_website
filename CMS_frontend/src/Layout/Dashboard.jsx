@@ -28,13 +28,14 @@ import axiosSecure from '../Utilis/axiosSecure'
 import {
   adminNavOptions,
   presenterNavOptions,
-  reviewerNavOptions
+  reviewerNavOptions,
+  session_chair_navOptions
 } from '../Utilis/navOptions'
 import { logOut, reset } from '../Redux/Slice/AuthSlice'
 import { showSuccessToast } from '../Utilis/toastUtils'
 
 const Dashboard = () => {
-  const { isLoginSuccess,user } = useSelector(state => state.user)
+  const { isLoginSuccess, user } = useSelector(state => state.user)
   const { conferences, selectedConference } = useSelector(
     state => state.conference
   )
@@ -73,6 +74,9 @@ const Dashboard = () => {
       }
       if (user?.role === 'Reviewer') {
         setNavOptions(reviewerNavOptions)
+      }
+      if(user?.role === 'Session Chair'){
+        setNavOptions(session_chair_navOptions)
       }
 
       //dispatch(getNotifications())
@@ -221,7 +225,10 @@ const Dashboard = () => {
                   <div className='w-8 rounded-full'>
                     <img
                       alt='Tailwind CSS Navbar component'
-                      src={user?.photo||'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'}
+                      src={
+                        user?.photo ||
+                        'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
+                      }
                     />
                   </div>
                 </div>

@@ -48,6 +48,7 @@ import LastEventPage from "../Pages/LastEventPage/LastEventPage.jsx";
 import CommitteePage from "../Pages/CommitteePage/CommitteePage.jsx";
 import KeynoteSpeakersPage from "../Pages/KeynoteSpeakersPage/KeynoteSpeakersPage.jsx";
 import MySchedule from "../Pages/Dashboard/MySchedule/MySchedule.jsx";
+import ScheduleAbstractsPage from "../Pages/ScheduleAbstractsPage/ScheduleAbstractsPage.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -167,6 +168,10 @@ export const router = createBrowserRouter([
       {
         path:'my-review/:category',
         element:<MyReviewDetailPage/>
+      },
+      {
+        path:'schedule/:id',
+        element:<ScheduleAbstractsPage/>
       },
       {
         path:'scheduling',

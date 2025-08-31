@@ -46,6 +46,8 @@ import roleRouter from './Module/Role/role.routes.js'
 import adminRouter from './Module/Admin/admin.routes.js'
 import reviewRouter from './Module/Review/review.routes.js'
 import scheduleRouter from './Module/Schedule/schedule.routes.js'
+import markRouter from './Module/Mark/mark.routes.js'
+
 
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/abstract', abstractRouter)
@@ -57,6 +59,7 @@ app.use('/api/v1/role', roleRouter)
 app.use('/api/v1/admin',adminRouter)
 app.use('/api/v1/review',reviewRouter)
 app.use('/api/v1/schedules',scheduleRouter)
+app.use('/api/v1/mark',markRouter)
 
 app.get('/', async (req, res) => {
   res.send('API is running')

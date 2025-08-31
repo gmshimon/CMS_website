@@ -10,6 +10,7 @@ import {
 import { createNotificationService } from '../Notification/notification.service.js'
 import Conference from '../Conference/conference.model.js'
 import { sendEmail } from '../../Utilis/Services/sendEmail.js'
+import Mark from '../Mark/mark.model.js'
 
 // CREATE Schedule
 export const createSchedule = async (req, res) => {
@@ -92,7 +93,12 @@ export const createSchedule = async (req, res) => {
         })
 
         // Save notification (to DB & frontend)
-        await createNotificationService(abs.createdBy, message, emailHtml, 'schedule_update')
+        await createNotificationService(
+          abs.createdBy,
+          message,
+          emailHtml,
+          'schedule_update'
+        )
       })
     )
 
@@ -130,7 +136,12 @@ export const createSchedule = async (req, res) => {
         html: chairHtml
       })
 
-      await createNotificationService(chair._id, message, chairHtml, 'chair_assignment')
+      await createNotificationService(
+        chair._id,
+        message,
+        chairHtml,
+        'chair_assignment'
+      )
     }
 
     // ✅ Notify Moderator
@@ -212,20 +223,40 @@ export const getAllSchedules = async (req, res) => {
 export const getScheduleById = async (req, res) => {
   try {
     const { id } = req.params
+    const sessionChair = req.user._id
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid Schedule ID' })
     }
 
-    const schedule = await Schedule.findById(id)
+    const schedule = await Schedule.findOne({ _id: id, sessionChair })
       .populate('conference')
       .populate('sessionChair', 'name email')
       .populate('moderator', 'name email')
-      .populate('abstracts', 'title authors')
+      .populate('abstracts', 'paper_title authors')
 
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' })
     }
+    // Attach marks for each abstract
+    const abstractsWithMarks = await Promise.all(
+      schedule.abstracts.map(async abstract => {
+        const marks = await Mark.findOne({ abstract: abstract._id }).populate(
+          'reviewer',
+          'name email'
+        )
+        return {
+          ...abstract.toObject(),
+          marks
+        }
+      })
+    )
 
+    return res.status(200).json({
+      data: {
+        ...schedule.toObject(),
+        abstracts: abstractsWithMarks
+      }
+    })
     return res.status(200).json(schedule)
   } catch (error) {
     console.error(error)
@@ -779,7 +810,7 @@ export const getMySchedule = async (req, res, next) => {
         status: abs.status,
         presentation_method: abs.presentation_method,
         conference: abs.conference,
-        scheduled:abs.scheduled,
+        scheduled: abs.scheduled,
         schedule: schedule
           ? {
               day: schedule.day,
@@ -803,4 +834,52 @@ export const getMySchedule = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+}
+
+export const getSessionChairSchedule = async (req, res, next) => {
+  try {
+    const { conference_id, abstractType, page = 1 } = req.query
+
+    const userId = req.user._id
+    // 1. Build filter object
+    const match = {
+      sessionChair: userId
+    }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      match.conference = conference_id
+    }
+
+    if (abstractType && abstractType !== 'all' && abstractType !== undefined) {
+      match.abstractType = abstractType
+    }
+
+    // 2. Pagination
+    const skip = (parseInt(page) - 1) * parseInt(10)
+    const total = await Schedule.countDocuments(match)
+
+    // 3. Fetch schedules
+    const schedules = await Schedule.find(match)
+      .populate('conference', 'name')
+      .populate('sessionChair', 'name email')
+      .populate('moderator', 'name email')
+      .populate('abstracts', 'paper_title authors review_status')
+      .sort({ startTime: 1 })
+      .skip(skip)
+      .limit(parseInt(10))
+
+    // 4. Return response
+    res.status(200).json({
+      message: 'Successfully fetched the schedule',
+      data: {
+        page: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(10)),
+        totalSchedules: total,
+        schedules
+      }
+    })
+  } catch (error) {}
 }

@@ -98,6 +98,11 @@ const scheduleSchema = new mongoose.Schema(
       }
     },
 
+    abstractMarks: [{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'mark'
+    }],
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users'

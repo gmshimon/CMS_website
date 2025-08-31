@@ -5,10 +5,17 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
   schedules: [],
+  schedule: null,
+
+  mySchedules: null,
 
   getScheduleLoading: false,
   getScheduleSuccess: false,
   getScheduleError: false,
+
+  getSingleScheduleLoading: false,
+  getSingleScheduleSuccess: false,
+  getSingleScheduleError: false,
 
   createScheduleLoading: false,
   createScheduleSuccess: false,
@@ -25,6 +32,10 @@ const initialState = {
   getMyScheduleLoading: false,
   getMyScheduleSuccess: false,
   getMyScheduleError: false,
+
+  getSessionChairScheduleLoading: false,
+  getSessionChairScheduleSuccess: false,
+  getSessionChairScheduleError: false
 }
 
 // Async thunk to get all schedules
@@ -40,6 +51,20 @@ export const getAllSchedules = createAsyncThunk(
 
       const response = await axiosSecure.get(`/schedules${query}`)
       return response.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: 'Failed to fetch schedules' }
+      )
+    }
+  }
+)
+
+export const getScheduleById = createAsyncThunk(
+  'getScheduleById',
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.get(`/schedules/${id}`)
+      return response.data.data
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: 'Failed to fetch schedules' }
@@ -106,6 +131,31 @@ export const getMySchedule = createAsyncThunk(
   }
 )
 
+export const getSessionChairSchedule = createAsyncThunk(
+  'getSessionChairSchedule',
+  async (
+    { conferenceId, abstractType, page = 1, limit = 10 },
+    { rejectWithValue }
+  ) => {
+    try {
+      let query = `?page=${page}&limit=${limit}`
+      if (conferenceId && conferenceId !== 'all')
+        query += `&conference_id=${conferenceId}`
+      if (abstractType && abstractType !== 'all')
+        query += `&abstractType=${abstractType}`
+
+      const response = await axiosSecure.get(`/schedules/session-chair${query}`)
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || {
+          message: 'Failed to fetch session chair schedules'
+        }
+      )
+    }
+  }
+)
+
 const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
@@ -114,6 +164,10 @@ const scheduleSlice = createSlice({
       state.getScheduleLoading = false
       state.getScheduleSuccess = false
       state.getScheduleError = false
+
+      state.getSingleScheduleLoading = false
+      state.getSingleScheduleSuccess = false
+      state.getSingleScheduleError = false
 
       state.createScheduleLoading = false
       state.createScheduleSuccess = false
@@ -130,6 +184,10 @@ const scheduleSlice = createSlice({
       state.getMyScheduleLoading = false
       state.getMyScheduleSuccess = false
       state.getMyScheduleError = false
+
+      state.getSessionChairScheduleLoading = false
+      state.getSessionChairScheduleSuccess = false
+      state.getSessionChairScheduleError = false
     }
   },
   extraReducers: builder => {
@@ -149,6 +207,23 @@ const scheduleSlice = createSlice({
         state.getScheduleLoading = false
         state.getScheduleError = true
         state.getScheduleSuccess = false
+      })
+
+      .addCase(getScheduleById.pending, state => {
+        state.getSingleScheduleLoading = true
+        state.getSingleScheduleSuccess = false
+        state.getSingleScheduleError = false
+      })
+      .addCase(getScheduleById.fulfilled, (state, action) => {
+        state.getSingleScheduleLoading = false
+        state.getSingleScheduleSuccess = true
+        state.getSingleScheduleError = false
+        state.schedule = action.payload
+      })
+      .addCase(getScheduleById.rejected, state => {
+        state.getSingleScheduleLoading = false
+        state.getSingleScheduleSuccess = false
+        state.getSingleScheduleError = true
       })
 
       // CREATE SCHEDULE
@@ -225,6 +300,18 @@ const scheduleSlice = createSlice({
         state.getMyScheduleLoading = false
         state.getMyScheduleSuccess = false
         state.getMyScheduleError = true
+      })
+
+      .addCase(getSessionChairSchedule.pending, state => {
+        state.getSessionChairScheduleLoading = true
+        state.getSessionChairScheduleSuccess = false
+        state.getSessionChairScheduleError = false
+      })
+      .addCase(getSessionChairSchedule.fulfilled, (state, action) => {
+        state.getSessionChairScheduleLoading = false
+        state.getSessionChairScheduleSuccess = true
+        state.getSessionChairScheduleError = false
+        state.mySchedules = action.payload
       })
   }
 })
