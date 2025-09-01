@@ -1,8 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion'
 
-export default function EvaluationFormModal ({ isOpen, onClose, onSubmit }) {
+export default function EvaluationFormModal ({
+  isOpen,
+  onClose,
+  onSubmit,
+  marks
+}) {
   const [ratings, setRatings] = useState({})
   const [totalMarks, setTotalMarks] = useState(0)
   // Same criteria as before
@@ -53,7 +58,20 @@ export default function EvaluationFormModal ({ isOpen, onClose, onSubmit }) {
     { value: 5, label: 'Truly Exceptional (5)' }
   ]
 
+  // 🔹 Pre-fill ratings when marks exist
+  useEffect(() => {
+    if (marks?.isEvaluated) {
+      const prefilled = {}
+      marks.criteria.forEach((c, idx) => {
+        prefilled[idx + 1] = c.score
+      })
+      setRatings(prefilled)
+      setTotalMarks(marks.totalMark)
+    }
+  }, [marks])
+
   const handleRatingChange = (criteriaId, rating) => {
+    if (marks?.isEvaluated) return
     const newRatings = { ...ratings, [criteriaId]: rating }
     setRatings(newRatings)
 
@@ -65,8 +83,14 @@ export default function EvaluationFormModal ({ isOpen, onClose, onSubmit }) {
     })
     setTotalMarks(total)
   }
+  // ✅ Check if all criteria are rated
+  const isFormComplete = criteria.every(c => ratings[c.id])
 
   const handleSubmit = async () => {
+    if (!isFormComplete) {
+      alert('⚠️ Please rate all criteria before submitting.')
+      return
+    }
     const payload = {
       criteria: criteria.map(criterion => ({
         criterion: criterion.text,
@@ -148,6 +172,7 @@ export default function EvaluationFormModal ({ isOpen, onClose, onSubmit }) {
                               handleRatingChange(criterion.id, option.value)
                             }
                             checked={ratings[criterion.id] === option.value}
+                            disabled={marks?.isEvaluated}
                           />
                         </td>
                       ))}
@@ -174,17 +199,19 @@ export default function EvaluationFormModal ({ isOpen, onClose, onSubmit }) {
 
             {/* Buttons */}
             <div className='flex gap-4 mt-8 justify-end'>
-              <button
-                className='btn btn-sm btn-primary text-white px-8'
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
+              {!marks?.isEvaluated && (
+                <button
+                  className='btn btn-sm btn-primary text-white px-8'
+                  onClick={handleSubmit}
+                >
+                  Submit
+                </button>
+              )}
               <button
                 className='btn btn-sm btn-error text-white px-8'
                 onClick={handleCancel}
               >
-                Cancel
+                {marks?.isEvaluated ? 'Close' : 'Cancel'}
               </button>
             </div>
           </>

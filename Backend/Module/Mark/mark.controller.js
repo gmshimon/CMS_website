@@ -43,7 +43,8 @@ export const giveMark = async (req, res) => {
         conference: schedule.conference,
         sessionChair: sessionChairId,
         criteria,
-        totalMark
+        totalMark,
+        isEvaluated: true
       })
       await mark.save()
 

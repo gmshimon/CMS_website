@@ -249,10 +249,7 @@ export const getScheduleById = async (req, res) => {
     // Attach marks for each abstract
     const abstractsWithMarks = await Promise.all(
       schedule.abstracts.map(async abstract => {
-        const marks = await Mark.findOne({ abstract: abstract._id }).populate(
-          'reviewer',
-          'name email'
-        )
+        const marks = await Mark.findOne({ abstract: abstract._id })
         const papers = await Paper.findOne({ abstract: abstract._id }).lean()
         return {
           ...abstract.toObject(),

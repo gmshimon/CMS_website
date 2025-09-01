@@ -16,6 +16,10 @@ const markSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
     },
+    isEvaluated:{
+      type:Boolean,
+      default:false,
+    },
     criteria: [
       {
         criterion: { type: String, required: true },

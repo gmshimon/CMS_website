@@ -22,6 +22,7 @@ const ScheduleAbstractsPage = () => {
     giveMarkSuccess
   } = useSelector(state => state.schedule)
   const [selectedAbstract, setSelectedAbstract] = useState(null)
+  const [selectedMark,setSelectedMark] = useState(null)
   const [selectedPaper, setSelectedPaper] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [evaluateModal, setEvaluateModal] = useState(false)
@@ -44,13 +45,13 @@ const ScheduleAbstractsPage = () => {
     }
   }, [dispatch, giveMarkError, giveMarkSuccess])
 
-  const handleEvaluate = (abstractId, scheduleId) => {
+  const handleEvaluate = (abstractId, scheduleId,marks) => {
     setSelectedAbstract({
       abstractId,
       scheduleId
     })
+    setSelectedMark(marks)
     setEvaluateModal(true)
-    console.log('Evaluate abstract:', abstractId)
   }
 
   // Modal handlers
@@ -65,7 +66,6 @@ const ScheduleAbstractsPage = () => {
 
   // submit the evaluation  mark
   const handleSubmitEvaluate = data => {
-    console.log('selectedAbstract: ', selectedAbstract)
     data.abstract = selectedAbstract.abstractId
     data.conference = schedule.conference._id
 
@@ -75,7 +75,6 @@ const ScheduleAbstractsPage = () => {
         data
       })
     )
-    console.log('data: ', data)
   }
 
   const formatDate = date => {
@@ -87,7 +86,7 @@ const ScheduleAbstractsPage = () => {
     })
   }
 
-  const getMarksDisplay = (marks) => {
+  const getMarksDisplay = marks => {
     if (!marks) {
       return <span className='badge badge-warning badge-sm'>N/A</span>
     }
@@ -116,7 +115,6 @@ const ScheduleAbstractsPage = () => {
     )
   }
 
-  console.log(schedule)
   return (
     <div className='p-3 bg-gray-50 '>
       {/* Schedule Information Card */}
@@ -297,15 +295,13 @@ const ScheduleAbstractsPage = () => {
                       </button>
                     </td>
                     {/* Marks */}
-                    <td>
-                      {getMarksDisplay(abstract.marks)}
-                    </td>
+                    <td>{getMarksDisplay(abstract.marks)}</td>
 
                     {/* Actions */}
                     <td>
                       <button
                         onClick={() =>
-                          handleEvaluate(abstract._id, schedule._id)
+                          handleEvaluate(abstract._id, schedule._id,abstract.marks)
                         }
                         className={`btn btn-sm gap-2 ${
                           abstract.isEvaluated
@@ -313,7 +309,7 @@ const ScheduleAbstractsPage = () => {
                             : 'btn-primary'
                         }`}
                       >
-                        Evaluate
+                       {abstract?.marks?.isEvaluated?"View" :"Evaluate"}
                       </button>
                     </td>
                   </tr>
@@ -326,7 +322,12 @@ const ScheduleAbstractsPage = () => {
       <EvaluationFormModal
         onSubmit={handleSubmitEvaluate}
         isOpen={evaluateModal}
-        onClose={() => setEvaluateModal(false)}
+        onClose={() => {
+          setEvaluateModal(false)
+          setSelectedMark(null)
+          setSelectedAbstract(null)
+        }}
+        marks={selectedMark}
       />
       <PaperModal
         abstract={selectedPaper}
