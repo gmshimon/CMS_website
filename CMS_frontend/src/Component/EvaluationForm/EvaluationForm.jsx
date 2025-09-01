@@ -1,17 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion'
-import axios from 'axios'
 
-export default function EvaluationFormModal ({
-  isOpen,
-  onClose,
-  scheduleId,
-  abstractId
-}) {
+export default function EvaluationFormModal ({ isOpen, onClose, onSubmit }) {
   const [ratings, setRatings] = useState({})
   const [totalMarks, setTotalMarks] = useState(0)
-  const [loading, setLoading] = useState(false)
-
   // Same criteria as before
   const criteria = [
     {
@@ -60,37 +53,6 @@ export default function EvaluationFormModal ({
     { value: 5, label: 'Truly Exceptional (5)' }
   ]
 
-  // 🔹 Load existing marks if available
-  useEffect(() => {
-    if (!isOpen) return
-
-    const fetchMark = async () => {
-      try {
-        setLoading(true)
-        const res = await axios.get(`/api/marks/${scheduleId}/${abstractId}`)
-        if (res.data?.data) {
-          const mark = res.data.data
-          // Map saved criteria into ratings state
-          const loadedRatings = {}
-          mark.criteria.forEach((c, idx) => {
-            loadedRatings[idx + 1] = c.score // assuming order matches criteria
-          })
-          setRatings(loadedRatings)
-          setTotalMarks(mark.totalMark)
-        } else {
-          setRatings({})
-          setTotalMarks(0)
-        }
-      } catch (err) {
-        console.error('Failed to fetch marks', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchMark()
-  }, [isOpen, scheduleId, abstractId])
-
   const handleRatingChange = (criteriaId, rating) => {
     const newRatings = { ...ratings, [criteriaId]: rating }
     setRatings(newRatings)
@@ -105,24 +67,16 @@ export default function EvaluationFormModal ({
   }
 
   const handleSubmit = async () => {
-    try {
-      const payload = {
-        criteria: criteria.map(criterion => ({
-          criterion: criterion.text,
-          score: ratings[criterion.id] || 0,
-          weight: criterion.multiplier
-        })),
-        totalMark: totalMarks
-      }
-      console.log(payload)
-      //   await axios.post(`/api/marks/${scheduleId}/${abstractId}`, payload);
-
-      //   alert("Mark submitted successfully!");
-      //   onClose();
-    } catch (err) {
-      console.error('Error submitting marks', err)
-      alert('Error submitting marks')
+    const payload = {
+      criteria: criteria.map(criterion => ({
+        criterion: criterion.text,
+        score: ratings[criterion.id] || 0,
+        weight: criterion.multiplier
+      })),
+      totalMark: totalMarks
     }
+    onSubmit(payload)
+    onClose()
   }
 
   const handleCancel = () => {
@@ -154,91 +108,86 @@ export default function EvaluationFormModal ({
               ✕
             </button>
           </div>
-
-          {loading ? (
-            <p className='text-center text-gray-500'>Loading...</p>
-          ) : (
-            <>
-              {/* Table */}
-              <div className='overflow-x-auto'>
-                <table className='table w-full'>
-                  <thead>
-                    <tr className='bg-gray-100'>
-                      <th className='text-left font-semibold text-gray-700 min-w-96'>
-                        Statement
+          <>
+            {/* Table */}
+            <div className='overflow-x-auto'>
+              <table className='table w-full'>
+                <thead>
+                  <tr className='bg-gray-100'>
+                    <th className='text-left font-semibold text-gray-700 min-w-96'>
+                      Statement
+                    </th>
+                    {ratingOptions.map(opt => (
+                      <th
+                        key={opt.value}
+                        className='text-center font-semibold text-gray-700'
+                      >
+                        {opt.label}
                       </th>
-                      {ratingOptions.map(opt => (
-                        <th
-                          key={opt.value}
-                          className='text-center font-semibold text-gray-700'
-                        >
-                          {opt.label}
-                        </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {criteria.map((criterion, index) => (
+                    <tr
+                      key={criterion.id}
+                      className='hover:bg-gray-50 border-b border-gray-200'
+                    >
+                      <td className='py-4 px-4 text-sm text-gray-800'>
+                        <span className='font-medium'>{index + 1}. </span>
+                        {criterion.text}
+                      </td>
+                      {ratingOptions.map(option => (
+                        <td key={option.value} className='text-center py-4'>
+                          <input
+                            type='radio'
+                            name={`criterion-${criterion.id}`}
+                            value={option.value}
+                            className='radio radio-primary'
+                            onChange={() =>
+                              handleRatingChange(criterion.id, option.value)
+                            }
+                            checked={ratings[criterion.id] === option.value}
+                          />
+                        </td>
                       ))}
                     </tr>
-                  </thead>
-                  <tbody>
-                    {criteria.map((criterion, index) => (
-                      <tr
-                        key={criterion.id}
-                        className='hover:bg-gray-50 border-b border-gray-200'
-                      >
-                        <td className='py-4 px-4 text-sm text-gray-800'>
-                          <span className='font-medium'>{index + 1}. </span>
-                          {criterion.text}
-                        </td>
-                        {ratingOptions.map(option => (
-                          <td key={option.value} className='text-center py-4'>
-                            <input
-                              type='radio'
-                              name={`criterion-${criterion.id}`}
-                              value={option.value}
-                              className='radio radio-primary'
-                              onChange={() =>
-                                handleRatingChange(criterion.id, option.value)
-                              }
-                              checked={ratings[criterion.id] === option.value}
-                            />
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-              {/* Total Marks */}
-              <div className='mt-8 p-4 bg-gray-50 rounded-lg'>
-                <div className='flex items-center gap-4'>
-                  <label className='text-lg font-semibold text-gray-700'>
-                    Total Marks Obtained Out of 50
-                  </label>
-                  <input
-                    type='number'
-                    value={totalMarks}
-                    readOnly
-                    className='input input-bordered w-20 text-center font-bold'
-                  />
-                </div>
+            {/* Total Marks */}
+            <div className='mt-8 p-4 bg-gray-50 rounded-lg'>
+              <div className='flex items-center gap-4'>
+                <label className='text-lg font-semibold text-gray-700'>
+                  Total Marks Obtained Out of 50
+                </label>
+                <input
+                  type='number'
+                  value={totalMarks}
+                  readOnly
+                  className='input input-bordered w-20 text-center font-bold'
+                />
               </div>
+            </div>
 
-              {/* Buttons */}
-              <div className='flex gap-4 mt-8 justify-end'>
-                <button
-                  className='btn btn-sm btn-primary text-white px-8'
-                  onClick={handleSubmit}
-                >
-                  Submit
-                </button>
-                <button
-                  className='btn btn-sm btn-error text-white px-8'
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </button>
-              </div>
-            </>
-          )}
+            {/* Buttons */}
+            <div className='flex gap-4 mt-8 justify-end'>
+              <button
+                className='btn btn-sm btn-primary text-white px-8'
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+              <button
+                className='btn btn-sm btn-error text-white px-8'
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
         </div>
       </motion.div>
     </div>

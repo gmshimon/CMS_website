@@ -35,7 +35,11 @@ const initialState = {
 
   getSessionChairScheduleLoading: false,
   getSessionChairScheduleSuccess: false,
-  getSessionChairScheduleError: false
+  getSessionChairScheduleError: false,
+
+  giveMarkLoading: false,
+  giveMarkSuccess: false,
+  giveMarkError: false
 }
 
 // Async thunk to get all schedules
@@ -156,6 +160,25 @@ export const getSessionChairSchedule = createAsyncThunk(
   }
 )
 
+export const giveMark = createAsyncThunk(
+  'giveMark',
+  async ({ scheduleId, abstractId, data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.post(
+        `/mark/${scheduleId}/${abstractId}`,
+        data
+      )
+
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || {
+          message: 'Failed to fetch session chair schedules'
+        }
+      )
+    }
+  }
+)
 const scheduleSlice = createSlice({
   name: 'schedule',
   initialState,
@@ -188,6 +211,10 @@ const scheduleSlice = createSlice({
       state.getSessionChairScheduleLoading = false
       state.getSessionChairScheduleSuccess = false
       state.getSessionChairScheduleError = false
+
+      state.giveMarkLoading = false
+      state.giveMarkSuccess = false
+      state.giveMarkError = false
     }
   },
   extraReducers: builder => {
@@ -312,6 +339,31 @@ const scheduleSlice = createSlice({
         state.getSessionChairScheduleSuccess = true
         state.getSessionChairScheduleError = false
         state.mySchedules = action.payload
+      })
+
+      .addCase(giveMark.pending, state => {
+        state.giveMarkLoading = true
+        state.giveMarkSuccess = false
+        state.giveMarkError = false
+      })
+      .addCase(giveMark.fulfilled, (state, action) => {
+        state.giveMarkLoading = false
+        state.giveMarkSuccess = true
+        state.giveMarkError = false
+        
+        const newMark = action.payload // the mark returned from API
+
+        const idx = state.schedule.abstracts.findIndex(
+          abs => abs._id === newMark.abstract
+        )
+        if (idx !== -1) {
+          state.schedule.abstracts[idx].marks = newMark
+        }
+      })
+      .addCase(giveMark.rejected, state => {
+        state.giveMarkLoading = false
+        state.giveMarkSuccess = false
+        state.giveMarkError = true
       })
   }
 })

@@ -2,16 +2,26 @@ import { useEffect, useState } from 'react'
 import { Calendar, Clock, MapPin, Video, FileText, Users } from 'lucide-react'
 import { useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { getScheduleById } from '../../Redux/Slice/ScheduleSlice'
+import {
+  getScheduleById,
+  giveMark,
+  reset
+} from '../../Redux/Slice/ScheduleSlice'
 import Loading from '../../Component/Loading/Loading'
 import PaperModal from '../../Component/PaperModal/PaperModal'
 import { IoMdEye } from 'react-icons/io'
 import EvaluationFormModal from '../../Component/EvaluationForm/EvaluationForm'
+import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
 
 const ScheduleAbstractsPage = () => {
-  const { schedule, getSingleScheduleLoading } = useSelector(
-    state => state.schedule
-  )
+  const {
+    schedule,
+    getSingleScheduleLoading,
+    giveMarkLoading,
+    giveMarkError,
+    giveMarkSuccess
+  } = useSelector(state => state.schedule)
+  const [selectedAbstract, setSelectedAbstract] = useState(null)
   const [selectedPaper, setSelectedPaper] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [evaluateModal, setEvaluateModal] = useState(false)
@@ -23,7 +33,22 @@ const ScheduleAbstractsPage = () => {
     dispatch(getScheduleById(id))
   }, [dispatch, id])
 
-  const handleEvaluate = (abstractId, title) => {
+  useEffect(() => {
+    if (giveMarkSuccess) {
+      showSuccessToast('Successfully added the mark')
+      dispatch(reset())
+    }
+    if (giveMarkError) {
+      showErrorToast('Something went wrong')
+      dispatch(reset())
+    }
+  }, [dispatch, giveMarkError, giveMarkSuccess])
+
+  const handleEvaluate = (abstractId, scheduleId) => {
+    setSelectedAbstract({
+      abstractId,
+      scheduleId
+    })
     setEvaluateModal(true)
     console.log('Evaluate abstract:', abstractId)
   }
@@ -38,6 +63,21 @@ const ScheduleAbstractsPage = () => {
     setIsModalOpen(false)
   }
 
+  // submit the evaluation  mark
+  const handleSubmitEvaluate = data => {
+    console.log('selectedAbstract: ', selectedAbstract)
+    data.abstract = selectedAbstract.abstractId
+    data.conference = schedule.conference._id
+
+    dispatch(
+      giveMark({
+        ...selectedAbstract,
+        data
+      })
+    )
+    console.log('data: ', data)
+  }
+
   const formatDate = date => {
     return new Date(date).toLocaleDateString('en-US', {
       weekday: 'long',
@@ -47,8 +87,8 @@ const ScheduleAbstractsPage = () => {
     })
   }
 
-  const getMarksDisplay = (marks, isEvaluated) => {
-    if (!isEvaluated || !marks) {
+  const getMarksDisplay = (marks) => {
+    if (!marks) {
       return <span className='badge badge-warning badge-sm'>N/A</span>
     }
 
@@ -68,7 +108,7 @@ const ScheduleAbstractsPage = () => {
     )
   }
 
-  if (getSingleScheduleLoading) {
+  if (getSingleScheduleLoading || giveMarkLoading) {
     return (
       <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
         <Loading />
@@ -76,6 +116,7 @@ const ScheduleAbstractsPage = () => {
     )
   }
 
+  console.log(schedule)
   return (
     <div className='p-3 bg-gray-50 '>
       {/* Schedule Information Card */}
@@ -257,14 +298,14 @@ const ScheduleAbstractsPage = () => {
                     </td>
                     {/* Marks */}
                     <td>
-                      {getMarksDisplay(abstract.marks, abstract.isEvaluated)}
+                      {getMarksDisplay(abstract.marks)}
                     </td>
 
                     {/* Actions */}
                     <td>
                       <button
                         onClick={() =>
-                          handleEvaluate(abstract._id, abstract.paper_title)
+                          handleEvaluate(abstract._id, schedule._id)
                         }
                         className={`btn btn-sm gap-2 ${
                           abstract.isEvaluated
@@ -283,6 +324,7 @@ const ScheduleAbstractsPage = () => {
         </div>
       </div>
       <EvaluationFormModal
+        onSubmit={handleSubmitEvaluate}
         isOpen={evaluateModal}
         onClose={() => setEvaluateModal(false)}
       />
