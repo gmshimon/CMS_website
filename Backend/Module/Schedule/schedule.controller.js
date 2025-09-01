@@ -11,6 +11,7 @@ import { createNotificationService } from '../Notification/notification.service.
 import Conference from '../Conference/conference.model.js'
 import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import Mark from '../Mark/mark.model.js'
+import Paper from '../Paper/paper.model.js'
 
 // CREATE Schedule
 export const createSchedule = async (req, res) => {
@@ -232,7 +233,15 @@ export const getScheduleById = async (req, res) => {
       .populate('conference')
       .populate('sessionChair', 'name email')
       .populate('moderator', 'name email')
-      .populate('abstracts', 'paper_title authors')
+      .populate({
+        path: 'abstracts',
+        select:
+          'paper_title authors abstract theme conference createdAt keywords',
+        populate: {
+          path: 'conference',
+          select: 'name' // choose what fields you need
+        }
+      })
 
     if (!schedule) {
       return res.status(404).json({ message: 'Schedule not found' })
@@ -244,9 +253,11 @@ export const getScheduleById = async (req, res) => {
           'reviewer',
           'name email'
         )
+        const papers = await Paper.findOne({ abstract: abstract._id }).lean()
         return {
           ...abstract.toObject(),
-          marks
+          marks,
+          papers
         }
       })
     )

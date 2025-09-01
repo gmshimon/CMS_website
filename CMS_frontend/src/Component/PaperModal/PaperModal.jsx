@@ -7,6 +7,9 @@ import { useSelector } from 'react-redux'
 const PaperModal = ({ abstract, isOpen, onClose }) => {
   const { papers, getPaperLoading } = useSelector(state => state.paper)
 
+  const paperFiles =
+    papers?.paper?.length > 0 ? papers.paper : abstract?.papers.paper || []
+
   if (!isOpen || !abstract) return null
   // Determine file type icon based on file extension
   const getFileIcon = filename => {
@@ -150,12 +153,12 @@ const PaperModal = ({ abstract, isOpen, onClose }) => {
               </div>
             </div>
 
-            {papers && papers?.paper?.length > 0 && (
+            {paperFiles?.length > 0 && (
               <div className='bg-gray-50 p-4 rounded-lg hover:bg-gray-100 transition-colors duration-200'>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-2'>
                   <p className='text-sm font-semibold text-gray-500'>Paper</p>
                   <div className='md:col-span-2'>
-                    {papers?.paper.map((file, index) => (
+                    {paperFiles.map((file, index) => (
                       <div key={index} className='flex items-center gap-2 mb-2'>
                         {getFileIcon(file)}
                         <a
@@ -168,7 +171,7 @@ const PaperModal = ({ abstract, isOpen, onClose }) => {
                         </a>
                       </div>
                     ))}
-                    {papers?.paper.length === 0 && (
+                    {paperFiles.length === 0 && (
                       <p className='text-gray-500'>No paper uploaded yet.</p>
                     )}
                   </div>

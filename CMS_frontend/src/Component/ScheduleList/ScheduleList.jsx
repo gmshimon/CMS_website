@@ -81,7 +81,7 @@ const navigate = useNavigate()
       </div>
     )
   }
-  console.log(mySchedules)
+
   return (
     <div className=''>
       {/* Filters and Search */}

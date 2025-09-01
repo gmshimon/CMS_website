@@ -1,14 +1,20 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Calendar, Clock, MapPin, Video, FileText, Users } from 'lucide-react'
 import { useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { getScheduleById } from '../../Redux/Slice/ScheduleSlice'
 import Loading from '../../Component/Loading/Loading'
+import PaperModal from '../../Component/PaperModal/PaperModal'
+import { IoMdEye } from 'react-icons/io'
+import EvaluationFormModal from '../../Component/EvaluationForm/EvaluationForm'
 
 const ScheduleAbstractsPage = () => {
   const { schedule, getSingleScheduleLoading } = useSelector(
     state => state.schedule
   )
+  const [selectedPaper, setSelectedPaper] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [evaluateModal, setEvaluateModal] = useState(false)
 
   const { id } = useParams()
   const dispatch = useDispatch()
@@ -18,8 +24,18 @@ const ScheduleAbstractsPage = () => {
   }, [dispatch, id])
 
   const handleEvaluate = (abstractId, title) => {
+    setEvaluateModal(true)
     console.log('Evaluate abstract:', abstractId)
-    alert(`Opening evaluation form for: "${title}"`)
+  }
+
+  // Modal handlers
+  const handleOpenModal = paper => {
+    setSelectedPaper(paper)
+    setIsModalOpen(true)
+  }
+  const handleCloseModal = () => {
+    setSelectedPaper(null)
+    setIsModalOpen(false)
   }
 
   const formatDate = date => {
@@ -194,6 +210,7 @@ const ScheduleAbstractsPage = () => {
                 <th className='text-white font-bold'>Abstract ID</th>
                 <th className='text-white font-bold'>Title</th>
                 <th className='text-white font-bold'>Author</th>
+                <th className='text-white font-bold'>View</th>
                 <th className='text-white font-bold'>Marks</th>
                 <th className='text-white font-bold'>Actions</th>
               </tr>
@@ -228,6 +245,16 @@ const ScheduleAbstractsPage = () => {
                       {abstract.authors[0].name}
                     </td>
 
+                    {/* Abstract */}
+                    <td>
+                      <button
+                        onClick={() => handleOpenModal(abstract)}
+                        className='cursor-pointer hover:text-blue-500 transition-colors duration-200 p-1 rounded-full hover:bg-blue-50'
+                        title='View Abstract'
+                      >
+                        <IoMdEye className='text-xl' />
+                      </button>
+                    </td>
                     {/* Marks */}
                     <td>
                       {getMarksDisplay(abstract.marks, abstract.isEvaluated)}
@@ -255,6 +282,15 @@ const ScheduleAbstractsPage = () => {
           </table>
         </div>
       </div>
+      <EvaluationFormModal
+        isOpen={evaluateModal}
+        onClose={() => setEvaluateModal(false)}
+      />
+      <PaperModal
+        abstract={selectedPaper}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   )
 }
