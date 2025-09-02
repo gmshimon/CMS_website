@@ -15,13 +15,20 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getUserRoleCounts } from '../../../Redux/Slice/AdminSlice'
 
 const AdminUser = () => {
-  const { roleCounts, selectedYear } = useSelector(state => state.admin)
+  const { selectedConference } = useSelector(state => state.conference)
+  const { roleCounts } = useSelector(state => state.admin)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getUserRoleCounts(selectedYear))
-  }, [dispatch, selectedYear])
+    dispatch(
+      getUserRoleCounts(
+        sessionStorage.getItem('selectedConference')
+          ? sessionStorage.getItem('selectedConference')
+          : selectedConference
+      )
+    )
+  }, [dispatch, selectedConference])
   const stats = [
     {
       title: 'Authors',

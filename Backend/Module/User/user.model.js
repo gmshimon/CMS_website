@@ -3,6 +3,13 @@ import validate from 'validator'
 
 const userSchema = mongoose.Schema(
   {
+    conference: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'conference',
+      required: function () {
+        return this.role !== 'admin' // required only if role is not admin
+      }
+    },
     name: {
       type: String,
       minLength: 3,

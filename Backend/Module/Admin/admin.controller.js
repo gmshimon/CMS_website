@@ -29,7 +29,7 @@ admin.initializeApp({
 
 export const getUserRoleCounts = async (req, res, next) => {
   try {
-    const { year } = req.query
+    const { conference_id } = req.query
     const roles = [
       'Presenter',
       'Attendee',
@@ -45,14 +45,13 @@ export const getUserRoleCounts = async (req, res, next) => {
     const matchQuery = {
       role: { $in: roles }
     }
-
-    // Filter by year of createdAt if provided
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      matchQuery.conference = new mongoose.Types.ObjectId(conference_id)
     }
-
     const counts = await Users.aggregate([
       { $match: matchQuery },
       {
@@ -163,24 +162,60 @@ export const AdminCreateUser = async (req, res, next) => {
 
 export const getRoleBasedUser = async (req, res, next) => {
   try {
-    const { year } = req.query
+    const { conference_id } = req.query
     const { role } = req.params
     const matchQuery = {
       role: role
     }
+    let selectedConferenceId
 
     // Add year filter if provided
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      matchQuery.conference = conference_id
+      selectedConferenceId = conference_id
+    } else {
+      const latestConference = await Conference.findOne().sort({
+        createdAt: -1
+      })
+      selectedConferenceId = latestConference._id
     }
-    const users = await Users.find(matchQuery)
+
+    // --- Normal users (non-presenters) ---
+    if (role !== 'Presenter') {
+      const users = await Users.find(matchQuery)
+      return res.status(200).json({
+        status: 'Success',
+        message: `Fetched ${role} users`,
+        data: users
+      })
+    }
+
+    // --- Presenter special case ---
+    const users = await Users.find({
+      role: 'Presenter'
+    })
+    const presentersWithAbstracts = await Promise.all(
+      users.map(async user => {
+        const abstracts = await Abstracts.findOne({
+          createdBy: user._id,
+          conference: selectedConferenceId
+        }).select('_id payment_status status payment_proof')
+
+        return {
+          ...user.toObject(),
+          abstracts
+        }
+      })
+    )
 
     res.status(200).json({
       status: 'Success',
       message: 'Fetch the reviewer user',
-      data: users
+      data: presentersWithAbstracts
     })
   } catch (error) {
     console.error('Error fetching reviewers:', error)
@@ -449,46 +484,46 @@ export const getAdminAnalytics = async (req, res) => {
   try {
     // Total users grouped by role
     const usersByRole = await Users.aggregate([
-      { $group: { _id: "$role", count: { $sum: 1 } } }
-    ]);
+      { $group: { _id: '$role', count: { $sum: 1 } } }
+    ])
 
     // Total abstracts/papers (conference wise)
     const abstractsByConference = await Abstracts.aggregate([
       {
         $group: {
-          _id: "$conference",
+          _id: '$conference',
           totalSubmissions: { $sum: 1 }
         }
       },
       {
         $lookup: {
-          from: "conferences",
-          localField: "_id",
-          foreignField: "_id",
-          as: "conference"
+          from: 'conferences',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'conference'
         }
       },
-      { $unwind: "$conference" },
+      { $unwind: '$conference' },
       {
         $project: {
-          conferenceName: "$conference.name",
+          conferenceName: '$conference.name',
           totalSubmissions: 1
         }
       }
-    ]);
+    ])
 
     // Number of sessions scheduled (oral, keynote, workshop)
     const sessionsByType = await Schedule.aggregate([
-      { $group: { _id: "$abstractType", count: { $sum: 1 } } }
-    ]);
+      { $group: { _id: '$abstractType', count: { $sum: 1 } } }
+    ])
 
     res.json({
       usersByRole,
       abstractsByConference,
       sessionsByType
-    });
+    })
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching analytics" });
+    console.error(error)
+    res.status(500).json({ message: 'Error fetching analytics' })
   }
-};
+}

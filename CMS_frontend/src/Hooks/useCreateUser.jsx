@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   adminCreateUser,
   deleteUserFromDb,
@@ -11,14 +11,18 @@ import {
 import Swal from 'sweetalert2'
 
 const useCreateUser = searchRole => {
+  const { selectedConference } = useSelector(state => state.conference)
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(
       getRoleBasedUser({
-        role: searchRole
+        role: searchRole,
+        conference_id: sessionStorage.getItem('selectedConference')
+          ? sessionStorage.getItem('selectedConference')
+          : selectedConference
       })
     )
-  }, [dispatch, searchRole])
+  }, [dispatch, searchRole, selectedConference])
 
   const handleCreateUser = form => {
     const formData = new FormData()
@@ -42,10 +46,10 @@ const useCreateUser = searchRole => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-       if (result.isConfirmed) {
-         dispatch(deleteUserFromDb({ id: user?._id, role }))
-       }
+    }).then(result => {
+      if (result.isConfirmed) {
+        dispatch(deleteUserFromDb({ id: user?._id, role }))
+      }
     })
   }
 

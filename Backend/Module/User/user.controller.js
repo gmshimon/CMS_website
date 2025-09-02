@@ -1,5 +1,6 @@
 import generateToken from '../../Utilis/token.js'
 import Abstracts from '../Abstract/abstract.model.js'
+import Conference from '../Conference/conference.model.js'
 import Paper from '../Paper/paper.model.js'
 import Schedule from '../Schedule/schedule.model.js'
 import Users from './user.model.js'
@@ -32,9 +33,12 @@ export const createUser = async (req, res, next) => {
 
         userData.photo = image
       }
-
+      const latestConference = await Conference.findOne().sort({
+        createdAt: -1
+      })
+      userData.conference = latestConference ? latestConference._id : null
       const createUser = await Users.create(userData)
-      const token = generateToken(result)
+      const token = generateToken(createUser)
       res.status(200).json({
         status: 'Success',
         message: 'User created successfully',
@@ -186,7 +190,7 @@ export const getChairsAndModerators = async (req, res) => {
   }
 }
 
-export const getMyDashboardStats = async (req, res,next) => {
+export const getMyDashboardStats = async (req, res, next) => {
   try {
     const { conference_id } = req.query
     const userId = req.user._id
@@ -240,8 +244,8 @@ export const getMyDashboardStats = async (req, res,next) => {
         totalPayments,
         totalSchedules,
         recentSubmissions,
-        certificateHistory:[]
-      },
+        certificateHistory: []
+      }
     })
   } catch (error) {
     next(error)

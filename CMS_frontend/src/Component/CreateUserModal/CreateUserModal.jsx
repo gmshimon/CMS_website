@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
+  const { conferences } = useSelector(state => state.conference)
   const [form, setForm] = useState({
     role: selectedRole,
+    conference: '',
     name: '',
     title: '',
     email: '',
@@ -18,7 +21,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     talk_title: '',
     talk_abstract: '',
     speaker_bio: '',
-    committeeName:null,
+    committeeName: null,
     bio: '',
     imageFile: null
   })
@@ -40,6 +43,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     const newErrors = {}
     if (!form.name) newErrors.name = 'Name is required'
     if (!form.email) newErrors.email = 'Email is required'
+    if (!form.conference) newErrors.conference = 'Conference is required'
     // Add more validation as needed
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -51,7 +55,6 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
     onSubmit(form)
     onClose()
   }
-
   return (
     <div className='fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50'>
       <div className='bg-white rounded-lg max-w-xl w-full p-6 shadow-lg max-h-[90vh] overflow-y-auto'>
@@ -67,6 +70,28 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
               value={selectedRole}
               className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${'border-gray-300'}`}
             />
+          </div>
+          {/* Role */}
+          <div>
+            <label className='block mb-1 font-medium'>Conference</label>
+            <select
+              className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent $${
+                errors.conference ? 'border-red-500' : 'border-gray-300'
+              }`}
+              onChange={onChange}
+              name='conference'
+            >
+              <option value=''>Select Conference</option>
+              {conferences &&
+                conferences.map(conf => (
+                  <option key={conf._id} value={conf._id}>
+                    {conf.name}
+                  </option>
+                ))}
+            </select>
+             {errors.conference && (
+              <p className='text-red-600 text-sm mt-1'>{errors.conference}</p>
+            )}
           </div>
 
           {/* title */}
@@ -308,7 +333,7 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
             </div>
           )}
           {/* Committee Type (only Committees) */}
-          {selectedRole === 'technical_committee'  && (
+          {selectedRole === 'technical_committee' && (
             <div>
               <label className='block mb-1 font-medium'>Committee Name</label>
               <select
@@ -318,12 +343,20 @@ const CreateUserModal = ({ isOpen, onClose, onSubmit, selectedRole }) => {
                 className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               >
                 <option value='Publication'>Publication Committee</option>
-                <option value='Publicity and Promotion'>Publicity and Promotion Committee</option>
+                <option value='Publicity and Promotion'>
+                  Publicity and Promotion Committee
+                </option>
                 <option value='Sponsorship'>Sponsorship Committee</option>
-                <option value='Technical Support'>Technical Support Committee</option>
-                <option value='Virtual Conference'>Virtual Conference Committee</option>
+                <option value='Technical Support'>
+                  Technical Support Committee
+                </option>
+                <option value='Virtual Conference'>
+                  Virtual Conference Committee
+                </option>
                 <option value='Logistic Conference'>Logistic Committee</option>
-                <option value='Multimedia Conference'>Multimedia Committee</option>
+                <option value='Multimedia Conference'>
+                  Multimedia Committee
+                </option>
               </select>
             </div>
           )}

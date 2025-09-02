@@ -8,6 +8,7 @@ const initialState = {
   dashboardStats: [],
   roleCounts: {},
   users: [],
+  presenter:[],
   reviewers: [],
   session_chairs: [],
   keynote_speakers: [],
@@ -55,9 +56,9 @@ export const adminCreateUser = createAsyncThunk(
 
 export const getUserRoleCounts = createAsyncThunk(
   'getUserRoleCounts',
-  async (year, { rejectWithValue }) => {
+  async (conference_id=null, { rejectWithValue }) => {
     try {
-      const query = year ? `?year=${year}` : ''
+      const query = conference_id ? `?conference_id=${conference_id}` : ''
       const response = await axios.get(`/admin/total-user${query}`)
       return response.data.data
     } catch (error) {
@@ -71,9 +72,10 @@ export const getUserRoleCounts = createAsyncThunk(
 
 export const getRoleBasedUser = createAsyncThunk(
   'getRoleBasedUser',
-  async ({ data, role }, { rejectWithValue }) => {
+  async ({ conference_id=null, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/admin/get/${role}`, data)
+       const query = conference_id ? `?conference_id=${conference_id}` : ''
+      const response = await axios.get(`/admin/get/${role}${query}`)
       return {
         data: response.data.data,
         role
@@ -262,6 +264,8 @@ const adminSlice = createSlice({
           state.technicalCommittee = data
         } else if (role === 'registration_committee') {
           state.registrationCommittee = data
+        } else if (role === 'Presenter') {
+          state.presenter = data
         }
       })
       .addCase(getUserRoleCounts.pending, state => {

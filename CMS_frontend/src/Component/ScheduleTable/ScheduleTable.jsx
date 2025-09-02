@@ -1,3 +1,4 @@
+import { Calendar, ExternalLink } from 'lucide-react'
 import { FaEdit, FaTrash } from 'react-icons/fa'
 import { IoMdEye } from 'react-icons/io'
 import { useNavigate } from 'react-router'
@@ -19,7 +20,7 @@ const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
                 </th>
               ))}
               <th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
-                View
+                Details
               </th>
               <th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
                 Actions
@@ -29,11 +30,11 @@ const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
           <tbody>
             {data?.length === 0 ? (
               <tr>
-                <td
-                  colSpan={columns.length + 1}
-                  className='text-center py-6 text-gray-500'
-                >
-                  No schedule found.
+                <td colSpan='8' className='text-center py-8 text-gray-500'>
+                  <div className='flex flex-col items-center gap-2'>
+                    <Calendar className='text-4xl text-gray-300' size={48} />
+                    <p>No schedules found</p>
+                  </div>
                 </td>
               </tr>
             ) : (
@@ -52,10 +53,10 @@ const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
                       onClick={() => navigate(`/admin/schedule/${row._id}`)}
-                      className='cursor-pointer hover:text-blue-500 transition-colors duration-200 p-1 rounded-full hover:bg-blue-50'
+                      className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
                       title='View Schedule Details'
                     >
-                      <IoMdEye className='text-xl' />
+                      <ExternalLink size={20}/>
                     </button>
                   </td>
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
