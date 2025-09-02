@@ -21,6 +21,7 @@ const ScheduleAbstractsPage = () => {
     giveMarkError,
     giveMarkSuccess
   } = useSelector(state => state.schedule)
+  const{user} = useSelector(state => state.user)
   const [selectedAbstract, setSelectedAbstract] = useState(null)
   const [selectedMark,setSelectedMark] = useState(null)
   const [selectedPaper, setSelectedPaper] = useState(null)
@@ -308,6 +309,7 @@ const ScheduleAbstractsPage = () => {
                             ? 'btn-outline btn-primary'
                             : 'btn-primary'
                         }`}
+                        disabled={user?.role!=='Session Chair' && !abstract?.marks?.isEvaluated}
                       >
                        {abstract?.marks?.isEvaluated?"View" :"Evaluate"}
                       </button>

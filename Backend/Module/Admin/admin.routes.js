@@ -7,6 +7,7 @@ import {
   adminDashboardStats,
   deleteUser,
   deleteUserImage,
+  getAdminAnalytics,
   getPresentationMethodStats,
   getRoleBasedUser,
   getUserRoleCounts,
@@ -42,5 +43,6 @@ router.route('/get/:role').get(getRoleBasedUser)
 router.route('/dashboard').get(verifyToken,adminDashboardStats)
 
 router.get('/presentation-stats', getPresentationMethodStats)
+router.get("/",verifyToken, getAdminAnalytics);
 
 export default router

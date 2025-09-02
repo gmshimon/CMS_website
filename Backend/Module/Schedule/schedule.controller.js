@@ -229,7 +229,7 @@ export const getScheduleById = async (req, res) => {
       return res.status(400).json({ message: 'Invalid Schedule ID' })
     }
 
-    const schedule = await Schedule.findOne({ _id: id, sessionChair })
+    const schedule = await Schedule.findOne({ _id: id })
       .populate('conference')
       .populate('sessionChair', 'name email')
       .populate('moderator', 'name email')

@@ -1,6 +1,9 @@
 import { FaEdit, FaTrash } from 'react-icons/fa'
+import { IoMdEye } from 'react-icons/io'
+import { useNavigate } from 'react-router'
 
-const ScheduleTable = ({ columns, data,onDelete ,onEdit}) => {
+const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
+  const navigate = useNavigate()
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
       <div className='overflow-x-auto max-h-[500px] overflow-y-auto'>
@@ -15,6 +18,9 @@ const ScheduleTable = ({ columns, data,onDelete ,onEdit}) => {
                   {col.label}
                 </th>
               ))}
+              <th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
+                View
+              </th>
               <th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
                 Actions
               </th>
@@ -43,6 +49,15 @@ const ScheduleTable = ({ columns, data,onDelete ,onEdit}) => {
                         : row[col.key]}
                     </td>
                   ))}
+                  <td className='px-4 py-3 whitespace-nowrap space-x-2'>
+                    <button
+                      onClick={() => navigate(`/admin/schedule/${row._id}`)}
+                      className='cursor-pointer hover:text-blue-500 transition-colors duration-200 p-1 rounded-full hover:bg-blue-50'
+                      title='View Schedule Details'
+                    >
+                      <IoMdEye className='text-xl' />
+                    </button>
+                  </td>
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
                       onClick={() => onEdit(row)}

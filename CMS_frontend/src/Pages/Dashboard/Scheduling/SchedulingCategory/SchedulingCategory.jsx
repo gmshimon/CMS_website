@@ -89,9 +89,7 @@ const SchedulingCategory = () => {
     )
   }
 
-  const columns = getScheduleColumns(
-    category.includes('physical') ? 'physical' : 'online'
-  )
+  const columns = getScheduleColumns()
 
   return (
     <div>

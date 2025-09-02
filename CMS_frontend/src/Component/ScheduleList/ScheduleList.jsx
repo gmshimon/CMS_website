@@ -15,6 +15,7 @@ import 'react-responsive-pagination/themes/classic.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { getSessionChairSchedule } from '../../Redux/Slice/ScheduleSlice'
 import { useNavigate } from 'react-router'
+import { getScheduleColumns } from '../../Utilis/useScheduleColumn'
 const ScheduleList = () => {
   const { selectedConference } = useSelector(state => state.conference)
   const { mySchedules, getSessionChairScheduleLoading } = useSelector(
@@ -24,7 +25,7 @@ const ScheduleList = () => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const dispatch = useDispatch()
-const navigate = useNavigate()
+  const navigate = useNavigate()
   useEffect(() => {
     dispatch(
       getSessionChairSchedule({
@@ -41,39 +42,6 @@ const navigate = useNavigate()
     navigate(`/admin/schedule/${schedule._id}`)
   }
 
-  const formatDate = date => {
-    return new Date(date).toLocaleDateString('en-US', {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
-  }
-
-  const getTypeBadge = type => {
-    const isOnline = type.includes('Online')
-    const isPaper = type.includes('Paper')
-
-    return (
-      <div className='flex flex-col gap-1'>
-        <span
-          className={`badge ${
-            isOnline ? 'badge-info' : 'badge-success'
-          } badge-sm`}
-        >
-          {isOnline ? 'Online' : 'Physical'}
-        </span>
-        <span
-          className={`badge ${
-            isPaper ? 'badge-primary' : 'badge-secondary'
-          } badge-sm`}
-        >
-          {isPaper ? 'Paper' : 'Poster'}
-        </span>
-      </div>
-    )
-  }
-
   if (getSessionChairScheduleLoading) {
     return (
       <div className='h-[calc(100vh-150px)] flex items-center justify-center'>
@@ -81,6 +49,8 @@ const navigate = useNavigate()
       </div>
     )
   }
+
+  const columns = getScheduleColumns()
 
   return (
     <div className=''>
@@ -120,13 +90,14 @@ const navigate = useNavigate()
           <table className='table table-zebra w-full'>
             <thead className='bg-slate-600 sticky top-0 z-10'>
               <tr>
-                <th className='text-white font-bold'>Day & Date</th>
-                <th className='text-white font-bold'>Session</th>
-                <th className='text-white font-bold'>Time</th>
-                <th className='text-white font-bold'>Type</th>
-                <th className='text-white font-bold'>Location/Link</th>
-                <th className='text-white font-bold'>Chair & Moderator</th>
-                <th className='text-white font-bold'>Abstracts</th>
+                {columns.map(col => (
+                  <th
+                    key={col.key}
+                    className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap'
+                  >
+                    {col.label}
+                  </th>
+                ))}
                 <th className='text-white font-bold'>Actions</th>
               </tr>
             </thead>
@@ -143,117 +114,16 @@ const navigate = useNavigate()
               ) : (
                 mySchedules?.schedules.map(schedule => (
                   <tr key={schedule._id} className='hover:bg-gray-50'>
-                    {/* Day & Date */}
-                    <td className='min-w-32'>
-                      <div className='flex flex-col'>
-                        <span className='font-semibold text-primary'>
-                          {schedule.day}
-                        </span>
-                        <span className='text-sm text-gray-600'>
-                          {formatDate(schedule.date)}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Session */}
-                    <td className='font-medium text-gray-800'>
-                      {schedule.session}
-                    </td>
-
-                    {/* Time */}
-                    <td className='min-w-24'>
-                      <div className='flex items-center gap-1 text-sm'>
-                        <Clock className='text-gray-400' size={14} />
-                        <span>
-                          {schedule.startTime} - {schedule.endTime}
-                        </span>
-                      </div>
-                    </td>
-
-                    {/* Type */}
-                    <td className='min-w-24'>
-                      <div className='flex flex-col gap-1'>
-                        {getTypeBadge(schedule.abstractType)}
-                      </div>
-                    </td>
-
-                    {/* Location/Link */}
-                    <td className='min-w-48'>
-                      {schedule.abstractType.includes('Online') ? (
-                        <div className='flex items-center gap-2'>
-                          <Video className='text-blue-500' size={16} />
-                          <a
-                            href={schedule.meetingLink}
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            className='link link-primary text-sm truncate max-w-32'
-                            title={schedule.meetingLink}
-                          >
-                            Join Meeting
-                          </a>
-                        </div>
-                      ) : (
-                        <div className='flex items-center gap-2'>
-                          <MapPin className='text-green-500' size={16} />
-                          <div className='text-sm'>
-                            <div className='font-medium'>
-                              {schedule.venue?.building}
-                            </div>
-                            <div className='text-gray-600'>
-                              {schedule.venue?.hall} - {schedule.venue?.room}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </td>
-
-                    {/* Chair & Moderator */}
-                    <td className='min-w-40'>
-                      <div className='text-sm'>
-                        <div className='flex items-center gap-1 mb-1'>
-                          <Users className='text-gray-400' size={12} />
-                          <span className='font-medium'>Chair:</span>
-                          <span className='text-gray-700'>
-                            {schedule.sessionChair?.name || 'Not assigned'}
-                          </span>
-                        </div>
-                        <div className='flex items-center gap-1'>
-                          <span className='font-medium'>Moderator:</span>
-                          <span className='text-gray-700'>
-                            {schedule.moderator?.name || 'Not assigned'}
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Abstracts */}
-                    <td className='min-w-48'>
-                      <div className='text-sm'>
-                        <div className='font-medium text-gray-800 mb-1'>
-                          {schedule.abstracts.length} Abstract(s)
-                        </div>
-                        {schedule.abstracts.length > 0 && (
-                          <div className='space-y-1'>
-                            {schedule.abstracts
-                              .slice(0, 2)
-                              .map((abstract, idx) => (
-                                <div
-                                  key={idx}
-                                  className='text-gray-600 truncate max-w-44'
-                                  title={abstract.paper_title}
-                                >
-                                  • {abstract.paper_title}
-                                </div>
-                              ))}
-                            {schedule.abstracts.length > 2 && (
-                              <div className='text-gray-500 text-xs'>
-                                +{schedule.abstracts.length - 2} more
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </td>
+                    {columns.map(col => (
+                      <td
+                        key={col.key}
+                        className='px-4 py-3 text-sm text-gray-700'
+                      >
+                        {col.render
+                          ? col.render(schedule[col.key], schedule)
+                          : schedule[col.key]}
+                      </td>
+                    ))}
 
                     {/* Actions */}
                     <td className='min-w-24'>

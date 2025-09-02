@@ -11,6 +11,7 @@ import 'dotenv/config'
 import Reviews from '../Review/review.model.js'
 import mongoose from 'mongoose'
 import Conference from '../Conference/conference.model.js'
+import Schedule from '../Schedule/schedule.model.js'
 // const serviceAccount = JSON.parse(
 //   await readFile(
 //     new URL(
@@ -443,3 +444,51 @@ export const adminDashboardStats = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getAdminAnalytics = async (req, res) => {
+  try {
+    // Total users grouped by role
+    const usersByRole = await Users.aggregate([
+      { $group: { _id: "$role", count: { $sum: 1 } } }
+    ]);
+
+    // Total abstracts/papers (conference wise)
+    const abstractsByConference = await Abstracts.aggregate([
+      {
+        $group: {
+          _id: "$conference",
+          totalSubmissions: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: "conferences",
+          localField: "_id",
+          foreignField: "_id",
+          as: "conference"
+        }
+      },
+      { $unwind: "$conference" },
+      {
+        $project: {
+          conferenceName: "$conference.name",
+          totalSubmissions: 1
+        }
+      }
+    ]);
+
+    // Number of sessions scheduled (oral, keynote, workshop)
+    const sessionsByType = await Schedule.aggregate([
+      { $group: { _id: "$abstractType", count: { $sum: 1 } } }
+    ]);
+
+    res.json({
+      usersByRole,
+      abstractsByConference,
+      sessionsByType
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching analytics" });
+  }
+};
