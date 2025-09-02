@@ -85,7 +85,6 @@ const MyReviewDetailPage = () => {
   const columns = reviewHomeColumn({
     handleViewPaperList,
     handleOpenAbstract: abstract => {
-      console.log(abstract)
       setAbstract(abstract)
       setOpenAbstract(true)
     }
@@ -134,9 +133,32 @@ const MyReviewDetailPage = () => {
               <p className='text-gray-700 whitespace-pre-wrap'>
                 <div
                   className='text-justify'
-                  dangerouslySetInnerHTML={{ __html: abstract }}
+                  dangerouslySetInnerHTML={{ __html: abstract?.abstract }}
                 />
               </p>
+              <div className='bg-gray-50 p-4 rounded-lg hover:bg-gray-100 mt-2 transition-colors duration-200'>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-2'>
+                  <p className='text-sm font-semibold text-gray-500'>
+                    Keywords
+                  </p>
+                  <div className='flex flex-wrap gap-2 md:col-span-2'>
+                    {Array.isArray(abstract.keywords) ? (
+                      abstract.keywords.map((keyword, index) => (
+                        <span
+                          key={index}
+                          className='px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors duration-200'
+                        >
+                          {keyword}
+                        </span>
+                      ))
+                    ) : (
+                      <span className='px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors duration-200'>
+                        {abstract.keywords}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
               <button
                 onClick={() => setOpenAbstract(false)}
                 className='absolute top-2 right-2 text-gray-600 hover:text-black text-xl'

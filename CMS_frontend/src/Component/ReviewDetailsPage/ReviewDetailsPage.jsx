@@ -9,12 +9,17 @@ import useCreateUser from '../../Hooks/useCreateUser'
 import ReviewModal from '../ReviewModal/ReviewModal'
 import PaperListModal from '../PaperListModal/PaperListModal'
 import Loading from '../Loading/Loading'
+import AbstractStatusModal from '../AbstractStatusModal/AbstractStatusModal'
 
 const ReviewDetailsPage = () => {
-  const { reviews,isGetAbstractReviewLoading } = useSelector(state => state.review)
+  const { reviews, isGetAbstractReviewLoading } = useSelector(
+    state => state.review
+  )
   const { reviewers } = useSelector(state => state.admin)
   const [openModal, setOpenModal] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
+  const [statusModalOpen, setStatusModalOpen] = useState(false)
+  const [reviewModalOpen, setReviewModalOpen] = useState(false)
   const [papers, setPapers] = useState([])
   const [selectedReview, setSelectedReview] = useState(null)
   const [selectedAbstract, setSelectedAbstract] = useState(null)
@@ -27,10 +32,11 @@ const ReviewDetailsPage = () => {
     handleInviteReview,
     handleSendReminder,
     handleChangeStatusOfAbstract
-  } = useReview(category)
+  } = useReview(category==="pending"?'accepted':category)
   useCreateUser('Reviewer')
 
   const handleOpenReviewerModal = row => {
+    setReviewModalOpen(true)
     setSelectedAbstract(row)
   }
 
@@ -47,19 +53,32 @@ const ReviewDetailsPage = () => {
   const handleView = paper => {
     window.open(paper, '_blank')
   }
+
+  const handleOpenStatusModal = row => {
+    setSelectedAbstract(row)
+    setStatusModalOpen(true)
+  }
+
+  const handleCloseStatusModal = () => {
+    setSelectedAbstract(null)
+    setStatusModalOpen(false)
+  }
+
   const columns = abstractReviewColumns({
     onViewSubmission: row => setSelectedAbstract(row),
     handleSendReminder,
     handleViewReview,
     handleViewPaperList,
-    handleChangeStatusOfAbstract,
+    handleOpenStatusModal,
     maxReviewers: 3
   })
 
-  if(isGetAbstractReviewLoading){
-    return <div className='flex justify-center items-center h-[calc(100vh-160px)]'>
-      <Loading/>
-    </div>
+  if (isGetAbstractReviewLoading) {
+    return (
+      <div className='flex justify-center items-center h-[calc(100vh-160px)]'>
+        <Loading />
+      </div>
+    )
   }
 
   return (
@@ -71,11 +90,14 @@ const ReviewDetailsPage = () => {
           handleOpenReviewerModal={handleOpenReviewerModal}
           mode='admin'
         />
-        {selectedAbstract && (
+        {selectedAbstract && reviewModalOpen && (
           <ReviewersModal
             reviewers={reviewers}
             row={selectedAbstract}
-            onClose={() => setSelectedAbstract(null)}
+            onClose={() => {
+              setSelectedAbstract(null)
+              setReviewModalOpen(false)
+            }}
             handleInviteReview={handleInviteReview}
           />
         )}
@@ -93,6 +115,15 @@ const ReviewDetailsPage = () => {
           papers={papers}
           onView={handleView}
         />
+
+        { statusModalOpen &&(
+        <AbstractStatusModal
+          isOpen={statusModalOpen}
+          onClose={handleCloseStatusModal}
+          abstract={selectedAbstract}
+          onSubmit={handleChangeStatusOfAbstract}
+        />
+      )}
       </div>
     </div>
   )

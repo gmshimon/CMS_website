@@ -1,16 +1,11 @@
 import { format } from 'date-fns'
 import { FaEye } from 'react-icons/fa'
-const statuses = [
-  'Accepted',
-  'Rejected',
-  'Minor Revision',
-  'Major Revision',
-]
+import { getStatusColor } from './getStatusColor'
 export const abstractReviewColumns = ({
   handleSendReminder,
   handleViewReview,
   handleViewPaperList,
-  handleChangeStatusOfAbstract,
+  handleOpenStatusModal,
   maxReviewers = 3
 }) => {
   const baseColumns = [
@@ -31,26 +26,22 @@ export const abstractReviewColumns = ({
       label: 'Status',
       render: (_, row) => {
         return (
-          <>
-            <select
-              className='border border-black rounded-md'
-              value={row.status}
-              onChange={e =>
-                handleChangeStatusOfAbstract(row._id, e.target.value)
-              }
+          <div className='w-32 gap-2'>
+            <span
+              className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${getStatusColor(
+                row.status
+              )}`}
             >
-              <option disabled selected>Review Decision</option>
-              {statuses.map(status => (
-                <option
-                  key={status}
-                  value={status}
-                  disabled={status === 'Paper Submitted'}
-                >
-                  {status}
-                </option>
-              ))}
-            </select>
-          </>
+              {row.status}
+            </span>
+            <br />
+            <button
+              onClick={() => handleOpenStatusModal(row)} // open modal with the row data
+              className='btn btn-xs btn-outline btn-accent text-xs mt-1 flex items-center gap-1'
+            >
+              Change Decision
+            </button>
+          </div>
         )
       }
     },
@@ -79,15 +70,20 @@ export const abstractReviewColumns = ({
       label: `Reviewer ${index + 1}`,
       render: (_, row) => {
         const reviewer = row?.reviews[index]?.reviewer
+        const review = row?.reviews[index]
 
         if (!reviewer) {
           return <span className='text-sm text-gray-400'>—</span>
         }
 
-        const { name, email, status } = reviewer
-        const hasReviewed = row?.reviews[index]?.completedAt
-        const hasAccepted = status === 'accepted'
-        const noResponse = !hasAccepted && !hasReviewed
+        const { name, email } = reviewer
+        const hasReviewed = review?.completedAt
+        const hasAccepted = review?.status === 'accepted'
+        const noResponse = !hasReviewed
+
+        const now = new Date()
+        const deadline = review?.deadline ? new Date(review.deadline) : null
+        const isOverdue = deadline && now > deadline && !hasReviewed
 
         let statusLabel = ''
         let statusColor = ''
@@ -95,8 +91,14 @@ export const abstractReviewColumns = ({
         if (hasReviewed) {
           statusLabel = 'Reviewed'
           statusColor = 'text-blue-600'
+        } else if (isOverdue) {
+          statusLabel = `Overdue (${deadline.toLocaleDateString()})`
+          statusColor = 'text-red-600'
         } else if (hasAccepted) {
-          statusLabel = 'Under Review'
+          statusLabel = `Under Review (Deadline: ${format(
+            new Date(deadline),
+            'dd MMM yyyy'
+          )})`
           statusColor = 'text-green-600'
         } else {
           statusLabel = 'No Response'
@@ -222,17 +224,20 @@ export const reviewHomeColumn = ({
       key: 'view_abstract',
       label: 'View Abstract',
       render: (_, row) => (
-        <button className='text-blue-600 hover:underline' onClick={() => handleOpenAbstract(row.abstract.abstract)}>
+        <button
+          className='text-blue-600 hover:underline'
+          onClick={() => handleOpenAbstract(row.abstract)}
+        >
           View
         </button>
       )
     },
     {
       key: 'view_submission',
-      label: 'View',
+      label: 'View Paper',
       render: (_, row) => (
         <button
-          onClick={() => handleViewPaperList(row.papers)}
+          onClick={() => handleViewPaperList(row.abstract.paper)}
           className='btn btn-sm btn-outline text-blue-600 tooltip'
           data-tip='View Submission Paper'
         >

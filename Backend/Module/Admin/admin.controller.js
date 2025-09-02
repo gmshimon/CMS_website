@@ -50,7 +50,13 @@ export const getUserRoleCounts = async (req, res, next) => {
       conference_id !== 'all' &&
       conference_id !== undefined
     ) {
-      matchQuery.conference = new mongoose.Types.ObjectId(conference_id)
+      matchQuery.$or = [
+        { role: 'Presenter' }, // presenters always included
+        {
+          role: { $ne: 'Presenter' },
+          conference: new mongoose.Types.ObjectId(conference_id)
+        }
+      ]
     }
     const counts = await Users.aggregate([
       { $match: matchQuery },

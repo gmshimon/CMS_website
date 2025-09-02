@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+
 const questions = [
   {
     id: 'q1',
@@ -81,7 +84,6 @@ const ReviewModal = ({ isOpen, onClose, isEditable, onSubmit, paper }) => {
       correctionLevel: recommendation,
       responses: formattedResponses
     }
-
     onClose()
     onSubmit(data)
   }
@@ -155,21 +157,19 @@ const ReviewModal = ({ isOpen, onClose, isEditable, onSubmit, paper }) => {
                 </label>
                 {isEditable ? (
                   <>
-                    <textarea
-                      className='textarea textarea-bordered w-full'
-                      placeholder='Write your review here...'
+                    <ReactQuill
+                      theme='snow'
                       value={comment}
-                      onChange={e => setComment(e.target.value)}
-                      maxLength={20000}
-                      required
+                      onChange={setComment}
+                      className='w-full h-44 mb-12'
                     />
-                    <p className='text-sm text-gray-500'>
-                      Character Count: {comment.length}/20000
-                    </p>
                   </>
                 ) : (
-                  <div className='p-2 border rounded whitespace-pre-wrap'>
-                    {comment || 'No comments provided'}
+                  <div className='p-2 border rounded whitespace-pre-wrap h-44 overflow-y-auto'>
+                    <div
+                      className='text-justify'
+                      dangerouslySetInnerHTML={{ __html: comment }}
+                    />
                   </div>
                 )}
               </div>

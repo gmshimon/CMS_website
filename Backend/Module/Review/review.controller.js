@@ -381,13 +381,13 @@ export const getAbstractsByCategory = async (req, res, next) => {
         unassignedAbstracts.map(async abstract => ({
           ...abstract,
           papers: await Paper.find({ abstract: abstract._id }),
-          reviews:[]
+          reviews: []
         }))
       )
       return res.status(200).json({ success: true, data: unassignedWithPapers })
     }
 
-    if (category === 'pending') {
+    if (category === 'accepted') {
       const abstracts = await Abstracts.find(matchQuery)
         .populate('conference')
         .populate('conference_reg')
@@ -403,7 +403,7 @@ export const getAbstractsByCategory = async (req, res, next) => {
         abstract =>
           abstract.reviews &&
           abstract.reviews.length > 0 &&
-          abstract.reviews.some(review => review.status === 'pending')
+          abstract.reviews.some(review => review.status === 'accepted')
       )
 
       return res.status(200).json({ success: true, data: pendingAbstracts })
@@ -541,10 +541,23 @@ export const getMyReview = async (req, res, next) => {
       )
     }
 
+    // Attach paper for each abstract
+    const reviewWithPaper = await Promise.all(
+      getReview.map(async review => {
+        if (review.abstract?._id) {
+          const paper = await Paper.findOne({
+            abstract: review.abstract._id
+          }).lean()
+          review.abstract.paper = paper || null
+        }
+        return review
+      })
+    )
+
     res.status(200).json({
       status: 'Success',
       message: 'Review Data',
-      data: getReview
+      data: reviewWithPaper
     })
   } catch (error) {
     next(error)
