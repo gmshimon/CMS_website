@@ -32,7 +32,7 @@ const ReviewDetailsPage = () => {
     handleInviteReview,
     handleSendReminder,
     handleChangeStatusOfAbstract
-  } = useReview(category==="pending"?'accepted':category)
+  } = useReview(category === 'pending' ? 'accepted' : category)
   useCreateUser('Reviewer')
 
   const handleOpenReviewerModal = row => {
@@ -116,14 +116,14 @@ const ReviewDetailsPage = () => {
           onView={handleView}
         />
 
-        { statusModalOpen &&(
-        <AbstractStatusModal
-          isOpen={statusModalOpen}
-          onClose={handleCloseStatusModal}
-          abstract={selectedAbstract}
-          onSubmit={handleChangeStatusOfAbstract}
-        />
-      )}
+        {statusModalOpen && (
+          <AbstractStatusModal
+            isOpen={statusModalOpen}
+            onClose={handleCloseStatusModal}
+            abstract={selectedAbstract}
+            onSubmit={handleChangeStatusOfAbstract}
+          />
+        )}
       </div>
     </div>
   )

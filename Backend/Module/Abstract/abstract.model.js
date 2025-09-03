@@ -30,6 +30,15 @@ const abstractSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+
+    payment_deadline: {
+      type: Date,
+      default: null
+    },
+    paper_deadline: {
+      type: Date,
+      default: null
+    },
     status: {
       type: String,
       enum: [

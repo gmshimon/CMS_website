@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css'
 const AbstractStatusModal = ({ isOpen, onClose, abstract, onSubmit }) => {
   const [status, setStatus] = useState(abstract?.status || '')
   const [messageContent, setMessageContent] = useState('')
+  const [paper_deadline, setDeadline] = useState('')
 
   const quillRef = useRef(null)
 
@@ -12,35 +13,50 @@ const AbstractStatusModal = ({ isOpen, onClose, abstract, onSubmit }) => {
 
   useEffect(() => {
     if (abstract) {
-      setStatus(abstract.status)
+      // setStatus(abstract.status || '')
 
-      // Build initial content with highlighted reviewer comments
       const reviewerComments =
         abstract.reviews
           ?.map(
             (r, index) =>
-              `<details> <summary><strong>Reviewer ${index+1}</strong></summary> <p style="margin-left: 1em;">${r.comments}</p> </details> <details> <summary><strong>`
+              `<details> 
+                <summary><strong>Reviewer ${index + 1}</strong></summary> 
+                <p style="margin-left: 1em;">${r.comments}</p> 
+              </details>`
           )
           .join('') || ''
 
+      let deadlineText = ''
+      if (status === 'Minor Revision' || status === 'Major Revision') {
+        deadlineText = paper_deadline
+          ? `<p style="margin-bottom:16px;"><strong>Deadline:</strong> Please submit your revised paper by <u>${paper_deadline}</u>.</p>`
+          : `<p style="margin-bottom:16px;"><strong>Deadline:</strong> Please submit your revised paper within the given time frame.</p>`
+      }
+
       const initialContent = `
-  <p style="margin-bottom:20px; color:"red">Dear ${abstract.createdBy.name},</p>
-<br/>
-  <p style="margin-bottom:16px;">
-    Thank you for submitting your abstract titled 
-    <strong>${abstract.paper_title}</strong> to 
-    <strong>${abstract.conference.name}</strong>. 
-    We have received the reviewers’ feedback, and below is a summary of their comments along with our administrative message. 
-    Please review carefully and make any necessary revisions to your manuscript.
-  </p>
-<br/>
-  <div style="margin-bottom:16px;">
-    ${reviewerComments}
-  </div>
-`
+        <p style="margin-bottom:20px; color:red;">Dear ${abstract.createdBy.name},</p>
+
+        <p style="margin-bottom:16px;">
+          Thank you for submitting your abstract titled 
+          <strong>${abstract.paper_title}</strong> to 
+          <strong>${abstract.conference.name}</strong>. 
+          The current status of your paper is: <strong>${status}</strong>.
+        </p>
+
+        <p style="margin-bottom:16px;">
+          We have received the reviewers’ feedback, and below is a summary of their comments along with our administrative message. 
+          Please review carefully and make any necessary revisions to your manuscript.
+        </p>
+
+        ${deadlineText}
+
+        <div style="margin-bottom:16px;">
+          ${reviewerComments}
+        </div>
+      `
       setMessageContent(initialContent)
     }
-  }, [abstract])
+  }, [abstract, status, paper_deadline])
 
   const handleSubmit = () => {
     if (!status) {
@@ -48,13 +64,16 @@ const AbstractStatusModal = ({ isOpen, onClose, abstract, onSubmit }) => {
       return
     }
 
-    // Get final HTML content from quill
     const editorContent = quillRef.current?.getEditor().root.innerHTML
-    onSubmit({ status, message: editorContent })
-    onClose()
+    console.log({ status, paper_deadline, message: editorContent })
+
+    // onSubmit({ status, paper_deadline, message: editorContent })
+    // onClose()
   }
 
   if (!isOpen || !abstract) return null
+
+
 
   return (
     <dialog open className='modal modal-bottom sm:modal-middle'>
@@ -66,20 +85,33 @@ const AbstractStatusModal = ({ isOpen, onClose, abstract, onSubmit }) => {
           <div>
             <label className='font-semibold block mb-1'>Change Status</label>
             <select
-              className='select select-bordered w-full'
+              className='border border-black p-2 rounded-md w-full'
               value={status}
               onChange={e => setStatus(e.target.value)}
             >
               <option value=''>Select status</option>
               {statuses.map(s => (
-                <option key={s} value={s} disabled={s === 'Paper Submitted'}>
+                <option key={s} value={s}>
                   {s}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Combined Message Editor */}
+          {/* Deadline Input */}
+          {(status === 'Minor Revision' || status === 'Major Revision') && (
+            <div>
+              <label className='font-semibold block mb-1'>Set Deadline</label>
+              <input
+                type='date'
+                className='border border-black p-2 rounded-md w-full'
+                value={paper_deadline}
+                onChange={e => setDeadline(e.target.value)}
+              />
+            </div>
+          )}
+
+          {/* Message Editor */}
           <div>
             <label className='font-semibold block mb-1'>Message</label>
             <ReactQuill

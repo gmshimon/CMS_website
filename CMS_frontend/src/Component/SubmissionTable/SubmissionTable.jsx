@@ -71,14 +71,14 @@ const SubmissionTable = ({
                   <td className='px-4 py-3 text-sm text-gray-500'>
                     {format(new Date(item.createdAt), 'MMM d, yyyy')}
                   </td>
-                  <td className='px-4 py-3 text-sm'>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                  <td className='px-4 py-3 text-sm w-40 '>
+                    <p
+                      className={`px-2 py-1 mt-4 rounded-full text-center text-xs font-semibold ${getStatusColor(
                         item.status
                       )}`}
                     >
                       {item.status}
-                    </span>
+                    </p>
                     <br />
                     {item?.status === 'Abstract Submitted' &&
                       item.payment_status === 'Paid' && (

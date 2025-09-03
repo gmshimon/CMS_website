@@ -173,6 +173,7 @@ export const router = createBrowserRouter([
         path:'schedule/:id',
         element:<ScheduleAbstractsPage/>
       },
+      // Scheduling Routes Admin
       {
         path:'scheduling',
         element:<Scheduling/>,
@@ -187,6 +188,7 @@ export const router = createBrowserRouter([
           }
         ]
       },
+      // Submission Routes Admin
       {
         path:'submission',
         element:<Submission/>,
@@ -205,6 +207,7 @@ export const router = createBrowserRouter([
           }
         ]
       },
+      // Review Routes Admin
       {
         path:'review',
         element:<Review/>,
@@ -219,6 +222,7 @@ export const router = createBrowserRouter([
           }
         ]
       },
+      // User Management Routes Admin
       {
         path:'users',
         element:<Users/>,
