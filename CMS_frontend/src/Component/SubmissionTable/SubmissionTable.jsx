@@ -170,7 +170,7 @@ const SubmissionTable = ({
                         className='border border-gray-300 rounded-md p-1 text-xs'
                       >
                         <option value=''>Select Action</option>
-                        <option value='Accepted'>Accept</option>
+                        <option value='Abstract Accepted'>Accept</option>
                         <option value='Rejected'>Reject</option>
                       </select>
                     ) : (

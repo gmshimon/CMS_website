@@ -26,14 +26,15 @@ const abstractSchema = new mongoose.Schema(
     payment_proof: {
       type: String
     },
-    scheduled:{
-      type:Boolean,
-      default:false,
+    scheduled: {
+      type: Boolean,
+      default: false
     },
     status: {
       type: String,
       enum: [
         'Abstract Submitted',
+        'Abstract Accepted',
         'Paper Submitted',
         'Accepted',
         'Rejected',
