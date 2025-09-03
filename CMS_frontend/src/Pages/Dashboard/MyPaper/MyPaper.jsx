@@ -10,6 +10,7 @@ import useAbstract from '../../../Hooks/useAbstract'
 import { FaUpload } from 'react-icons/fa'
 import UploadPaperModal from '../../../Component/UploadPaperModal/UploadPaperModal'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
+import { getStatusColor } from '../../../Utilis/getStatusColor'
 
 const MyPaper = () => {
   const { abstracts } = useSelector(state => state.abstract)
@@ -80,33 +81,7 @@ const MyPaper = () => {
     setSelectedAbstractForUpload(null)
     setIsUploadModalOpen(false)
   }
-  // Function to get status color classes
-  const getStatusColor = status => {
-    switch (status) {
-      case 'Abstract Submitted':
-        return 'bg-blue-100 text-blue-800'
-      case 'Paper Submitted':
-        return 'bg-orange-100 text-orange-800'
-      case 'In Review':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'Accepted':
-        return 'bg-green-100 text-green-800'
-      case 'Rejected':
-        return 'bg-red-100 text-red-800'
-      case 'Minor Revision':
-        return 'bg-orange-100 text-orange-800'
-      case 'Major Revision':
-        return 'bg-purple-100 text-purple-800'
-      case 'Revision Submitted':
-        return 'bg-cyan-100 text-cyan-800'
-      case 'Camera Ready Copy Submitted':
-        return 'bg-emerald-100 text-emerald-800'
-      case 'Withdraw':
-        return 'bg-gray-100 text-gray-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
+
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       {getPaperLoading ? (
@@ -131,7 +106,8 @@ const MyPaper = () => {
           {/* Show if no abstracts */}
           {!getPaperLoading && currentAbstracts.length === 0 && (
             <div className='text-center text-gray-600 py-10 text-lg'>
-              No abstracts found. Please submit your abstract first or check if your payment has been completed.
+              No abstracts found. Please submit your abstract first or check if
+              your payment has been completed.
             </div>
           )}
 
@@ -199,7 +175,7 @@ const MyPaper = () => {
 
                             {[
                               'Abstract Submitted',
-                              'Accepted',
+                              'Abstract Accepted',
                               'Minor Revision',
                               'Major Revision'
                             ].includes(abstract.status) ? (

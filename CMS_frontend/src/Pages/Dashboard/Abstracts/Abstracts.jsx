@@ -101,11 +101,6 @@ const Abstracts = () => {
     setIsModalOpen(false)
   }
 
-  
-
-  // Function to get status color classes
-
-
   return (
     <div className='md:p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       {getAbstractLoading ? (
@@ -169,6 +164,9 @@ const Abstracts = () => {
                       Submission Date
                     </th>
                     <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                      Deadline
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                       Status
                     </th>
                     <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
@@ -205,6 +203,13 @@ const Abstracts = () => {
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm text-gray-500'>
                           {format(abstract.createdAt, 'MMM d, yyyy')}
+                        </div>
+                      </td>
+                      <td className='px-6 py-4 whitespace-nowrap'>
+                        <div className='text-sm text-gray-500'>
+                          {abstract?.paper_deadline
+                            ? format(abstract.paper_deadline, 'MMM d, yyyy')
+                            : 'N/A'}
                         </div>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
@@ -290,8 +295,6 @@ const Abstracts = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
-
-      
     </div>
   )
 }

@@ -5,7 +5,9 @@ import 'react-quill/dist/quill.snow.css'
 const AbstractStatusModal = ({ isOpen, onClose, abstract, onSubmit }) => {
   const [status, setStatus] = useState(abstract?.status || '')
   const [messageContent, setMessageContent] = useState('')
-  const [paper_deadline, setDeadline] = useState('')
+  const [paper_deadline, setDeadline] = useState(
+    abstract?.paper_deadline ? abstract.paper_deadline.split('T')[0] : ''
+  )
 
   const quillRef = useRef(null)
 
@@ -65,16 +67,13 @@ const AbstractStatusModal = ({ isOpen, onClose, abstract, onSubmit }) => {
     }
 
     const editorContent = quillRef.current?.getEditor().root.innerHTML
-    console.log({ status, paper_deadline, message: editorContent })
+    const data = { status, paper_deadline, message: editorContent }
 
-    // onSubmit({ status, paper_deadline, message: editorContent })
-    // onClose()
+    onSubmit(abstract?._id, data)
+    onClose()
   }
 
   if (!isOpen || !abstract) return null
-
-
-
   return (
     <dialog open className='modal modal-bottom sm:modal-middle'>
       <div className='modal-box w-full max-w-5xl'>

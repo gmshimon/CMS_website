@@ -43,8 +43,8 @@ const useReview = (category = 'all') => {
     )
   }
 
-  const handleChangeStatusOfAbstract = (id, value) => {
-    dispatch(changeAbstractStatus({ id: id, status: value }))
+  const handleChangeStatusOfAbstract = (id, data) => {
+    dispatch(changeAbstractStatus({ id: id, ...data }))
   }
 
   return {

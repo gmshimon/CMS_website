@@ -1,6 +1,7 @@
 import express from 'express'
 import {
   changeAbstractStatus,
+  changeReviewStatus,
   createAbstract,
   getAbstract,
   getAbstractByCategory,
@@ -36,6 +37,7 @@ router.post(
 router.put('/update-abstract/:id', verifyToken, updateAbstract)
 
 router.post('/change-status/:id', verifyToken, changeAbstractStatus)
+router.post('/change-review-status/:id', verifyToken, changeReviewStatus)
 router.put(
   '/update-payment-status/:abstractId',
   verifyToken,

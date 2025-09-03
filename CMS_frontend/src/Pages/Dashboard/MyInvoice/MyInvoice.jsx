@@ -120,7 +120,10 @@ const MyInvoice = () => {
                   Amount
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Date
+                  Submission Date
+                </th>
+                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                  Payment Deadline
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Status
@@ -153,12 +156,17 @@ const MyInvoice = () => {
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-semibold text-gray-900'>
-                      ${item.amount}
+                      $ {item.amount || 0}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm text-gray-500'>
                       {format(item.createdAt, 'MMM d, yyyy')}
+                    </div>
+                  </td>
+                  <td className='px-6 py-4 whitespace-nowrap'>
+                    <div className='text-sm text-gray-500'>
+                      {item?.payment_deadline?format(item.payment_deadline, 'MMM d, yyyy'):'N/A'}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>

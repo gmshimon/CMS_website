@@ -8,7 +8,7 @@ const PaperModal = ({ abstract, isOpen, onClose }) => {
   const { papers, getPaperLoading } = useSelector(state => state.paper)
 
   const paperFiles =
-    papers?.paper?.length > 0 ? papers.paper : abstract?.papers.paper || []
+    papers?.paper?.length > 0 ? papers.paper : abstract?.papers?.paper || []
 
   if (!isOpen || !abstract) return null
   // Determine file type icon based on file extension

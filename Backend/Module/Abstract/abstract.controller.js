@@ -110,10 +110,20 @@ export const getAbstract = async (req, res, next) => {
       .populate('conference')
       .populate('createdBy')
       .lean() // Returns plain JS objects
+
+      const abstractsWithPapers = await Promise.all(
+      getAbstract.map(async abstract => {
+        const papers = await Paper.findOne({ abstract: abstract._id }).lean()
+        return {
+          ...abstract,
+          papers // Will be empty array if none found
+        }
+      })
+    )
     return res.status(200).json({
       status: 'Success',
       message: 'Fetched the abstract by category successfully',
-      data: getAbstract
+      data: abstractsWithPapers
     })
   } catch (error) {
     res.status(400).json({
@@ -123,6 +133,49 @@ export const getAbstract = async (req, res, next) => {
   }
 }
 
+export const changeReviewStatus = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { status, paper_deadline, message } = req.body
+    const getAbstract = await Abstracts.findOne({ _id: id }).populate([
+      { path: 'conference' },
+      { path: 'createdBy' }
+    ])
+    if (!getAbstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    getAbstract.status = status
+    getAbstract.paper_deadline = paper_deadline
+    if (status == 'Accepted') {
+      getAbstract.review_status = 'Reviewed'
+    }
+    await getAbstract.save()
+
+    const shortMsg = `Your abstract "${getAbstract.paper_title}" status has been updated to: ${status}.`
+    await createNotificationService(
+      getAbstract.createdBy._id,
+      shortMsg,
+      message
+    )
+    // Send invitation email to the reviewer
+    await sendEmail({
+      to: getAbstract.createdBy.email,
+      subject: 'Update on Your Abstract Submission Status',
+      html: message
+    })
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Successfully updated the status of the',
+      data: getAbstract
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 export const changeAbstractStatus = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -138,7 +191,7 @@ export const changeAbstractStatus = async (req, res, next) => {
     }
 
     getAbstract.status = status
-    if(status=="Accepted" || status=="Minor Revision"){
+    if (status == 'Accepted' || status == 'Minor Revision') {
       getAbstract.review_status = 'Reviewed'
     }
     await getAbstract.save()

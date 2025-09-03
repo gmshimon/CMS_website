@@ -167,6 +167,49 @@ const PresenterHome = () => {
           )}
         </div>
       </div>
+      <div className='mt-8 grid grid-cols-1'>
+  <div className='bg-white rounded-lg shadow-md p-6'>
+    <h3 className='text-xl font-semibold text-gray-800 mb-4'>
+      File Naming Instructions
+    </h3>
+    <p className='text-gray-700 mb-4'>
+      To ensure your submissions are processed smoothly, please follow the
+      naming guidelines below when uploading your documents:
+    </p>
+
+    <ul className='space-y-3 text-gray-700'>
+      <li className='flex items-start'>
+        <span className='w-2 h-2 mt-2 bg-blue-500 rounded-full mr-3'></span>
+        <span>
+          <strong>First Submission:</strong> Keep the file name simple and
+          clear. For example: <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title.pdf</code>
+        </span>
+      </li>
+      <li className='flex items-start'>
+        <span className='w-2 h-2 mt-2 bg-yellow-500 rounded-full mr-3'></span>
+        <span>
+          <strong>Minor Revision:</strong> Mention the revision type in the
+          file name. For example:{' '}
+          <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title_MinorRevision.pdf</code>
+        </span>
+      </li>
+      <li className='flex items-start'>
+        <span className='w-2 h-2 mt-2 bg-red-500 rounded-full mr-3'></span>
+        <span>
+          <strong>Major Revision:</strong> Clearly indicate the revision in
+          the file name. For example:{' '}
+          <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title_MajorRevision.pdf</code>
+        </span>
+      </li>
+    </ul>
+
+    <p className='mt-4 text-sm text-gray-600 italic'>
+      💡 Following these instructions helps reviewers and administrators
+      easily track your submission versions.
+    </p>
+  </div>
+</div>
+
     </div>
   )
 }
