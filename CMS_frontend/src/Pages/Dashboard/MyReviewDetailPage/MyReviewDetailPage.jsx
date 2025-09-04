@@ -71,7 +71,7 @@ const MyReviewDetailPage = () => {
     setOpenModal(true)
   }
   const handleView = paper => {
-    window.open(paper, '_blank')
+    window.open(paper.url, '_blank')
   }
 
   if (respondReviewLoading || submitReviewLoading) {

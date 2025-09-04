@@ -10,8 +10,9 @@ import useAbstract from '../../../Hooks/useAbstract'
 import { FaUpload } from 'react-icons/fa'
 import UploadPaperModal from '../../../Component/UploadPaperModal/UploadPaperModal'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
-import { getStatusColor } from '../../../Utilis/getStatusColor'
+
 import { format } from 'date-fns'
+import { getStatusColor } from '../../../Utilis/getStatusColor'
 
 const MyPaper = () => {
   const { abstracts } = useSelector(state => state.abstract)

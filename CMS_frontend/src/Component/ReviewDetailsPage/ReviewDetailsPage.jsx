@@ -71,7 +71,7 @@ const ReviewDetailsPage = () => {
     handleViewPaperList,
     handleOpenStatusModal,
     maxReviewers: 3
-  })
+  })(reviews)
 
   if (isGetAbstractReviewLoading) {
     return (

@@ -270,7 +270,9 @@ export const submitReview = async (req, res, next) => {
 export const getReviewDashboardsStats = async (req, res, next) => {
   try {
     const { conference_id } = req.query
-    const matchQuery = {}
+    const matchQuery = {
+      presentation_method: { $in: ['Paper Presentation Online', 'Paper Presentation Physical'] }
+    }
     if (
       conference_id &&
       conference_id !== 'all' &&
@@ -322,8 +324,7 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 export const getAbstractsByCategory = async (req, res, next) => {
   try {
     const { category, conference_id } = req.query
-    console.log(category)
-    const matchQuery = {}
+    const matchQuery = {presentation_method: { $in: ['Paper Presentation Online', 'Paper Presentation Physical'] }}
 
     if (
       conference_id &&

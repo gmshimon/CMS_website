@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
 import Loading from '../Component/Loading/Loading'
@@ -18,7 +18,6 @@ const Review = () => {
     changeAbstractStatusError,
     getReviewStatsError
   } = useSelector(state => state.review)
-  // const [yearInput, setYearInput] = useState('')
   const location = useLocation()
   const dispatch = useDispatch()
 
@@ -57,15 +56,6 @@ const Review = () => {
     sentReviewerReminderError,
     sentReviewerReminderSuccess
   ])
-
-  // const handleSearch = () => {
-  //   if (!yearInput || yearInput < 1900 || yearInput > 3000) {
-  //     alert('Please enter a valid year')
-  //     dispatch(setSelectedYear(null))
-  //     return
-  //   }
-  //   dispatch(setSelectedYear(yearInput))
-  // }
 
   if (
     assigningReviewerLoading ||

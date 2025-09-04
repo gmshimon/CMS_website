@@ -5,8 +5,7 @@ export const abstractReviewColumns = ({
   handleSendReminder,
   handleViewReview,
   handleViewPaperList,
-  handleOpenStatusModal,
-  maxReviewers = 3
+  handleOpenStatusModal
 }) => {
   const baseColumns = [
     {
@@ -24,26 +23,24 @@ export const abstractReviewColumns = ({
     {
       key: 'status',
       label: 'Status',
-      render: (_, row) => {
-        return (
-          <div className='w-32 gap-2'>
-            <span
-              className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${getStatusColor(
-                row.status
-              )}`}
-            >
-              {row.status}
-            </span>
-            <br />
-            <button
-              onClick={() => handleOpenStatusModal(row)} // open modal with the row data
-              className='btn btn-xs btn-outline btn-accent text-xs mt-1 flex items-center gap-1'
-            >
-              Change Decision
-            </button>
-          </div>
-        )
-      }
+      render: (_, row) => (
+        <div className='w-32 gap-2'>
+          <span
+            className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${getStatusColor(
+              row.status
+            )}`}
+          >
+            {row.status}
+          </span>
+          <br />
+          <button
+            onClick={() => handleOpenStatusModal(row)}
+            className='btn btn-xs btn-outline btn-accent text-xs mt-1 flex items-center gap-1'
+          >
+            Change Decision
+          </button>
+        </div>
+      )
     },
     {
       key: 'conference.name',
@@ -62,47 +59,44 @@ export const abstractReviewColumns = ({
           <span className='text-sm text-gray-400'>N/A</span>
         )
     }
-  ]
+  ];
 
-  const reviewerColumns = Array.from({ length: maxReviewers }).map(
-    (_, index) => ({
+  // Dynamically generate reviewer columns based on the maximum number of reviewers in the data
+  const reviewerColumns = (rowData = []) => {
+    const maxReviewers = Math.max(...rowData.map(r => r.reviews?.length || 0), 0);
+    return Array.from({ length: maxReviewers }).map((_, index) => ({
       key: `reviewer_${index}`,
       label: `Reviewer ${index + 1}`,
       render: (_, row) => {
-        const reviewer = row?.reviews[index]?.reviewer
-        const review = row?.reviews[index]
+        const review = row?.reviews[index];
+        const reviewer = review?.reviewer;
 
-        if (!reviewer) {
-          return <span className='text-sm text-gray-400'>—</span>
-        }
+        if (!reviewer) return <span className='text-sm text-gray-400'>—</span>;
 
-        const { name, email } = reviewer
-        const hasReviewed = review?.completedAt
-        const hasAccepted = review?.status === 'accepted'
-        const noResponse = !hasReviewed
+        const { name, email } = reviewer;
+        const hasReviewed = review?.completedAt;
+        const hasAccepted = review?.status === 'accepted';
+        const noResponse = !hasReviewed;
 
-        const now = new Date()
-        const deadline = review?.deadline ? new Date(review.deadline) : null
-        const isOverdue = deadline && now > deadline && !hasReviewed
+        const now = new Date();
+        const deadline = review?.deadline ? new Date(review.deadline) : null;
+        const isOverdue = deadline && now > deadline && !hasReviewed;
 
-        let statusLabel = ''
-        let statusColor = ''
+        let statusLabel = '';
+        let statusColor = '';
 
         if (hasReviewed) {
-          statusLabel = 'Reviewed'
-          statusColor = 'text-blue-600'
+          statusLabel = 'Reviewed';
+          statusColor = 'text-blue-600';
         } else if (isOverdue) {
-          statusLabel = `Overdue (${deadline.toLocaleDateString()})`
-          statusColor = 'text-red-600'
+          statusLabel = `Overdue (${deadline.toLocaleDateString()})`;
+          statusColor = 'text-red-600';
         } else if (hasAccepted) {
-          statusLabel = `Under Review (Deadline: ${format(
-            new Date(deadline),
-            'dd MMM yyyy'
-          )})`
-          statusColor = 'text-green-600'
+          statusLabel = `Under Review (Deadline: ${format(deadline, 'dd MMM yyyy')})`;
+          statusColor = 'text-green-600';
         } else {
-          statusLabel = 'No Response'
-          statusColor = 'text-yellow-600'
+          statusLabel = 'No Response';
+          statusColor = 'text-yellow-600';
         }
 
         return (
@@ -110,12 +104,10 @@ export const abstractReviewColumns = ({
             <span className='font-medium text-gray-700'>
               {name || email || 'Unnamed Reviewer'}
             </span>
-            <span className={`text-xs font-semibold ${statusColor}`}>
-              {statusLabel}
-            </span>
+            <span className={`text-xs font-semibold ${statusColor}`}>{statusLabel}</span>
             {hasReviewed && (
               <button
-                onClick={() => handleViewReview(row?.reviews[index])}
+                onClick={() => handleViewReview(review)}
                 className='btn btn-sm text-xs btn-accent mt-1'
               >
                 View Review
@@ -123,17 +115,17 @@ export const abstractReviewColumns = ({
             )}
             {noResponse && (
               <button
-                onClick={() => handleSendReminder(row?.reviews[index]?._id)}
+                onClick={() => handleSendReminder(review?._id)}
                 className='btn btn-xs btn-warning mt-1'
               >
                 Reminder
               </button>
             )}
           </div>
-        )
+        );
       }
-    })
-  )
+    }));
+  };
 
   const viewColumn = {
     key: 'view_submission',
@@ -147,10 +139,10 @@ export const abstractReviewColumns = ({
         <FaEye />
       </button>
     )
-  }
+  };
 
-  return [...baseColumns, ...reviewerColumns, viewColumn]
-}
+  return (rowData = []) => [...baseColumns, ...reviewerColumns(rowData), viewColumn];
+};
 
 export const reviewHomeColumn = ({
   handleViewPaperList,

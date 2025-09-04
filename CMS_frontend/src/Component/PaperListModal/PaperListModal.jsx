@@ -1,5 +1,3 @@
-import React from 'react'
-
 const PaperListModal = ({ isOpen, onClose, papers, onView }) => {
   if (!isOpen) return null
   return (
@@ -24,9 +22,7 @@ const PaperListModal = ({ isOpen, onClose, papers, onView }) => {
                 className='py-3 flex items-center justify-between'
               >
                 <div>
-                  <div className='font-medium'>
-                    {paper.split('com/paper/')[1] || 'Untitled Paper'}
-                  </div>
+                  <div className='font-medium'>{paper.originalName}</div>
                   <div className='text-xs text-gray-500'>
                     Submitted: {new Date(papers.createdAt).toLocaleDateString()}
                   </div>
