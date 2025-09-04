@@ -55,7 +55,7 @@ const SubmissionTable = ({
             ) : (
               data.map(item => (
                 <tr key={item._id} className='hover:bg-gray-100 transition-all'>
-                  
+
                   {/* Abstract ID */}
                   <td className='px-4 py-3 text-sm font-medium text-gray-900'>
                     {item._id}
@@ -202,17 +202,16 @@ const SubmissionTable = ({
                     >
                       View abstract
                     </span>
-                    <br />
                     <p>
                       {item?.papers
                         ? item.papers.paper.map((paper, index) => (
                             <a
                               key={index}
-                              className='text-blue-600 cursor-pointer hover:text-blue-800 hover:underline text-xs mt-2 block'
+                              className='text-blue-600 cursor-pointer hover:text-blue-800 hover:underline text-xs mt-1 block'
                               target='_blank'
-                              href={paper}
+                              href={paper.url}
                             >
-                              {paper?.split('/')[4]}
+                              {paper?.originalName}
                             </a>
                           ))
                         : 'No files uploaded'}

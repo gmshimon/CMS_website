@@ -285,7 +285,8 @@ export const getAbstractByCategory = async (req, res, next) => {
 export const updateAbstract = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { paper_title, abstract, authors } = req.body
+    const { paper_title, abstract, authors, payment_deadline, paper_deadline } =
+      req.body
 
     const getAbstract = await Abstracts.findOne({ _id: id })
     if (!getAbstract) {
@@ -296,7 +297,7 @@ export const updateAbstract = async (req, res, next) => {
 
     const updatedSubmission = await Abstracts.findByIdAndUpdate(
       id,
-      { paper_title, abstract, authors },
+      { paper_title, abstract, authors, payment_deadline, paper_deadline },
       { new: true, runValidators: true }
     )
 
