@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import Abstracts from '../Abstract/abstract.model.js'
 import Paper from './paper.model.js'
 import {
@@ -10,6 +11,10 @@ export const postPaper = async (req, res, next) => {
     const { abstractId } = req.params
     const { _id: userId } = req.user
 
+    const isAbstract = await Abstracts.findOne({
+      _id: abstractId
+    })
+
     if (!req.file) {
       return res.status(400).json({
         status: 'Failed',
@@ -17,9 +22,21 @@ export const postPaper = async (req, res, next) => {
       })
     }
 
+    // Check if payment deadline exists and is still valid
+    if (
+      isAbstract.paper_deadline &&
+      dayjs().isAfter(dayjs(isAbstract.paper_deadline))
+    ) {
+      const error = new Error(
+        'Paper Submission deadline has passed. You can no longer make the payment.'
+      )
+      error.statusCode = 403
+      return next(error)
+    }
+
     // Upload to S3
     const fileUrl = await s3PaperUploadService(req.file, req.file.safeFilename)
-    
+
     // Prepare file object with URL and original name
     const fileObj = {
       url: fileUrl,
@@ -55,7 +72,7 @@ export const postPaper = async (req, res, next) => {
     })
   } catch (error) {
     // Cleanup S3 if upload failed
-    if ( req.file?.safeFilename) {
+    if (req.file?.safeFilename) {
       try {
         await s3PaperDeleteService(req.file.key || req.file.safeFilename)
       } catch (cleanupErr) {

@@ -11,11 +11,16 @@ import { FaUpload } from 'react-icons/fa'
 import UploadPaperModal from '../../../Component/UploadPaperModal/UploadPaperModal'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 import { getStatusColor } from '../../../Utilis/getStatusColor'
+import { format } from 'date-fns'
 
 const MyPaper = () => {
   const { abstracts } = useSelector(state => state.abstract)
-  const { createPostPaperSuccess, createPostPaperError, getPaperLoading } =
-    useSelector(state => state.paper)
+  const {
+    createPostPaperSuccess,
+    createPostPaperError,
+    getPaperLoading,
+    paperErrorMessage
+  } = useSelector(state => state.paper)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedAbstractForUpload, setSelectedAbstractForUpload] =
     useState(null)
@@ -35,9 +40,10 @@ const MyPaper = () => {
       dispatch(paperReset())
     }
     if (createPostPaperError) {
-      showErrorToast('Paper Upload failed')
+      showErrorToast(paperErrorMessage || 'Failed to upload paper')
       dispatch(paperReset())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createPostPaperSuccess, createPostPaperError, dispatch])
 
   const abstractPerPage = 6
@@ -128,6 +134,9 @@ const MyPaper = () => {
                         Author
                       </th>
                       <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                        Submission Deadline
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                         Status
                       </th>
                       <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
@@ -152,8 +161,37 @@ const MyPaper = () => {
                           </div>
                         </td>
                         <td className='px-6 py-4 whitespace-nowrap'>
-                          <div className='text-sm text-gray-500'>
-                            {abstract.authors[0].name}
+                          <>
+                            <div className='font-medium text-gray-800'>
+                              {abstract.authors.length} Author(s)
+                            </div>
+                            <div className='space-y-1'>
+                              <div className='space-y-1'>
+                                {abstract.authors
+                                  .slice(0, 2)
+                                  .map((item, idx) => (
+                                    <div
+                                      key={idx}
+                                      className='text-gray-600 truncate max-w-44'
+                                      title={item.name}
+                                    >
+                                      • {item.name}
+                                    </div>
+                                  ))}
+                                {abstract.authors.length > 2 && (
+                                  <div className='text-gray-500 text-xs'>
+                                    +{abstract.authors.length - 2} more
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <div className='text-sm '>
+                            {abstract.paper_deadline
+                              ? format(abstract.paper_deadline, 'MMM d, yyyy')
+                              : 'N/A'}
                           </div>
                         </td>
                         <td className='px-6 py-4 whitespace-nowrap'>
@@ -170,7 +208,7 @@ const MyPaper = () => {
                               onClick={() => handleOpenModal(abstract)}
                               className='cursor-pointer hover:text-blue-500 transition-colors duration-200'
                             >
-                              <IoMdEye className='text-xl' />
+                              <IoMdEye className='text-xl' /> 
                             </button>
 
                             {[

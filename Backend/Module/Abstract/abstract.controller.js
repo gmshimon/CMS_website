@@ -359,7 +359,7 @@ export const makePayment = async (req, res, next) => {
 
     // Check if payment deadline exists and is still valid
     if (
-      abstract.payment_deadline &&
+      isAbstract.payment_deadline &&
       dayjs().isAfter(dayjs(isAbstract.payment_deadline))
     ) {
       const error = new Error(

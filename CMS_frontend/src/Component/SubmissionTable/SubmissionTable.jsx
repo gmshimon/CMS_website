@@ -55,14 +55,17 @@ const SubmissionTable = ({
             ) : (
               data.map(item => (
                 <tr key={item._id} className='hover:bg-gray-100 transition-all'>
+                  
                   {/* Abstract ID */}
                   <td className='px-4 py-3 text-sm font-medium text-gray-900'>
                     {item._id}
                   </td>
+
                   {/* theme */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.theme}
                   </td>
+
                   {/* Author name */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     <>
@@ -130,6 +133,7 @@ const SubmissionTable = ({
                         </button>
                       )}
                   </td>
+
                   {/* payment_status */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.payment_status === 'Pending' ? (
@@ -159,6 +163,7 @@ const SubmissionTable = ({
                       </>
                     )}
                   </td>
+
                   {/* payment_proof */}
                   <td className='px-4 py-3 text-center'>
                     {item.payment_proof ? (
@@ -183,10 +188,13 @@ const SubmissionTable = ({
                       ? format(new Date(item.payment_deadline), 'MMM d, yyyy')
                       : 'N/A'}
                   </td>
+
                   {/* review_status */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.reviewStatus || 'Pending'}
                   </td>
+
+                  {/* Abstract Submitted */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     <span
                       className='text-blue-600 cursor-pointer hover:text-blue-800 hover:underline'
@@ -210,6 +218,7 @@ const SubmissionTable = ({
                         : 'No files uploaded'}
                     </p>
                   </td>
+
                   {/* Abstract Decisions */}
                   <td className='px-4 py-3 text-center'>
                     {item.status === 'Abstract Submitted' ? (
@@ -231,6 +240,7 @@ const SubmissionTable = ({
                       </span>
                     )}
                   </td>
+
                   {/* Actions */}
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
@@ -248,6 +258,7 @@ const SubmissionTable = ({
                       <FaTrash />
                     </button>
                   </td>
+
                   {/* Abstract modal */}
                   {isOpen && (
                     <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 '>

@@ -160,14 +160,14 @@ const PaperModal = ({ abstract, isOpen, onClose }) => {
                   <div className='md:col-span-2'>
                     {paperFiles.map((file, index) => (
                       <div key={index} className='flex items-center gap-2 mb-2'>
-                        {getFileIcon(file)}
+                        {getFileIcon(file.originalName)}
                         <a
-                          href={file}
+                          href={file.url}
                           target='_blank'
                           rel='noopener noreferrer'
                           className='text-blue-600 hover:underline'
                         >
-                          {file.split('/').pop()} {/* Display file name */}
+                          {file.originalName}
                         </a>
                       </div>
                     ))}
