@@ -149,13 +149,11 @@ const SubmissionTable = ({
                         ? item.papers.paper.map((paper, index) => (
                             <a
                               key={index}
-                              className='text-blue-600 cursor-pointer hover:text-blue-800 hover:underline text-xs'
+                              className='text-blue-600 cursor-pointer hover:text-blue-800 hover:underline text-xs mt-2 block'
                               target='_blank'
                               href={paper}
                             >
-                              View paper {index + 1}
-                              {/* {paper.split('/')[4]} */}
-                              {index < item.papers.length - 1 ? ', ' : ''}
+                              {paper?.split('/')[4]}
                             </a>
                           ))
                         : 'No files uploaded'}
