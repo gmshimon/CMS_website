@@ -25,7 +25,7 @@ const SubmissionTable = ({
                 'Author',
                 'Title',
                 'Submission Date',
-                'Deadline',
+                'Submission Deadline',
                 'Current Status',
                 'Payment',
                 'Payment Proof',
@@ -103,7 +103,7 @@ const SubmissionTable = ({
                   </td>
 
                   {/* Submission Deadline */}
-                  <td className='px-4 py-3 text-sm text-gray-500'>
+                  <td className='px-4  py-3 text-sm text-gray-500'>
                     {item?.paper_deadline
                       ? format(new Date(item.paper_deadline), 'MMM d, yyyy')
                       : 'N/A'}

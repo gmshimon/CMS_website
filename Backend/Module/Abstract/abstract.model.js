@@ -39,6 +39,10 @@ const abstractSchema = new mongoose.Schema(
       type: Date,
       default: null
     },
+    amount:{
+      type: Number,
+      default: 0
+    },
     status: {
       type: String,
       enum: [

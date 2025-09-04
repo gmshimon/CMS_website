@@ -16,7 +16,8 @@ const MyInvoice = () => {
     abstracts,
     makePaymentLoading,
     makePaymentSuccess,
-    makePaymentError
+    makePaymentError,
+    errorMessage
   } = useSelector(state => state.abstract)
   const [selectedAbstract, setSelectedAbstract] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -34,8 +35,9 @@ const MyInvoice = () => {
     if (makePaymentError) {
       dispatch(reset())
       setSelectedAbstract(null)
-      showErrorToast('Failed to upload payment receipt. Please try again.')
+      showErrorToast(errorMessage)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [makePaymentSuccess, makePaymentError, dispatch])
 
   // Filter invoices based on search query
@@ -166,7 +168,9 @@ const MyInvoice = () => {
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm text-gray-500'>
-                      {item?.payment_deadline?format(item.payment_deadline, 'MMM d, yyyy'):'N/A'}
+                      {item?.payment_deadline
+                        ? format(item.payment_deadline, 'MMM d, yyyy')
+                        : 'N/A'}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>

@@ -6,6 +6,8 @@ const initialState = {
   abstracts: [],
   unscheduleAbstract: [],
 
+  errorMessage: '',
+
   conference: null,
   member_id: null,
   theme: null,
@@ -258,6 +260,8 @@ const abstractSlice = createSlice({
   reducers: {
     // reset the flags
     reset: state => {
+      state.errorMessage = ''
+
       state.createAbstractLoading = false
       state.createAbstractSuccess = false
       state.createAbstractError = false
@@ -508,10 +512,11 @@ const abstractSlice = createSlice({
         state.makePaymentSuccess = true
         state.makePaymentError = false
       })
-      .addCase(makePayment.rejected, state => {
+      .addCase(makePayment.rejected, (state,action) => {
         state.makePaymentLoading = false
         state.makePaymentSuccess = false
         state.makePaymentError = true
+        state.errorMessage = action.payload || action.error.message; // store error message
       })
       .addCase(updatePaymentStatus.pending, state => {
         state.makePaymentLoading = true

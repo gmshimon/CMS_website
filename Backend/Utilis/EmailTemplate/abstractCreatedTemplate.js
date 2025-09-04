@@ -59,7 +59,8 @@ export const paymentStatusChangeTemplate = ({
   authorName,
   abstractTitle,
   conferenceName,
-  paymentStatus
+  paymentStatus,
+  paperDeadline
 }) => {
   const statusColor =
     paymentStatus.toLowerCase() === 'paid' ? '#27ae60' : '#c0392b'
@@ -82,6 +83,15 @@ export const paymentStatusChangeTemplate = ({
       <p>
         ${statusMessage}
       </p>
+
+       ${
+         paperDeadline
+           ? `
+      <p>
+        Please note, your paper submission deadline is <strong>${paperDeadline}</strong>.
+      </p>`
+           : ''
+       }
 
       <p>
         If you have any questions or concerns, feel free to contact us for assistance.
@@ -118,13 +128,17 @@ export const paymentReminderEmailTemplate = ({
         <strong>${conferenceName}</strong> is still pending.
       </p>
 
-      ${paymentDeadline ? `
+      ${
+        paymentDeadline
+          ? `
       <p>
         Please complete your payment by <strong>${paymentDeadline}</strong> to ensure your participation and abstract processing.
-      </p>` : `
+      </p>`
+          : `
       <p>
         Kindly complete your payment at the earliest to ensure your participation and abstract processing.
-      </p>`}
+      </p>`
+      }
 
       <p>
         If you have already made the payment recently, please disregard this message.

@@ -357,8 +357,23 @@ export const makePayment = async (req, res, next) => {
       return next(error)
     }
 
+    // Check if payment deadline exists and is still valid
+    if (
+      abstract.payment_deadline &&
+      dayjs().isAfter(dayjs(isAbstract.payment_deadline))
+    ) {
+      const error = new Error(
+        'Payment deadline has passed. You can no longer make the payment.'
+      )
+      error.statusCode = 400
+      return next(error)
+    }
+
     if (file) {
-      fileUrl = await s3PaymentReceiptUploadService(file)
+      fileUrl = await s3PaymentReceiptUploadService(
+        req.file,
+        req.file.safeFilename
+      )
     }
 
     isAbstract.payment_proof = fileUrl
@@ -393,11 +408,26 @@ export const updatePaymentStatus = async (req, res, next) => {
       return next(error)
     }
 
+    // If payment is Paid, set paper_deadline 5 days from now
+    let paperDeadline = null
+    if (payment_status.toLowerCase() === 'paid') {
+      paperDeadline = dayjs().add(5, 'day').toDate()
+      isAbstract.paper_deadline = paperDeadline
+    }
+
+    // Update payment status
+    isAbstract.payment_status = payment_status
+
+    await isAbstract.save()
+
     const htmlEmail = paymentStatusChangeTemplate({
       authorName: isAbstract.createdBy.name,
       abstractTitle: isAbstract.paper_title,
       conferenceName: isAbstract.conference.name,
-      paymentStatus: payment_status
+      paymentStatus: payment_status,
+      paperDeadline: paperDeadline
+        ? dayjs(paperDeadline).format('DD MMM YYYY')
+        : null
     })
     await sendEmail({
       to: isAbstract.createdBy.email,
@@ -412,10 +442,6 @@ export const updatePaymentStatus = async (req, res, next) => {
       htmlEmail,
       'Payment Status Change'
     )
-
-    isAbstract.payment_status = payment_status
-
-    await isAbstract.save()
 
     res.status(200).json({
       status: 'Success',

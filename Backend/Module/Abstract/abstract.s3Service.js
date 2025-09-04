@@ -72,17 +72,17 @@ export const deleteAbstractFile = async fileKey => {
   }
 }
 
-export const s3PaymentReceiptUploadService = async file => {
+export const s3PaymentReceiptUploadService = async (file, safeFilename) => {
   try {
     const param = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `payment/${file.originalname}`,
+      Key: `payment/${file.safeFilename}`,
       Body: file.buffer,
       ContentType: file.mimetype
     }
 
     const result = await s3client.send(new PutObjectCommand(param))
-    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/payment/${file.originalname}`
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/payment/${file.safeFilename}`
     return fileUrl
   } catch (error) {
     console.error('Error uploading payment receipt:', error)
