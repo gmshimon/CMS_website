@@ -18,7 +18,12 @@ const paperSchema = mongoose.Schema(
     theme: {
       type: String
     },
-    paper: [String],
+    paper: [
+      {
+        url: { type: String, required: true }, // S3 file URL
+        originalName: { type: String, required: true } // User's original filename
+      }
+    ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users'

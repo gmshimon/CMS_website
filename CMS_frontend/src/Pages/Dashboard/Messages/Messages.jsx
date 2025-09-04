@@ -25,8 +25,8 @@ const Messages = () => {
   // Calculate pagination
   const indexOfLastMessage = currentPage * messagesPerPage
   const indexOfFirstMessage = indexOfLastMessage - messagesPerPage
-  const currentMessages = list?.slice(indexOfFirstMessage, indexOfLastMessage)
-  const totalPages = Math.ceil(list?.length / messagesPerPage)
+  const currentMessages = list?.notifications?.slice(indexOfFirstMessage, indexOfLastMessage)
+  const totalPages = Math.ceil(list?.notifications?.length / messagesPerPage)
 
   //   const handlePageChange = pageNumber => {
   //     setCurrentPage(pageNumber)

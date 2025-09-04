@@ -16,7 +16,8 @@ export const abstractStatusChangeTemplate = ({
   authorName,
   abstractTitle,
   conferenceName,
-  newStatus
+  newStatus,
+  paymentDeadline // optional
 }) => {
   return `
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
@@ -28,7 +29,15 @@ export const abstractStatusChangeTemplate = ({
         <strong>${conferenceName}</strong> has been updated to: 
         <span style="color: #2980b9; font-weight: bold;">${newStatus}</span>.
       </p>
-      
+       ${
+         paymentDeadline
+           ? `
+      <p>
+        Please note, the payment for your abstract must be completed by 
+        <strong>${paymentDeadline}</strong>.
+      </p>`
+           : ''
+       }
       <p>
         If you have any questions or require further information, please feel free to contact us.
       </p>
@@ -96,7 +105,8 @@ export const paymentStatusChangeTemplate = ({
 export const paymentReminderEmailTemplate = ({
   authorName,
   abstractTitle,
-  conferenceName
+  conferenceName,
+  paymentDeadline
 }) => {
   return `
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
@@ -108,9 +118,13 @@ export const paymentReminderEmailTemplate = ({
         <strong>${conferenceName}</strong> is still pending.
       </p>
 
+      ${paymentDeadline ? `
+      <p>
+        Please complete your payment by <strong>${paymentDeadline}</strong> to ensure your participation and abstract processing.
+      </p>` : `
       <p>
         Kindly complete your payment at the earliest to ensure your participation and abstract processing.
-      </p>
+      </p>`}
 
       <p>
         If you have already made the payment recently, please disregard this message.

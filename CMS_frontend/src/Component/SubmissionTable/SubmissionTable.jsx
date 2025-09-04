@@ -25,9 +25,11 @@ const SubmissionTable = ({
                 'Author',
                 'Title',
                 'Submission Date',
+                'Deadline',
                 'Current Status',
                 'Payment',
                 'Payment Proof',
+                'Payment Deadline',
                 'Review Status',
                 'Abstract Submitted',
                 'Abstract Decisions',
@@ -53,24 +55,61 @@ const SubmissionTable = ({
             ) : (
               data.map(item => (
                 <tr key={item._id} className='hover:bg-gray-100 transition-all'>
+                  {/* Abstract ID */}
                   <td className='px-4 py-3 text-sm font-medium text-gray-900'>
                     {item._id}
                   </td>
+                  {/* theme */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.theme}
                   </td>
+                  {/* Author name */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
-                    {item.authors[0]?.name}
+                    <>
+                      <div className='font-medium text-gray-800 mb-1'>
+                        {item.authors.length} Author(s)
+                      </div>
+                      <div className='space-y-1'>
+                        <div className='space-y-1'>
+                          {item.authors.slice(0, 2).map((item, idx) => (
+                            <div
+                              key={idx}
+                              className='text-gray-600 truncate max-w-44'
+                              title={item.name}
+                            >
+                              • {item.name}
+                            </div>
+                          ))}
+                          {item.authors.length > 2 && (
+                            <div className='text-gray-500 text-xs'>
+                              +{item.authors.length - 2} more
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                    {/* {item.authors[0]?.name} */}
                   </td>
+                  {/* paper_title */}
                   <td
                     className='px-4 py-3 text-sm text-gray-700 '
                     title={item.paper_title}
                   >
                     {item.paper_title || 'N/A'}
                   </td>
+                  {/* submission_date */}
                   <td className='px-4 py-3 text-sm text-gray-500'>
                     {format(new Date(item.createdAt), 'MMM d, yyyy')}
                   </td>
+
+                  {/* Submission Deadline */}
+                  <td className='px-4 py-3 text-sm text-gray-500'>
+                    {item?.paper_deadline
+                      ? format(new Date(item.paper_deadline), 'MMM d, yyyy')
+                      : 'N/A'}
+                  </td>
+
+                  {/* status */}
                   <td className='px-4 py-3 text-sm w-40 '>
                     <p
                       className={`px-2 py-1 mt-4 rounded-full text-center text-xs font-semibold ${getStatusColor(
@@ -80,7 +119,8 @@ const SubmissionTable = ({
                       {item.status}
                     </p>
                     <br />
-                    {item?.status === 'Abstract Submitted' &&
+                    {/* Change abstract status */}
+                    {item?.status === 'Abstract Accepted' &&
                       item.payment_status === 'Paid' && (
                         <button
                           onClick={() => handlePaperSubmitReminder(item._id)}
@@ -90,6 +130,7 @@ const SubmissionTable = ({
                         </button>
                       )}
                   </td>
+                  {/* payment_status */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.payment_status === 'Pending' ? (
                       <select
@@ -106,17 +147,19 @@ const SubmissionTable = ({
                       <>
                         {item.payment_status}
                         <br />
-                        {item.payment_status === 'Unpaid' && (
-                          <button
-                            className='mt-1 px-2 w-full py-1 text-xs text-white bg-blue-600 hover:bg-blue-700 rounded'
-                            onClick={() => handlePaymentReminder(item._id)}
-                          >
-                            Payment_Reminder
-                          </button>
-                        )}
+                        {item.payment_status === 'Unpaid' &&
+                          item.status === 'Abstract Accepted' && (
+                            <button
+                              className='mt-1 px-2 w-full py-1 text-xs text-white bg-blue-600 hover:bg-blue-700 rounded'
+                              onClick={() => handlePaymentReminder(item._id)}
+                            >
+                              Payment_Reminder
+                            </button>
+                          )}
                       </>
                     )}
                   </td>
+                  {/* payment_proof */}
                   <td className='px-4 py-3 text-center'>
                     {item.payment_proof ? (
                       <a
@@ -133,6 +176,14 @@ const SubmissionTable = ({
                       <FaTimesCircle className='text-red-400 text-lg mx-auto' />
                     )}
                   </td>
+
+                  {/* payment_deadline */}
+                  <td className='px-4 py-3 text-sm text-gray-700'>
+                    {item.payment_deadline
+                      ? format(new Date(item.payment_deadline), 'MMM d, yyyy')
+                      : 'N/A'}
+                  </td>
+                  {/* review_status */}
                   <td className='px-4 py-3 text-sm text-gray-700'>
                     {item.reviewStatus || 'Pending'}
                   </td>
@@ -159,6 +210,7 @@ const SubmissionTable = ({
                         : 'No files uploaded'}
                     </p>
                   </td>
+                  {/* Abstract Decisions */}
                   <td className='px-4 py-3 text-center'>
                     {item.status === 'Abstract Submitted' ? (
                       <select
@@ -179,6 +231,7 @@ const SubmissionTable = ({
                       </span>
                     )}
                   </td>
+                  {/* Actions */}
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
                       onClick={() => onEdit(item)}

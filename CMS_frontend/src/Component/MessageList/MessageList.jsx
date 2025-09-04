@@ -18,7 +18,7 @@ const MessageList = () => {
         </div>
 
         <div className='max-h-96 overflow-y-auto'>
-          {list?.map(message => (
+          {list?.notifications?.map(message => (
             <div
               key={message._id}
               className={`px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors duration-200 ${

@@ -201,7 +201,7 @@ const Dashboard = () => {
                     <div className='indicator'>
                       <LuMessageSquare className='text-xl' />
                       <span className='badge badge-xs indicator-item'>
-                        {list?.length}
+                        {list?.unreadCount }
                       </span>
                     </div>
                   </div>

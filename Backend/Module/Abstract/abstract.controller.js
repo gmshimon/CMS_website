@@ -16,6 +16,7 @@ import {
   s3AbstractPresentationProfilePicture,
   s3PaymentReceiptUploadService
 } from './abstract.s3Service.js'
+import dayjs from 'dayjs' // lightweight date library
 
 export const createAbstract = async (req, res, next) => {
   try {
@@ -111,7 +112,7 @@ export const getAbstract = async (req, res, next) => {
       .populate('createdBy')
       .lean() // Returns plain JS objects
 
-      const abstractsWithPapers = await Promise.all(
+    const abstractsWithPapers = await Promise.all(
       getAbstract.map(async abstract => {
         const papers = await Paper.findOne({ abstract: abstract._id }).lean()
         return {
@@ -176,14 +177,17 @@ export const changeReviewStatus = async (req, res, next) => {
     next(error)
   }
 }
+
 export const changeAbstractStatus = async (req, res, next) => {
   try {
     const { id } = req.params
     const { status } = req.body
+
     const getAbstract = await Abstracts.findOne({ _id: id }).populate([
       { path: 'conference' },
       { path: 'createdBy' }
     ])
+
     if (!getAbstract) {
       const error = new Error('Abstract not found')
       error.statusCode = 404
@@ -191,16 +195,24 @@ export const changeAbstractStatus = async (req, res, next) => {
     }
 
     getAbstract.status = status
-    if (status == 'Accepted' || status == 'Minor Revision') {
-      getAbstract.review_status = 'Reviewed'
+
+    // Set payment deadline if accepted
+    let paymentDeadline = null
+    if (status == 'Abstract Accepted') {
+      paymentDeadline = dayjs().add(3, 'day').toDate() // 3 days from now
+      getAbstract.payment_deadline = paymentDeadline
     }
+
     await getAbstract.save()
 
     const emailHtml = abstractStatusChangeTemplate({
       authorName: getAbstract.createdBy.name,
       abstractTitle: getAbstract.paper_title,
       conferenceName: getAbstract.conference.name,
-      newStatus: status
+      newStatus: status,
+      paymentDeadline: paymentDeadline
+        ? dayjs(paymentDeadline).format('DD MMM YYYY')
+        : null
     })
     const shortMsg = `Your abstract "${getAbstract.paper_title}" status has been updated to: ${status}.`
     await createNotificationService(
@@ -437,11 +449,17 @@ export const sendPaymentReminder = async (req, res, next) => {
       return next(error)
     }
 
-    // 3. Prepare email content
+    // 3. Prepare formatted payment deadline
+    const paymentDeadline = abstract.payment_deadline
+      ? dayjs(abstract.payment_deadline).format('DD MMM YYYY')
+      : null
+
+    // 4. Prepare email content
     const emailHtml = paymentReminderEmailTemplate({
       authorName: abstract.createdBy.name,
       abstractTitle: abstract.paper_title,
-      conferenceName: abstract.conference.name
+      conferenceName: abstract.conference.name,
+      paymentDeadline
     })
 
     const shortMsg = `Reminder: Your payment for the abstract "${abstract.paper_title}" is still pending.`

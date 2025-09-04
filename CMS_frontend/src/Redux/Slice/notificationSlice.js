@@ -41,9 +41,9 @@ const notificationSlice = createSlice({
     },
     updateNotification: (state, action) => {
       const id = action.payload
-      const notif = state.list.findIndex(n => n._id === id)
+      const notif = state.list.notifications.findIndex(n => n._id === id)
       if (notif !== -1) {
-        state.list[notif].isRead = true
+        state.list.notifications[notif].isRead = true
       }
     }
   },

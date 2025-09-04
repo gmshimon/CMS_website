@@ -7,62 +7,64 @@ import {
 
 export const postPaper = async (req, res, next) => {
   try {
-    const { abstractId } = req.params;
-    const { _id: userId } = req.user;
+    const { abstractId } = req.params
+    const { _id: userId } = req.user
 
     if (!req.file) {
       return res.status(400).json({
         status: 'Failed',
-        message: 'No file uploaded',
-      });
+        message: 'No file uploaded'
+      })
     }
 
     // Upload to S3
-    const fileUrl = await s3PaperUploadService(req.file);
+    const fileUrl = await s3PaperUploadService(req.file, req.file.safeFilename)
+    
+    // Prepare file object with URL and original name
+    const fileObj = {
+      url: fileUrl,
+      originalName: req.file.originalname
+    }
 
     // Check if a paper already exists
-    let paperDoc = await Paper.findOne({ abstract: abstractId });
-    let status;
+    let paperDoc = await Paper.findOne({ abstract: abstractId })
+    let status
 
     if (paperDoc) {
       // Append or replace based on your use case
-      paperDoc.paper.push(fileUrl);
-      await paperDoc.save();
-      status = 'Revision Submitted';
+      paperDoc.paper.push(fileObj)
+      await paperDoc.save()
+      status = 'Revision Submitted'
     } else {
       // Create new paper
       paperDoc = await Paper.create({
         ...req.body,
         createdBy: userId,
         abstract: abstractId,
-        paper: [fileUrl],
-      });
-      status = 'Paper Submitted';
+        paper: [fileObj]
+      })
+      status = 'Paper Submitted'
     }
 
-    await Abstracts.updateOne(
-      { _id: abstractId },
-      { $set: { status } }
-    );
+    await Abstracts.updateOne({ _id: abstractId }, { $set: { status } })
 
     return res.status(paperDoc.isNew ? 201 : 200).json({
       status: 'Success',
       message: 'Paper uploaded successfully',
-      data: paperDoc,
-    });
+      data: paperDoc
+    })
   } catch (error) {
     // Cleanup S3 if upload failed
-    if (req.file?.key || req.file?.originalname) {
+    if ( req.file?.safeFilename) {
       try {
-        await s3PaperDeleteService(req.file.key || req.file.originalname);
+        await s3PaperDeleteService(req.file.key || req.file.safeFilename)
       } catch (cleanupErr) {
-        console.error('S3 cleanup failed:', cleanupErr.message);
+        console.error('S3 cleanup failed:', cleanupErr.message)
       }
     }
-    next(error);
+    next(error)
   }
 }
-
 
 export const getPaper = async (req, res, next) => {
   try {

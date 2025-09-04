@@ -52,7 +52,7 @@ const setupWebSocket = server => {
     socket.on('markAsRead', async ({ notificationId }) => {
       try {
         await notification.findByIdAndUpdate(notificationId, { isRead: true })
-        const userSockets = connectedUsers.get(userId)
+        // const userSockets = connectedUsers.get(userId)
         // Optional: notify all tabs of the user if needed
         socket.emit('notificationRead', { notificationId })
       } catch (err) {
