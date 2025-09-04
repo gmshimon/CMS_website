@@ -97,17 +97,16 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
   const handleSubmit = e => {
     e.preventDefault()
     const newErrors = validateForm()
-    // if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length === 0) {
     setActiveStep([...activeStep, 'Author'])
     sessionStorage.setItem(
       'activeStep',
       JSON.stringify([...activeStep, 'Author'])
     )
-    // Here you would typically make an API call to submit the form data
-    console.log('Form Data:', formData)
-    // } else {
-    //     setErrors(newErrors);
-    // }
+    setErrors({})
+    } else {
+        setErrors(newErrors);
+    }
   }
 
   return (

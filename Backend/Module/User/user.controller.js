@@ -225,7 +225,9 @@ export const getMyDashboardStats = async (req, res, next) => {
     })
 
     // 3. Recent submissions (latest 5)
-    const recentSubmissions = await Abstracts.find(match)
+    const recentSubmissions = await Abstracts.find({
+      createdBy: userId
+    })
       .sort({ createdAt: -1 })
       .limit(2)
       .populate('conference', 'name') // optional: populate conference name

@@ -37,7 +37,7 @@ const MyInvoice = () => {
       setSelectedAbstract(null)
       showErrorToast(errorMessage)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [makePaymentSuccess, makePaymentError, dispatch])
 
   // Filter invoices based on search query
@@ -143,7 +143,7 @@ const MyInvoice = () => {
                 >
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {item._id}
+                      {item.abstract_id||item._id}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>

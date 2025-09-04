@@ -191,7 +191,6 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       authors
     }
     dispatch(createAbstract(data))
-    console.log(data)
   }
 
   // const resetForm = () => {

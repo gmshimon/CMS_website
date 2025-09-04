@@ -9,6 +9,7 @@ import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
+import Reviews from '../Review/review.model.js'
 import Schedule from '../Schedule/schedule.model.js'
 import Abstracts from './abstract.model.js'
 import {
@@ -149,9 +150,24 @@ export const changeReviewStatus = async (req, res, next) => {
     }
 
     getAbstract.status = status
-    getAbstract.paper_deadline = paper_deadline
+
     if (status == 'Accepted') {
       getAbstract.review_status = 'Reviewed'
+    } else if (status == 'Minor Revision' || status == 'Major Revision') {
+      getAbstract.paper_deadline = paper_deadline
+
+      // ✅ Reset review status of all related reviews to "Pending"
+      await Reviews.updateMany(
+        { abstract: id },
+        {
+          $set: {
+            status: 'accepted'
+          }
+        }
+      )
+
+      // Also reset abstract review status
+      getAbstract.review_status = 'Pending'
     }
     await getAbstract.save()
 
@@ -289,6 +305,7 @@ export const updateAbstract = async (req, res, next) => {
       req.body
 
     const getAbstract = await Abstracts.findOne({ _id: id })
+
     if (!getAbstract) {
       const error = new Error('Abstract not found')
       error.statusCode = 404

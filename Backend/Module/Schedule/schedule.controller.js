@@ -790,7 +790,7 @@ export const getMySchedule = async (req, res, next) => {
     }
 
     const myAbstracts = await Abstracts.find(match).select(
-      'paper_title status presentation_method conference scheduled createdAt'
+      'paper_title status abstract_id presentation_method conference scheduled createdAt'
     )
 
     // If no abstracts, return empty array
@@ -819,6 +819,7 @@ export const getMySchedule = async (req, res, next) => {
         presentation_method: abs.presentation_method,
         conference: abs.conference,
         scheduled: abs.scheduled,
+        abstract_id:abs.abstract_id,
         schedule: schedule
           ? {
               day: schedule.day,

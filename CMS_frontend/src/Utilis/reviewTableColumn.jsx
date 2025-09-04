@@ -74,7 +74,7 @@ export const abstractReviewColumns = ({
         if (!reviewer) return <span className='text-sm text-gray-400'>—</span>;
 
         const { name, email } = reviewer;
-        const hasReviewed = review?.completedAt;
+        const hasReviewed = review?.completedAt && review?.status == 'reviewed';
         const hasAccepted = review?.status === 'accepted';
         const noResponse = !hasReviewed;
 
@@ -168,6 +168,11 @@ export const reviewHomeColumn = ({
       key: 'conference.name',
       label: 'Conference',
       render: (_, row) => row?.abstract?.conference?.name || 'N/A'
+    },
+    {
+      key: 'conference.name',
+      label: 'Abstract Status',
+      render: (_, row) =><span className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${ getStatusColor(row?.abstract?.status )}`}>{row?.abstract?.status}</span>|| 'N/A'
     },
     {
       key: 'status',

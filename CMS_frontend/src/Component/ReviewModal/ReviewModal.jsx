@@ -114,7 +114,7 @@ const ReviewModal = ({ isOpen, onClose, isEditable, onSubmit, paper }) => {
                   )}
                   {isEditable ? (
                     <select
-                      className='select select-bordered w-full'
+                      className='border border-black p-2 rounded-md w-full'
                       value={responses[q.id] || ''}
                       onChange={e => handleSelectChange(q.id, e.target.value)}
                       required
@@ -141,7 +141,7 @@ const ReviewModal = ({ isOpen, onClose, isEditable, onSubmit, paper }) => {
                     max={10}
                     value={score}
                     onChange={e => setScore(e.target.value)}
-                    className='input input-bordered w-full'
+                    className='border border-black p-2 rounded-md  w-full'
                     required
                   />
                 ) : (
@@ -180,7 +180,7 @@ const ReviewModal = ({ isOpen, onClose, isEditable, onSubmit, paper }) => {
                 </label>
                 {isEditable ? (
                   <select
-                    className='select select-bordered w-full'
+                    className='border border-black p-2 rounded-md  w-full'
                     value={recommendation}
                     onChange={e => setRecommendation(e.target.value)}
                     required
@@ -188,13 +188,9 @@ const ReviewModal = ({ isOpen, onClose, isEditable, onSubmit, paper }) => {
                     <option value=''>Select a recommendation</option>
                     <option value='Accept'>Accept</option>
                     <option value='Minor'>Minor</option>
-                    <option value='Moderate'>Moderate</option>
                     <option value='Major'>Major</option>
-                    <option value='Conditional Acceptance'>
-                      Conditional Acceptance
-                    </option>
                     <option value='Reject'>Reject</option>
-                    <option value='Withdrawn'>Withdrawn</option>
+           
                   </select>
                 ) : (
                   <div className='p-2 border rounded'>

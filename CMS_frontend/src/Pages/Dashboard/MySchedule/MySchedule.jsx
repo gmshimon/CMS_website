@@ -5,6 +5,7 @@ import Loading from '../../../Component/Loading/Loading'
 import { format } from 'date-fns'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
+import { getStatusColor } from '../../../Utilis/getStatusColor'
 
 const MySchedule = () => {
   const { schedules, getMyScheduleLoading } = useSelector(
@@ -49,19 +50,6 @@ const MySchedule = () => {
   )
   const totalPages = Math.ceil(filteredInvoices.length / invoicesPerPage)
 
-  // Get status color
-  const getStatusColor = status => {
-    switch (status.toLowerCase()) {
-      case 'paid':
-        return 'bg-green-100 text-green-800'
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'overdue':
-        return 'bg-red-100 text-red-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
   return (
     <div className='p-4 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       <div className='mb-6'>
@@ -119,7 +107,7 @@ const MySchedule = () => {
                   {/* Abstract ID */}
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900'>
-                      {item._id}
+                          {item.abstract_id||item._id}
                     </div>
                   </td>
 

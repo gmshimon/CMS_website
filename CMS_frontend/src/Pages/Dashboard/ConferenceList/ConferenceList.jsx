@@ -90,7 +90,7 @@ const ConferenceList = () => {
                     <tr key={index}>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                          {conference.abstract._id}
+                          {conference.abstract.abstract_id||conference.abstract._id}
                         </div>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>

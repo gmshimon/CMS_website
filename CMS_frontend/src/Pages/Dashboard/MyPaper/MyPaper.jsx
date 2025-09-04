@@ -153,7 +153,7 @@ const MyPaper = () => {
                       >
                         <td className='px-6 py-4 whitespace-nowrap'>
                           <div className='text-sm font-medium text-gray-900'>
-                            {abstract._id}
+                            {abstract.abstract_id || abstract._id}
                           </div>
                         </td>
                         <td className='px-6 py-4'>
@@ -209,7 +209,7 @@ const MyPaper = () => {
                               onClick={() => handleOpenModal(abstract)}
                               className='cursor-pointer hover:text-blue-500 transition-colors duration-200'
                             >
-                              <IoMdEye className='text-xl' /> 
+                              <IoMdEye className='text-xl' />
                             </button>
 
                             {[
