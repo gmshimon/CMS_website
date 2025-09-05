@@ -20,6 +20,10 @@ const abstractSchema = new mongoose.Schema(
     member_id: {
       type: String
     },
+    price:{
+      type: Number,
+      default:0
+    },
     payment_status: {
       type: String,
       enum: ['Paid', 'Pending', 'Unpaid'],

@@ -13,6 +13,8 @@ import Loading from '../../../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 import useAbstract from '../../../Hooks/useAbstract'
 import { getStatusColor } from '../../../Utilis/getStatusColor'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Abstracts = () => {
   const { createPostPaperSuccess, createPostPaperError } = useSelector(
@@ -100,7 +102,8 @@ const Abstracts = () => {
   }
 
   return (
-    <div className='md:p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+      <ToastContainer />
       {getAbstractLoading ? (
         <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
           <Loading />
@@ -184,7 +187,10 @@ const Abstracts = () => {
                         </div>
                       </td>
                       <td className='px-6 py-4'>
-                        <div className='text-sm text-gray-900 line-clamp-2'>
+                        <div
+                          title={abstract.paper_title}
+                          className='text-sm text-gray-900 line-clamp-2'
+                        >
                           {abstract.paper_title}
                         </div>
                       </td>

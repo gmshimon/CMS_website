@@ -1,6 +1,7 @@
 import {
   abstractCreatedTemplate,
   abstractStatusChangeTemplate,
+  adminAbstractNotificationTemplate,
   paperSubmitReminderEmailTemplate,
   paymentReminderEmailTemplate,
   paymentStatusChangeTemplate
@@ -11,6 +12,7 @@ import { createNotificationService } from '../Notification/notification.service.
 import Paper from '../Paper/paper.model.js'
 import Reviews from '../Review/review.model.js'
 import Schedule from '../Schedule/schedule.model.js'
+import Users from '../User/user.model.js'
 import Abstracts from './abstract.model.js'
 import {
   s3AbstractGraphicalAbstract,
@@ -24,70 +26,90 @@ export const createAbstract = async (req, res, next) => {
     const { conference_registration, ...data } = req.body
     const { _id, email, name } = req.user
 
+    // Assign createdBy to conference registration
     conference_registration.createdBy = _id
-    // ✅ create the conference registration data
-    const createConference = await conference_reg.create(
-      conference_registration
-    )
 
+    // ✅ Create the conference registration data
+    const createConference = await conference_reg.create(conference_registration)
+
+    // Handle uploaded files
     const abstractFile = req.files?.image?.[0]
     const profileImage = req.files?.file?.[0]
 
-    let graphical = null
-    let image = null
-
-    if (abstractFile) {
-      graphical = await s3AbstractGraphicalAbstract(abstractFile)
-    }
-
-    if (profileImage) {
-      image = await s3AbstractPresentationProfilePicture(profileImage)
-    }
+    const graphical = abstractFile
+      ? await s3AbstractGraphicalAbstract(abstractFile)
+      : null
+    const image = profileImage
+      ? await s3AbstractPresentationProfilePicture(profileImage)
+      : null
 
     data.graphical_abstract = graphical
     data.presentation_profile_picture = image
     data.conference_reg = createConference._id
     data.createdBy = _id
 
-    // ✅ create the abstract
+    // ✅ Create the abstract
     const createAbstract = await Abstracts.create(data)
     await conference_reg.updateOne(
       { _id: createConference._id },
-      {
-        $set: {
-          abstract: createAbstract._id
-        }
-      }
+      { $set: { abstract: createAbstract._id } }
     )
 
-    const message = `Your abstract ${data.paper_title} has been successfully submitted`
-    const type = 'abstract_created'
-
-    // get the styled html
-    const emailHtml = abstractCreatedTemplate({
+    // ✅ Notify the submitting user (immediately)
+    const userMessage = `Your abstract "${data.paper_title}" has been successfully submitted`
+    const userType = 'abstract_created'
+    const userEmailHtml = abstractCreatedTemplate({
       userName: name,
       abstractTitle: data.paper_title || ''
     })
 
-    // ✅ save the notification and send notification to the frontend
-    await createNotificationService(_id, message, emailHtml)
-
-    // ✅ Send styled email
-    await sendEmail({
-      to: email,
-      subject: 'Abstract Submission confirmation',
-      html: emailHtml
+    // Save notification and send email asynchronously
+    setImmediate(async () => {
+      try {
+        await createNotificationService(_id, userMessage, userEmailHtml, userType)
+        await sendEmail({
+          to: email,
+          subject: 'Abstract Submission Confirmation',
+          html: userEmailHtml
+        })
+      } catch (err) {
+        console.error('Error sending user email:', err)
+      }
     })
+
+    // ✅ Notify admins asynchronously
+    const admins = await Users.find({ role: 'Admin' })
+    const adminMessage = `A new abstract "${data.paper_title}" has been submitted by ${name}`
+    const adminType = 'new_abstract_submitted'
+
+    admins.forEach(admin => {
+      setImmediate(async () => {
+        try {
+          const adminEmailHtml = adminAbstractNotificationTemplate({
+            adminName: admin.name,
+            userName: name,
+            abstractTitle: data.paper_title,
+          })
+          await createNotificationService(admin._id, adminMessage, adminEmailHtml, adminType)
+          await sendEmail({
+            to: admin.email,
+            subject: 'New Abstract Submitted',
+            html: adminEmailHtml
+          })
+        } catch (err) {
+          console.error(`Error sending email to admin ${admin.email}:`, err)
+        }
+      })
+    })
+
+    // ✅ Respond immediately without waiting for emails
     res.status(200).json({
       status: 'Success',
-      message: 'Successfully abstract created',
+      message: 'Abstract successfully created',
       data: createAbstract
     })
   } catch (error) {
-    res.status(400).json({
-      status: 'failed',
-      message: error.message
-    })
+    next(error)
   }
 }
 

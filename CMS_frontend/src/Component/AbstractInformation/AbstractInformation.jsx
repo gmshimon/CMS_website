@@ -10,6 +10,7 @@ import {
   setOrcidLink,
   setPaperTitle,
   setPresentationMethod,
+  setPrice,
   // setPresentationProfilePicture,
   // setPresentationVideoLink,
   setPublicationOptions,
@@ -52,7 +53,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
     if (!abstract?.trim() || !abstract) {
       newErrors.abstract = 'Abstract is required'
     }
-    if (!keywords?.trim() || keywords) {
+    if (!keywords?.trim() || !keywords) {
       newErrors.keywords = 'Keywords are required'
     }
     return newErrors
@@ -111,14 +112,18 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           <select
             name='presentation_method'
             value={presentation_method}
-            onChange={e => dispatch(setPresentationMethod(e.target.value))}
+            onChange={e => {
+              const selectedOption = JSON.parse(e.target.value); // parse the string back to object
+      dispatch(setPresentationMethod(selectedOption.submissionType));
+      dispatch(setPrice(selectedOption.price));
+            }}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presentationMethod ? 'select-error' : ''
             }`}
           >
             <option value=''>Select presentation method</option>
             {singleConference?.submissionOptions?.map((option, index) => (
-              <option key={index} value={option.submissionType}>
+              <option key={index} value={JSON.stringify(option)} >
                 {option.submissionType} ( ${option.price} )
               </option>
             ))}

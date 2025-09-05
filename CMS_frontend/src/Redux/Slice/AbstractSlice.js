@@ -32,6 +32,8 @@ const initialState = {
   mailing_address: null,
   presenter_status: null,
   authors: [],
+  price: 0,
+
   conference_registration: {},
 
   createAbstractLoading: false,
@@ -320,6 +322,7 @@ const abstractSlice = createSlice({
       state.presenter_status = null
       state.authors = []
       state.conference_registration = {}
+      state.price = 0
     },
     // setters for each field
     setAbstracts: (state, { payload }) => {
@@ -399,6 +402,9 @@ const abstractSlice = createSlice({
     },
     setConferenceRegistration: (state, { payload }) => {
       state.conference_registration = payload
+    },
+    setPrice: (state, { payload }) => {
+      state.price = payload
     }
   },
   extraReducers: builder => {
@@ -617,7 +623,8 @@ export const {
   setMailingAddress,
   setPresenterStatus,
   setAbstractAuthors,
-  setConferenceRegistration
+  setConferenceRegistration,
+  setPrice
 } = abstractSlice.actions
 
 export default abstractSlice.reducer

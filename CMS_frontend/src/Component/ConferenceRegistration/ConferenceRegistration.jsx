@@ -1,9 +1,5 @@
-import  { useEffect, useState } from 'react'
-import {
-  FaCalendarAlt,
-  FaClock,
-  FaBed,
-} from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import { FaCalendarAlt, FaClock, FaBed } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAbstract } from '../../Redux/Slice/AbstractSlice'
@@ -32,6 +28,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
     mailing_address,
     presenter_status,
     authors,
+    price,
     createAbstractSuccess,
     createAbstractLoading
   } = useSelector(state => state.abstract)
@@ -153,6 +150,11 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
     if (!validateForm()) {
       return
     }
+    const totalWorkshopPrice = formData.preConferenceWorkshops.reduce(
+      (total, workshop) => total + (workshop.price || 0),
+      0
+    )
+   
     const data = {
       conference: singleConference?._id,
       category: conference,
@@ -166,6 +168,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       researchGate_link,
       orcid_link,
       google_scholar_link,
+      price:price+totalWorkshopPrice,
       conference_registration: {
         conference: singleConference?._id,
         presenterName: formData.presenterName,
@@ -428,7 +431,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                     Selected workshops:
                   </p>
                   <div className='flex flex-wrap gap-2'>
-                    {formData.preConferenceWorkshops.map(workshop => (
+                    {formData?.preConferenceWorkshops.map(workshop => (
                       <span
                         key={workshop}
                         className='inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full'
@@ -450,7 +453,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
               {/* Workshop Selection */}
               <div className='bg-gray-50 p-4 rounded-lg border border-gray-200'>
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
-                  {singleConference?.workOptions?.map(workshop => (
+                  {singleConference?.workshopOptions?.map(workshop => (
                     <label
                       key={workshop._id}
                       className='flex items-center space-x-3 cursor-pointer hover:bg-white p-2 rounded transition-colors'
@@ -464,7 +467,8 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                         className='h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded'
                       />
                       <span className='text-sm text-gray-700'>
-                        {workshop?.title}
+                        {workshop?.title}{' '}
+                        {workshop?.price > 0 && `(RM ${workshop?.price})`}
                       </span>
                     </label>
                   ))}

@@ -6,6 +6,8 @@ import { Link } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { getConferenceRegs } from '../../../Redux/Slice/conference_regSlice'
 import Loading from '../../../Component/Loading/Loading'
+import { formatDate } from 'date-fns'
+import { MapPin } from 'lucide-react'
 
 const ConferenceList = () => {
   const { conference_regs, getConferenceRegLoading } = useSelector(
@@ -43,7 +45,7 @@ const ConferenceList = () => {
   const totalPages = Math.ceil(filteredConferences.length / conferencesPerPage)
 
   return (
-    <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       {getConferenceRegLoading || getConferenceLoading ? (
         <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
           <Loading />
@@ -77,6 +79,13 @@ const ConferenceList = () => {
                       Abstract Title
                     </th>
                     <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                      Date
+                    </th>
+                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                      Location
+                    </th>
+
+                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                       Presenter
                     </th>
 
@@ -90,12 +99,37 @@ const ConferenceList = () => {
                     <tr key={index}>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                          {conference.abstract.abstract_id||conference.abstract._id}
+                          {conference.abstract.abstract_id ||
+                            conference.abstract._id}
                         </div>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
                           {conference.abstract.paper_title}
+                        </div>
+                      </td>
+                      <td className='px-6 py-4 whitespace-nowrap'>
+                        <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
+                          {formatDate(
+                            new Date(conference.conference.startingDate),
+                            'PPP'
+                          )}
+                        </div>
+                      </td>
+                      <td className='px-6 py-4 whitespace-nowrap'>
+                        <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
+                          <div className='flex items-center gap-2'>
+                            <MapPin className='text-green-500' size={16} />
+                            <div className='text-sm'>
+                              <div className='font-medium'>
+                                {conference.conference.city}, {" "}
+                                {conference.conference.country}
+                              </div>
+                              <div className='text-gray-600'>
+                                {conference.conference.venue}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
