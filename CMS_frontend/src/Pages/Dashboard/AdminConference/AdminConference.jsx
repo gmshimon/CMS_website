@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import ConferenceTable from "../../../Component/ConferenceTable/ConferenceTable";
 import { FaPlus } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router";
@@ -6,7 +6,9 @@ import { showSuccessToast } from "../../../Utilis/toastUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../../../Redux/Slice/conferenceSlice";
 import Loading from "../../../Component/Loading/Loading";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 const AdminConference = () => {
   const { createConferenceSuccess, conferences, getConferenceLoading,editConferenceSuccess } =
     useSelector((state) => state.conference);
@@ -58,7 +60,7 @@ const AdminConference = () => {
   );
   return (
     <div>
-      <ToastContainer/>
+      <ToastContainer />
       {getConferenceLoading ? (
         <div className="flex justify-center items-center h-[calc(100vh-64px)]">
           <Loading />

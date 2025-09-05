@@ -28,7 +28,7 @@ export const getConference = async (req, res, next) => {
     if (status) {
       matchQuery.status = status
     }
-    const data = await Conference.find(matchQuery).lean()
+    const data = await Conference.find(matchQuery).sort({createdAt:1}).lean()
 
     res.status(200).json({
       status: 'success',

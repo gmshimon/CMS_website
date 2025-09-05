@@ -14,7 +14,7 @@ import {
   // setPresentationVideoLink,
   setPublicationOptions,
   setResearchGateLink,
-  setTheme,
+  setTheme
   // setVideoAbstract
 } from '../../Redux/Slice/AbstractSlice'
 const AbstractInformation = ({ activeStep, setActiveStep }) => {
@@ -60,15 +60,15 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
 
   const handleSubmit = () => {
     const newErrors = validateForm()
-    // if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length === 0) {
       setActiveStep([...activeStep, 'Presenter Information'])
       sessionStorage.setItem(
         'activeStep',
         JSON.stringify([...activeStep, 'Presenter Information'])
       )
-    // } else {
-    //   setErrors(newErrors)
-    // }
+    } else {
+      setErrors(newErrors)
+    }
   }
 
   return (
@@ -117,9 +117,9 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             }`}
           >
             <option value=''>Select presentation method</option>
-            {singleConference?.presentation_method?.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
+            {singleConference?.submissionOptions?.map((option, index) => (
+              <option key={index} value={option.submissionType}>
+                {option.submissionType} ( ${option.price} )
               </option>
             ))}
           </select>
