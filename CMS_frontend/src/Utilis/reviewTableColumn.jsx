@@ -153,7 +153,7 @@ export const reviewHomeColumn = ({
     {
       key: '_id',
       label: 'Abstract ID',
-      render: (_, row) => row?.abstract?._id
+      render: (_, row) => row?.abstract?.abstract_id
     },
     {
       key: 'abstract.paper_title',
@@ -180,30 +180,10 @@ export const reviewHomeColumn = ({
       label: 'Status',
       render: (_, row) => {
         const status = row?.status?.toLowerCase() || ''
-        let color = ''
-
-        // Set colors based on status
-        switch (status) {
-          case 'accepted':
-            color = 'green'
-            break
-          case 'reviewed':
-            color = 'blue'
-            break
-          case 'pending':
-            color = 'orange'
-            break
-          case 'overdue':
-            color = 'red'
-            break
-          default:
-            color = 'gray'
-        }
-
         // Capitalize first letter
         const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1)
 
-        return <span style={{ color }}>{formattedStatus}</span>
+        return <span className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${getStatusColor(row?.status)}`}>{formattedStatus}</span>
       }
     },
     {
@@ -213,6 +193,18 @@ export const reviewHomeColumn = ({
         row.abstract?.createdAt ? (
           <span className='text-sm text-gray-700'>
             {format(new Date(row?.abstract?.createdAt), 'dd MMM yyyy')}
+          </span>
+        ) : (
+          <span className='text-sm text-gray-400'>N/A</span>
+        )
+    },
+    {
+      key: 'abstract.createdAt',
+      label: 'Review Deadline',
+      render: (_, row) =>
+        row.abstract?.createdAt ? (
+          <span className='text-sm text-gray-700'>
+            {format(new Date(row?.deadline), 'dd MMM yyyy')}
           </span>
         ) : (
           <span className='text-sm text-gray-400'>N/A</span>

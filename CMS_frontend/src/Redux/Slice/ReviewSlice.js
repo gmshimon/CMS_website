@@ -142,7 +142,6 @@ export const acceptReviewInvitation = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axiosSecure.post(`/review/respond`, data)
-      return response
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||

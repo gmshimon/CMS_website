@@ -7,6 +7,7 @@ import {
   paymentReminderEmailTemplate,
   paymentStatusChangeTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
+import { reviewerRevisionRequestTemplate } from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
 import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import { notifyAdmins } from '../Admin/admin.service.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
@@ -149,8 +150,8 @@ export const changeReviewStatus = async (req, res, next) => {
     const { id } = req.params
     const { status, paper_deadline, message } = req.body
     const getAbstract = await Abstracts.findOne({ _id: id }).populate([
-      { path: 'conference' },
-      { path: 'createdBy' }
+      { path: 'conference', select: 'name' },
+      { path: 'createdBy', select: 'name email' }
     ])
     if (!getAbstract) {
       const error = new Error('Abstract not found')
@@ -164,7 +165,7 @@ export const changeReviewStatus = async (req, res, next) => {
       getAbstract.review_status = 'Reviewed'
     } else if (status == 'Minor Revision' || status == 'Major Revision') {
       getAbstract.paper_deadline = paper_deadline
-
+      getAbstract.review_status = 'Pending'
       // ✅ Reset review status of all related reviews to "Pending"
       await Reviews.updateMany(
         { abstract: id },
@@ -175,22 +176,42 @@ export const changeReviewStatus = async (req, res, next) => {
         }
       )
 
-      // Also reset abstract review status
-      getAbstract.review_status = 'Pending'
+      // 🔔 Notify all reviewers about revision request
+      const reviewers = await Reviews.find({ abstract: id }).populate(
+        'reviewer'
+      )
+      if (reviewers?.length) {
+        const notifyTasks = reviewers.map(rev =>
+          notifyUser({
+            userId: rev.reviewer._id,
+            email: rev.reviewer.email,
+            message: `The abstract "${getAbstract.paper_title}" has been marked for ${status}. Please be prepared to review the revised paper.`,
+            type: 'revision_requested',
+            emailTemplate: () =>
+              reviewerRevisionRequestTemplate({
+                reviewerName: rev.reviewer.name,
+                abstractTitle: getAbstract.paper_title,
+                conferenceName: getAbstract.conference.name,
+                revisionType: status,
+                deadline: paper_deadline
+                  ? dayjs(paper_deadline).format('DD MMM YYYY')
+                  : null
+              })
+          })
+        )
+        setImmediate(() => Promise.all(notifyTasks))
+      }
     }
     await getAbstract.save()
 
-    const shortMsg = `Your abstract "${getAbstract.paper_title}" status has been updated to: ${status}.`
-    await createNotificationService(
-      getAbstract.createdBy._id,
-      shortMsg,
-      message
-    )
-    // Send invitation email to the reviewer
-    await sendEmail({
-      to: getAbstract.createdBy.email,
-      subject: 'Update on Your Abstract Submission Status',
-      html: message
+    notifyUser({
+      userId: getAbstract.createdBy._id,
+      email: getAbstract.createdBy.email,
+      message: `Your abstract "${getAbstract.paper_title}" status has been updated to: ${status}.`,
+      type: 'Abstract Status Change',
+      emailTemplate: () => {
+        return message
+      }
     })
 
     res.status(200).json({

@@ -9,7 +9,8 @@ import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 import { clearReviewStats } from '../../../Redux/Slice/ReviewSlice'
 import ReviewModal from '../../../Component/ReviewModal/ReviewModal'
 import PaperListModal from '../../../Component/PaperListModal/PaperListModal'
-
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 const MyReviewDetailPage = () => {
   const {
     myReviewData,
@@ -17,7 +18,6 @@ const MyReviewDetailPage = () => {
     respondReviewSuccess,
     respondReviewLoading,
     getMyReviewStatsError,
-    submitReviewLoading,
     submitReviewSuccess,
     submitReviewError
   } = useSelector(state => state.review)
@@ -74,7 +74,7 @@ const MyReviewDetailPage = () => {
     window.open(paper.url, '_blank')
   }
 
-  if (respondReviewLoading || submitReviewLoading) {
+  if (respondReviewLoading ) {
     return (
       <div className='flex justify-center h-[calc(100vh-100px)] items-center'>
         <Loading />
@@ -91,7 +91,8 @@ const MyReviewDetailPage = () => {
   })
 
   return (
-    <div className='p-6'>
+    <div className='p-3'>
+      <ToastContainer />
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/my-review/pending'
           ? 'New Invitation'

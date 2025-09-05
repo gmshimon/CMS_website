@@ -19,7 +19,7 @@ export const notifyUser = async ({
             ? 'Abstract Submission Confirmation'
             : type === 'reviewer_assigned'
             ? 'Review Invitation'
-            : 'Payment Confirmation',
+            : type ==='reviewer_reminder'?"Reminder for Review" : 'Payment Confirmation',
         html
       })
     } catch (err) {

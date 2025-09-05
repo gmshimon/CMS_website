@@ -1,3 +1,4 @@
+import { adminReviewerSubmittedTemplate } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import {
   authorReviewAssignedTemplate,
   reviewerAssignmentTemplate,
@@ -6,6 +7,7 @@ import {
 } from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
 import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
+import { notifyAdmins } from '../Admin/admin.service.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
 import Users from '../User/user.model.js'
@@ -236,6 +238,20 @@ export const submitReview = async (req, res, next) => {
       reviewer: userId,
       status: 'accepted'
     })
+      .populate('conference', 'name')
+      .populate('abstract', 'paper_title')
+
+    if (!review) {
+      const error = new Error(
+        'Review not found, not accepted, or not assigned to you'
+      )
+      error.statusCode = 404
+      return next(error)
+    }
+
+    const reviewerName = req.user.name || 'Reviewer'
+    const abstractTitle = review?.abstract?.paper_title || 'the abstract'
+    const conferenceName = review?.conference?.name || 'the conference'
 
     if (!review) {
       return res.status(404).json({
@@ -254,6 +270,23 @@ export const submitReview = async (req, res, next) => {
     review.status = 'reviewed'
 
     await review.save()
+
+    // ✅ Notify admins asynchronously
+
+    const adminMessage = `Reviewer "${reviewerName}" has submitted a review for the abstract "${abstractTitle}" in the conference "${conferenceName}".`
+    const adminType = 'review_submitted'
+
+    notifyAdmins({
+      message: adminMessage,
+      type: adminType,
+      emailTemplate: admin =>
+        adminReviewerSubmittedTemplate({
+          adminName: admin.name || 'Admin',
+          reviewerName,
+          abstractTitle,
+          conferenceName
+        })
+    })
 
     res.status(200).json({
       status: 'success',
@@ -286,7 +319,7 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 
     // 2. Pending reviews (status = 'Accepted' but no completedAt)
     const pendingReviews = await Reviews.countDocuments({
-      status: { $in: ['accepted', 'pending'] },
+      status: { $in: ['accepted'] },
       completedAt: { $exists: false },
       ...(conference_id &&
       conference_id !== 'all' &&
@@ -338,7 +371,6 @@ export const getAbstractsByCategory = async (req, res, next) => {
         $in: ['Paper Presentation Online', 'Paper Presentation Physical']
       }
     }
-
     if (
       conference_id &&
       conference_id !== 'all' &&
@@ -463,23 +495,18 @@ export const sendReminderToReviewer = async (req, res, next) => {
       _id: review.abstract
     }).populate('conference')
 
-    // create the email template for reminder
-
-    const emailHtml = reviewerReminderTemplate({
-      reviewerName: review.reviewer.name,
-      abstractTitle: abstract.paper_title,
-      conferenceName: abstract.conference.name
-    })
-
-    // sending notification to the reviewer
-    const message = `Reminder: You have been invited to review the abstract titled "${abstract?.paper_title}" for the ${abstract?.conference?.name} conference. We kindly request you to accept or decline the invitation as soon as possible to help us proceed with the review process.`
-
-    await createNotificationService(review.reviewer._id, message, emailHtml)
-
-    await sendEmail({
-      to: review.reviewer.email,
-      subject: `Reminder: Review Invitation for "${abstract?.paper_title}" – ${abstract?.conference?.name}`,
-      html: emailHtml
+    //✅  sending notification to the reviewer
+    notifyUser({
+      userId: review.reviewer._id,
+      email: review.reviewer.email,
+      message: `Reminder: You have been invited to review the abstract titled "${abstract?.paper_title}" for the ${abstract?.conference?.name} conference. We kindly request you to accept or decline the invitation as soon as possible to help us proceed with the review process.`,
+      type: 'reviewer_reminder',
+      emailTemplate: () =>
+        reviewerReminderTemplate({
+          reviewerName: review.reviewer.name,
+          abstractTitle: abstract.paper_title,
+          conferenceName: abstract.conference.name
+        })
     })
 
     res.status(200).json({

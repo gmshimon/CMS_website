@@ -12,7 +12,6 @@ const Review = () => {
     assigningReviewerLoading,
     assigningReviewerSuccess,
     assigningReviewerError,
-    sentReviewerReminderLoading,
     sentReviewerReminderSuccess,
     sentReviewerReminderError,
     changeAbstractStatusLoading,
@@ -61,7 +60,6 @@ const Review = () => {
 
   if (
     assigningReviewerLoading ||
-    sentReviewerReminderLoading ||
     changeAbstractStatusLoading
   ) {
     return (
