@@ -55,10 +55,9 @@ const SubmissionTable = ({
             ) : (
               data.map(item => (
                 <tr key={item._id} className='hover:bg-gray-100 transition-all'>
-
                   {/* Abstract ID */}
                   <td className='px-4 py-3 text-sm font-medium text-gray-900'>
-                    {item._id}
+                    {item.abstract_id || item?._id}
                   </td>
 
                   {/* theme */}

@@ -270,7 +270,7 @@ const ScheduleAbstractsPage = () => {
                   <tr key={abstract._id} className='hover:bg-gray-50'>
                     {/* Abstract ID */}
                     <td className='font-mono text-sm font-semibold text-gray-800'>
-                      {abstract._id}
+                      {abstract.abstract_id || abstract?._id}
                     </td>
 
                     {/* Title */}

@@ -10,7 +10,8 @@ export const abstractReviewColumns = ({
   const baseColumns = [
     {
       key: '_id',
-      label: 'Abstract ID'
+      label: 'Abstract ID',
+      render: (_, row) => row?.abstract_id || row?._id
     },
     {
       key: 'paper_title',

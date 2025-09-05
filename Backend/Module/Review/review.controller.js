@@ -271,7 +271,9 @@ export const getReviewDashboardsStats = async (req, res, next) => {
   try {
     const { conference_id } = req.query
     const matchQuery = {
-      presentation_method: { $in: ['Paper Presentation Online', 'Paper Presentation Physical'] }
+      presentation_method: {
+        $in: ['Paper Presentation Online', 'Paper Presentation Physical']
+      }
     }
     if (
       conference_id &&
@@ -287,7 +289,11 @@ export const getReviewDashboardsStats = async (req, res, next) => {
     const pendingReviews = await Reviews.countDocuments({
       status: { $in: ['accepted', 'pending'] },
       completedAt: { $exists: false },
-      ...matchQuery
+      ...(conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+        ? { conference: conference_id } // <-- if Reviews also store conference directly
+        : {})
     })
 
     // 3. Unassigned submissions = abstracts with no reviews
@@ -300,7 +306,11 @@ export const getReviewDashboardsStats = async (req, res, next) => {
     // 4. Completed reviews
     const completedReviews = await Reviews.countDocuments({
       status: 'reviewed',
-      ...matchQuery
+      ...(conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+        ? { conference: conference_id } // <-- if Reviews store conference
+        : {})
     })
 
     const data = {
@@ -324,7 +334,11 @@ export const getReviewDashboardsStats = async (req, res, next) => {
 export const getAbstractsByCategory = async (req, res, next) => {
   try {
     const { category, conference_id } = req.query
-    const matchQuery = {presentation_method: { $in: ['Paper Presentation Online', 'Paper Presentation Physical'] }}
+    const matchQuery = {
+      presentation_method: {
+        $in: ['Paper Presentation Online', 'Paper Presentation Physical']
+      }
+    }
 
     if (
       conference_id &&

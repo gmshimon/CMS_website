@@ -102,8 +102,8 @@ const PresenterHome = () => {
             Recent Submissions
           </h3>
           <div className='space-y-4'>
-            {myStats?.recentSubmissions?.map(item => (
-              <div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+            {myStats?.recentSubmissions?.map((item,idx) => (
+              <div key={idx} className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
                 <div>
                   <p className='font-medium text-gray-800'>
                     {item?.paper_title}
