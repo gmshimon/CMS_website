@@ -8,15 +8,12 @@ import {
   paymentStatusChangeTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import { reviewerRevisionRequestTemplate } from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
-import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import { notifyAdmins } from '../Admin/admin.service.js'
+import { notifyUser } from '../User/user.service.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
-import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
 import Reviews from '../Review/review.model.js'
 import Schedule from '../Schedule/schedule.model.js'
-import Users from '../User/user.model.js'
-import { notifyUser } from '../User/user.service.js'
 import Abstracts from './abstract.model.js'
 import {
   s3AbstractGraphicalAbstract,
@@ -66,7 +63,7 @@ export const createAbstract = async (req, res, next) => {
       userId: _id,
       email,
       message: `Your abstract "${data.paper_title}" has been successfully submitted`,
-      type: 'abstract_created',
+      type: 'Abstract Created',
       emailTemplate: () =>
         abstractCreatedTemplate({
           userName: name,
@@ -186,7 +183,7 @@ export const changeReviewStatus = async (req, res, next) => {
             userId: rev.reviewer._id,
             email: rev.reviewer.email,
             message: `The abstract "${getAbstract.paper_title}" has been marked for ${status}. Please be prepared to review the revised paper.`,
-            type: 'revision_requested',
+            type: 'Revision Requested',
             emailTemplate: () =>
               reviewerRevisionRequestTemplate({
                 reviewerName: rev.reviewer.name,
@@ -251,26 +248,22 @@ export const changeAbstractStatus = async (req, res, next) => {
 
     await getAbstract.save()
 
-    const emailHtml = abstractStatusChangeTemplate({
-      authorName: getAbstract.createdBy.name,
-      abstractTitle: getAbstract.paper_title,
-      conferenceName: getAbstract.conference.name,
-      newStatus: status,
-      paymentDeadline: paymentDeadline
-        ? dayjs(paymentDeadline).format('DD MMM YYYY')
-        : null
-    })
-    const shortMsg = `Your abstract "${getAbstract.paper_title}" status has been updated to: ${status}.`
-    await createNotificationService(
-      getAbstract.createdBy._id,
-      shortMsg,
-      emailHtml
-    )
-    // Send invitation email to the reviewer
-    await sendEmail({
-      to: getAbstract.createdBy.email,
-      subject: 'Update on Your Abstract Submission Status',
-      html: emailHtml
+    // Notify the user asynchronously
+    notifyUser({
+      userId: getAbstract.createdBy._id,
+      email: getAbstract.createdBy.email,
+      message: `Your abstract "${getAbstract.paper_title}" status has been updated to: ${status}.`,
+      type: 'Update on Your Abstract Submission Status',
+      emailTemplate: () =>
+        abstractStatusChangeTemplate({
+          authorName: getAbstract.createdBy.name,
+          abstractTitle: getAbstract.paper_title,
+          conferenceName: getAbstract.conference.name,
+          newStatus: status,
+          paymentDeadline: paymentDeadline
+            ? dayjs(paymentDeadline).format('DD MMM YYYY')
+            : null
+        })
     })
 
     res.status(200).json({
@@ -542,29 +535,19 @@ export const sendPaymentReminder = async (req, res, next) => {
       ? dayjs(abstract.payment_deadline).format('DD MMM YYYY')
       : null
 
-    // 4. Prepare email content
-    const emailHtml = paymentReminderEmailTemplate({
-      authorName: abstract.createdBy.name,
-      abstractTitle: abstract.paper_title,
-      conferenceName: abstract.conference.name,
-      paymentDeadline
+    notifyUser({
+      userId: abstract.createdBy._id,
+      email: abstract.createdBy.email,
+      message: `Reminder: Your payment for the abstract "${abstract.paper_title}" is still pending.`,
+      type: 'Payment Reminder',
+      emailTemplate: () =>
+        paymentReminderEmailTemplate({
+          authorName: abstract.createdBy.name,
+          abstractTitle: abstract.paper_title,
+          conferenceName: abstract.conference.name,
+          paymentDeadline
+        })
     })
-
-    const shortMsg = `Reminder: Your payment for the abstract "${abstract.paper_title}" is still pending.`
-
-    // 4. Send the email
-    await sendEmail({
-      to: abstract.createdBy.email,
-      subject: 'Payment Reminder - ' + abstract.conference.name,
-      html: emailHtml
-    })
-
-    await createNotificationService(
-      abstract.createdBy._id,
-      shortMsg,
-      emailHtml,
-      'Payment Reminder'
-    )
 
     return res
       .status(200)
@@ -595,28 +578,19 @@ export const sendPaperSubmitReminder = async (req, res, next) => {
       return next(error)
     }
 
-    // 3. Prepare email content
-    const emailHtml = paperSubmitReminderEmailTemplate({
-      authorName: abstract.createdBy.name,
-      abstractTitle: abstract.paper_title,
-      conferenceName: abstract.conference.name
+    notifyUser({
+      userId: abstract.createdBy._id,
+      email: abstract.createdBy.email,
+      message: `Reminder: Your paper for "${abstract.paper_title}" has not been submitted yet. Please submit it through the portal.`,
+      type: 'Paper Submit Reminder',
+      emailTemplate: () =>
+        paperSubmitReminderEmailTemplate({
+          authorName: abstract.createdBy.name,
+          abstractTitle: abstract.paper_title,
+          conferenceName: abstract.conference.name
+        })
     })
 
-    const shortMsg = `Reminder: Your paper for "${abstract.paper_title}" has not been submitted yet. Please submit it through the portal.`
-
-    // 4. Send the email
-    await sendEmail({
-      to: abstract.createdBy.email,
-      subject: 'Paper Submit Reminder - ' + abstract.conference.name,
-      html: emailHtml
-    })
-
-    await createNotificationService(
-      abstract.createdBy._id,
-      shortMsg,
-      emailHtml,
-      'Paper Submit Reminder'
-    )
     return res
       .status(200)
       .json({ message: 'Payment reminder email sent successfully.' })
