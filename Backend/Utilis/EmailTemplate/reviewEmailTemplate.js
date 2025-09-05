@@ -25,7 +25,7 @@ export const reviewerAssignmentTemplate = ({
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
       <h2 style="color: #2c3e50;">Dear ${reviewerName},</h2>
       <p>You have been invited to review the abstract titled <strong>"${abstractTitle}"</strong> for the <strong>${conferenceName}</strong>.</p>
-      <p>Please <a href="${acceptanceLink}" style="color: #1a73e8; text-decoration: none;">click here</a> to accept or decline this review assignment.</p>
+      <p>Please to accept or decline this review assignment from the portal.</p>
       <p><strong>Note:</strong> Once accepted, the review deadline will be 7 days from the acceptance date.</p>
       <p>Your timely review is crucial for the smooth progress of the conference.</p>
       <br />

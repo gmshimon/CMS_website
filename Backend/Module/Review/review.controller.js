@@ -9,6 +9,7 @@ import Abstracts from '../Abstract/abstract.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
 import Users from '../User/user.model.js'
+import { notifyUser } from '../User/user.service.js'
 import Reviews from './review.model.js'
 
 // admin assign reviewer to a abstract
@@ -24,31 +25,33 @@ export const assignReviewer = async (req, res, next) => {
     })
 
     if (existingReview) {
-      // Return 400 error if assignment already exists
-      return res.status(400).json({
-        message: 'This reviewer is already assigned to this abstract.'
-      })
+      const error = new Error(
+        'This reviewer is already assigned to this abstract.'
+      )
+      error.statusCode = 400
+      return next(error)
     }
 
     // Find the user by reviewerId and check if user exists and has role 'Reviewer'
     const isUserReview = await Users.findById(reviewerId).lean()
+
+    if (!isUserReview || isUserReview.role !== 'Reviewer') {
+      const error = new Error('User is not a reviewer or does not exist')
+      error.statusCode = 404
+      return next(error)
+    }
+
     // Fetch abstract info to include in email
     const abstract = await Abstracts.findById(abstractId)
       .populate({
-        path: 'conference'
+        path: 'conference',
+        select: 'name'
       })
       .lean()
 
     // If abstract does not exist, return 404 error
     if (!abstract) {
-      return res.status(404).json({
-        status: 'fail',
-        message: 'Abstract not found'
-      })
-    }
-
-    if (!isUserReview || isUserReview.role !== 'Reviewer') {
-      const error = new Error('User is not a reviewer or does not exist')
+      const error = new Error('Abstract not found')
       error.statusCode = 404
       return next(error)
     }
@@ -62,24 +65,20 @@ export const assignReviewer = async (req, res, next) => {
       accepted: false
     })
 
-    // Prepare the email content for the reviewer
-    const emailHtml = reviewerAssignmentTemplate({
-      reviewerName: isUserReview.name || 'Reviewer',
-      abstractTitle: abstract?.paper_title || 'an abstract',
-      conferenceName: abstract?.conference?.name // replace with your dynamic conf name if available
+    notifyUser({
+      userId: isUserReview._id,
+      email: isUserReview.email,
+      message: `You have been assigned as a reviewer for "${abstract?.paper_title}" in ${abstract?.conference?.name}`,
+      type: 'reviewer_assigned',
+      emailTemplate: () =>
+        reviewerAssignmentTemplate({
+          reviewerName: isUserReview.name || 'Reviewer',
+          abstractTitle: abstract?.paper_title || 'an abstract',
+          conferenceName: abstract?.conference?.name // replace with your dynamic conf name if available
+        })
     })
 
-    // sending notification to the reviewer
-    const message = `You have been assigned as a reviewer to ${abstract?.paper_title} abstract of ${abstract?.conference?.name} conference`
-    await createNotificationService(isUserReview._id, message, emailHtml)
-
-    // Send invitation email to the reviewer
-    await sendEmail({
-      to: isUserReview.email,
-      subject: 'Invitation to Review an Abstract',
-      html: emailHtml
-    })
-    res.status(201).json({
+    res.status(200).json({
       status: 'Success',
       message: 'Reviewer assigned and emails sent successfully',
       data: review

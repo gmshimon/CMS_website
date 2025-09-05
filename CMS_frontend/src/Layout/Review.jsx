@@ -4,6 +4,8 @@ import { Outlet, useLocation } from 'react-router'
 import Loading from '../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
 import { clearReviewStats } from '../Redux/Slice/ReviewSlice'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Review = () => {
   const {
@@ -70,6 +72,7 @@ const Review = () => {
   }
   return (
     <div className='p-4'>
+      <ToastContainer/>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/review/details/all'
           ? 'Total Submissions'

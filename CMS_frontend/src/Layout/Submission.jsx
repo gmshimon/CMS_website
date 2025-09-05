@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
+import  { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
 import Loading from '../Component/Loading/Loading'
