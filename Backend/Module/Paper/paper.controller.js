@@ -5,15 +5,24 @@ import {
   s3PaperDeleteService,
   s3PaperUploadService
 } from './paper.s3Service.js'
+import { notifyAdmins } from '../Admin/admin.service.js'
+import { adminPaperNotificationTemplate } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 
 export const postPaper = async (req, res, next) => {
   try {
     const { abstractId } = req.params
-    const { _id: userId } = req.user
+    const { _id: userId, name: userName } = req.user
 
-    const isAbstract = await Abstracts.findOne({
-      _id: abstractId
-    })
+    const isAbstract = await Abstracts.findOne({ _id: abstractId }).populate(
+      'conference',
+      'name'
+    )
+
+    if (!isAbstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
+    }
 
     if (!req.file) {
       return res.status(400).json({
@@ -64,6 +73,25 @@ export const postPaper = async (req, res, next) => {
     }
 
     await Abstracts.updateOne({ _id: abstractId }, { $set: { status } })
+
+    // ✅ Notify admins asynchronously
+    const adminMessage = `${userName} has ${status.toLowerCase()} for abstract "${
+      isAbstract.paper_title
+    }"`
+    const adminType = 'paper_submission'
+
+    notifyAdmins({
+      message: adminMessage,
+      type: adminType,
+      emailTemplate: admin =>
+        adminPaperNotificationTemplate({
+          adminName: admin.name,
+          userName,
+          abstractTitle: isAbstract.paper_title,
+          paperStatus: status, // 👈 drives dynamic text
+          conferenceName: isAbstract.conference?.name || 'N/A'
+        })
+    })
 
     return res.status(paperDoc.isNew ? 201 : 200).json({
       status: 'Success',

@@ -50,6 +50,31 @@ export const adminPaymentNotificationTemplate = ({
   `
 }
 
+export const adminPaperNotificationTemplate = ({
+  adminName,
+  userName,
+  abstractTitle,
+  paperStatus,
+  conferenceName
+}) => {
+  const actionText =
+    paperStatus === 'Revision Submitted'
+      ? 'submitted a revision of their paper'
+      : 'submitted a new paper'
+
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+      <h2 style="color: #2c3e50;">Hi ${adminName},</h2>
+      <p>The user <strong>${userName}</strong> has ${actionText} for the abstract titled <strong>"${abstractTitle}"</strong> in the conference <strong>${conferenceName}</strong>.</p>
+      <p>Please review the submission at your earliest convenience.</p>
+      <br/>
+      <p style="color: #888;">Thank you for managing conference submissions.</p>
+      <hr/>
+      <p style="font-size: 12px; color: #aaa;">This is an automated message from ConferenceX.</p>
+    </div>
+  `
+}
+
 export const abstractStatusChangeTemplate = ({
   authorName,
   abstractTitle,
