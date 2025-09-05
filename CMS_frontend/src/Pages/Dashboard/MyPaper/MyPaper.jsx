@@ -10,7 +10,8 @@ import useAbstract from '../../../Hooks/useAbstract'
 import { FaUpload } from 'react-icons/fa'
 import UploadPaperModal from '../../../Component/UploadPaperModal/UploadPaperModal'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
-
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { format } from 'date-fns'
 import { getStatusColor } from '../../../Utilis/getStatusColor'
 
@@ -90,7 +91,8 @@ const MyPaper = () => {
   }
 
   return (
-    <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+      <ToastContainer />
       {getPaperLoading ? (
         <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
           <Loading />

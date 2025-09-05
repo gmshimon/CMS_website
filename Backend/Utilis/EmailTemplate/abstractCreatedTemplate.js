@@ -14,7 +14,7 @@ export const abstractCreatedTemplate = ({ userName, abstractTitle }) => {
 export const adminAbstractNotificationTemplate = ({
   adminName,
   userName,
-  abstractTitle,
+  abstractTitle
   // conferenceName
 }) => {
   return `
@@ -25,6 +25,25 @@ export const adminAbstractNotificationTemplate = ({
       <p>Please review and take the necessary action.</p>
       <br />
       <p style="color: #888;">Thank you for managing the conference submissions.</p>
+      <hr />
+      <p style="font-size: 12px; color: #aaa;">This is an automated message from ConferenceX.</p>
+    </div>
+  `
+}
+
+export const adminPaymentNotificationTemplate = ({
+  adminName,
+  userName,
+  abstractTitle,
+  conferenceName
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+      <h2 style="color: #2c3e50;">Hi ${adminName},</h2>
+      <p>The user <strong>${userName}</strong> has submitted a payment for their abstract titled <strong>"${abstractTitle}"</strong> in the conference <strong>${conferenceName}</strong>.</p>
+      <p>The payment is currently marked as <strong>Pending</strong>. Please review and confirm the payment.</p>
+      <br />
+      <p style="color: #888;">Thank you for managing conference payments.</p>
       <hr />
       <p style="font-size: 12px; color: #aaa;">This is an automated message from ConferenceX.</p>
     </div>

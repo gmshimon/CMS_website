@@ -2,17 +2,20 @@ import {
   abstractCreatedTemplate,
   abstractStatusChangeTemplate,
   adminAbstractNotificationTemplate,
+  adminPaymentNotificationTemplate,
   paperSubmitReminderEmailTemplate,
   paymentReminderEmailTemplate,
   paymentStatusChangeTemplate
 } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import { sendEmail } from '../../Utilis/Services/sendEmail.js'
+import { notifyAdmins } from '../Admin/admin.service.js'
 import conference_reg from '../Conference_reg/conference_reg.model.js'
 import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
 import Reviews from '../Review/review.model.js'
 import Schedule from '../Schedule/schedule.model.js'
 import Users from '../User/user.model.js'
+import { notifyUser } from '../User/user.service.js'
 import Abstracts from './abstract.model.js'
 import {
   s3AbstractGraphicalAbstract,
@@ -30,7 +33,9 @@ export const createAbstract = async (req, res, next) => {
     conference_registration.createdBy = _id
 
     // ✅ Create the conference registration data
-    const createConference = await conference_reg.create(conference_registration)
+    const createConference = await conference_reg.create(
+      conference_registration
+    )
 
     // Handle uploaded files
     const abstractFile = req.files?.image?.[0]
@@ -56,50 +61,32 @@ export const createAbstract = async (req, res, next) => {
     )
 
     // ✅ Notify the submitting user (immediately)
-    const userMessage = `Your abstract "${data.paper_title}" has been successfully submitted`
-    const userType = 'abstract_created'
-    const userEmailHtml = abstractCreatedTemplate({
-      userName: name,
-      abstractTitle: data.paper_title || ''
-    })
-
-    // Save notification and send email asynchronously
-    setImmediate(async () => {
-      try {
-        await createNotificationService(_id, userMessage, userEmailHtml, userType)
-        await sendEmail({
-          to: email,
-          subject: 'Abstract Submission Confirmation',
-          html: userEmailHtml
+    notifyUser({
+      userId: _id,
+      email,
+      message: `Your abstract "${data.paper_title}" has been successfully submitted`,
+      type: 'abstract_created',
+      emailTemplate: () =>
+        abstractCreatedTemplate({
+          userName: name,
+          abstractTitle: data.paper_title
         })
-      } catch (err) {
-        console.error('Error sending user email:', err)
-      }
     })
-
     // ✅ Notify admins asynchronously
-    const admins = await Users.find({ role: 'Admin' })
+
     const adminMessage = `A new abstract "${data.paper_title}" has been submitted by ${name}`
     const adminType = 'new_abstract_submitted'
 
-    admins.forEach(admin => {
-      setImmediate(async () => {
-        try {
-          const adminEmailHtml = adminAbstractNotificationTemplate({
-            adminName: admin.name,
-            userName: name,
-            abstractTitle: data.paper_title,
-          })
-          await createNotificationService(admin._id, adminMessage, adminEmailHtml, adminType)
-          await sendEmail({
-            to: admin.email,
-            subject: 'New Abstract Submitted',
-            html: adminEmailHtml
-          })
-        } catch (err) {
-          console.error(`Error sending email to admin ${admin.email}:`, err)
-        }
-      })
+    notifyAdmins({
+      message: adminMessage,
+      type: adminType,
+      emailTemplate: admin =>
+        adminAbstractNotificationTemplate({
+          adminName: admin.name,
+          userName: name,
+          abstractTitle: data.paper_title,
+          conferenceName: createConference.name
+        })
     })
 
     // ✅ Respond immediately without waiting for emails
@@ -389,7 +376,7 @@ export const makePayment = async (req, res, next) => {
 
     const isAbstract = await Abstracts.findOne({
       _id: abstractId
-    })
+    }).populate('conference', 'name')
 
     if (!isAbstract) {
       const error = new Error('Abstract not found')
@@ -421,6 +408,21 @@ export const makePayment = async (req, res, next) => {
 
     await isAbstract.save()
 
+    const adminMessage = `Payment submitted for abstract "${isAbstract.paper_title}" by ${req.user.name}`
+    const adminType = 'payment_submitted'
+
+    notifyAdmins({
+      message: adminMessage,
+      type: adminType,
+      emailTemplate: admin =>
+        adminPaymentNotificationTemplate({
+          adminName: admin.name,
+          userName: req.user.name,
+          abstractTitle: isAbstract.paper_title,
+          conferenceName: isAbstract.conference?.name || 'N/A'
+        })
+    })
+
     res.status(200).json({
       status: 'Success',
       message: 'Payment made successfully',
@@ -440,7 +442,9 @@ export const updatePaymentStatus = async (req, res, next) => {
     const { payment_status } = req.body
     const isAbstract = await Abstracts.findOne({
       _id: abstractId
-    }).populate('createdBy conference')
+    })
+      .populate('createdBy', 'name email')
+      .populate('conference', 'name')
 
     if (!isAbstract) {
       const error = new Error('Abstract not found')
@@ -460,28 +464,25 @@ export const updatePaymentStatus = async (req, res, next) => {
 
     await isAbstract.save()
 
-    const htmlEmail = paymentStatusChangeTemplate({
-      authorName: isAbstract.createdBy.name,
-      abstractTitle: isAbstract.paper_title,
-      conferenceName: isAbstract.conference.name,
-      paymentStatus: payment_status,
-      paperDeadline: paperDeadline
-        ? dayjs(paperDeadline).format('DD MMM YYYY')
-        : null
-    })
-    await sendEmail({
-      to: isAbstract.createdBy.email,
-      subject: 'Payment Status Update',
-      html: htmlEmail
-    })
+    // ✅ Notify the user asynchronously
+    const userMessage = `Payment status for your abstract "${isAbstract.paper_title}" has been updated to: ${payment_status}.`
 
-    const shortMsg = `Payment status for your abstract "${isAbstract.paper_title}" has been updated to: ${payment_status}.`
-    await createNotificationService(
-      isAbstract.createdBy._id,
-      shortMsg,
-      htmlEmail,
-      'Payment Status Change'
-    )
+    notifyUser({
+      userId: isAbstract.createdBy._id,
+      email: isAbstract.createdBy.email,
+      message: userMessage,
+      type: 'Payment Status Change',
+      emailTemplate: () =>
+        paymentStatusChangeTemplate({
+          authorName: isAbstract.createdBy.name,
+          abstractTitle: isAbstract.paper_title,
+          conferenceName: isAbstract.conference?.name || 'N/A',
+          paymentStatus: payment_status,
+          paperDeadline: isAbstract.paper_deadline
+            ? dayjs(isAbstract.paper_deadline).format('DD MMM YYYY')
+            : null
+        })
+    })
 
     res.status(200).json({
       status: 'Success',
