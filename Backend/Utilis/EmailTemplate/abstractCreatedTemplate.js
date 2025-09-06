@@ -122,6 +122,81 @@ export const adminReviewerInvitationResponseTemplate = ({
   `
 }
 
+// templates/adminMarkSubmittedTemplate.js
+
+const fmt = n => {
+  if (Number.isInteger(n)) return String(n);
+  const s = Number(n).toFixed(2);
+  return s.replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+};
+
+export const adminMarkSubmittedTemplate = ({
+  adminName,
+  conferenceName,
+  abstractTitle,
+  presenterName,
+  sessionChairName,
+  totalMark,             // e.g., 46.5
+  criteria = []          // [{ criterion, score, weight }]
+}) => {
+  // compute weighted total defensively
+  const computedTotal = criteria.reduce(
+    (sum, c) => sum + Number(c.score || 0) * Number(c.weight || 1),
+    0
+  );
+
+  const rows = criteria.map(c => {
+    const weighted = Number(c.score || 0) * Number(c.weight || 1);
+    return `
+      <tr>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee">${c.criterion || '-'}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">${fmt(c.score ?? '-')}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right">× ${fmt(c.weight ?? 1)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right"><strong>${fmt(weighted)}</strong></td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+  <div style="font-family:Inter,Arial,sans-serif;color:#111;line-height:1.6">
+    <h2 style="margin:0 0 6px;font-weight:700">New Presentation Mark Submitted</h2>
+    <p style="margin:0 0 16px;color:#444">Hi ${adminName},</p>
+
+    <div style="margin:12px 0;padding:12px;border:1px solid #eee;border-radius:10px">
+      <p style="margin:0 0 6px"><strong>Conference:</strong> ${conferenceName}</p>
+      <p style="margin:0 0 6px"><strong>Abstract:</strong> ${abstractTitle}</p>
+      <p style="margin:0 0 6px"><strong>Presenter:</strong> ${presenterName}</p>
+      <p style="margin:0 0 6px"><strong>Session Chair:</strong> ${sessionChairName}</p>
+    </div>
+
+    <h3 style="margin:16px 0 8px;font-size:16px">Criteria Breakdown</h3>
+    <table style="border-collapse:collapse;width:100%;font-size:14px">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:10px 12px;border-bottom:2px solid #ddd">Criterion</th>
+          <th style="text-align:right;padding:10px 12px;border-bottom:2px solid #ddd">Score</th>
+          <th style="text-align:right;padding:10px 12px;border-bottom:2px solid #ddd">Weight</th>
+          <th style="text-align:right;padding:10px 12px;border-bottom:2px solid #ddd">Weighted</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+        <tr>
+          <td colspan="3" style="padding:12px;border-top:2px solid #ddd;text-align:right"><strong>Total</strong></td>
+          <td style="padding:12px;border-top:2px solid #ddd;text-align:right">
+            <strong>${fmt(totalMark ?? computedTotal)}</strong>
+            <span style="color:#999;font-weight:400;margin-left:6px">(calc: ${fmt(computedTotal)})</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="margin:16px 0 0;color:#666;font-size:12px">
+      This is an automated message from your Conference Management System.
+    </p>
+  </div>`;
+};
+
 export const abstractStatusChangeTemplate = ({
   authorName,
   abstractTitle,

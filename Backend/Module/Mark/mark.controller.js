@@ -1,4 +1,8 @@
+import { adminMarkSubmittedTemplate } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
+import Abstracts from '../Abstract/abstract.model.js'
+import { notifyAdmins } from '../Admin/admin.service.js'
 import Schedule from '../Schedule/schedule.model.js'
+import Users from '../User/user.model.js'
 import Mark from './mark.model.js'
 
 export const giveMark = async (req, res) => {
@@ -7,7 +11,10 @@ export const giveMark = async (req, res) => {
     const sessionChairId = req.user._id // assuming auth middleware sets this
     const { criteria, totalMark } = req.body
     // 1. Find the schedule
-    const schedule = await Schedule.findById(scheduleId)
+    const schedule = await Schedule.findById({
+      _id: scheduleId,
+      sessionChair: sessionChairId
+    })
     if (!schedule)
       return res.status(404).json({ message: 'Schedule not found' })
 
@@ -35,6 +42,7 @@ export const giveMark = async (req, res) => {
       // Update existing mark
       mark.criteria = criteria
       mark.totalMark = totalMark
+      mark.isEvaluated = true
       await mark.save()
     } else {
       // Create new mark
@@ -54,6 +62,38 @@ export const giveMark = async (req, res) => {
         await schedule.save()
       }
     }
+
+    // 5) Gather context for email
+    const [abstractDoc, sessionChairUser] = await Promise.all([
+      Abstracts.findById(abstractId)
+        .populate('createdBy', 'name email')
+
+        .populate('conference', 'name')
+        .lean(),
+      Users.findById(sessionChairId, 'name email').lean()
+    ])
+
+    const conferenceName = abstractDoc?.conference?.name || 'Conference'
+
+    const abstractTitle = abstractDoc?.paper_title || 'Untitled Abstract'
+    const presenterName = abstractDoc?.presenter?.presenter_name || 'Presenter'
+    const sessionChairName = sessionChairUser?.name || 'Session Chair'
+
+    // 6) Notify all admins (fire-and-forget inside helper with setImmediate)
+    await notifyAdmins({
+      type: 'mark_submitted',
+      message: `A new mark has been submitted for "${abstractTitle}".`,
+      emailTemplate: admin =>
+        adminMarkSubmittedTemplate({
+          adminName: admin?.name || 'Admin',
+          conferenceName,
+          abstractTitle,
+          presenterName,
+          sessionChairName,
+          totalMark,
+          criteria
+        })
+    })
 
     res.status(200).json({ message: 'Mark submitted successfully', data: mark })
   } catch (err) {

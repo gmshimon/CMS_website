@@ -87,17 +87,17 @@ export default function EvaluationFormModal ({
   const isFormComplete = criteria.every(c => ratings[c.id])
 
   const handleSubmit = async () => {
-    if (!isFormComplete) {
-      alert('⚠️ Please rate all criteria before submitting.')
-      return
-    }
+    // if (!isFormComplete) {
+    //   alert('⚠️ Please rate all criteria before submitting.')
+    //   return
+    // }
     const payload = {
-      criteria: criteria.map(criterion => ({
-        criterion: criterion.text,
-        score: ratings[criterion.id] || 0,
-        weight: criterion.multiplier
-      })),
-      totalMark: totalMarks
+      // criteria: criteria.map(criterion => ({
+      //   criterion: criterion.text,
+      //   score: ratings[criterion.id] || 0,
+      //   weight: criterion.multiplier
+      // })),
+      totalMark: totalMarks ||0
     }
     onSubmit(payload)
     onClose()

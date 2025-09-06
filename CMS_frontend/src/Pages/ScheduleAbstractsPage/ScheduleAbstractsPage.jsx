@@ -12,6 +12,8 @@ import PaperModal from '../../Component/PaperModal/PaperModal'
 import { IoMdEye } from 'react-icons/io'
 import EvaluationFormModal from '../../Component/EvaluationForm/EvaluationForm'
 import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const ScheduleAbstractsPage = () => {
   const {
@@ -21,9 +23,9 @@ const ScheduleAbstractsPage = () => {
     giveMarkError,
     giveMarkSuccess
   } = useSelector(state => state.schedule)
-  const{user} = useSelector(state => state.user)
+  const { user } = useSelector(state => state.user)
   const [selectedAbstract, setSelectedAbstract] = useState(null)
-  const [selectedMark,setSelectedMark] = useState(null)
+  const [selectedMark, setSelectedMark] = useState(null)
   const [selectedPaper, setSelectedPaper] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [evaluateModal, setEvaluateModal] = useState(false)
@@ -37,6 +39,7 @@ const ScheduleAbstractsPage = () => {
 
   useEffect(() => {
     if (giveMarkSuccess) {
+      console.log('giveMarkSuccess: ', giveMarkSuccess)
       showSuccessToast('Successfully added the mark')
       dispatch(reset())
     }
@@ -46,7 +49,7 @@ const ScheduleAbstractsPage = () => {
     }
   }, [dispatch, giveMarkError, giveMarkSuccess])
 
-  const handleEvaluate = (abstractId, scheduleId,marks) => {
+  const handleEvaluate = (abstractId, scheduleId, marks) => {
     setSelectedAbstract({
       abstractId,
       scheduleId
@@ -111,6 +114,7 @@ const ScheduleAbstractsPage = () => {
   if (getSingleScheduleLoading || giveMarkLoading) {
     return (
       <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+        <ToastContainer />
         <Loading />
       </div>
     )
@@ -118,6 +122,7 @@ const ScheduleAbstractsPage = () => {
 
   return (
     <div className='p-3 bg-gray-50 '>
+      <ToastContainer />
       {/* Schedule Information Card */}
       <div className='bg-white rounded-lg shadow-md p-6 mb-6'>
         <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6'>
@@ -302,16 +307,23 @@ const ScheduleAbstractsPage = () => {
                     <td>
                       <button
                         onClick={() =>
-                          handleEvaluate(abstract._id, schedule._id,abstract.marks)
+                          handleEvaluate(
+                            abstract._id,
+                            schedule._id,
+                            abstract.marks
+                          )
                         }
                         className={`btn btn-sm gap-2 ${
                           abstract.isEvaluated
                             ? 'btn-outline btn-primary'
                             : 'btn-primary'
                         }`}
-                        disabled={user?.role!=='Session Chair' && !abstract?.marks?.isEvaluated}
+                        disabled={
+                          user?.role !== 'Session Chair' &&
+                          !abstract?.marks?.isEvaluated
+                        }
                       >
-                       {abstract?.marks?.isEvaluated?"View" :"Evaluate"}
+                        {abstract?.marks?.isEvaluated ? 'View' : 'Evaluate'}
                       </button>
                     </td>
                   </tr>
