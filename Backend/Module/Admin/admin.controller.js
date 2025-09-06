@@ -12,14 +12,7 @@ import Reviews from '../Review/review.model.js'
 import mongoose from 'mongoose'
 import Conference from '../Conference/conference.model.js'
 import Schedule from '../Schedule/schedule.model.js'
-// const serviceAccount = JSON.parse(
-//   await readFile(
-//     new URL(
-//       '../../cms-website-efbff-firebase-adminsdk-fbsvc-ea47fb1749.json',
-//       import.meta.url
-//     )
-//   )
-// )
+
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS)
 

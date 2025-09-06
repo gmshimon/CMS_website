@@ -1,14 +1,14 @@
-import { adminReviewerSubmittedTemplate } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 import {
-  authorReviewAssignedTemplate,
+  adminReviewerInvitationResponseTemplate,
+  adminReviewerSubmittedTemplate
+} from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
+import {
   reviewerAssignmentTemplate,
   reviewerConfirmationTemplate,
   reviewerReminderTemplate
 } from '../../Utilis/EmailTemplate/reviewEmailTemplate.js'
-import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import { notifyAdmins } from '../Admin/admin.service.js'
-import { createNotificationService } from '../Notification/notification.service.js'
 import Paper from '../Paper/paper.model.js'
 import Users from '../User/user.model.js'
 import { notifyUser } from '../User/user.service.js'
@@ -144,67 +144,73 @@ export const acceptReviewInvitation = async (req, res, next) => {
       })
 
       // ✅ Prepare email content for reviewer
-      const reviewerEmailHtml = reviewerConfirmationTemplate({
-        reviewerName: review.reviewer.name || 'Reviewer',
-        abstractTitle: review.abstract.paper_title || 'the abstract',
-        conferenceName: review.abstract.conference?.name || 'the conference',
-        deadlineDate: deadlineFormatted
-      })
 
-      // ✅ Prepare notification message for reviewer
-      const reviewerMessage = `Thank you for accepting the review invitation for the abstract titled "${
-        review.abstract.paper_title
-      }" under the ${
-        review.abstract.conference.name
-      } conference. Your review is due by ${review.deadline.toLocaleDateString(
-        'en-US',
-        { year: 'numeric', month: 'long', day: 'numeric' }
-      )}.`
-
-      // ✅ Send notification and email to reviewer
-      await createNotificationService(
-        review.reviewer._id,
-        reviewerMessage,
-        reviewerEmailHtml
-      )
-
-      await sendEmail({
-        to: review.reviewer.email,
-        subject: 'Review Invitation Accepted – Confirmation & Deadline',
-        html: reviewerEmailHtml
+      notifyUser({
+        userId: review.reviewer._id,
+        email: review.reviewer.email,
+        message: `Thank you for accepting the review invitation for "${
+          review.abstract.paper_title
+        }" under ${
+          review.abstract.conference?.name
+        }. Your review is due by ${review.deadline.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}.`,
+        type: 'reviewer_accepted',
+        emailTemplate: () =>
+          reviewerConfirmationTemplate({
+            reviewerName: review.reviewer.name || 'Reviewer',
+            abstractTitle: review.abstract.paper_title || 'the abstract',
+            conferenceName:
+              review.abstract.conference?.name || 'the conference',
+            deadlineDate: deadlineFormatted
+          })
       })
 
       // ✅ Fetch the author (submitter of the abstract)
-      const authorUser = await Users.findById(review.abstract.createdBy).lean()
+      // const authorUser = await Users.findById(review.abstract.createdBy).lean()
 
-      // ✅ Send notification and email to author if available
-      if (authorUser && authorUser.email) {
-        const authorEmailHtml = authorReviewAssignedTemplate({
-          authorName: authorUser.name || 'Author',
-          abstractTitle: review.abstract.paper_title || 'your abstract',
-          conferenceName: review.abstract?.conference?.name
-        })
-        const authorMessage = ` We are pleased to inform you that your abstract titled "${review.abstract.paper_title}" has been assigned to reviewers for evaluation as part of the ${review.abstract?.conference?.name}.`
+      // // ✅ Send notification and email to author if available
+      // if (authorUser && authorUser.email) {
 
-        // sending notification to the author of the abstract
-        await createNotificationService(
-          authorUser._id,
-          authorMessage,
-          authorEmailHtml
-        )
-        // Send email to abstract author
-        await sendEmail({
-          to: authorUser.email,
-          subject: 'Your Abstract is Assigned to Reviewers',
-          html: authorEmailHtml
-        })
-      }
+      //   notifyUser({
+      //     userId: authorUser._id,
+      //     email: authorUser.email,
+      //     message: `Your abstract titled "${review.abstract.paper_title}" has been assigned to reviewers for evaluation as part of the ${review.abstract?.conference?.name}.`,
+      //     type: 'Abstract Review Assigned',
+      //     emailTemplate: () =>
+      //       authorReviewAssignedTemplate({
+      //         authorName: authorUser.name || 'Author',
+      //         abstractTitle: review.abstract.paper_title || 'your abstract',
+      //         conferenceName: review.abstract?.conference?.name
+      //       })
+      //   })
+      // }
     } else {
       // ❌ If reviewer REJECTS the invitation, delete the review record
       await Reviews.deleteOne({
         _id: reviewId
       })
     }
+
+    // notify the admins about the action
+    notifyAdmins({
+      message: `Reviewer "${review.reviewer.name}" has ${
+        status === 'accepted' ? 'accepted' : 'declined'
+      } the review invitation for the abstract "${
+        review.abstract.paper_title
+      }" in the conference "${review.abstract.conference?.name}".`,
+      type: 'Reviewer Invitation Response',
+      emailTemplate: admin =>
+        adminReviewerInvitationResponseTemplate({
+          adminName: admin.name || 'Admin',
+          reviewerName: review.reviewer.name || 'Reviewer',
+          abstractTitle: review.abstract.paper_title || 'the abstract',
+          conferenceName: review.abstract.conference?.name || 'the conference',
+          accepted: status === 'accepted' ? true : false
+        })
+    })
 
     // ✅ Final response
     res.status(200).json({
