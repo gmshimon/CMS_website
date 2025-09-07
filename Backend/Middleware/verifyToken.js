@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
 import {promisify} from 'util';
-import dotenv from 'dotenv'
+import { ENV } from '../config/env.js';
 
-dotenv.config();
 
 const verifyToken = async (req, res, next) => {
     try {
@@ -15,7 +14,7 @@ const verifyToken = async (req, res, next) => {
             })
         }
 
-        const decoded = await promisify(jwt.verify)(token,process.env.TOKEN_SECRET)
+        const decoded = await promisify(jwt.verify)(token,ENV.TOKEN_SECRET)
 
         req.user = decoded;
         next()

@@ -14,6 +14,7 @@ import {
   strictLimiter ,
   mediumLimiter 
 } from '../../config/rateLimiters.js'
+import verifyAdminToken from '../../Middleware/verifyAdminToken.js'
 
 const router = express.Router()
 
@@ -41,8 +42,8 @@ router
 // Get chairs & moderators → general API
 router
   .route('/chairs-moderators')
-  .get(standardLimiter, verifyToken, getChairsAndModerators)
+  .get(standardLimiter, verifyAdminToken, getChairsAndModerators)
 
 // My stats → general API
-router.route('/my-stats').get(standardLimiter, verifyToken, getMyDashboardStats)
+router.route('/my-stats').get(standardLimiter, verifyAdminToken, getMyDashboardStats)
 export default router
