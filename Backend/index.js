@@ -47,6 +47,7 @@ import adminRouter from './Module/Admin/admin.routes.js'
 import reviewRouter from './Module/Review/review.routes.js'
 import scheduleRouter from './Module/Schedule/schedule.routes.js'
 import markRouter from './Module/Mark/mark.routes.js'
+import { createRateLimiter } from './Middleware/RateLimit/rateLimiter.js'
 
 
 app.use('/api/v1/user', userRouter)
@@ -61,7 +62,7 @@ app.use('/api/v1/review',reviewRouter)
 app.use('/api/v1/schedules',scheduleRouter)
 app.use('/api/v1/mark',markRouter)
 
-app.get('/', async (req, res) => {
+app.get('/',createRateLimiter({ windowMs: 60 * 1000, max: 100, keyType: 'hybrid' }) ,async (req, res) => {
   res.send('API is running')
 })
 

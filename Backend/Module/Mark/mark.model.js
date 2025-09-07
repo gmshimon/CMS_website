@@ -5,7 +5,8 @@ const markSchema = mongoose.Schema(
     abstract: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'abstract',
-      required: true
+      required: true,
+      index:true,
     },
     conference: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +15,8 @@ const markSchema = mongoose.Schema(
     },
     sessionChair: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+       index:true,
     },
     isEvaluated:{
       type:Boolean,
