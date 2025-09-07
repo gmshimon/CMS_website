@@ -1,10 +1,18 @@
-import express from 'express';
-import { getConferenceReg ,getSingleConferenceReg} from './conference_reg.controller.js';
-import verifyToken from '../../Middleware/verifyToken.js';
-const router = express.Router();
+import express from 'express'
+import {
+  getConferenceReg,
+  getSingleConferenceReg
+} from './conference_reg.controller.js'
+import verifyToken from '../../Middleware/verifyToken.js'
+import { standardLimiter } from '../../config/rateLimiters.js'
+const router = express.Router()
 
-// TODO: add token validation
-router.get('/:conference_id',verifyToken,getConferenceReg)
-router.get('/single_conference_reg/:id',getSingleConferenceReg)
+router.get('/:conference_id', verifyToken, standardLimiter, getConferenceReg)
+router.get(
+  '/single_conference_reg/:id',
+  verifyToken,
+  standardLimiter,
+  getSingleConferenceReg
+)
 
-export default router;
+export default router
