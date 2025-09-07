@@ -151,7 +151,7 @@ const Registration = () => {
                       key={role._id}
                       onClick={() => setSelectedRole(role.value)}
                       className={`p-1.5 rounded-lg border cursor-pointer transition-all duration-300 transform hover:scale-105 hover:shadow-lg ${
-                        selectedRole === role._id
+                        selectedRole === role.value
                           ? 'border-blue-500 bg-blue-50 shadow-md scale-105'
                           : 'border-gray-200 hover:border-blue-300'
                       } group`}
