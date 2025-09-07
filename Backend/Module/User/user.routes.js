@@ -11,39 +11,44 @@ import {
 import verifyToken from '../../Middleware/verifyToken.js'
 import {
   standardLimiter,
-  strictLimiter ,
-  mediumLimiter 
+  strictLimiter,
+  mediumLimiter,
+  lightLimiter
 } from '../../config/rateLimiters.js'
 import verifyAdminToken from '../../Middleware/verifyAdminToken.js'
 
 const router = express.Router()
 
-// Create user (signup-style) → sensitive
+// 🔹 Create user (signup-style) → sensitive
 router
   .route('/')
-  .post(strictLimiter , userImageUploader.single('image'), createUser)
+  .post(strictLimiter, userImageUploader.single('image'), createUser)
 
-// Fetch user → general API
+// 🔹 Fetch user → general API
 router.route('/get-user').post(standardLimiter, fetchUser)
 
-// Update profile → general API
-router.route('/update-profile').put(standardLimiter, verifyToken, updateUserProfile)
+// 🔹 Update profile → per-user limiter (token first)
+router
+  .route('/update-profile')
+  .put(verifyToken, standardLimiter, updateUserProfile)
 
-// Update image (file upload) → heavy, tighter limiter
+// 🔹 Update image (file upload) → per-user limiter (token first)
 router
   .route('/update-image')
   .put(
-    mediumLimiter ,
     verifyToken,
+    mediumLimiter,
     userImageUploader.single('image'),
     updateImage
   )
 
-// Get chairs & moderators → general API
+// 🔹 Get chairs & moderators → admin-only
 router
   .route('/chairs-moderators')
   .get(standardLimiter, verifyAdminToken, getChairsAndModerators)
 
-// My stats → general API
-router.route('/my-stats').get(standardLimiter, verifyAdminToken, getMyDashboardStats)
+// 🔹 My stats → depends on role (user vs admin)
+router
+  .route('/my-stats')
+  .get(verifyAdminToken, lightLimiter, getMyDashboardStats)
 export default router
