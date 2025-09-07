@@ -29,7 +29,7 @@ export const getConference = createAsyncThunk(
   async (status, { rejectWithValue }) => {
     try {
       const url = status ? `/conference?status=${status}` : '/conference'
-      const response = await axios.get(url)
+      const response = await axiosSecure.get(url)
       return response.data.data
     } catch (error) {
       const message =

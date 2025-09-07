@@ -13,6 +13,7 @@ import {
 } from 'react-icons/md'
 import { AiOutlineSetting } from 'react-icons/ai'
 import { BiBarChartSquare } from 'react-icons/bi'
+import { ListOrdered } from 'lucide-react'
 
 const presenterNavOptions = [
   {
@@ -155,7 +156,46 @@ const session_chair_navOptions = [
     label: 'Home',
     path: '/admin/',
     icon: <FaHome />
+  },
+  {
+    id: 2,
+    label: 'Messages',
+    path: '/admin/messages',
+    icon: <FaMessage />
   }
 ]
 
-export { presenterNavOptions, adminNavOptions, reviewerNavOptions,session_chair_navOptions }
+const attendee_chair_navOptions = [
+  {
+    id: 1,
+    label: 'Home',
+    path: '/admin/',
+    icon: <FaHome />
+  },
+  {
+    id: 2,
+    label: 'Attendee List',
+    path: '/admin/conference-list',
+    icon: <ListOrdered />
+  },
+  {
+    id: 3,
+    label: 'Payment',
+    path: '/admin/invoice',
+    icon: <IoNewspaperSharp />
+  },
+  {
+    id: 4,
+    label: 'Messages',
+    path: '/admin/messages',
+    icon: <FaMessage />
+  }
+]
+
+export {
+  presenterNavOptions,
+  adminNavOptions,
+  reviewerNavOptions,
+  session_chair_navOptions,
+  attendee_chair_navOptions
+}

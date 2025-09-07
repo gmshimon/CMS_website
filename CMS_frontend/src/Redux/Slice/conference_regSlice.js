@@ -7,13 +7,19 @@ const initialState = {
   conference_regs: [],
   single_conference_reg: null,
 
+  dashboardStats: null,
+
   getConferenceRegLoading: false,
   getConferenceRegSuccess: false,
   getConferenceRegError: false,
 
   getSingleConferenceRegLoading: false,
   getSingleConferenceRegSuccess: false,
-  getSingleConferenceRegError: false
+  getSingleConferenceRegError: false,
+
+  getDashboardStatsLoading: false, // 👈 loading state
+  getDashboardStatsSuccess: false,
+  getDashboardStatsError: false
 }
 
 export const getConferenceRegs = createAsyncThunk(
@@ -51,6 +57,21 @@ export const getSingleConferenceReg = createAsyncThunk(
   }
 )
 
+export const getAttendeeDashboardStats = createAsyncThunk(
+  'attendee/getDashboardStats',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.get(`/conference_reg/dashboard`)
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while getting attendee dashboard stats'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const conferenceRegSlice = createSlice({
   name: 'conferenceReg',
   initialState,
@@ -59,9 +80,14 @@ const conferenceRegSlice = createSlice({
       state.getConferenceRegLoading = false
       state.getConferenceRegSuccess = false
       state.getConferenceRegError = false
+
       state.getSingleConferenceRegLoading = false
       state.getSingleConferenceRegSuccess = false
       state.getSingleConferenceRegError = false
+
+      state.getDashboardStatsLoading = false
+      state.getDashboardStatsSuccess = false
+      state.getDashboardStatsError = false
     }
   },
   extraReducers: builder => {
@@ -97,6 +123,22 @@ const conferenceRegSlice = createSlice({
         state.getSingleConferenceRegLoading = false
         state.getSingleConferenceRegSuccess = false
         state.getSingleConferenceRegError = true
+      })
+      .addCase(getAttendeeDashboardStats.pending, state => {
+        state.getDashboardStatsLoading = true
+        state.getDashboardStatsSuccess = false
+        state.getDashboardStatsError = false
+      })
+      .addCase(getAttendeeDashboardStats.fulfilled, (state, action) => {
+        state.dashboardStats = action.payload
+        state.getDashboardStatsLoading = false
+        state.getDashboardStatsSuccess = true
+        state.getDashboardStatsError = false
+      })
+      .addCase(getAttendeeDashboardStats.rejected, state => {
+        state.getDashboardStatsLoading = false
+        state.getDashboardStatsSuccess = false
+        state.getDashboardStatsError = true
       })
   }
 })

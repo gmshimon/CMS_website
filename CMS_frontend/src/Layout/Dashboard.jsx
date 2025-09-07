@@ -25,6 +25,7 @@ import {
 import axiosSecure from '../Utilis/axiosSecure'
 import {
   adminNavOptions,
+  attendee_chair_navOptions,
   presenterNavOptions,
   reviewerNavOptions,
   session_chair_navOptions
@@ -75,6 +76,9 @@ const Dashboard = () => {
       }
       if(user?.role === 'Session Chair'){
         setNavOptions(session_chair_navOptions)
+      }
+      if(user?.role === 'Attendee'){
+        setNavOptions(attendee_chair_navOptions)
       }
 
       //dispatch(getNotifications())

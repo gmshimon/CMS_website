@@ -21,7 +21,8 @@ const DashboardHome = () => {
         (user?.role === 'Presenter' && <PresenterHome />) ||
         (user?.role === 'Admin' && <AdminHome />) ||
         (user?.role === 'Reviewer' && <ReviewerHome />) ||
-        (user?.role === 'Session Chair' && <SessionChairHome />) || (user?.role==='Session Chair' &&<AttendeeHome/>)
+        (user?.role === 'Session Chair' && <SessionChairHome />) ||
+        (user?.role === 'Attendee' && <AttendeeHome />)
       )}
     </>
   )
