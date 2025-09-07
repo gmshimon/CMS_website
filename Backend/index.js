@@ -1,41 +1,31 @@
-import mongoose from 'mongoose'
 import express from 'express'
 import http from 'http'
 import cors from 'cors'
-import bodyParser from 'body-parser'
-import dotenv from 'dotenv'
 import { setupWebSocket } from './socket/index.js'
 import globalErrorHandler from './Middleware/GlobalErrorHandler/globalErrorHandler.js'
-// import sessionMiddleware from './Middleware/Redis/sessionConfig.js';
-const { query } = express
-dotenv.config()
-const port = process.env.PORT || 5000
+import { connectDB } from './config/db.js'
+import { corsOptions } from './config/cors.js'
+import { ENV } from './config/env.js'
 
+// Initialize app
 const app = express()
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-  })
-)
 const server = http.createServer(app)
 
-// Setup socket.io on the HTTP server
-setupWebSocket(server)
+// ✅ Trust proxy for real IPs
+app.set('trust proxy', 1)
 
+// ✅ Middlewares
+app.use(cors(corsOptions))
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ limit: '50mb', extended: true }))
-app.use(bodyParser.json())
-// app.use(sessionMiddleware)
 
-const uri = 'mongodb://127.0.0.1:27017/cms_website'
-// const uri = process.env.MONGODB_URI
+// ✅ WebSocket setup
+setupWebSocket(server)
 
-mongoose.connect(uri).then(() => {
-  console.log('🛢️ Connected to MongoDB')
-})
+// ✅ Connect DB
+connectDB()
 
+// ✅ Routes
 import userRouter from './Module/User/user.routes.js'
 import abstractRouter from './Module/Abstract/abstract.routes.js'
 import conferenceRouter from './Module/Conference/conference.routes.js'
@@ -47,8 +37,6 @@ import adminRouter from './Module/Admin/admin.routes.js'
 import reviewRouter from './Module/Review/review.routes.js'
 import scheduleRouter from './Module/Schedule/schedule.routes.js'
 import markRouter from './Module/Mark/mark.routes.js'
-import { createRateLimiter } from './Middleware/RateLimit/rateLimiter.js'
-
 
 app.use('/api/v1/user', userRouter)
 app.use('/api/v1/abstract', abstractRouter)
@@ -62,15 +50,16 @@ app.use('/api/v1/review',reviewRouter)
 app.use('/api/v1/schedules',scheduleRouter)
 app.use('/api/v1/mark',markRouter)
 
-app.get('/',createRateLimiter({ windowMs: 60 * 1000, max: 100, keyType: 'hybrid' }) ,async (req, res) => {
+app.get('/', async (req, res) => {
   res.send('API is running')
 })
 
-// Global error handler
+// ✅ Global error handler
 app.use(globalErrorHandler)
 
-server.listen(port, () => {
-  console.log(`🚀 Server is running on port ${port}`)
+// ✅ Start server
+server.listen(ENV.PORT, () => {
+  console.log(`🚀 Server is running on port ${ENV.PORT}`)
 })
 
 export default app
