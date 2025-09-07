@@ -2,9 +2,9 @@ import { createRateLimiter } from "../Middleware/RateLimit/rateLimiterConfigurat
 
 // Very sensitive (login/signup)
 export const strictLimiter = createRateLimiter({
-  windowMs: 15 * 60 * 1000, // 15 min
-  max: 5,
-  keyType: 'ip',
+  windowMs: 10 * 60 * 1000, // 10 min
+  max: 10,
+  keyType: 'user',
   message: 'Too many login/signup attempts, please try again later.'
 })
 
