@@ -1,33 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router'
-import { toast, ToastContainer } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import { loginUser, reset } from '../../Redux/Slice/AuthSlice'
+import ChangePasswordModal from '../../Component/ChangePasswordModal/ChangePasswordModal'
+import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
 
 const Login = () => {
-  const {isLoginSuccess,isLoginLoading,isLoginError} = useSelector(state=>state.user)
+  const {
+    isLoginSuccess,
+    isLoginLoading,
+    isLoginError,
+    sendResetPasswordSuccess
+  } = useSelector(state => state.user)
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  useEffect(()=>{
-    if(isLoginSuccess){
+  useEffect(() => {
+    if (isLoginSuccess) {
       navigate('/admin')
     }
-    if(isLoginError){
-      toast.error('Failed', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'light'
-      })
+    if (isLoginError) {
+      showErrorToast('Failed')
+
       dispatch(reset())
     }
-  },[dispatch, isLoginError, isLoginSuccess, navigate])
+    if (sendResetPasswordSuccess) {
+      showSuccessToast('Password reset link sent')
+      dispatch(reset())
+    }
+  }, [dispatch, isLoginError, isLoginSuccess, navigate, sendResetPasswordSuccess])
   const handleLogin = e => {
     e.preventDefault()
     const data = {
@@ -41,7 +45,7 @@ const Login = () => {
   const handleClickShowPassword = () => setShowPassword(show => !show)
   return (
     <section className='bg-gray-300 h-screen w-full'>
-      <ToastContainer/>
+      <ToastContainer />
       <div className='md:flex w-full h-full'>
         {/* Left side - Image */}
         <div className='md:w-1/2 h-full hidden md:block '>
@@ -138,7 +142,10 @@ const Login = () => {
                 </div>
               </div>
               <div className='mt-6'></div>
-              <p className='text-end font-semibold hover:underline cursor-pointer'>
+              <p
+                onClick={() => setIsPasswordModalOpen(true)}
+                className='text-end font-semibold hover:underline cursor-pointer'
+              >
                 Forgot Password
               </p>
               <p className='mb-2'>
@@ -155,14 +162,23 @@ const Login = () => {
                 onClick={handleLogin}
                 disabled={isLoginLoading}
               >
-                {isLoginLoading?<p>
-                  Loading <span className="loading loading-spinner loading-xs"></span>
-                </p>:'Sign In'}
+                {isLoginLoading ? (
+                  <p>
+                    Loading{' '}
+                    <span className='loading loading-spinner loading-xs'></span>
+                  </p>
+                ) : (
+                  'Sign In'
+                )}
               </button>
             </form>
           </div>
         </div>
       </div>
+      <ChangePasswordModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </section>
   )
 }

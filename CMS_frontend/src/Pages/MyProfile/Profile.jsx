@@ -9,6 +9,8 @@ import {
   updateImage,
   updateUserProfile
 } from '../../Redux/Slice/AuthSlice'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Profile = () => {
   const {
@@ -37,7 +39,7 @@ const Profile = () => {
       showErrorToast('Something went wrong')
       dispatch(reset())
     }
-    if(sendResetPasswordError){
+    if (sendResetPasswordError) {
       showErrorToast('Something went wrong')
       dispatch(reset())
     }
@@ -45,6 +47,7 @@ const Profile = () => {
     dispatch,
     isUpdateUserError,
     isUpdateUserSuccess,
+    sendResetPasswordError,
     sendResetPasswordSuccess
   ])
 
@@ -64,6 +67,7 @@ const Profile = () => {
   if (isUpdateUserLoading) {
     return (
       <div className='flex justify-center items-center h-[calc(100ch-60px)]'>
+        <ToastContainer />
         <Loading />
       </div>
     )
@@ -71,6 +75,7 @@ const Profile = () => {
 
   return (
     <section className='min-h-screen bg-base-200 py-12 px-4 sm:px-6 lg:px-8'>
+      <ToastContainer />
       {/* Hero Section with Profile Picture */}
       <div className='hero bg-base-100 rounded-lg shadow-xl p-6 mb-8'>
         <div className='hero-content flex-col lg:flex-row'>

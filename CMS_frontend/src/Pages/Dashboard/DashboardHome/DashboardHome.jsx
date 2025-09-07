@@ -6,6 +6,7 @@ import AdminHome from '../../../Component/AdminHome/AdminHome'
 
 import ReviewerHome from '../../../Component/ReviewerHome/ReviewerHome'
 import SessionChairHome from '../../../Component/SessionChairHome/SessionChairHome'
+import AttendeeHome from '../../../Component/AttendeeHome/AttendeeHome'
 
 const DashboardHome = () => {
   const { user, isLoading } = useSelector(state => state.user)
@@ -20,7 +21,7 @@ const DashboardHome = () => {
         (user?.role === 'Presenter' && <PresenterHome />) ||
         (user?.role === 'Admin' && <AdminHome />) ||
         (user?.role === 'Reviewer' && <ReviewerHome />) ||
-        (user?.role === 'Session Chair' && <SessionChairHome />)
+        (user?.role === 'Session Chair' && <SessionChairHome />) || (user?.role==='Session Chair' &&<AttendeeHome/>)
       )}
     </>
   )

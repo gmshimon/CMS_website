@@ -8,8 +8,6 @@ import {
 } from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { LuMessageSquare } from 'react-icons/lu'
 import { FaMessage } from 'react-icons/fa6'
 import MessageList from '../Component/MessageList/MessageList'
