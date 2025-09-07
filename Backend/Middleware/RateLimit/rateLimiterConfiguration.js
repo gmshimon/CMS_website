@@ -1,7 +1,7 @@
 // Middleware/RateLimit/rateLimiter.js
 import rateLimit, { ipKeyGenerator } from 'express-rate-limit'
 import RedisStore from 'rate-limit-redis'
-import redisClient from '../Redis/redisClient.js'
+import redisClient from '../../config/redisClient.js'
 
 function hybridKeyGenerator (req) {
   if (req.user && req.user._id) {

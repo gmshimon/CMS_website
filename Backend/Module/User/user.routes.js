@@ -9,18 +9,40 @@ import {
   updateUserProfile
 } from './user.controller.js'
 import verifyToken from '../../Middleware/verifyToken.js'
+import {
+  standardLimiter,
+  strictLimiter ,
+  mediumLimiter 
+} from '../../config/rateLimiters.js'
 
 const router = express.Router()
 
-router.route('/').post(userImageUploader.single('image'), createUser)
-router.route('/get-user').post(fetchUser)
-router.route('/update-profile').put(verifyToken, updateUserProfile)
+// Create user (signup-style) → sensitive
+router
+  .route('/')
+  .post(strictLimiter , userImageUploader.single('image'), createUser)
 
+// Fetch user → general API
+router.route('/get-user').post(standardLimiter, fetchUser)
+
+// Update profile → general API
+router.route('/update-profile').put(standardLimiter, verifyToken, updateUserProfile)
+
+// Update image (file upload) → heavy, tighter limiter
 router
   .route('/update-image')
-  .put(verifyToken, userImageUploader.single('image'), updateImage)
+  .put(
+    mediumLimiter ,
+    verifyToken,
+    userImageUploader.single('image'),
+    updateImage
+  )
 
-router.get('/chairs-moderators', verifyToken, getChairsAndModerators)
+// Get chairs & moderators → general API
+router
+  .route('/chairs-moderators')
+  .get(standardLimiter, verifyToken, getChairsAndModerators)
 
-router.get('/my-stats', verifyToken, getMyDashboardStats)
+// My stats → general API
+router.route('/my-stats').get(standardLimiter, verifyToken, getMyDashboardStats)
 export default router
