@@ -45,9 +45,9 @@ const AttendeeListPage = () => {
   useEffect(() => {
     if (selectedConference) {
       dispatch(getSingleConference(selectedConference))
+      dispatch(getConferenceRegs(selectedConference))
     }
 
-    dispatch(getConferenceRegs(selectedConference))
   }, [dispatch, selectedConference])
 
   if (createConferenceRegLoading || getConferenceRegLoading) {

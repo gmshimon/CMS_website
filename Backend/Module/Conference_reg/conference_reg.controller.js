@@ -1,3 +1,4 @@
+import { getCache, invalidateUserCache, setCache } from '../../Utilis/Cache/cacheHelper.js'
 import Conference from '../Conference/conference.model.js'
 import conference_reg from './conference_reg.model.js'
 
@@ -18,6 +19,19 @@ export const getConferenceReg = async (req, res, next) => {
       match.conference = conference_id
     }
 
+    const cacheKey = `confReg:${userId}:${conference_id || 'all'}`
+
+    // 1️⃣ Try cache
+    const cached = await getCache(cacheKey)
+    if (cached) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Fetched from cache',
+        data: cached
+      })
+    }
+
+    // 2️⃣ Query DB
     const results = await conference_reg.find(match).populate([
       {
         path: 'conference'
@@ -27,6 +41,9 @@ export const getConferenceReg = async (req, res, next) => {
         select: 'paper_title theme abstract_id'
       }
     ])
+
+    // 3️⃣ Save to cache
+    await setCache(cacheKey, results)
 
     res.status(200).json({
       status: 'Success',
@@ -45,6 +62,17 @@ export const getSingleConferenceReg = async (req, res, next) => {
   try {
     const { id } = req.params
 
+    const cacheKey = `confReg:single:${id}`
+
+    const cached = await getCache(cacheKey)
+    if (cached) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Fetched from cache',
+        data: cached
+      })
+    }
+
     const response = await conference_reg
       .findOne({
         _id: id
@@ -57,6 +85,8 @@ export const getSingleConferenceReg = async (req, res, next) => {
           path: 'abstract'
         }
       ])
+
+    await setCache(cacheKey, response)
 
     res.status(200).json({
       status: 'Success',
@@ -74,6 +104,16 @@ export const getSingleConferenceReg = async (req, res, next) => {
 export const getAttendeeDashboardStats = async (req, res, next) => {
   try {
     const userId = req.user._id
+
+   const cacheKey = `confReg:dashboard:${userId}`
+    const cached = await getCache(cacheKey)
+    if (cached) {
+      return res.status(200).json({
+        status: 'Success',
+        message: 'Fetched from cache',
+        data: cached
+      })
+    }
 
     // ✅ All registrations by this user
     const registrations = await conference_reg
@@ -109,7 +149,7 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
       (sum, reg) => sum + (reg.totalPrice || 0),
       0
     )
-
+await setCache(cacheKey, stats)
     res.status(200).json({
       status: 'Success',
       message: 'Fetched attendee dashboard stats successfully',
@@ -156,7 +196,7 @@ export const createConferenceReg = async (req, res, next) => {
       createdBy: userId,
       ...rest
     })
-
+ await invalidateUserCache(userId)
     return res.status(201).json({
       status: 'Success',
       message: 'Conference registration created successfully',
