@@ -47,7 +47,6 @@ const AttendeeListPage = () => {
       dispatch(getSingleConference(selectedConference))
       dispatch(getConferenceRegs(selectedConference))
     }
-
   }, [dispatch, selectedConference])
 
   if (createConferenceRegLoading || getConferenceRegLoading) {
@@ -91,7 +90,7 @@ const AttendeeListPage = () => {
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Abstract ID/Ref ID
                 </th>
-                
+
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Date
                 </th>
@@ -113,14 +112,13 @@ const AttendeeListPage = () => {
                 <tr key={index}>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {conference?.abstract?.abstract_id ||
-                        conference._id}
+                      {conference?.registration_id || conference._id}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
                       {formatDate(
-                        new Date(conference.conference.startingDate),
+                        new Date(conference?.conference?.startingDate),
                         'PPP'
                       )}
                     </div>

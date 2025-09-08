@@ -1,6 +1,17 @@
-import { getCache, invalidateUserCache, setCache } from '../../Utilis/Cache/cacheHelper.js'
+import dayjs from 'dayjs'
+import {
+  getCache,
+  invalidateUserCache,
+  setCache
+} from '../../Utilis/Cache/cacheHelper.js'
 import Conference from '../Conference/conference.model.js'
 import conference_reg from './conference_reg.model.js'
+import { notifyUser } from '../User/user.service.js'
+import {
+  adminConferenceRegTemplate,
+  attendeeConferenceRegTemplate
+} from '../../Utilis/EmailTemplate/conferenceRegTemplate.js'
+import { notifyAdmins } from '../Admin/admin.service.js'
 
 export const getConferenceReg = async (req, res, next) => {
   try {
@@ -105,7 +116,7 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
   try {
     const userId = req.user._id
 
-   const cacheKey = `confReg:dashboard:${userId}`
+    const cacheKey = `confReg:dashboard:${userId}`
     const cached = await getCache(cacheKey)
     if (cached) {
       return res.status(200).json({
@@ -149,7 +160,7 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
       (sum, reg) => sum + (reg.totalPrice || 0),
       0
     )
-await setCache(cacheKey, stats)
+    await setCache(cacheKey, stats)
     res.status(200).json({
       status: 'Success',
       message: 'Fetched attendee dashboard stats successfully',
@@ -196,7 +207,37 @@ export const createConferenceReg = async (req, res, next) => {
       createdBy: userId,
       ...rest
     })
- await invalidateUserCache(userId)
+    await invalidateUserCache(userId)
+    const paymentDeadline = dayjs().add(7, 'day').format('DD MMM YYYY')
+
+    // ✅ Notify Attendee
+    notifyUser({
+      userId: userId,
+      email: req.user.email,
+      message: `You have successfully registered for ${isConference.name}.`,
+      type: 'Conference Registration',
+      emailTemplate: () =>
+        attendeeConferenceRegTemplate({
+          attendeeName: req.user.name,
+          conferenceName: isConference.name,
+          registrationId: newReg.registration_id,
+          paymentDeadline
+        })
+    })
+
+    // ✅ Notify Admins
+    notifyAdmins({
+      message: `${req.user.name} has registered as an attendee for ${isConference.name}`,
+      type: 'New Conference Registration',
+      emailTemplate: admin =>
+        adminConferenceRegTemplate({
+          adminName: admin.name,
+          attendeeName: req.user.name,
+          conferenceName: isConference.name,
+          registrationId: newReg.registration_id
+        })
+    })
+
     return res.status(201).json({
       status: 'Success',
       message: 'Conference registration created successfully',
