@@ -1,6 +1,6 @@
 import {RedisStore} from"connect-redis"
 import session from'express-session'
-import redisClient from './redisClient.js'
+import redisClient from '../Middleware/Redis/redisClient.js'
 import dotenv from 'dotenv';
 
 dotenv.config();

@@ -1,6 +1,6 @@
 // redisClient.js
 import redis from 'redis'
-import { ENV } from './env.js'
+import { ENV } from '../../config/env.js'
 
 const redis_url = ENV.REDIS_URL
 const client = redis.createClient({

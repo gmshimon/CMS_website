@@ -7,13 +7,17 @@ import Conference_reg_modal from '../../Component/Conference_reg_modal/Conferenc
 import { useDispatch, useSelector } from 'react-redux'
 import { getSingleConference } from '../../Redux/Slice/conferenceSlice'
 import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
-import { reset } from '../../Redux/Slice/conference_regSlice'
+import { getConferenceRegs, reset } from '../../Redux/Slice/conference_regSlice'
 import Loading from '../../Component/Loading/Loading'
+import { MapPin } from 'lucide-react'
+import { Link } from 'react-router'
+import { IoMdEye } from 'react-icons/io'
 
 const AttendeeListPage = () => {
   const {
     createConferenceRegSuccess,
     createConferenceRegLoading,
+    getConferenceRegLoading,
     createConferenceRegError,
     errorMessage,
     conference_regs
@@ -31,15 +35,22 @@ const AttendeeListPage = () => {
       showErrorToast(errorMessage || 'Something went wrong')
       dispatch(reset())
     }
-  }, [dispatch, errorMessage, createConferenceRegError, createConferenceRegSuccess])
+  }, [
+    dispatch,
+    errorMessage,
+    createConferenceRegError,
+    createConferenceRegSuccess
+  ])
 
   useEffect(() => {
     if (selectedConference) {
       dispatch(getSingleConference(selectedConference))
     }
+
+    dispatch(getConferenceRegs(selectedConference))
   }, [dispatch, selectedConference])
-console.log(conference_regs)
-  if (createConferenceRegLoading) {
+
+  if (createConferenceRegLoading || getConferenceRegLoading) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
         <ToastContainer />
@@ -78,11 +89,9 @@ console.log(conference_regs)
             <thead className='bg-slate-500'>
               <tr>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Abstract ID
+                  Abstract ID/Ref ID
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Abstract Title
-                </th>
+                
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Date
                 </th>
@@ -100,17 +109,12 @@ console.log(conference_regs)
               </tr>
             </thead>
             <tbody className='bg-white divide-y divide-gray-200'>
-              {[].map((conference, index) => (
+              {conference_regs?.map((conference, index) => (
                 <tr key={index}>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {conference.abstract.abstract_id ||
-                        conference.abstract._id}
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {conference.abstract.paper_title}
+                      {conference?.abstract?.abstract_id ||
+                        conference._id}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
