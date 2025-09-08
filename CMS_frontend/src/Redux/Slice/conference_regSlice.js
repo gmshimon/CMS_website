@@ -7,7 +7,13 @@ const initialState = {
   conference_regs: [],
   single_conference_reg: null,
 
+  errorMessage: null,
+
   dashboardStats: null,
+
+  createConferenceRegLoading: false,
+  createConferenceRegSuccess: false,
+  createConferenceRegError: false,
 
   getConferenceRegLoading: false,
   getConferenceRegSuccess: false,
@@ -72,11 +78,32 @@ export const getAttendeeDashboardStats = createAsyncThunk(
   }
 )
 
+export const createConferenceReg = createAsyncThunk(
+  'conferenceReg/createConferenceReg',
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.post(`/conference_reg/create`, payload)
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while creating conference registration'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const conferenceRegSlice = createSlice({
   name: 'conferenceReg',
   initialState,
   reducers: {
     reset: state => {
+      state.errorMessage = null
+
+      state.createConferenceRegLoading = false
+      state.createConferenceRegSuccess = false
+      state.createConferenceRegError = false
+
       state.getConferenceRegLoading = false
       state.getConferenceRegSuccess = false
       state.getConferenceRegError = false
@@ -92,6 +119,23 @@ const conferenceRegSlice = createSlice({
   },
   extraReducers: builder => {
     builder
+      .addCase(createConferenceReg.pending, state => {
+        state.createConferenceRegLoading = true
+        state.createConferenceRegSuccess = false
+        state.createConferenceRegError = false
+      })
+      .addCase(createConferenceReg.fulfilled, (state, action) => {
+        state.conference_regs.push(action.payload) // add new reg to list
+        state.createConferenceRegLoading = false
+        state.createConferenceRegSuccess = true
+        state.createConferenceRegError = false
+      })
+      .addCase(createConferenceReg.rejected, (state,action) => {
+        state.errorMessage = action.payload
+        state.createConferenceRegLoading = false
+        state.createConferenceRegSuccess = false
+        state.createConferenceRegError = true
+      })
       .addCase(getConferenceRegs.pending, state => {
         state.getConferenceRegLoading = true
         state.getConferenceRegSuccess = false
@@ -103,7 +147,8 @@ const conferenceRegSlice = createSlice({
         state.getConferenceRegSuccess = true
         state.getConferenceRegError = false
       })
-      .addCase(getConferenceRegs.rejected, state => {
+      .addCase(getConferenceRegs.rejected, (state, action) => {
+        state.errorMessage = action.payload
         state.getConferenceRegLoading = false
         state.getConferenceRegSuccess = false
         state.getConferenceRegError = true

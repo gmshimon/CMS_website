@@ -49,6 +49,7 @@ import CommitteePage from '../Pages/CommitteePage/CommitteePage.jsx'
 import KeynoteSpeakersPage from '../Pages/KeynoteSpeakersPage/KeynoteSpeakersPage.jsx'
 import MySchedule from '../Pages/Dashboard/MySchedule/MySchedule.jsx'
 import ScheduleAbstractsPage from '../Pages/ScheduleAbstractsPage/ScheduleAbstractsPage.jsx'
+import AttendeeListPage from '../Pages/AttendeeListPage/AttendeeListPage.jsx'
 
 export const router = createBrowserRouter([
   {
@@ -172,6 +173,10 @@ export const router = createBrowserRouter([
       {
         path: 'schedule/:id',
         element: <ScheduleAbstractsPage />
+      },
+      {
+        path:'attendee-list',
+        element:<AttendeeListPage/>
       },
       // Scheduling Routes Admin
       {

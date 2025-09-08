@@ -57,7 +57,7 @@ router.post(
 )
 
 // 🔹 Admin-only: fetch abstracts by conference
-router.get('/:conference_id', verifyAdminToken, standardLimiter, getAbstract)
+router.get('/:conference_id', verifyToken, standardLimiter, getAbstract)
 
 // 🔹 user: create a new abstract with file upload
 router.post(

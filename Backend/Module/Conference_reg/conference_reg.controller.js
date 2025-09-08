@@ -1,3 +1,4 @@
+import Conference from '../Conference/conference.model.js'
 import conference_reg from './conference_reg.model.js'
 
 export const getConferenceReg = async (req, res, next) => {
@@ -120,4 +121,48 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
       }
     })
   } catch (error) {}
+}
+
+export const createConferenceReg = async (req, res, next) => {
+  try {
+    const userId = req.user._id
+    const { conference, presenterName, ...rest } = req.body
+
+    // 1️⃣ Check if conference exists
+    const isConference = await Conference.findById(conference)
+
+    if (!isConference) {
+      const error = new Error('Conference not found')
+      error.statusCode = 404
+      return next(error)
+    }
+
+    // 2️⃣ Check if user already registered
+    const existingReg = await conference_reg.findOne({
+      createdBy: userId,
+      conference: conference
+    })
+
+    if (existingReg) {
+      const error = new Error('You have already registered for this conference')
+      error.statusCode = 400
+      return next(error)
+    }
+
+    // 3️⃣ Create new registration
+    const newReg = await conference_reg.create({
+      conference,
+      presenterName,
+      createdBy: userId,
+      ...rest
+    })
+
+    return res.status(201).json({
+      status: 'Success',
+      message: 'Conference registration created successfully',
+      data: newReg
+    })
+  } catch (error) {
+    next(error)
+  }
 }

@@ -112,8 +112,8 @@ const Abstracts = () => {
         <>
           <div className='mb-6'>
             <h2 className='text-2xl font-bold text-gray-800 mb-4'>Abstracts</h2>
-            <div className='flex flex-col md:flex-row items-center justify-between'>
-              <div className='flex flex-col md:flex-row gap-4 mb-4'>
+            <div className='flex flex-col md:flex-row items-center '>
+              <div className='flex flex-col md:flex-row gap-4  mr-4'>
                 <input
                   type='text'
                   placeholder='Search abstracts...'

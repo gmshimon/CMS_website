@@ -175,7 +175,7 @@ const attendee_chair_navOptions = [
   {
     id: 2,
     label: 'Attendee List',
-    path: '/admin/conference-list',
+    path: '/admin/attendee-list',
     icon: <ListOrdered />
   },
   {

@@ -50,5 +50,5 @@ router
 // 🔹 My stats → depends on role (user vs admin)
 router
   .route('/my-stats')
-  .get(verifyAdminToken, lightLimiter, getMyDashboardStats)
+  .get(verifyToken, lightLimiter, getMyDashboardStats)
 export default router

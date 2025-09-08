@@ -38,7 +38,7 @@ const AttendeeDashboard = () => {
           title='My Registrations'
           count={dashboardStats?.myRegistrations || 0}
           icon={IoCalendar}
-          link='/attendee/registrations'
+          link='/admin/attendee-list'
           color='bg-blue-50 hover:bg-blue-100'
         />
         <StatCard

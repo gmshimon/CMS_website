@@ -154,7 +154,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       (total, workshop) => total + (workshop.price || 0),
       0
     )
-   
+
     const data = {
       conference: singleConference?._id,
       category: conference,
@@ -168,7 +168,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       researchGate_link,
       orcid_link,
       google_scholar_link,
-      price:price+totalWorkshopPrice,
+      price: price + totalWorkshopPrice,
       conference_registration: {
         conference: singleConference?._id,
         presenterName: formData.presenterName,
