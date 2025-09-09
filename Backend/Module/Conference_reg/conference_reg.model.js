@@ -47,6 +47,23 @@ const conferenceRegSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
+    payment_status: {
+      type: String,
+      enum: ['Paid', 'Pending', 'Unpaid'],
+      default: 'Unpaid'
+    },
+    invoice:{
+      type:String,
+      default:null
+    },
+    payment_proof:{
+      type:String,
+      default:null
+    },
+    payment_proof:{
+      type:String,
+      default:null
+    },
     abstract: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'abstract'

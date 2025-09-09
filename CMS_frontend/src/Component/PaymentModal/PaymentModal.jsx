@@ -79,7 +79,7 @@
 // export default PaymentModal;
 
 // components/PaymentModal.jsx or .tsx if you're using TypeScript
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const PaymentModal = ({ isOpen, onClose, onSubmit }) => {
   const [receiptFile, setReceiptFile] = useState(null);

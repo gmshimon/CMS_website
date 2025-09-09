@@ -1,17 +1,14 @@
-import { formatDate } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Conference_reg_modal from '../../Component/Conference_reg_modal/Conference_reg_modal'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSingleConference } from '../../Redux/Slice/conferenceSlice'
 import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
-import { getConferenceRegs, reset } from '../../Redux/Slice/conference_regSlice'
+import { reset } from '../../Redux/Slice/conference_regSlice'
 import Loading from '../../Component/Loading/Loading'
-import { MapPin } from 'lucide-react'
-import { Link } from 'react-router'
-import { IoMdEye } from 'react-icons/io'
+import ConferenceListTable from '../../Component/ConferenceListTable/ConferenceListTable'
+import useConferece_reg from '../../Hooks/useConferece_reg'
 
 const AttendeeListPage = () => {
   const {
@@ -22,10 +19,9 @@ const AttendeeListPage = () => {
     errorMessage,
     conference_regs
   } = useSelector(state => state.conferenceReg)
-  const { selectedConference } = useSelector(state => state.conference)
   const [openModal, setOpenModal] = useState(false)
   const dispatch = useDispatch()
-
+  useConferece_reg()
   useEffect(() => {
     if (createConferenceRegSuccess) {
       showSuccessToast('Successfully registered the conference')
@@ -41,13 +37,6 @@ const AttendeeListPage = () => {
     createConferenceRegError,
     createConferenceRegSuccess
   ])
-
-  useEffect(() => {
-    if (selectedConference) {
-      dispatch(getSingleConference(selectedConference))
-      dispatch(getConferenceRegs(selectedConference))
-    }
-  }, [dispatch, selectedConference])
 
   if (createConferenceRegLoading || getConferenceRegLoading) {
     return (
@@ -82,90 +71,7 @@ const AttendeeListPage = () => {
         </div>
       </div>
 
-      <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-        <div className='overflow-x-auto h-[400px] overflow-y-auto'>
-          <table className='min-w-full divide-y divide-gray-200 table-zebra'>
-            <thead className='bg-slate-500'>
-              <tr>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Abstract ID/Ref ID
-                </th>
-
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Date
-                </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Location
-                </th>
-
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Presenter
-                </th>
-
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className='bg-white divide-y divide-gray-200'>
-              {conference_regs?.map((conference, index) => (
-                <tr key={index}>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {conference?.registration_id || conference._id}
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {formatDate(
-                        new Date(conference?.conference?.startingDate),
-                        'PPP'
-                      )}
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      <div className='flex items-center gap-2'>
-                        <MapPin className='text-green-500' size={16} />
-                        <div className='text-sm'>
-                          <div className='font-medium'>
-                            {conference.conference.city},{' '}
-                            {conference.conference.country}
-                          </div>
-                          <div className='text-gray-600'>
-                            {conference.conference.venue}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {conference.presenterName}
-                    </div>
-                  </td>
-
-                  <td className='px-10  whitespace-nowrap text-sm text-gray-500'>
-                    <Link to={`/admin/conference/${conference?._id}`}>
-                      <button className='cursor-pointer hover:text-blue-500'>
-                        <IoMdEye className='text-xl' />
-                      </button>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className='px-4 py-3 border-t border-gray-200'>
-          {/* <ResponsivePagination
-                      current={currentPage}
-                      total={totalPages}
-                      onPageChange={setCurrentPage}
-                    /> */}
-        </div>
-      </div>
+      <ConferenceListTable data={conference_regs} />
 
       {openModal && (
         <Conference_reg_modal

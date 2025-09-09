@@ -93,6 +93,26 @@ export const createConferenceReg = createAsyncThunk(
   }
 )
 
+// Upload payment receipt
+export const uploadPaymentReceipt = createAsyncThunk(
+  'conferenceReg/uploadPaymentReceipt',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+     
+
+      const response = await axiosSecure.post(
+        `/conference_reg/upload-payment/${id}`,
+        data
+      )
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || 'Failed to upload payment receipt'
+      )
+    }
+  }
+)
+
 const conferenceRegSlice = createSlice({
   name: 'conferenceReg',
   initialState,
@@ -130,7 +150,7 @@ const conferenceRegSlice = createSlice({
         state.createConferenceRegSuccess = true
         state.createConferenceRegError = false
       })
-      .addCase(createConferenceReg.rejected, (state,action) => {
+      .addCase(createConferenceReg.rejected, (state, action) => {
         state.errorMessage = action.payload
         state.createConferenceRegLoading = false
         state.createConferenceRegSuccess = false
@@ -184,6 +204,34 @@ const conferenceRegSlice = createSlice({
         state.getDashboardStatsLoading = false
         state.getDashboardStatsSuccess = false
         state.getDashboardStatsError = true
+      })
+      .addCase(uploadPaymentReceipt.pending, state => {
+        state.createConferenceRegLoading = true
+        state.createConferenceRegSuccess = false
+        state.createConferenceRegError = false
+      })
+      .addCase(uploadPaymentReceipt.fulfilled, (state, action) => {
+        const updatedReg = action.payload
+
+        // ✅ Update conference_regs list
+        state.conference_regs = state.conference_regs.map(reg =>
+          reg._id === updatedReg._id ? updatedReg : reg
+        )
+
+        // ✅ Also update single_conference_reg if it matches
+        if (state.single_conference_reg?._id === updatedReg._id) {
+          state.single_conference_reg = updatedReg
+        }
+
+        state.createConferenceRegLoading = false
+        state.createConferenceRegSuccess = true
+        state.createConferenceRegError = false
+      })
+      .addCase(uploadPaymentReceipt.rejected, (state, action) => {
+        state.errorMessage = action.payload
+        state.createConferenceRegLoading = false
+        state.createConferenceRegSuccess = false
+        state.createConferenceRegError = true
       })
   }
 })

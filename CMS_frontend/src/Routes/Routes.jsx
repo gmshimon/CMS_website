@@ -50,6 +50,7 @@ import KeynoteSpeakersPage from '../Pages/KeynoteSpeakersPage/KeynoteSpeakersPag
 import MySchedule from '../Pages/Dashboard/MySchedule/MySchedule.jsx'
 import ScheduleAbstractsPage from '../Pages/ScheduleAbstractsPage/ScheduleAbstractsPage.jsx'
 import AttendeeListPage from '../Pages/AttendeeListPage/AttendeeListPage.jsx'
+import Conference_reg_invoice from '../Pages/Dashboard/Conference_reg_invoice/Conference_reg_invoice.jsx'
 
 export const router = createBrowserRouter([
   {
@@ -129,6 +130,10 @@ export const router = createBrowserRouter([
       {
         path: 'invoice',
         element: <MyInvoice />
+      },
+      {
+        path: 'conference-reg-invoice',
+        element: <Conference_reg_invoice />
       },
       {
         path: 'presenter/scheduling',

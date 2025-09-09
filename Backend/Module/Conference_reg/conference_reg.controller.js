@@ -9,9 +9,11 @@ import conference_reg from './conference_reg.model.js'
 import { notifyUser } from '../User/user.service.js'
 import {
   adminConferenceRegTemplate,
+  adminPaymentUploadedTemplate,
   attendeeConferenceRegTemplate
 } from '../../Utilis/EmailTemplate/conferenceRegTemplate.js'
 import { notifyAdmins } from '../Admin/admin.service.js'
+import { s3PaymentReceiptUploadService } from '../Abstract/abstract.s3Service.js'
 
 export const getConferenceReg = async (req, res, next) => {
   try {
@@ -119,6 +121,7 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
     const cacheKey = `confReg:dashboard:${userId}`
     const cached = await getCache(cacheKey)
     if (cached) {
+      console.log('Returning data: ', cached)
       return res.status(200).json({
         status: 'Success',
         message: 'Fetched from cache',
@@ -134,7 +137,6 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
         'name city country startingDate closingDate status'
       )
       .lean()
-
     // Total registrations
     const myRegistrations = registrations.length
 
@@ -157,19 +159,22 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
 
     // Total Paid = sum of all totalPrice
     const totalPaid = registrations.reduce(
-      (sum, reg) => sum + (reg.totalPrice || 0),
+      (sum, reg) =>
+        reg?.payment_status === 'Paid' ? sum + (reg.totalPrice || 0) : sum,
       0
     )
+    const stats = {
+      myRegistrations,
+      upcomingCount: upcomingConferences.length,
+      totalPaid,
+      upcomingConferences
+    }
     await setCache(cacheKey, stats)
+
     res.status(200).json({
       status: 'Success',
       message: 'Fetched attendee dashboard stats successfully',
-      data: {
-        myRegistrations,
-        upcomingCount: upcomingConferences.length,
-        totalPaid,
-        upcomingConferences
-      }
+      data: stats
     })
   } catch (error) {}
 }
@@ -220,7 +225,7 @@ export const createConferenceReg = async (req, res, next) => {
         attendeeConferenceRegTemplate({
           attendeeName: req.user.name,
           conferenceName: isConference.name,
-          registrationId: newReg.registration_id,
+          id: newReg.registration_id,
           paymentDeadline
         })
     })
@@ -234,7 +239,7 @@ export const createConferenceReg = async (req, res, next) => {
           adminName: admin.name,
           attendeeName: req.user.name,
           conferenceName: isConference.name,
-          registrationId: newReg.registration_id
+          id: newReg.registration_id
         })
     })
 
@@ -244,6 +249,77 @@ export const createConferenceReg = async (req, res, next) => {
       data: newReg
     })
   } catch (error) {
+    next(error)
+  }
+}
+
+export const uploadPaymentReceipt = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const userId = req.user._id
+    const userRole = req.user.role
+    const userName = req.user.name
+
+    // 1. Ensure only Attendees can upload
+    if (userRole !== 'Attendee') {
+      return res.status(403).json({
+        status: 'Fail',
+        message: 'Only Attendees are allowed to upload payment receipts'
+      })
+    }
+
+    // 2. Find the registration owned by this user
+    const registration = await conference_reg.findOne({
+      _id: id,
+      createdBy: userId
+    })
+
+    if (!registration) {
+      return res.status(404).json({
+        status: 'Fail',
+        message: 'Conference registration not found'
+      })
+    }
+
+    // 3. Validate file presence
+    if (!req.file) {
+      return res.status(400).json({
+        status: 'Fail',
+        message: 'No file uploaded'
+      })
+    }
+
+    // 4. Upload to S3
+    const fileUrl = await s3PaymentReceiptUploadService(
+      req.file,
+      req.file.safeFilename // 👈 comes from multer's file.safefilename
+    )
+
+    // 5. Update registration
+    registration.payment_proof = fileUrl
+    registration.payment_status = 'Pending'
+    await registration.save()
+
+    // 6. Notify admins
+    notifyAdmins({
+      message: `Payment receipt uploaded by ${userName} for conference "${registration.conference.name}".`,
+      type: 'payment_uploaded',
+      emailTemplate: admin =>
+        adminPaymentUploadedTemplate({
+          adminName: admin.name,
+          attendeeName: userName,
+          registrationId: updatedReg.registration_id,
+          conferenceName: registration.conference.name
+        })
+    })
+
+    res.status(200).json({
+      status: 'Success',
+      message: 'Payment receipt uploaded successfully',
+      data: registration
+    })
+  } catch (error) {
+    console.error('❌ Upload payment receipt error:', error)
     next(error)
   }
 }

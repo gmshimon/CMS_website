@@ -102,8 +102,10 @@ export const getAbstract = async (req, res, next) => {
   try {
     const { payment_status } = req.query
     const { conference_id } = req.params
-
-    const matchQuery = {}
+    const userId = req.user._id
+    const matchQuery = {
+      createdBy: userId
+    }
     if (
       conference_id &&
       conference_id !== 'all' &&

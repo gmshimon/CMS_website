@@ -181,7 +181,7 @@ const attendee_chair_navOptions = [
   {
     id: 3,
     label: 'Payment',
-    path: '/admin/invoice',
+    path: '/admin/conference-reg-invoice',
     icon: <IoNewspaperSharp />
   },
   {
