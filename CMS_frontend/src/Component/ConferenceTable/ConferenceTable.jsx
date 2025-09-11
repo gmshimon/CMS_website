@@ -49,7 +49,7 @@ const ConferenceTable = ({
               </tr>
             </thead>
             <tbody className='bg-white divide-y divide-gray-200'>
-              {currentConferences.length === 0 ? (
+              {currentConferences?.length === 0 ? (
                 <tr>
                   <td
                     colSpan='6'

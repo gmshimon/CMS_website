@@ -7,6 +7,7 @@ import {
   IoPerson
 } from 'react-icons/io5'
 import {
+  MdOutlineEvent,
   MdOutlineInsertInvitation,
   MdOutlineReviews,
   MdSchedule
@@ -26,7 +27,7 @@ const presenterNavOptions = [
     id: 2,
     label: 'Conference Registration',
     path: '/admin/conference-list',
-    icon: <IoPerson />
+    icon: <MdOutlineEvent />
   },
   {
     id: 3,
@@ -77,7 +78,7 @@ const adminNavOptions = [
     id: 2,
     label: 'Conference',
     path: '/admin/conference',
-    icon: <IoPerson />
+    icon: <MdOutlineEvent  />
   },
   {
     id: 3,
@@ -89,7 +90,7 @@ const adminNavOptions = [
     id: 4,
     label: 'Users',
     path: '/admin/users',
-    icon: <IoIosPaper />
+    icon: <IoPerson />
   },
   {
     id: 5,

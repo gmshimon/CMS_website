@@ -49,10 +49,10 @@ const ConferenceListTable = ({ data, abstract_title = false }) => {
                 </td>}
                 <td className='px-6 py-4 whitespace-nowrap'>
                   <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                    {formatDate(
+                    {conference?.conference?.startingDate?formatDate(
                       new Date(conference?.conference?.startingDate),
                       'PPP'
-                    )}
+                    ):"N/A"}
                   </div>
                 </td>
                 <td className='px-6 py-4 whitespace-nowrap'>
