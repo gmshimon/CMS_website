@@ -75,6 +75,13 @@ const Abstracts = () => {
     setIsModalOpen(false)
   }
 
+const filteredAbstracts = abstracts?.filter(abstract => {
+    const matchesStatus =
+      filterStatus === 'all' || abstract.status === filterStatus
+
+    return matchesStatus
+  })
+
   return (
     <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       <ToastContainer />
@@ -124,7 +131,7 @@ const Abstracts = () => {
           </div>
 
           <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-            <AbstractTable data={abstracts} handleOpenModal={handleOpenModal} />
+            <AbstractTable data={filteredAbstracts} handleOpenModal={handleOpenModal} />
           </div>
           <div className='px-4 py-3 border-t border-gray-200'>
             <ResponsivePagination

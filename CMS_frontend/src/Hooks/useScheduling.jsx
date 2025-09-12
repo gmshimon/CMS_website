@@ -11,20 +11,23 @@ import { getUnscheduledAbstracts } from '../Redux/Slice/AbstractSlice'
 import decodeMethod from '../Utilis/decodeMethod'
 
 const useScheduling = (method = null) => {
+  const {user} = useSelector(state=>state.user)
   const { selectedConference } = useSelector(state => state.conference)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(
-      getUnscheduledAbstracts({
-        conference_id: sessionStorage.getItem('selectedConference')
-          ? sessionStorage.getItem('selectedConference')
-          : selectedConference,
-        presentation_method: decodeMethod(method)
-      })
-    )
+    if(user?.role==='Admin'){
+      dispatch(
+        getUnscheduledAbstracts({
+          conference_id: sessionStorage.getItem('selectedConference')
+            ? sessionStorage.getItem('selectedConference')
+            : selectedConference,
+          presentation_method: decodeMethod(method)
+        })
+      )
+      dispatch(getChairsAndModerators())
+    }
 
-    dispatch(getChairsAndModerators())
     dispatch(
       getAllSchedules({
         abstractType: decodeMethod(method),

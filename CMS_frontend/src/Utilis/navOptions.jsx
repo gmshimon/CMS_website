@@ -207,8 +207,8 @@ const registration_committee_navOptions = [
   },
   {
     id: 2,
-    label: 'Conference Registration',
-    path: '/admin/attendee-list',
+    label: 'Total Registration',
+    path: '/admin/list',
     icon: <ListOrdered />
   },
   
@@ -221,7 +221,7 @@ const registration_committee_navOptions = [
    {
     id: 4,
     label: 'Submission',
-    path: '/admin/submission',
+    path: '/admin/abstract',
     icon: <IoIosPaper />
   },
   {

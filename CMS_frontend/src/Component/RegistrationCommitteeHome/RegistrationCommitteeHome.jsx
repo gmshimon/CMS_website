@@ -41,7 +41,7 @@ const RegistrationCommitteeHome = () => {
       </h2>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
         <StatCard
-          title='Abstracts'
+          title='Submission'
           description='Total abstracts submitted by presenters'
           count={register_committee_stats?.abstracts || 0}
           icon={IoDocumentText}
