@@ -6,7 +6,7 @@ const conferenceRegSchema = new mongoose.Schema(
   {
     registration_id: {
       type: String,
-      unique: true,
+      // unique: true,
       index: true
     },
     conference: {

@@ -18,19 +18,18 @@ const Abstracts = () => {
   const { createPostPaperSuccess, createPostPaperError } = useSelector(
     state => state.paper
   )
-  const { createAbstractSuccess, getAbstractLoading, abstracts } = useSelector(
-    state => state.abstract
-  )
+  const { user } = useSelector(state => state.user)
+  const { createAbstractSuccess, getAbstractLoading, abstracts, pagination } =
+    useSelector(state => state.abstract)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedPaper, setSelectedPaper] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [filterStatus, setFilterStatus] = useState('all')
 
-  // call custom hook
-  useAbstract()
+  // ✅ Call custom hook with pagination
+  useAbstract({ page: currentPage, limit: 10, searchQuery: searchQuery })
   const navigate = useNavigate()
-  const abstractsPerPage = 6
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -59,34 +58,11 @@ const Abstracts = () => {
     dispatch
   ])
   // Filter abstracts based on search query and filters
-  const filteredAbstracts = abstracts?.filter(abstract => {
-    const matchesSearch =
-      abstract.paper_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      abstract.authors[0].name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      abstract.abstractId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      abstract.theme.toLowerCase().includes(searchQuery.toLowerCase())
-
-    const matchesStatus =
-      filterStatus === 'all' || abstract.status === filterStatus
-
-    return matchesSearch && matchesStatus
-  })
 
   const statuses = [
     'all',
     ...new Set(abstracts.map(abstract => abstract.status))
   ]
-
-  // Calculate pagination
-  const indexOfLastAbstract = currentPage * abstractsPerPage
-  const indexOfFirstAbstract = indexOfLastAbstract - abstractsPerPage
-  const currentAbstracts = filteredAbstracts.slice(
-    indexOfFirstAbstract,
-    indexOfLastAbstract
-  )
-  const totalPages = Math.ceil(filteredAbstracts.length / abstractsPerPage)
 
   // Modal handlers
   const handleOpenModal = paper => {
@@ -116,7 +92,10 @@ const Abstracts = () => {
                   type='text'
                   placeholder='Search abstracts...'
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={e => {
+                    setSearchQuery(e.target.value)
+                    setCurrentPage(1) // reset to first page when search changes
+                  }}
                   className='w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 />
                 <select
@@ -131,30 +110,28 @@ const Abstracts = () => {
                   ))}
                 </select>
               </div>
-              <div>
-                <button
-                  onClick={() => navigate(`/admin/abstract/add`)}
-                  className='btn btn-active btn-primary'
-                >
-                  Abstract <FaPlus />
-                </button>
-              </div>
+              {user?.role === 'Presenter' && (
+                <div>
+                  <button
+                    onClick={() => navigate(`/admin/abstract/add`)}
+                    className='btn btn-active btn-primary'
+                  >
+                    Abstract <FaPlus />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
           <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-            <AbstractTable
-              data={currentAbstracts}
-              handleOpenModal={handleOpenModal}
+            <AbstractTable data={abstracts} handleOpenModal={handleOpenModal} />
+          </div>
+          <div className='px-4 py-3 border-t border-gray-200'>
+            <ResponsivePagination
+              current={currentPage}
+              total={pagination?.totalPages}
+              onPageChange={page => setCurrentPage(page)}
             />
-
-            <div className='px-4 py-3 border-t border-gray-200'>
-              <ResponsivePagination
-                current={currentPage}
-                total={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </div>
           </div>
         </>
       )}

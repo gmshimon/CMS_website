@@ -6,7 +6,7 @@ import { IoMdEye } from 'react-icons/io';
 
 const AbstractTable = ({data,handleOpenModal}) => {
     return (
-        <div className='overflow-x-auto h-[400px] overflow-y-auto'>
+        <div className='overflow-x-auto h-[620px] overflow-y-auto'>
                       <table className='min-w-full divide-y divide-gray-200 table-zebra'>
                         <thead className='bg-slate-500'>
                           <tr>

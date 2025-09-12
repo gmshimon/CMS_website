@@ -100,12 +100,18 @@ export const createAbstract = async (req, res, next) => {
 
 export const getAbstract = async (req, res, next) => {
   try {
-    const { payment_status } = req.query
+    const { payment_status, page = 1, limit = 10, search } = req.query
     const { conference_id } = req.params
-    const userId = req.user._id
-    const matchQuery = {
-      createdBy: userId
+    const { role, _id: userId } = req.user
+
+    const matchQuery = {}
+
+    // ✅ If presenter → only own abstracts
+    if (role === 'Presenter') {
+      matchQuery.createdBy = userId
     }
+
+    // ✅ If conference_id is provided and not "all"
     if (
       conference_id &&
       conference_id !== 'all' &&
@@ -114,27 +120,64 @@ export const getAbstract = async (req, res, next) => {
     ) {
       matchQuery.conference = conference_id
     }
+
+    // ✅ Payment filter
     if (payment_status) {
       matchQuery.payment_status = payment_status
     }
-    const getAbstract = await Abstracts.find(matchQuery)
+
+    // ✅ Add search by registration_id
+    if (search) {
+      matchQuery.abstract_id = { $regex: search, $options: 'i' }
+    }
+
+    // ✅ Convert page & limit to numbers
+    const pageNum = parseInt(page) || 1
+    const limitNum = parseInt(limit) || 10
+    const skip = (pageNum - 1) * limitNum
+
+    // ✅ Get total count for pagination
+    const total = await Abstracts.countDocuments(matchQuery)
+
+    let abstractsQuery = await Abstracts.find(matchQuery)
       .populate('conference')
       .populate('createdBy')
-      .lean() // Returns plain JS objects
+      .skip(skip)
+      .limit(limitNum)
+      .sort({ createdAt: -1 })
+      .lean()
 
+    // ✅ Fetch abstracts with pagination
+    const abstracts = await Abstracts.find(matchQuery)
+      .populate('conference')
+      .populate('createdBy')
+      .skip(skip)
+      .limit(parseInt(limit))
+      .lean()
+
+
+
+    // ✅ Attach paper info
     const abstractsWithPapers = await Promise.all(
-      getAbstract.map(async abstract => {
-        const papers = await Paper.findOne({ abstract: abstract._id }).lean()
+      abstracts.map(async abstract => {
+        const paper = await Paper.findOne({ abstract: abstract._id }).lean()
         return {
           ...abstract,
-          papers // Will be empty array if none found
+          paper: paper || null
         }
       })
     )
+
     return res.status(200).json({
       status: 'Success',
       message: 'Fetched the abstract by category successfully',
-      data: abstractsWithPapers
+      data: {
+        abstractsWithPapers,
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum)
+      }
     })
   } catch (error) {
     res.status(400).json({

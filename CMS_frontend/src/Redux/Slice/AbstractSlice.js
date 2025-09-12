@@ -8,6 +8,8 @@ const initialState = {
 
   errorMessage: '',
 
+  pagination: null,
+
   conference: null,
   member_id: null,
   theme: null,
@@ -86,13 +88,16 @@ export const createAbstract = createAsyncThunk(
 
 export const getAbstract = createAsyncThunk(
   'createAbstract',
-  async ({ id, payment_status = null }, { rejectWithValue }) => {
+  async (
+    { id, payment_status = null, page = 1, limit = 10,search = ''},
+    { rejectWithValue }
+  ) => {
     try {
-      let url = `/abstract/${id}`
+      let url = `/abstract/${id}?page=${page}&limit=${limit}&search=${search}`
 
       // Append payment_status as query param if it exists
       if (payment_status) {
-        url += `?payment_status=${payment_status}`
+        url += `&payment_status=${payment_status}`
       }
 
       const response = await axiosSecure.get(url)
@@ -431,12 +436,19 @@ const abstractSlice = createSlice({
         state.getAbstractError = false
       })
       .addCase(getAbstract.fulfilled, (state, action) => {
-        state.abstracts = action.payload
+        state.abstracts = action.payload.abstractsWithPapers
+        state.pagination = {
+          total: action.payload.total,
+          page: action.payload.page,
+          limit: action.payload.limit,
+          totalPages: action.payload.totalPages
+        }
         state.getAbstractLoading = false
         state.getAbstractSuccess = true
         state.getAbstractError = false
       })
       .addCase(getAbstract.rejected, state => {
+        state.pagination = null
         state.getAbstractLoading = false
         state.getAbstractSuccess = false
         state.getAbstractError = true
@@ -518,11 +530,11 @@ const abstractSlice = createSlice({
         state.makePaymentSuccess = true
         state.makePaymentError = false
       })
-      .addCase(makePayment.rejected, (state,action) => {
+      .addCase(makePayment.rejected, (state, action) => {
         state.makePaymentLoading = false
         state.makePaymentSuccess = false
         state.makePaymentError = true
-        state.errorMessage = action.payload || action.error.message; // store error message
+        state.errorMessage = action.payload || action.error.message // store error message
       })
       .addCase(updatePaymentStatus.pending, state => {
         state.makePaymentLoading = true
