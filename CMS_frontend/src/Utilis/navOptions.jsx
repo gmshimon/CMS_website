@@ -198,11 +198,45 @@ const attendee_chair_navOptions = [
     icon: <FaMessage />
   }
 ]
+const registration_committee_navOptions = [
+  {
+    id: 1,
+    label: 'Home',
+    path: '/admin/',
+    icon: <FaHome />
+  },
+  {
+    id: 2,
+    label: 'Conference Registration',
+    path: '/admin/attendee-list',
+    icon: <ListOrdered />
+  },
+  
+  {
+    id: 3,
+    label: 'Scheduling',
+    path: '/admin/scheduling',
+    icon: <MdSchedule />
+  },
+   {
+    id: 4,
+    label: 'Submission',
+    path: '/admin/submission',
+    icon: <IoIosPaper />
+  },
+  {
+    id: 5,
+    label: 'Messages',
+    path: '/admin/messages',
+    icon: <FaMessage />
+  },
+]
 
 export {
   presenterNavOptions,
   adminNavOptions,
   reviewerNavOptions,
   session_chair_navOptions,
-  attendee_chair_navOptions
+  attendee_chair_navOptions,
+  registration_committee_navOptions
 }

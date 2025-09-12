@@ -27,6 +27,7 @@ import {
   adminNavOptions,
   attendee_chair_navOptions,
   presenterNavOptions,
+  registration_committee_navOptions,
   reviewerNavOptions,
   session_chair_navOptions
 } from '../Utilis/navOptions'
@@ -79,6 +80,9 @@ const Dashboard = () => {
       }
       if(user?.role === 'Attendee'){
         setNavOptions(attendee_chair_navOptions)
+      }
+      if(user?.role === 'registration_committee'){
+        setNavOptions(registration_committee_navOptions)
       }
 
       //dispatch(getNotifications())
