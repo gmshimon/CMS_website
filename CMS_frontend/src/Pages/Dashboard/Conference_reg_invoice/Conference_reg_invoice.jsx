@@ -8,6 +8,7 @@ import { format } from 'date-fns'
 import Loading from '../../../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 import { reset } from '../../../Redux/Slice/conference_regSlice'
+import { IoMdEye } from 'react-icons/io'
 const Conference_reg_invoice = () => {
   const {
     createConferenceRegLoading,
@@ -122,7 +123,7 @@ const paymentFunction = (file) =>{
                     <div className='flex space-x-2'>
                       {item.payment_status === 'Paid' ? (
                         <a
-                          href={item.payment_proof}
+                          href={item.invoice}
                           target='_blank'
                           title='Payment Details'
                           className='cursor-pointer hover:text-blue-500 transition-colors duration-200'

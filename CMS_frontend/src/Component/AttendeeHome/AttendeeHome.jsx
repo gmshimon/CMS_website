@@ -45,14 +45,14 @@ const AttendeeDashboard = () => {
           title='Upcoming Conference'
           count={dashboardStats?.upcomingCount || 0}
           icon={IoNotifications}
-          link='/attendee/notifications'
+          link='/attendee/messages'
           color='bg-green-50 hover:bg-green-100'
         />
         <StatCard
           title='Total Paid'
           count={`$  ${dashboardStats?.totalPaid || 0}`}
           icon={IoCash}
-          link='/attendee/payments'
+          // link='/attendee/payments'
           color='bg-pink-50 hover:bg-pink-100'
         />
       </div>

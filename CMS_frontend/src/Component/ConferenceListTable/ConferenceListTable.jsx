@@ -34,11 +34,11 @@ const ConferenceListTable = ({
               <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                 Presenter
               </th>
-
-              <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                Payment Proof
-              </th>
-
+              {admin && (
+                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                  Payment Proof
+                </th>
+              )}
               {admin && (
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Payment Decision
@@ -95,46 +95,41 @@ const ConferenceListTable = ({
                     {conference?.presenterName}
                   </div>
                 </td>
-
-                <td className='px-6 py-4 whitespace-nowrap'>
-                  {conference.payment_proof ||
-                  conference.abstract.payment_proof ? (
-                    <a
-                      href={
-                       admin? conference.payment_proof ||
-                        conference.abstract.payment_proof : conference?.invoice
-                      }
-                      target='_blank'
-                      title='View Proof'
-                      download
-                    >
-                      <span className='text-green-500 hover:underline'>
-                        View
-                      </span>
-                    </a>
-                  ) : (
-                    <span className='text-green-500 mx-auto'>
-                      <FaTimesCircle className='text-red-400 text-lg' />
-                    </span>
-                  )}
-                </td>
-
                 {admin && (
-                  <td className='px-10  whitespace-nowrap text-sm text-gray-500'>
-                    {conference.payment_status === 'Pending' ? (
-                      <button
-                        onClick={() => handleOpenPaymentDecision(conference)}
-                        className='btn btn-sm btn-primary'
+                  <td className='px-6 py-4 whitespace-nowrap'>
+                    {conference.payment_proof ||
+                    conference.abstract.payment_proof ? (
+                      <a
+                        href={
+                          conference.payment_proof ||
+                          conference.abstract.payment_proof
+                        }
+                        target='_blank'
+                        title='View Proof'
+                        download
                       >
-                        Decision
-                      </button>
+                        <span className='text-green-500 hover:underline'>
+                          View
+                        </span>
+                      </a>
                     ) : (
-                      <>
-                        {conference?.abstract
-                          ? 'Payment done in Submission'
-                          : conference?.payment_status}
-                        <br />
-                        {/* {conference.payment_status === 'Unpaid' &&
+                      <span className='text-green-500 mx-auto'>
+                        <FaTimesCircle className='text-red-400 text-lg' />
+                      </span>
+                    )}
+                  </td>
+                )}
+                {
+                  admin && <td className='px-10  whitespace-nowrap text-sm text-gray-500'>
+                  {conference.payment_status === 'Pending' ? (
+                    <button onClick={()=>handleOpenPaymentDecision(conference)} className='btn btn-sm btn-primary'>Decision</button>
+                  ) : (
+                    <>
+                      {conference?.abstract
+                        ? 'Payment done in Submission'
+                        : conference?.payment_status}
+                      <br />
+                      {/* {conference.payment_status === 'Unpaid' &&
                         conference.status === 'Abstract Accepted' && (
                           <button
                             className='mt-1 px-2 w-full py-1 text-xs text-white bg-blue-600 hover:bg-blue-700 rounded'
@@ -143,10 +138,10 @@ const ConferenceListTable = ({
                             Payment_Reminder
                           </button>
                         )} */}
-                      </>
-                    )}
-                  </td>
-                )}
+                    </>
+                  )}
+                </td>
+                }
                 <td className='px-10  whitespace-nowrap text-sm text-gray-500'>
                   <Link to={`/admin/conference/${conference?._id}`}>
                     <button className='cursor-pointer hover:text-blue-500'>

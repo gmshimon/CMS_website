@@ -9,6 +9,8 @@ import { reset } from '../../Redux/Slice/conference_regSlice'
 import Loading from '../../Component/Loading/Loading'
 import ConferenceListTable from '../../Component/ConferenceListTable/ConferenceListTable'
 import useConferece_reg from '../../Hooks/useConferece_reg'
+import ResponsivePagination from 'react-responsive-pagination'
+import 'react-responsive-pagination/themes/classic.css'
 
 const AttendeeListPage = () => {
   const {
@@ -17,11 +19,17 @@ const AttendeeListPage = () => {
     getConferenceRegLoading,
     createConferenceRegError,
     errorMessage,
-    conference_regs
+    conference_regs,
+    pagination
   } = useSelector(state => state.conferenceReg)
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
   const [openModal, setOpenModal] = useState(false)
+
   const dispatch = useDispatch()
-  useConferece_reg()
+
+  useConferece_reg(currentPage, 10, searchQuery)
   useEffect(() => {
     if (createConferenceRegSuccess) {
       showSuccessToast('Successfully registered the conference')
@@ -56,8 +64,11 @@ const AttendeeListPage = () => {
           <input
             type='text'
             placeholder='Search abstracts...'
-            // value={searchQuery}
-            // onChange={e => setSearchQuery(e.target.value)}
+            value={searchQuery}
+            onChange={e => {
+              setSearchQuery(e.target.value)
+              setCurrentPage(1) // reset to first page when search changes
+            }}
             className='w-full md:w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
           />
         </div>
@@ -79,6 +90,13 @@ const AttendeeListPage = () => {
           onClose={() => setOpenModal(false)}
         />
       )}
+      <div className='px-4 py-3 border-t border-gray-200'>
+        <ResponsivePagination
+          current={currentPage}
+          total={pagination?.totalPages}
+          onPageChange={page => setCurrentPage(page)}
+        />
+      </div>
     </div>
   )
 }
