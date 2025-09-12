@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getSingleConference } from '../Redux/Slice/conferenceSlice'
+import { getSingleConference,  } from '../Redux/Slice/conferenceSlice'
 import {
   getConferenceRegs,
+  updatePaymentDecision,
   uploadPaymentReceipt
 } from '../Redux/Slice/conference_regSlice'
 
@@ -33,8 +34,19 @@ const useConferece_reg = (page, limit, searchQuery) => {
       })
     )
   }
+
+  const handlePaymentDecision = (id, data) => {
+    const formData = new FormData()
+    formData.append('payment_status',data.decision)
+    if(data?.invoiceFile){
+      formData.append('file', data.invoiceFile)
+    }
+    dispatch(updatePaymentDecision({id,data:formData}))
+  }
+
   return {
-    handleSubmitReceipt
+    handleSubmitReceipt,
+    handlePaymentDecision
   }
 }
 

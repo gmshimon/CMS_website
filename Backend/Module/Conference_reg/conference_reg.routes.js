@@ -4,11 +4,13 @@ import {
   getAttendeeDashboardStats,
   getConferenceReg,
   getSingleConferenceReg,
+  updatePaymentDecision,
   uploadPaymentReceipt
 } from './conference_reg.controller.js'
 import verifyToken from '../../Middleware/verifyToken.js'
 import { mediumLimiter, standardLimiter } from '../../config/rateLimiters.js'
 import paperUploader from '../../Middleware/FileUpload/paperUpload.js'
+import verifyAdminToken from '../../Middleware/verifyAdminToken.js'
 const router = express.Router()
 
 // Static routes first
@@ -40,4 +42,10 @@ router.post(
   uploadPaymentReceipt
 )
 
+router.put(
+  '/payment-decision/:id',
+  verifyAdminToken, // ✅ only admins/committee
+  paperUploader.single('file'),
+  updatePaymentDecision
+)
 export default router

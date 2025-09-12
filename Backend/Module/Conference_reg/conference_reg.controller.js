@@ -10,7 +10,8 @@ import { notifyUser } from '../User/user.service.js'
 import {
   adminConferenceRegTemplate,
   adminPaymentUploadedTemplate,
-  attendeeConferenceRegTemplate
+  attendeeConferenceRegTemplate,
+  paymentDecisionEmailTemplate
 } from '../../Utilis/EmailTemplate/conferenceRegTemplate.js'
 import { notifyAdmins } from '../Admin/admin.service.js'
 import { s3PaymentReceiptUploadService } from '../Abstract/abstract.s3Service.js'
@@ -44,7 +45,7 @@ export const getConferenceReg = async (req, res, next) => {
       match.conference = conference_id
     }
 
-// ✅ Add search by registration_id
+    // ✅ Add search by registration_id
     if (search) {
       match.registration_id = { $regex: search, $options: 'i' }
     }
@@ -64,7 +65,8 @@ export const getConferenceReg = async (req, res, next) => {
         { path: 'conference' },
         {
           path: 'abstract',
-          select: 'paper_title theme abstract_id presentation_method presenter'
+          select:
+            'paper_title theme abstract_id presentation_method presenter payment_proof'
         }
       ])
       .skip(skip)
@@ -341,5 +343,74 @@ export const uploadPaymentReceipt = async (req, res, next) => {
   } catch (error) {
     console.error('❌ Upload payment receipt error:', error)
     next(error)
+  }
+}
+
+export const updatePaymentDecision = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const { payment_status } = req.body
+    const file = req.file
+
+    // 1. Find the registration
+    const registration = await conference_reg.findById(id).populate([
+      { path: 'conference' },
+      { path: 'createdBy', select: 'name email' },
+      {
+        path: 'abstract',
+        select:
+          'paper_title theme abstract_id presentation_method presenter payment_proof'
+      }
+    ])
+
+    if (!registration) {
+      return res.status(404).json({
+        status: 'Fail',
+        message: 'Conference registration not found'
+      })
+    }
+
+    // 2. Upload invoice if Paid + file provided
+    let invoiceUrl = null
+    if (payment_status === 'Paid' && file) {
+      invoiceUrl = await s3PaymentReceiptUploadService(file, file.safeFilename)
+      registration.invoice = invoiceUrl
+    }
+
+    // 3. Update payment status
+    registration.payment_status = payment_status
+    await registration.save()
+
+    // 4. Send notification + email to attendee
+    const userMessage =
+      payment_status === 'Paid'
+        ? `Your payment for ${registration.conference.name} has been accepted.`
+        : `Your payment for ${registration.conference.name} was rejected.`
+
+    notifyUser({
+      userId: registration.createdBy._id,
+      email: registration.createdBy.email,
+      message: userMessage,
+      type: 'Payment Decision',
+      emailTemplate: () =>
+        paymentDecisionEmailTemplate({
+          attendeeName: registration.createdBy.name,
+          conferenceName: registration.conference.name,
+          paymentStatus: payment_status,
+          invoiceUrl
+        })
+    })
+
+    return res.status(200).json({
+      status: 'Success',
+      message: 'Payment decision updated successfully',
+      data: registration
+    })
+  } catch (error) {
+    console.error('updatePaymentDecision error:', error)
+    res.status(500).json({
+      status: 'Fail',
+      message: error.message
+    })
   }
 }

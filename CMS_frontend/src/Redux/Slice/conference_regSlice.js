@@ -25,12 +25,19 @@ const initialState = {
 
   getDashboardStatsLoading: false, // 👈 loading state
   getDashboardStatsSuccess: false,
-  getDashboardStatsError: false
+  getDashboardStatsError: false,
+
+  updatePaymentDecisionLoading: false,
+  updatePaymentDecisionSuccess: false,
+  updatePaymentDecisionError: false
 }
 
 export const getConferenceRegs = createAsyncThunk(
   'getConferenceRegs',
-  async ({ conferenceId, page = 1, limit = 10,search = "" }, { rejectWithValue }) => {
+  async (
+    { conferenceId, page = 1, limit = 10, search = '' },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await axiosSecure.get(
         `/conference_reg/${conferenceId}?page=${page}&limit=${limit}&search=${search}`
@@ -113,6 +120,24 @@ export const uploadPaymentReceipt = createAsyncThunk(
   }
 )
 
+export const updatePaymentDecision = createAsyncThunk(
+  'conferenceReg/updatePaymentDecision',
+  async ({ id, data }, { rejectWithValue }) => {
+    try {
+      const response = await axiosSecure.put(
+        `/conference_reg/payment-decision/${id}`,
+        data
+      )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating payment decision'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 const conferenceRegSlice = createSlice({
   name: 'conferenceReg',
   initialState,
@@ -135,6 +160,10 @@ const conferenceRegSlice = createSlice({
       state.getDashboardStatsLoading = false
       state.getDashboardStatsSuccess = false
       state.getDashboardStatsError = false
+
+      state.updatePaymentDecisionLoading = false
+      state.updatePaymentDecisionSuccess = false
+      state.updatePaymentDecisionError = false
     }
   },
   extraReducers: builder => {
@@ -174,7 +203,7 @@ const conferenceRegSlice = createSlice({
         state.getConferenceRegError = false
       })
       .addCase(getConferenceRegs.rejected, (state, action) => {
-         state.pagination = null
+        state.pagination = null
         state.errorMessage = action.payload
         state.getConferenceRegLoading = false
         state.getConferenceRegSuccess = false
@@ -239,6 +268,26 @@ const conferenceRegSlice = createSlice({
         state.createConferenceRegLoading = false
         state.createConferenceRegSuccess = false
         state.createConferenceRegError = true
+      })
+
+      .addCase(updatePaymentDecision.pending, state => {
+        state.updatePaymentDecisionLoading = true
+        state.updatePaymentDecisionSuccess = false
+        state.updatePaymentDecisionError = false
+      })
+      .addCase(updatePaymentDecision.fulfilled, (state, action) => {
+        // replace the updated registration in the list
+        state.conference_regs = state?.conference_regs.map(reg =>
+          reg._id === action.payload._id ? action.payload : reg
+        )
+        state.updatePaymentDecisionLoading = false
+        state.updatePaymentDecisionSuccess = true
+        state.updatePaymentDecisionError = false
+      })
+      .addCase(updatePaymentDecision.rejected, (state, action) => {
+        state.updatePaymentDecisionLoading = false
+        state.updatePaymentDecisionSuccess = false
+        state.updatePaymentDecisionError = action.payload
       })
   }
 })

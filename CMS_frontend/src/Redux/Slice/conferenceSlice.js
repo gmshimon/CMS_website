@@ -20,7 +20,7 @@ const initialState = {
 
   editConferenceLoading: false,
   editConferenceSuccess: false,
-  editConferenceError: false
+  editConferenceError: false,
 }
 
 export const getConference = createAsyncThunk(
@@ -89,6 +89,8 @@ export const editConference = createAsyncThunk(
     }
   }
 )
+
+
 
 const conferenceSlice = createSlice({
   name: 'conference',

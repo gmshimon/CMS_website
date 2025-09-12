@@ -68,3 +68,44 @@ export const adminPaymentUploadedTemplate = ({
     </div>
   `
 }
+
+export const paymentDecisionEmailTemplate = ({
+  attendeeName,
+  conferenceName,
+  paymentStatus,
+  invoiceUrl = null
+}) => {
+  return `
+  <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333; max-width:600px; margin:auto; border:1px solid #e5e7eb; border-radius:8px; overflow:hidden">
+    <div style="background:#1e3a8a; color:white; padding:16px; text-align:center;">
+      <h2 style="margin:0;">${conferenceName}</h2>
+    </div>
+    <div style="padding:20px;">
+      <p>Dear <strong>${attendeeName}</strong>,</p>
+      
+      <p>We are writing to inform you about the status of your payment for the <strong>${conferenceName}</strong>.</p>
+      
+      ${
+        paymentStatus === "Paid"
+          ? `
+          <p style="color:green; font-weight:bold;">✅ Your payment has been accepted.</p>
+          <p>Thank you for completing your registration. You can download your invoice below:</p>
+          <p><a href="${invoiceUrl}" style="display:inline-block; padding:10px 16px; background:#1e3a8a; color:#fff; text-decoration:none; border-radius:4px;">Download Invoice</a></p>
+        `
+          : `
+          <p style="color:red; font-weight:bold;">❌ Unfortunately, your payment could not be accepted.</p>
+          <p>Please review your payment details and try again. If you believe this is an error, kindly contact our support team.</p>
+        `
+      }
+      
+      <p>If you have any questions, please feel free to reach out to us.</p>
+      
+      <p style="margin-top:24px;">Best regards,<br/>The ${conferenceName} Organizing Committee</p>
+    </div>
+    <div style="background:#f3f4f6; padding:12px; text-align:center; font-size:12px; color:#555;">
+      This is an automated message. Please do not reply directly to this email.
+    </div>
+  </div>
+  `
+}
+

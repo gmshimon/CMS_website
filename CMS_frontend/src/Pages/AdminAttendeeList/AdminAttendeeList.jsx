@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import ConferenceListTable from '../../Component/ConferenceListTable/ConferenceListTable'
@@ -7,13 +7,17 @@ import useConferece_reg from '../../Hooks/useConferece_reg'
 import Loading from '../../Component/Loading/Loading'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
+import PaymentDecisionModal from '../../Component/PaymentDecisionModal/PaymentDecisionModal'
+import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
+import { reset } from '../../Redux/Slice/conference_regSlice'
 
 const AdminAttendeeList = () => {
   const {
-    createConferenceRegSuccess,
     createConferenceRegLoading,
     getConferenceRegLoading,
-    createConferenceRegError,
+    updatePaymentDecisionLoading,
+    updatePaymentDecisionSuccess,
+    updatePaymentDecisionError,
     errorMessage,
     conference_regs,
     pagination
@@ -21,11 +25,38 @@ const AdminAttendeeList = () => {
 
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showDecisionModal, setShowDecisionModal] = useState(false)
+  const [selectedConference, setSelectedConference] = useState(null)
 
   const dispatch = useDispatch()
-  useConferece_reg(currentPage, 10, searchQuery)
+  const { handlePaymentDecision } = useConferece_reg(
+    currentPage,
+    10,
+    searchQuery
+  )
 
-  if (createConferenceRegLoading || getConferenceRegLoading) {
+  useEffect(() => {
+    if (updatePaymentDecisionSuccess) {
+      console.log(updatePaymentDecisionSuccess)
+      showSuccessToast('Successful')
+      dispatch(reset())
+    }
+    if (updatePaymentDecisionError) {
+      showErrorToast(errorMessage || 'Something went wrong')
+      dispatch(reset())
+    }
+  }, [
+    dispatch,
+    errorMessage,
+    updatePaymentDecisionError,
+    updatePaymentDecisionSuccess
+  ])
+
+  if (
+    createConferenceRegLoading ||
+    getConferenceRegLoading ||
+    updatePaymentDecisionLoading
+  ) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
         <ToastContainer />
@@ -52,7 +83,16 @@ const AdminAttendeeList = () => {
         </div>
       </div>
 
-      <ConferenceListTable data={conference_regs} />
+      <ConferenceListTable
+        data={conference_regs}
+        abstract_title={true}
+        admin={true}
+        handleOpenPaymentDecision={item => {
+          setSelectedConference(item)
+          setShowDecisionModal(true)
+        }}
+      />
+
       <div className='px-4 py-3 border-t border-gray-200'>
         <ResponsivePagination
           current={currentPage}
@@ -60,6 +100,19 @@ const AdminAttendeeList = () => {
           onPageChange={page => setCurrentPage(page)}
         />
       </div>
+
+      <PaymentDecisionModal
+        isOpen={showDecisionModal}
+        onClose={() => setShowDecisionModal(false)}
+        onSubmit={({ decision, invoiceFile }) => {
+          setShowDecisionModal(false)
+          setSelectedConference(null)
+          handlePaymentDecision(selectedConference._id, {
+            decision,
+            invoiceFile
+          })
+        }}
+      />
     </div>
   )
 }
