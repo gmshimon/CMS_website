@@ -22,6 +22,7 @@ const AdminAttendeeList = () => {
     conference_regs,
     pagination
   } = useSelector(state => state.conferenceReg)
+  const {user} = useSelector(state=>state.user)
 
   const [currentPage, setCurrentPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
@@ -86,7 +87,7 @@ const AdminAttendeeList = () => {
       <ConferenceListTable
         data={conference_regs}
         abstract_title={true}
-        admin={true}
+        admin={user?.role==='Admin'}
         handleOpenPaymentDecision={item => {
           setSelectedConference(item)
           setShowDecisionModal(true)

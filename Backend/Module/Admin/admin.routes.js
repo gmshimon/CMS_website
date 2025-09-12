@@ -68,7 +68,7 @@ router.get('/dashboard',standardLimiter, verifyAdminToken, adminDashboardStats)
 router.get(
   '/presentation-stats',
   standardLimiter,
-  verifyAdminToken,
+  verifyToken,
   getPresentationMethodStats
 )
 

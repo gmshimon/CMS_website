@@ -1,6 +1,7 @@
 import generateToken from '../../Utilis/token.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import Conference from '../Conference/conference.model.js'
+import conference_reg from '../Conference_reg/conference_reg.model.js'
 import Paper from '../Paper/paper.model.js'
 import Schedule from '../Schedule/schedule.model.js'
 import Users from './user.model.js'
@@ -250,6 +251,49 @@ export const getMyDashboardStats = async (req, res, next) => {
       }
     })
   } catch (error) {
+    next(error)
+  }
+}
+
+export const getRegistrationCommitteeDashboard = async (req, res, next) => {
+  try {
+    const { conference_id } = req.query
+    const { role } = req.user
+
+    if (role !== 'registration_committee') {
+      return res.status(403).json({ message: 'You do not have permission' })
+    }
+
+    const matchQuery = {}
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined &&
+      conference_id !== 'All Conferences'
+    ) {
+      matchQuery.conference = conference_id
+    }
+
+    // Count abstracts
+    const totalAbstracts = await Abstracts.countDocuments(matchQuery)
+
+    // Count registrations
+    const totalRegistrations = await conference_reg.countDocuments(matchQuery)
+
+    // Count schedule sessions
+    const totalSchedules = await Schedule.countDocuments(matchQuery)
+
+    return res.status(200).json({
+      status: 'Success',
+      message: 'Fetched Registration Committee dashboard stats',
+      data: {
+        abstracts: totalAbstracts,
+        registrations: totalRegistrations,
+        schedules: totalSchedules
+      }
+    })
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error)
     next(error)
   }
 }

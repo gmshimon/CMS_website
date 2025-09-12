@@ -143,7 +143,6 @@ export const getAttendeeDashboardStats = async (req, res, next) => {
     const cacheKey = `confReg:dashboard:${userId}`
     const cached = await getCache(cacheKey)
     if (cached) {
-      console.log('Returning data: ', cached)
       return res.status(200).json({
         status: 'Success',
         message: 'Fetched from cache',

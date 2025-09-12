@@ -5,6 +5,7 @@ import {
   fetchUser,
   getChairsAndModerators,
   getMyDashboardStats,
+  getRegistrationCommitteeDashboard,
   updateImage,
   updateUserProfile
 } from './user.controller.js'
@@ -51,4 +52,8 @@ router
 router
   .route('/my-stats')
   .get(verifyToken, lightLimiter, getMyDashboardStats)
+
+router
+  .route('/dashboard')
+  .get(verifyToken, lightLimiter, getRegistrationCommitteeDashboard)
 export default router

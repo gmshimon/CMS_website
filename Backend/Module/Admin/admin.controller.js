@@ -380,9 +380,16 @@ export const updateUserImage = async (req, res, next) => {
   }
 }
 
-export const getPresentationMethodStats = async (req, res) => {
+export const getPresentationMethodStats = async (req, res,next) => {
   try {
     const { conference_id } = req.query
+    const {role} = req.user
+
+    if (!["Admin", "registration_committee"].includes(role)) {
+  const error = new Error("You do not have access")
+  error.statusCode = 403
+  return next(error)
+}
     const match = {}
     if (
       conference_id &&
@@ -426,7 +433,7 @@ export const getPresentationMethodStats = async (req, res) => {
     res.status(200).json({ success: true, data: completeStats })
   } catch (error) {
     console.error('Error fetching presentation stats:', error)
-    res.status(500).json({ success: false, message: 'Server error' })
+    next(error)
   }
 }
 

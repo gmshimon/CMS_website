@@ -18,7 +18,8 @@ const initialState = {
   session_chairs: [],
   moderators: [],
 
-  myStats:null,
+  myStats: null,
+  register_committee_stats: null,
 
   isLoading: false,
 
@@ -56,7 +57,11 @@ const initialState = {
 
   getMyStatsLoading: false,
   getMyStatsSuccess: false,
-  getMyStatsError: false
+  getMyStatsError: false,
+
+  getRegisterStatsLoading: false,
+  getRegisterStatsSuccess: false,
+  getRegisterStatsError: false
 }
 
 // Save user data in backend and localStorage
@@ -178,6 +183,22 @@ export const getMyDashboardStats = createAsyncThunk(
   }
 )
 
+export const getRegistrationCommitteeDashboard = createAsyncThunk(
+  'getRegistrationCommitteeDashboard',
+  async (conference_id, { rejectWithValue }) => {
+    try {
+      let query
+      if(conference_id){
+        query = `?conference_id=${conference_id}`
+      }
+      const response = await axiosSecure.get(`/user/dashboard${query}`)
+      return response.data.data
+    } catch (error) {
+      return rejectWithValue(error.response.data.message)
+    }
+  }
+)
+
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -220,6 +241,10 @@ const userSlice = createSlice({
       state.getMyStatsLoading = false
       state.getMyStatsSuccess = false
       state.getMyStatsError = false
+
+      state.getRegisterStatsLoading = false
+      state.getRegisterStatsSuccess = false
+      state.getRegisterStatsError = false
     },
     startLoading: (state, action) => {
       state.isLoading = action.payload
@@ -387,7 +412,7 @@ const userSlice = createSlice({
         state.getMyStatsSuccess = false
         state.getMyStatsError = false
       })
-      .addCase(getMyDashboardStats.fulfilled, (state,action) => {
+      .addCase(getMyDashboardStats.fulfilled, (state, action) => {
         state.getMyStatsLoading = false
         state.getMyStatsSuccess = true
         state.getMyStatsError = false
@@ -397,6 +422,24 @@ const userSlice = createSlice({
         state.getMyStatsLoading = false
         state.getMyStatsSuccess = false
         state.getMyStatsError = true
+      })
+
+      .addCase(getRegistrationCommitteeDashboard.pending,state=>{
+      state.getRegisterStatsLoading = true
+      state.getRegisterStatsSuccess = false
+      state.getRegisterStatsError = false
+      })
+      .addCase(getRegistrationCommitteeDashboard.fulfilled,(state,action)=>{
+      state.getRegisterStatsLoading = false
+      state.getRegisterStatsSuccess = true
+      state.getRegisterStatsError = false
+      state.register_committee_stats = action.payload
+      })
+      .addCase(getRegistrationCommitteeDashboard.rejected,(state)=>{
+      state.getRegisterStatsLoading = false
+      state.getRegisterStatsSuccess = false
+      state.getRegisterStatsError = true
+
       })
   }
 })
