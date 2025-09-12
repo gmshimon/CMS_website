@@ -1,4 +1,4 @@
-import { FaHome, FaAward, FaChartBar, FaCog, FaBook } from 'react-icons/fa'
+import { FaHome, FaAward, FaChartBar, FaCog, FaBook, FaList } from 'react-icons/fa'
 import { IoIosPaper } from 'react-icons/io'
 import { FaMessage } from 'react-icons/fa6'
 import {
@@ -82,42 +82,48 @@ const adminNavOptions = [
   },
   {
     id: 3,
+    label: 'Attendee List',
+    path: '/admin/list',
+    icon: <FaList/>
+  },
+  {
+    id: 4,
     label: 'Submission',
     path: '/admin/submission',
     icon: <IoIosPaper />
   },
   {
-    id: 4,
+    id: 5,
     label: 'Users',
     path: '/admin/users',
     icon: <IoPerson />
   },
   {
-    id: 5,
+    id: 6,
     label: 'Review Workflow',
     path: '/admin/review',
     icon: <MdOutlineReviews />
   },
   {
-    id: 6,
+    id: 7,
     label: 'Scheduling',
     path: '/admin/scheduling',
     icon: <MdSchedule />
   },
   {
-    id: 7,
+    id: 8,
     label: 'Message',
     path: '/admin/messages',
     icon: <FaMessage />
   },
   {
-    id: 8,
+    id: 9,
     label: 'Analytics & Report',
     path: '/admin/users',
     icon: <BiBarChartSquare />
   },
   {
-    id: 9,
+    id: 10,
     label: 'Settings',
     path: '/admin/settings',
     icon: <AiOutlineSetting />

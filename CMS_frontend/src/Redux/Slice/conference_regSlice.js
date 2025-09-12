@@ -6,7 +6,7 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 const initialState = {
   conference_regs: [],
   single_conference_reg: null,
-
+  pagination: null,
   errorMessage: null,
 
   dashboardStats: null,
@@ -30,9 +30,11 @@ const initialState = {
 
 export const getConferenceRegs = createAsyncThunk(
   'getConferenceRegs',
-  async (id, { rejectWithValue }) => {
+  async ({ conferenceId, page = 1, limit = 10,search = "" }, { rejectWithValue }) => {
     try {
-      const response = await axiosSecure.get(`/conference_reg/${id}`)
+      const response = await axiosSecure.get(
+        `/conference_reg/${conferenceId}?page=${page}&limit=${limit}&search=${search}`
+      )
 
       return response.data.data
     } catch (error) {
@@ -98,8 +100,6 @@ export const uploadPaymentReceipt = createAsyncThunk(
   'conferenceReg/uploadPaymentReceipt',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-     
-
       const response = await axiosSecure.post(
         `/conference_reg/upload-payment/${id}`,
         data
@@ -162,12 +162,19 @@ const conferenceRegSlice = createSlice({
         state.getConferenceRegError = false
       })
       .addCase(getConferenceRegs.fulfilled, (state, action) => {
-        state.conference_regs = action.payload
+        state.conference_regs = action.payload.results
+        state.pagination = {
+          total: action.payload.total,
+          page: action.payload.page,
+          limit: action.payload.limit,
+          totalPages: action.payload.totalPages
+        }
         state.getConferenceRegLoading = false
         state.getConferenceRegSuccess = true
         state.getConferenceRegError = false
       })
       .addCase(getConferenceRegs.rejected, (state, action) => {
+         state.pagination = null
         state.errorMessage = action.payload
         state.getConferenceRegLoading = false
         state.getConferenceRegSuccess = false

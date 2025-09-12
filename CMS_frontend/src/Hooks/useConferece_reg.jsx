@@ -6,15 +6,22 @@ import {
   uploadPaymentReceipt
 } from '../Redux/Slice/conference_regSlice'
 
-const useConferece_reg = () => {
+const useConferece_reg = (page, limit, searchQuery) => {
   const { selectedConference } = useSelector(state => state.conference)
   const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(getSingleConference(selectedConference))
     if (selectedConference) {
-      dispatch(getSingleConference(selectedConference))
-      dispatch(getConferenceRegs(selectedConference))
+      dispatch(
+        getConferenceRegs({
+          conferenceId: selectedConference,
+          page,
+          limit,
+          search: searchQuery
+        })
+      )
     }
-  }, [dispatch, selectedConference])
+  }, [dispatch, limit, page, searchQuery, selectedConference])
 
   const handleSubmitReceipt = (id, file) => {
     const formData = new FormData()

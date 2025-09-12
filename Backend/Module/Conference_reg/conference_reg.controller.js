@@ -18,12 +18,24 @@ import { s3PaymentReceiptUploadService } from '../Abstract/abstract.s3Service.js
 export const getConferenceReg = async (req, res, next) => {
   try {
     const { conference_id } = req.params
-    const userId = req.user._id
+
+    const { _id: userId, role } = req.user
+    const { page = 1, limit = 10, search } = req.query
 
     // 1. Find all conference registration created by this user
-    const match = {
-      createdBy: userId
+    let match = {}
+    if (role === 'Presenter' || role === 'Attendee') {
+      match.createdBy = userId
+    } else if (role === 'Admin' || role === 'registration_committee') {
+      // admins & registration committee can see all
+      match = {}
+    } else {
+      return res.status(403).json({
+        status: 'Fail',
+        message: 'You are not authorized to view conference registrations'
+      })
     }
+
     if (
       conference_id &&
       conference_id !== 'all' &&
@@ -32,38 +44,46 @@ export const getConferenceReg = async (req, res, next) => {
       match.conference = conference_id
     }
 
-    const cacheKey = `confReg:${userId}:${conference_id || 'all'}`
-
-    // 1️⃣ Try cache
-    const cached = await getCache(cacheKey)
-    if (cached) {
-      return res.status(200).json({
-        status: 'Success',
-        message: 'Fetched from cache',
-        data: cached
-      })
+// ✅ Add search by registration_id
+    if (search) {
+      match.registration_id = { $regex: search, $options: 'i' }
     }
 
-    // 2️⃣ Query DB
-    const results = await conference_reg.find(match).populate([
-      {
-        path: 'conference'
-      },
-      {
-        path: 'abstract',
-        select: 'paper_title theme abstract_id'
-      }
-    ])
+    // ✅ Convert page & limit to numbers
+    const pageNum = parseInt(page) || 1
+    const limitNum = parseInt(limit) || 10
+    const skip = (pageNum - 1) * limitNum
 
-    // 3️⃣ Save to cache
-    await setCache(cacheKey, results)
+    // ✅ Get total count for pagination
+    const total = await conference_reg.countDocuments(match)
+
+    // ✅ Query DB with pagination
+    const results = await conference_reg
+      .find(match)
+      .populate([
+        { path: 'conference' },
+        {
+          path: 'abstract',
+          select: 'paper_title theme abstract_id presentation_method presenter'
+        }
+      ])
+      .skip(skip)
+      .limit(limitNum)
+      .sort({ createdAt: -1 })
 
     res.status(200).json({
       status: 'Success',
       message: 'Fetched the conference registration successfully',
-      data: results
+      data: {
+        results,
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum)
+      }
     })
   } catch (error) {
+    console.log(error.message)
     res.status(400).json({
       status: 'Failed',
       message: error.message

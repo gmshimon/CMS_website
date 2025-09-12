@@ -51,6 +51,7 @@ import MySchedule from '../Pages/Dashboard/MySchedule/MySchedule.jsx'
 import ScheduleAbstractsPage from '../Pages/ScheduleAbstractsPage/ScheduleAbstractsPage.jsx'
 import AttendeeListPage from '../Pages/AttendeeListPage/AttendeeListPage.jsx'
 import Conference_reg_invoice from '../Pages/Dashboard/Conference_reg_invoice/Conference_reg_invoice.jsx'
+import AdminAttendeeList from '../Pages/AdminAttendeeList/AdminAttendeeList.jsx'
 
 export const router = createBrowserRouter([
   {
@@ -174,6 +175,10 @@ export const router = createBrowserRouter([
       {
         path: 'my-review/:category',
         element: <MyReviewDetailPage />
+      },
+      {
+        path:'list',
+        element:<AdminAttendeeList/>
       },
       {
         path: 'schedule/:id',
