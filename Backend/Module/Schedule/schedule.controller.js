@@ -217,7 +217,7 @@ export const getScheduleById = async (req, res) => {
       .populate({
         path: 'abstracts',
         select:
-          'paper_title authors abstract theme conference createdAt keywords',
+          'paper_title authors abstract theme presenter conference createdAt keywords abstract_id',
         populate: {
           path: 'conference',
           select: 'name' // choose what fields you need

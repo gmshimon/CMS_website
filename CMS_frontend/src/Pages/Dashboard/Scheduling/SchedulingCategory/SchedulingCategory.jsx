@@ -10,8 +10,11 @@ import ScheduleTable from '../../../../Component/ScheduleTable/ScheduleTable'
 import { showErrorToast, showSuccessToast } from '../../../../Utilis/toastUtils'
 import { reset } from '../../../../Redux/Slice/ScheduleSlice'
 import EditScheduleModal from '../../../../Component/EditScheduleModal/EditScheduleModal'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const SchedulingCategory = () => {
+  const {user} = useSelector(state=>state.user)
   const { unscheduleAbstract } = useSelector(state => state.abstract)
   const { session_chairs, moderators, getChairsAndModeratorsLoading } =
     useSelector(state => state.user)
@@ -28,7 +31,8 @@ const SchedulingCategory = () => {
     deleteScheduleError,
     updateScheduleLoading,
     updateScheduleSuccess,
-    updateScheduleError
+    updateScheduleError,
+    getScheduleLoading
   } = useSelector(state => state.schedule)
 
   const [modalOpen, setModalOpen] = useState(false)
@@ -75,15 +79,16 @@ const SchedulingCategory = () => {
     updateScheduleError,
     updateScheduleSuccess
   ])
-
   if (
     getChairsAndModeratorsLoading ||
     updateScheduleLoading ||
     createScheduleLoading ||
-    deleteScheduleLoading
+    deleteScheduleLoading ||
+    getScheduleLoading
   ) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-200px)]'>
+        <ToastContainer />
         <Loading />
       </div>
     )
@@ -93,7 +98,9 @@ const SchedulingCategory = () => {
 
   return (
     <div>
-      <button
+      <ToastContainer />
+      {
+        user?.role=="Admin" &&<button
         onClick={() => {
           setModalOpen(true)
           setSelectedSchedule(null)
@@ -102,6 +109,7 @@ const SchedulingCategory = () => {
       >
         + Create Schedule
       </button>
+      }
 
       <ScheduleModal
         isOpen={modalOpen}
@@ -139,6 +147,7 @@ const SchedulingCategory = () => {
           setEditModalOpen(true)
           setSelectedSchedule(data)
         }}
+        admin={user?.role=="Admin"}
       />
     </div>
   )

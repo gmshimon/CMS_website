@@ -255,6 +255,7 @@ const ScheduleAbstractsPage = () => {
                 <th className='text-white font-bold'>Abstract ID</th>
                 <th className='text-white font-bold'>Title</th>
                 <th className='text-white font-bold'>Author</th>
+                <th className='text-white font-bold'>Presenter</th>
                 <th className='text-white font-bold'>View</th>
                 <th className='text-white font-bold'>Marks</th>
                 <th className='text-white font-bold'>Actions</th>
@@ -275,7 +276,7 @@ const ScheduleAbstractsPage = () => {
                   <tr key={abstract._id} className='hover:bg-gray-50'>
                     {/* Abstract ID */}
                     <td className='font-mono text-sm font-semibold text-gray-800'>
-                      {abstract.abstract_id || abstract?._id}
+                      {abstract?.abstract_id}
                     </td>
 
                     {/* Title */}
@@ -287,7 +288,25 @@ const ScheduleAbstractsPage = () => {
 
                     {/* Author */}
                     <td className='text-gray-700'>
-                      {abstract.authors[0].name}
+                       <div className='font-medium text-gray-800 mb-1'>
+              {abstract?.authors.length} Author(s)
+            </div>
+                      <div className='space-y-1'>
+                        {abstract?.authors.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className='text-gray-600  max-w-44'
+                            title={item.name}
+                          >
+                            • {item.name}
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                    <td className='text-gray-700'>
+                      <span>{abstract.presenter?.presenter_name}</span>
+                      <br />
+                      <span>{abstract.presenter?.presenter_email}</span>
                     </td>
 
                     {/* Abstract */}

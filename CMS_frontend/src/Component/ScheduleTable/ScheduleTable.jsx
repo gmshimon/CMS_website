@@ -3,7 +3,7 @@ import { FaEdit, FaTrash } from 'react-icons/fa'
 import { IoMdEye } from 'react-icons/io'
 import { useNavigate } from 'react-router'
 
-const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
+const ScheduleTable = ({ columns, data, onDelete, onEdit,admin }) => {
   const navigate = useNavigate()
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
@@ -22,9 +22,9 @@ const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
               <th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
                 Details
               </th>
-              <th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
+              {admin&&<th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
                 Actions
-              </th>
+              </th>}
             </tr>
           </thead>
           <tbody>
@@ -59,7 +59,7 @@ const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
                       <ExternalLink size={20}/>
                     </button>
                   </td>
-                  <td className='px-4 py-3 whitespace-nowrap space-x-2'>
+                  {admin&&<td className='px-4 py-3 whitespace-nowrap space-x-2'>
                     <button
                       onClick={() => onEdit(row)}
                       className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
@@ -76,7 +76,7 @@ const ScheduleTable = ({ columns, data, onDelete, onEdit }) => {
                     >
                       <FaTrash />
                     </button>
-                  </td>
+                  </td>}
                 </tr>
               ))
             )}
