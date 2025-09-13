@@ -8,7 +8,7 @@ const initialState = {
   dashboardStats: [],
   roleCounts: {},
   users: [],
-  presenter:[],
+  presenter: [],
   reviewers: [],
   session_chairs: [],
   keynote_speakers: [],
@@ -43,7 +43,7 @@ export const adminCreateUser = createAsyncThunk(
   'adminCreateUser',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/admin/create-user', data)
+      const response = await axiosSecure.post('/admin/create-user', data)
       return response.data.data
     } catch (error) {
       const message =
@@ -56,10 +56,10 @@ export const adminCreateUser = createAsyncThunk(
 
 export const getUserRoleCounts = createAsyncThunk(
   'getUserRoleCounts',
-  async (conference_id=null, { rejectWithValue }) => {
+  async (conference_id = null, { rejectWithValue }) => {
     try {
       const query = conference_id ? `?conference_id=${conference_id}` : ''
-      const response = await axios.get(`/admin/total-user${query}`)
+      const response = await axiosSecure.get(`/admin/total-user${query}`)
       return response.data.data
     } catch (error) {
       const message =
@@ -72,10 +72,10 @@ export const getUserRoleCounts = createAsyncThunk(
 
 export const getRoleBasedUser = createAsyncThunk(
   'getRoleBasedUser',
-  async ({ conference_id=null, role }, { rejectWithValue }) => {
+  async ({ conference_id = null, role }, { rejectWithValue }) => {
     try {
-       const query = conference_id ? `?conference_id=${conference_id}` : ''
-      const response = await axios.get(`/admin/get/${role}${query}`)
+      const query = conference_id ? `?conference_id=${conference_id}` : ''
+      const response = await axiosSecure.get(`/admin/get/${role}${query}`)
       return {
         data: response.data.data,
         role
@@ -93,7 +93,7 @@ export const deleteUserFromDb = createAsyncThunk(
   'deleteUserFromDb',
   async ({ id, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/admin/delete/user/${id}`)
+      const response = await axiosSecure.delete(`/admin/delete/user/${id}`)
       return { id, role }
     } catch (error) {
       const message =
@@ -107,7 +107,7 @@ export const updateUser = createAsyncThunk(
   'updateUser',
   async ({ data, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/admin/update/user/`, data)
+      const response = await axiosSecure.put(`/admin/update/user/`, data)
       return { data: response.data.data, role }
     } catch (error) {
       const message =
@@ -121,7 +121,9 @@ export const deleteUserImage = createAsyncThunk(
   'deleteUserImage',
   async ({ id, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/admin/delete/user-image/${id}`)
+      const response = await axiosSecure.delete(
+        `/admin/delete/user-image/${id}`
+      )
       return {
         id,
         role
@@ -138,7 +140,10 @@ export const updateUserImage = createAsyncThunk(
   'updateUserImage',
   async ({ id, role, data }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/admin/update/user-image/${id}`, data)
+      const response = await axiosSecure.put(
+        `/admin/update/user-image/${id}`,
+        data
+      )
       return {
         id,
         data: response.data.data,
@@ -161,6 +166,23 @@ export const getPresentationMethodStats = createAsyncThunk(
       const response = await axiosSecure.get(
         `/admin/presentation-stats/${query}`
       )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating user image'
+      return rejectWithValue(message)
+    }
+  }
+)
+
+export const getScheduleMethodStats = createAsyncThunk(
+  'getScheduleMethodStats',
+  async (conferenceId = null, { rejectWithValue }) => {
+    try {
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
+      const response = await axiosSecure.get(`/admin/schedule-stats${query}`)
+
       return response.data.data
     } catch (error) {
       const message =
@@ -453,6 +475,22 @@ const adminSlice = createSlice({
         state.presentationStats = action.payload
       })
       .addCase(getPresentationMethodStats.rejected, state => {
+        state.getPresentationStatsLoading = false
+        state.getPresentationStatsSuccess = false
+        state.getPresentationStatsError = true
+      })
+      .addCase(getScheduleMethodStats.pending, state => {
+        state.getPresentationStatsLoading = true
+        state.getPresentationStatsSuccess = false
+        state.getPresentationStatsError = false
+      })
+      .addCase(getScheduleMethodStats.fulfilled, (state, action) => {
+        state.getPresentationStatsLoading = false
+        state.getPresentationStatsSuccess = true
+        state.getPresentationStatsError = false
+        state.presentationStats = action.payload
+      })
+      .addCase(getScheduleMethodStats.rejected, state => {
         state.getPresentationStatsLoading = false
         state.getPresentationStatsSuccess = false
         state.getPresentationStatsError = true

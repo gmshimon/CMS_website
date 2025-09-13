@@ -13,12 +13,66 @@ import mongoose from 'mongoose'
 import Conference from '../Conference/conference.model.js'
 import Schedule from '../Schedule/schedule.model.js'
 
-
 const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS)
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
+
+export const getMethodStatsHelper = async ({
+  model,
+  matchField,
+  conference_id,
+  role,
+  allowedRoles = ['Admin', 'registration_committee']
+}) => {
+  // Role check
+  if (!allowedRoles.includes(role)) {
+    const error = new Error('You do not have access')
+    error.statusCode = 403
+    throw error
+  }
+
+  // Match query
+  const match = {}
+  if (conference_id && conference_id !== 'all' && conference_id !== undefined) {
+    match.conference = new mongoose.Types.ObjectId(conference_id)
+  }
+
+  // Aggregate stats
+  const stats = await model.aggregate([
+    { $match: match },
+    {
+      $group: {
+        _id: `$${matchField}`,
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        method: '$_id',
+        count: 1
+      }
+    }
+  ])
+
+  // Ensure all methods exist
+  const methods = [
+    'Paper Presentation Physical',
+    'Paper Presentation Online',
+    'Poster Presentation Physical',
+    'Poster Presentation Online'
+  ]
+
+  return methods.map(method => {
+    const found = stats.find(s => s.method === method)
+    return {
+      method,
+      count: found ? found.count : 0
+    }
+  })
+}
 
 export const getUserRoleCounts = async (req, res, next) => {
   try {
@@ -380,59 +434,40 @@ export const updateUserImage = async (req, res, next) => {
   }
 }
 
-export const getPresentationMethodStats = async (req, res,next) => {
+export const getPresentationMethodStats = async (req, res, next) => {
   try {
     const { conference_id } = req.query
-    const {role} = req.user
+    const { role } = req.user
 
-    if (!["Admin", "registration_committee"].includes(role)) {
-  const error = new Error("You do not have access")
-  error.statusCode = 403
-  return next(error)
-}
-    const match = {}
-    if (
-      conference_id &&
-      conference_id !== 'all' &&
-      conference_id !== undefined
-    ) {
-      match.conference = new mongoose.Types.ObjectId(conference_id)
-    }
-    const stats = await Abstracts.aggregate([
-      { $match: match },
-      {
-        $group: {
-          _id: '$presentation_method',
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          method: '$_id',
-          count: 1
-        }
-      }
-    ])
-    // Optional: Ensure all types are returned (even if count is 0)
-    const methods = [
-      'Paper Presentation Physical',
-      'Paper Presentation Online',
-      'Poster Presentation Physical',
-      'Poster Presentation Online'
-    ]
-
-    const completeStats = methods.map(method => {
-      const found = stats.find(s => s.method === method)
-      return {
-        method,
-        count: found ? found.count : 0
-      }
+    const completeStats = await getMethodStatsHelper({
+      model: Abstracts,
+      matchField: 'presentation_method',
+      conference_id,
+      role
     })
 
     res.status(200).json({ success: true, data: completeStats })
   } catch (error) {
     console.error('Error fetching presentation stats:', error)
+    next(error)
+  }
+}
+
+export const getScheduleMethodStats = async (req, res, next) => {
+  try {
+    const { conference_id } = req.query
+    const { role } = req.user
+
+    const completeStats = await getMethodStatsHelper({
+      model: Schedule,
+      matchField: 'abstractType',
+      conference_id,
+      role
+    })
+
+    res.status(200).json({ success: true, data: completeStats })
+  } catch (error) {
+    console.error('Error fetching schedule stats:', error)
     next(error)
   }
 }

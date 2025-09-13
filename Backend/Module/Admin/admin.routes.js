@@ -12,7 +12,8 @@ import {
   getRoleBasedUser,
   getUserRoleCounts,
   updateUser,
-  updateUserImage
+  updateUserImage,
+  getScheduleMethodStats
 } from './admin.controller.js'
 import verifyAdminToken from '../../Middleware/verifyAdminToken.js'
 import {
@@ -67,9 +68,16 @@ router.get('/dashboard',standardLimiter, verifyAdminToken, adminDashboardStats)
 // 🔹 Presentation method stats → admin-only, light query → per-IP limiter first
 router.get(
   '/presentation-stats',
-  standardLimiter,
+  lightLimiter,
   verifyToken,
   getPresentationMethodStats
+)
+
+router.get(
+  '/schedule-stats',
+  lightLimiter,
+  verifyToken,
+  getScheduleMethodStats
 )
 
 // 🔹 Admin analytics → heaviest query (multiple aggregations) → medium limiter

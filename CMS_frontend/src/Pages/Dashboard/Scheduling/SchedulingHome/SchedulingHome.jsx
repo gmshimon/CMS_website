@@ -9,7 +9,8 @@ import {
 } from 'react-icons/fa'
 import StatCard from '../../../../Component/StatCard/StatCard'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPresentationMethodStats } from '../../../../Redux/Slice/AdminSlice'
+import { getScheduleMethodStats } from '../../../../Redux/Slice/AdminSlice'
+import Loading from '../../../../Component/Loading/Loading'
 
 const methodMeta = {
   'Paper Presentation Physical': {
@@ -44,17 +45,24 @@ const methodMeta = {
 
 const SchedulingHome = () => {
   const { selectedConference } = useSelector(state => state.conference)
-  const { presentationStats } = useSelector(state => state.admin)
+  const { presentationStats,getPresentationStatsLoading } = useSelector(state => state.admin)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (selectedConference) {
-      dispatch(getPresentationMethodStats(selectedConference))
+      dispatch(getScheduleMethodStats(selectedConference))
     } else {
-      dispatch(getPresentationMethodStats())
+      dispatch(getScheduleMethodStats())
     }
   }, [dispatch, selectedConference])
+
+if(getPresentationStatsLoading){
+  return <div className='flex justify-center items-center h-[calc(100vh-130px)]'>
+    <Loading/>
+  </div>
+}
+
   return (
     <div>
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'>
