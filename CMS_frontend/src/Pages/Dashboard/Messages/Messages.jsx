@@ -16,7 +16,7 @@ const Messages = () => {
   )
   const [currentPage, setCurrentPage] = useState(1)
   const dispatch = useDispatch()
-  const messagesPerPage = 4
+  const messagesPerPage = 5
 
   const [selectedMessage, setSelectedMessage] = useState(null)
   useEffect(() => {
@@ -42,7 +42,7 @@ const Messages = () => {
               <div className='p-3 border-b border-gray-200 bg-gradient-to-r from-blue-100 to-blue-50'>
                 <h3 className='text-lg font-semibold text-gray-800'>Inbox</h3>
               </div>
-              <div className='divide-y divide-gray-200'>
+              <div className='divide-y divide-gray-200 h-[27rem]'>
                 {currentMessages?.map(message => (
                   <div
                     key={message._id}

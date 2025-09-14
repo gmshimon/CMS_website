@@ -5,8 +5,10 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 import auth from '../../Firebase/firebase.config.js'
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut,
   updateProfile
 } from 'firebase/auth'
@@ -30,6 +32,10 @@ const initialState = {
   isCreateUserLoading: false,
   isCreateUserSuccess: false,
   isCreateUserError: false,
+
+  isLoginWithGooglePending: false,
+  isLoginWithGoogleSuccess: false,
+  isLoginWithGoogleError: false,
 
   isUpdateUserLoading: false,
   isUpdateUserSuccess: false,
@@ -68,7 +74,7 @@ const initialState = {
 export const saveUserData = async userData => {
   const response = await axios.post('user/', userData)
   const data = response.data.data
-  const tokenExpiration = new Date().getTime() + 3 * 60 * 60 * 1000 // 3 hours
+  const tokenExpiration = new Date().getTime() + 10 * 60 * 60 * 1000 // 3 hours
   localStorage.setItem(
     'userToken',
     JSON.stringify({
@@ -102,6 +108,20 @@ export const createUser = createAsyncThunk('createUser', async formdata => {
   const data = await saveUserData(formdata)
   return data
 })
+
+export const loginWithGoogle = createAsyncThunk(
+  'loginWithGoogle',
+  async (value = null) => {
+    const provider = new GoogleAuthProvider()
+    const response = await signInWithPopup(auth, provider)
+    const data = await saveUserData({
+      name: response?.user?.displayName,
+      email: response?.user?.email,
+      role: value
+    })
+    return data
+  }
+)
 
 // Fetch single user
 export const fetchUser = createAsyncThunk('fetchUser', async email => {
@@ -211,6 +231,10 @@ const userSlice = createSlice({
       state.isCreateUserSuccess = false
       state.isCreateUserError = false
 
+      state.isLoginWithGooglePending = false
+      state.isLoginWithGoogleSuccess = false
+      state.isLoginWithGoogleError = false
+
       state.isUpdateUserLoading = false
       state.isUpdateUserSuccess = false
       state.isUpdateUserError = false
@@ -291,6 +315,24 @@ const userSlice = createSlice({
         state.isCreateUserLoading = false
         state.isCreateUserSuccess = false
         state.isCreateUserError = true
+      })
+
+      //Login using the google providers
+      .addCase(loginWithGoogle.pending, state => {
+          state.isLoginWithGooglePending = true
+      state.isLoginWithGoogleSuccess = false
+      state.isLoginWithGoogleError = false
+      })
+      .addCase(loginWithGoogle.fulfilled, (state, action) => {
+        state.user = action.payload
+      state.isLoginWithGooglePending = false
+      state.isLoginWithGoogleSuccess = true
+      state.isLoginWithGoogleError = false
+      })
+      .addCase(loginWithGoogle.rejected, state => {
+      state.isLoginWithGooglePending = false
+      state.isLoginWithGoogleSuccess = false
+      state.isLoginWithGoogleError = true
       })
 
       // Fetch User
@@ -421,22 +463,21 @@ const userSlice = createSlice({
         state.getMyStatsError = true
       })
 
-      .addCase(getRegistrationCommitteeDashboard.pending,state=>{
-      state.getRegisterStatsLoading = true
-      state.getRegisterStatsSuccess = false
-      state.getRegisterStatsError = false
+      .addCase(getRegistrationCommitteeDashboard.pending, state => {
+        state.getRegisterStatsLoading = true
+        state.getRegisterStatsSuccess = false
+        state.getRegisterStatsError = false
       })
-      .addCase(getRegistrationCommitteeDashboard.fulfilled,(state,action)=>{
-      state.getRegisterStatsLoading = false
-      state.getRegisterStatsSuccess = true
-      state.getRegisterStatsError = false
-      state.register_committee_stats = action.payload
+      .addCase(getRegistrationCommitteeDashboard.fulfilled, (state, action) => {
+        state.getRegisterStatsLoading = false
+        state.getRegisterStatsSuccess = true
+        state.getRegisterStatsError = false
+        state.register_committee_stats = action.payload
       })
-      .addCase(getRegistrationCommitteeDashboard.rejected,(state)=>{
-      state.getRegisterStatsLoading = false
-      state.getRegisterStatsSuccess = false
-      state.getRegisterStatsError = true
-
+      .addCase(getRegistrationCommitteeDashboard.rejected, state => {
+        state.getRegisterStatsLoading = false
+        state.getRegisterStatsSuccess = false
+        state.getRegisterStatsError = true
       })
   }
 })

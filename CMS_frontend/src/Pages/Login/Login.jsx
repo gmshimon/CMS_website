@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { loginUser, reset } from '../../Redux/Slice/AuthSlice'
+import { loginUser, loginWithGoogle, reset } from '../../Redux/Slice/AuthSlice'
 import ChangePasswordModal from '../../Component/ChangePasswordModal/ChangePasswordModal'
 import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
 import {
@@ -16,11 +16,15 @@ import {
   FaLinkedinIn
 } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
+import Loading from '../../Component/Loading/Loading'
 
 const Login = () => {
   const {
     isLoginSuccess,
     isLoginLoading,
+    isLoginWithGoogleSuccess,
+    isLoginWithGoogleError,
+    isLoginWithGooglePending,
     isLoginError,
     sendResetPasswordSuccess
   } = useSelector(state => state.user)
@@ -42,13 +46,14 @@ const Login = () => {
       showSuccessToast('Password reset link sent')
       dispatch(reset())
     }
-  }, [
-    dispatch,
-    isLoginError,
-    isLoginSuccess,
-    navigate,
-    sendResetPasswordSuccess
-  ])
+    if (isLoginWithGoogleSuccess) {
+      navigate('/admin')
+    }
+    if (isLoginWithGoogleError) {
+      showErrorToast("'User Registration Failed")
+      dispatch(reset())
+    }
+  }, [dispatch, isLoginError, isLoginSuccess, isLoginWithGoogleError, isLoginWithGoogleSuccess, navigate, sendResetPasswordSuccess])
 
   const handleLogin = e => {
     e.preventDefault()
@@ -61,6 +66,15 @@ const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => setShowPassword(show => !show)
+
+  if (isLoginWithGooglePending) {
+    return (
+      <div className='flex justify-center items-center h-[calc(100vh-130px)]'>
+        <ToastContainer />
+        <Loading />
+      </div>
+    )
+  }
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100'>
@@ -259,6 +273,7 @@ const Login = () => {
 
               {/* Google Sign In Button */}
               <button
+                onClick={() => dispatch(loginWithGoogle())}
                 type='button'
                 className='w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition duration-200 group'
               >

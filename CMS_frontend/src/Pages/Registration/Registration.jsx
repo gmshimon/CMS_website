@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getRole, reset, createUser } from '../../Redux/Slice/AuthSlice'
+import {
+  getRole,
+  reset,
+  createUser,
+  loginWithGoogle
+} from '../../Redux/Slice/AuthSlice'
 import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
 import {
   FaFacebookF,
@@ -15,6 +20,7 @@ import {
   FaLinkedinIn
 } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
+import Loading from '../../Component/Loading/Loading'
 
 const countries = [
   'Afghanistan',
@@ -63,8 +69,15 @@ const countries = [
 ]
 
 const Registration = () => {
-  const { isCreateUserLoading, isCreateUserSuccess, isCreateUserError, roles } =
-    useSelector(state => state.user)
+  const {
+    isCreateUserLoading,
+    isCreateUserSuccess,
+    isCreateUserError,
+    isLoginWithGoogleSuccess,
+    isLoginWithGoogleError,
+    isLoginWithGooglePending,
+    roles
+  } = useSelector(state => state.user)
   const [selectedRole, setSelectedRole] = useState('')
   const [name, setName] = useState('')
   const [address, setAddress] = useState('')
@@ -83,18 +96,31 @@ const Registration = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const dispatch = useDispatch()
-
+  const navigate = useNavigate()
   useEffect(() => {
     if (isCreateUserError) {
       showErrorToast('User Registration Failed')
-
       dispatch(reset())
     }
     if (isCreateUserSuccess) {
       showSuccessToast('User Registration Successful')
       dispatch(reset())
     }
-  }, [dispatch, isCreateUserError, isCreateUserSuccess])
+    if (isLoginWithGoogleSuccess) {
+      navigate('/admin')
+    }
+    if (isLoginWithGoogleError) {
+      showErrorToast("'User Registration Failed")
+      dispatch(reset())
+    }
+  }, [
+    dispatch,
+    isCreateUserError,
+    isCreateUserSuccess,
+    isLoginWithGoogleError,
+    isLoginWithGoogleSuccess,
+    navigate
+  ])
 
   useEffect(() => {
     dispatch(getRole())
@@ -130,6 +156,15 @@ const Registration = () => {
 
       dispatch(createUser(formData))
     }
+  }
+
+  if (isLoginWithGooglePending) {
+    return (
+      <div className='flex justify-center items-center h-[calc(100vh-130px)]'>
+        <ToastContainer />
+        <Loading />
+      </div>
+    )
   }
 
   return (
@@ -544,7 +579,11 @@ const Registration = () => {
                   <button
                     type='submit'
                     className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 ${
-                      password === confirmPassword && name && email
+                      password === confirmPassword &&
+                      name &&
+                      email &&
+                      affiliation &&
+                      department
                         ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white hover:from-teal-700 hover:to-teal-800'
                         : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                     }`}
@@ -552,7 +591,10 @@ const Registration = () => {
                       password !== confirmPassword ||
                       !name ||
                       !email ||
-                      isCreateUserLoading
+                      !affiliation ||
+                      !department ||
+                      isCreateUserLoading ||
+                      isLoginWithGooglePending
                     }
                   >
                     {isCreateUserLoading ? 'Loading...' : 'Register'}
@@ -572,8 +614,19 @@ const Registration = () => {
 
                 {/* Google Sign In Button */}
                 <button
+                  title={`${
+                    !selectedRole ? 'Please select role' : 'Google Signup'
+                  }`}
+                  disabled={
+                    !selectedRole ||
+                    isCreateUserLoading ||
+                    isLoginWithGooglePending
+                  }
+                  onClick={() => dispatch(loginWithGoogle(selectedRole))}
                   type='button'
-                  className='w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition duration-200 group'
+                  className={`w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition duration-200 group ${
+                    !selectedRole && 'cursor-not-allowed'
+                  }`}
                 >
                   <svg className='w-5 h-5 mr-3' viewBox='0 0 24 24'>
                     <path
