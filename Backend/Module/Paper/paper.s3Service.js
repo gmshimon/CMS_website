@@ -12,18 +12,18 @@ const s3client = new S3Client({
   }
 })
 
-export const s3PaperUploadService = async file => {
+export const s3PaperUploadService = async (file, safeFilename) => {
   try {
     const param = {
       Bucket: process.env.AWS_BUCKET_NAME,
-      Key: `paper/${file.originalname}`,
+      Key: `paper/${safeFilename}`,
       Body: file.buffer,
       ContentType: file.mimetype
     }
 
     const result = await s3client.send(new PutObjectCommand(param))
 
-    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/paper/${file.originalname}`
+    const fileUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/paper/${safeFilename}`
 
     return fileUrl
   } catch (error) {

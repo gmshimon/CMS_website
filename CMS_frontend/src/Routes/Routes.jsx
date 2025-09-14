@@ -1,256 +1,285 @@
-import { createBrowserRouter } from "react-router";
-import Main from "../Layout/Main";
-import Login from "../Pages/Login/Login";
-import Registration from "../Pages/Registration/Registration";
-import Dashboard from "../Layout/Dashboard";
-import Messages from "../Pages/Dashboard/Messages/Messages";
-import ConferenceList from "../Pages/Dashboard/ConferenceList/ConferenceList";
-import SingleConference from "../Pages/Dashboard/SingleConference/SingleConference";
-import Certificates from "../Pages/Dashboard/Certificates/Certificates";
-import MyPaper from "../Pages/Dashboard/MyPaper/MyPaper";
-import Abstracts from "../Pages/Dashboard/Abstracts/Abstracts";
-import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
-import MyInvoice from "../Pages/Dashboard/MyInvoice/MyInvoice";
-import Profile from "../Pages/MyProfile/Profile";
-import AddAbstract from "../Pages/Dashboard/Abstracts/AddAbstract/AddAbstract";
-import AdminConference from "../Pages/Dashboard/AdminConference/AdminConference";
-import CreateConference from "../Pages/Dashboard/CreateConference/CreateConference";
-import EditConference from "../Component/EditConference/EditConference";
-import AdminSubmission from "../Pages/Dashboard/Submission/AdminSubmission/AdminSubmission";
-import Submission from "../Layout/Submission";
-import PhysicalSubmission from "../Pages/Dashboard/Submission/PhysicalSubmission/PhysicalSubmission";
-import PosterSubmission from "../Pages/Dashboard/Submission/PosterSubmission/PosterSubmission";
-import AdminUser from "../Pages/Dashboard/AdminUser/AdminUser";
-import Users from "../Layout/Users";
-import ManageAuthor from "../Pages/Dashboard/ManageAuthor/ManageAuthor.jsx";
-import ManageReviewers from "../Pages/Dashboard/ManageReviewers/ManageReviewers";
-import ManageSessionChair from "../Pages/Dashboard/ManageSessionChair/ManageSessionChair.jsx";
-import ManageKeynoteSpeaker from "../Pages/Dashboard/ManageKeynoteSpeaker/ManageKeynoteSpeaker.jsx";
-import ManageModerator from "../Pages/Dashboard/ManageModerator/ManageModerator.jsx";
-import ManageScientificCommittee from "../Pages/Dashboard/ManageScientificCommittee/ManageScientificCommittee.jsx";
-import ManageTechnicalCommittee from "../Pages/Dashboard/ManageTechnicalCommittee/ManageTechnicalCommittee.jsx";
-import ManageRegistrationCommittee from "../Pages/Dashboard/ManageRegistrationCommittee/ManageRegistrationCommittee.jsx";
-import Review from "../Layout/Review.jsx";
-import AdminReview from "../Pages/Dashboard/AdminReview/AdminReview.jsx";
-import ReviewDetailsPage from "../Component/ReviewDetailsPage/ReviewDetailsPage.jsx";
-import HomePage from "../Pages/HomePage/HomePage.jsx";
-import MyReviewDetailPage from "../Pages/Dashboard/MyReviewDetailPage/MyReviewDetailPage.jsx";
-import Scheduling from "../Layout/Scheduling.jsx";
-import SchedulingHome from "../Pages/Dashboard/Scheduling/SchedulingHome/SchedulingHome.jsx";
-import SchedulingCategory from "../Pages/Dashboard/Scheduling/SchedulingCategory/SchedulingCategory.jsx";
-import AboutPage from "../Pages/AboutPage/AboutPage.jsx";
-import CallForPapersPage from "../Pages/CallForPapersPage/CallForPapersPage.jsx";
-import SubmissionPage from "../Pages/SubmissionPage.jsx";
-import RegistrationDetailsPage from "../Pages/RegistrationDetailsPage/RegistrationDetailsPage.jsx";
-import PublicationsPage from "../Pages/PublicationsPage/PublicationsPage.jsx";
-import ContactPage from "../Pages/ContactPage/ContactPage.jsx";
-import LastEventPage from "../Pages/LastEventPage/LastEventPage.jsx";
-import CommitteePage from "../Pages/CommitteePage/CommitteePage.jsx";
-import KeynoteSpeakersPage from "../Pages/KeynoteSpeakersPage/KeynoteSpeakersPage.jsx";
+import { createBrowserRouter } from 'react-router'
+import Main from '../Layout/Main'
+import Login from '../Pages/Login/Login'
+import Registration from '../Pages/Registration/Registration'
+import Dashboard from '../Layout/Dashboard'
+import Messages from '../Pages/Dashboard/Messages/Messages'
+import ConferenceList from '../Pages/Dashboard/ConferenceList/ConferenceList'
+import SingleConference from '../Pages/Dashboard/SingleConference/SingleConference'
+import Certificates from '../Pages/Dashboard/Certificates/Certificates'
+import MyPaper from '../Pages/Dashboard/MyPaper/MyPaper'
+import Abstracts from '../Pages/Dashboard/Abstracts/Abstracts'
+import DashboardHome from '../Pages/Dashboard/DashboardHome/DashboardHome'
+import MyInvoice from '../Pages/Dashboard/MyInvoice/MyInvoice'
+import Profile from '../Pages/MyProfile/Profile'
+import AddAbstract from '../Pages/Dashboard/Abstracts/AddAbstract/AddAbstract'
+import AdminConference from '../Pages/Dashboard/AdminConference/AdminConference'
+import CreateConference from '../Pages/Dashboard/CreateConference/CreateConference'
+import EditConference from '../Component/EditConference/EditConference'
+import AdminSubmission from '../Pages/Dashboard/Submission/AdminSubmission/AdminSubmission'
+import Submission from '../Layout/Submission'
+import PhysicalSubmission from '../Pages/Dashboard/Submission/PhysicalSubmission/PhysicalSubmission'
+import PosterSubmission from '../Pages/Dashboard/Submission/PosterSubmission/PosterSubmission'
+import AdminUser from '../Pages/Dashboard/AdminUser/AdminUser'
+import Users from '../Layout/Users'
+import ManageAuthor from '../Pages/Dashboard/ManageAuthor/ManageAuthor.jsx'
+import ManageReviewers from '../Pages/Dashboard/ManageReviewers/ManageReviewers'
+import ManageSessionChair from '../Pages/Dashboard/ManageSessionChair/ManageSessionChair.jsx'
+import ManageKeynoteSpeaker from '../Pages/Dashboard/ManageKeynoteSpeaker/ManageKeynoteSpeaker.jsx'
+import ManageModerator from '../Pages/Dashboard/ManageModerator/ManageModerator.jsx'
+import ManageScientificCommittee from '../Pages/Dashboard/ManageScientificCommittee/ManageScientificCommittee.jsx'
+import ManageTechnicalCommittee from '../Pages/Dashboard/ManageTechnicalCommittee/ManageTechnicalCommittee.jsx'
+import ManageRegistrationCommittee from '../Pages/Dashboard/ManageRegistrationCommittee/ManageRegistrationCommittee.jsx'
+import Review from '../Layout/Review.jsx'
+import AdminReview from '../Pages/Dashboard/AdminReview/AdminReview.jsx'
+import ReviewDetailsPage from '../Component/ReviewDetailsPage/ReviewDetailsPage.jsx'
+import HomePage from '../Pages/HomePage/HomePage.jsx'
+import MyReviewDetailPage from '../Pages/Dashboard/MyReviewDetailPage/MyReviewDetailPage.jsx'
+import Scheduling from '../Layout/Scheduling.jsx'
+import SchedulingHome from '../Pages/Dashboard/Scheduling/SchedulingHome/SchedulingHome.jsx'
+import SchedulingCategory from '../Pages/Dashboard/Scheduling/SchedulingCategory/SchedulingCategory.jsx'
+import AboutPage from '../Pages/AboutPage/AboutPage.jsx'
+import CallForPapersPage from '../Pages/CallForPapersPage/CallForPapersPage.jsx'
+import SubmissionPage from '../Pages/SubmissionPage.jsx'
+import RegistrationDetailsPage from '../Pages/RegistrationDetailsPage/RegistrationDetailsPage.jsx'
+import PublicationsPage from '../Pages/PublicationsPage/PublicationsPage.jsx'
+import ContactPage from '../Pages/ContactPage/ContactPage.jsx'
+import LastEventPage from '../Pages/LastEventPage/LastEventPage.jsx'
+import CommitteePage from '../Pages/CommitteePage/CommitteePage.jsx'
+import KeynoteSpeakersPage from '../Pages/KeynoteSpeakersPage/KeynoteSpeakersPage.jsx'
+import MySchedule from '../Pages/Dashboard/MySchedule/MySchedule.jsx'
+import ScheduleAbstractsPage from '../Pages/ScheduleAbstractsPage/ScheduleAbstractsPage.jsx'
+import AttendeeListPage from '../Pages/AttendeeListPage/AttendeeListPage.jsx'
+import Conference_reg_invoice from '../Pages/Dashboard/Conference_reg_invoice/Conference_reg_invoice.jsx'
+import AdminAttendeeList from '../Pages/AdminAttendeeList/AdminAttendeeList.jsx'
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Main></Main>,
     children: [
       {
-        path: "/",
-        element: <HomePage/>,
+        path: '/',
+        element: <HomePage />
       },
       {
-        path:'/about',
-        element:<AboutPage/>
+        path: '/about',
+        element: <AboutPage />
       },
       {
-        path:'/call-for-papers',
-        element:<CallForPapersPage/>
+        path: '/call-for-papers',
+        element: <CallForPapersPage />
       },
       {
-        path:'/submissions',
-        element:<SubmissionPage/>
+        path: '/submissions',
+        element: <SubmissionPage />
       },
       {
-        path:'/registration-details',
-        element:<RegistrationDetailsPage/>
+        path: '/registration-details',
+        element: <RegistrationDetailsPage />
       },
       {
-        path:'/publications',
-        element:<PublicationsPage/>
+        path: '/publications',
+        element: <PublicationsPage />
       },
       {
-        path:'/past-events',
-        element:<LastEventPage/>
+        path: '/past-events',
+        element: <LastEventPage />
       },
       {
-        path:'/committee',
-        element:<CommitteePage/>
+        path: '/committee',
+        element: <CommitteePage />
       },
       {
-        path:'/keynote-speakers',
-        element:<KeynoteSpeakersPage/>
+        path: '/keynote-speakers',
+        element: <KeynoteSpeakersPage />
       },
       {
-        path:'/contact',
-        element:<ContactPage />
+        path: '/contact',
+        element: <ContactPage />
       },
       {
-        path: "login",
-        element: <Login />,
+        path: 'login',
+        element: <Login />
       },
       {
-        path: "register",
-        element: <Registration />,
-      },
-    ],
+        path: 'register',
+        element: <Registration />
+      }
+    ]
   },
   {
-    path: "admin",
+    path: 'admin',
     element: <Dashboard />,
     children: [
       {
-        path: "",
-        element: <DashboardHome />,
+        path: '',
+        element: <DashboardHome />
       },
       {
-        path: "abstract/",
-        element: <Abstracts />,
+        path: 'abstract/',
+        element: <Abstracts />
       },
       {
-        path: "abstract/add",
-        element: <AddAbstract />,
+        path: 'abstract/add',
+        element: <AddAbstract />
       },
       {
-        path: "my-paper",
-        element: <MyPaper />,
+        path: 'my-paper',
+        element: <MyPaper />
       },
       {
-        path: "invoice",
-        element: <MyInvoice />,
+        path: 'invoice',
+        element: <MyInvoice />
       },
       {
-        path: "conference-list",
-        element: <ConferenceList />,
+        path: 'conference-reg-invoice',
+        element: <Conference_reg_invoice />
       },
       {
-        path: "conference/:id",
-        element: <SingleConference />,
+        path: 'presenter/scheduling',
+        element: <MySchedule />
       },
       {
-        path: "certificates",
-        element: <Certificates />,
+        path: 'conference-list',
+        element: <ConferenceList />
       },
       {
-        path: "messages",
-        element: <Messages />,
+        path: 'conference/:id',
+        element: <SingleConference />
       },
       {
-        path: "profile",
-        element: <Profile />,
+        path: 'certificates',
+        element: <Certificates />
       },
       {
-        path: "conference",
-        element: <AdminConference />,
+        path: 'messages',
+        element: <Messages />
       },
       {
-        path: "edit-conference/:id",
-        element: <EditConference />,
+        path: 'profile',
+        element: <Profile />
       },
       {
-        path: "create-conference",
-        element: <CreateConference />,
+        path: 'conference',
+        element: <AdminConference />
       },
       {
-        path:'my-review/:category',
-        element:<MyReviewDetailPage/>
+        path: 'edit-conference/:id',
+        element: <EditConference />
       },
       {
-        path:'scheduling',
-        element:<Scheduling/>,
-        children:[
+        path: 'create-conference',
+        element: <CreateConference />
+      },
+      {
+        path: 'my-review/:category',
+        element: <MyReviewDetailPage />
+      },
+      {
+        path:'list',
+        element:<AdminAttendeeList/>
+      },
+      {
+        path: 'schedule/:id',
+        element: <ScheduleAbstractsPage />
+      },
+      {
+        path:'attendee-list',
+        element:<AttendeeListPage/>
+      },
+      // Scheduling Routes Admin
+      {
+        path: 'scheduling',
+        element: <Scheduling />,
+        children: [
           {
-            path:'',
-            element:<SchedulingHome/>
+            path: '',
+            element: <SchedulingHome />
           },
           {
-            path:':category',
-            element:<SchedulingCategory/>
+            path: ':category',
+            element: <SchedulingCategory />
           }
         ]
       },
+      // Submission Routes Admin
       {
-        path:'submission',
-        element:<Submission/>,
-        children:[
+        path: 'submission',
+        element: <Submission />,
+        children: [
           {
-            path:'',
-            element:<AdminSubmission/>
+            path: '',
+            element: <AdminSubmission />
           },
           {
-            path:'presentation_method/:method',
-            element:<PhysicalSubmission/>
+            path: 'presentation_method/:method',
+            element: <PhysicalSubmission />
           },
           {
-            path:'poster',
-            element:<PosterSubmission/>
+            path: 'poster',
+            element: <PosterSubmission />
           }
         ]
       },
+      // Review Routes Admin
       {
-        path:'review',
-        element:<Review/>,
-        children:[
+        path: 'review',
+        element: <Review />,
+        children: [
           {
-            path:'',
-            element:<AdminReview/>
+            path: '',
+            element: <AdminReview />
           },
           {
-            path:'details/:category',
-            element:<ReviewDetailsPage/>
+            path: 'details/:category',
+            element: <ReviewDetailsPage />
           }
         ]
       },
+      // User Management Routes Admin
       {
-        path:'users',
-        element:<Users/>,
-        children:[
+        path: 'users',
+        element: <Users />,
+        children: [
           {
-            path:'',
-            element:<AdminUser/>
+            path: '',
+            element: <AdminUser />
           },
           {
-            path:'authors',
-            element:<ManageAuthor/>
+            path: 'authors',
+            element: <ManageAuthor />
           },
           {
-            path:'reviewers',
-            element:<ManageReviewers/>
+            path: 'reviewers',
+            element: <ManageReviewers />
           },
           {
-            path:'session-chairs',
-            element:<ManageSessionChair/>
+            path: 'session-chairs',
+            element: <ManageSessionChair />
           },
           {
-            path:'keynote-speakers',
-            element:<ManageKeynoteSpeaker/>
+            path: 'keynote-speakers',
+            element: <ManageKeynoteSpeaker />
           },
           {
-            path:'moderators',
-            element:<ManageModerator/>
+            path: 'moderators',
+            element: <ManageModerator />
           },
           {
-            path:'committee/scientific',
-            element:<ManageScientificCommittee/>
+            path: 'committee/scientific',
+            element: <ManageScientificCommittee />
           },
           {
-            path:'committee/technical',
-            element:<ManageTechnicalCommittee/>
+            path: 'committee/technical',
+            element: <ManageTechnicalCommittee />
           },
           {
-            path:'committee/registration',
-            element:<ManageRegistrationCommittee/>
+            path: 'committee/registration',
+            element: <ManageRegistrationCommittee />
           }
         ]
       }
-    ],
-  },
-]);
+    ]
+  }
+])

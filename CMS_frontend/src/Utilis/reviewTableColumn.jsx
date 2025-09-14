@@ -1,28 +1,17 @@
 import { format } from 'date-fns'
 import { FaEye } from 'react-icons/fa'
-const statuses = [
-  'Abstract Submitted',
-  'Paper Submitted',
-  'In Review',
-  'Accepted',
-  'Rejected',
-  'Minor Revision',
-  'Major Revision',
-  'Revision Submitted',
-  'Camera Ready Copy Submitted',
-  'Withdraw'
-]
+import { getStatusColor } from './getStatusColor'
 export const abstractReviewColumns = ({
   handleSendReminder,
   handleViewReview,
   handleViewPaperList,
-  handleChangeStatusOfAbstract,
-  maxReviewers = 3
+  handleOpenStatusModal
 }) => {
   const baseColumns = [
     {
       key: '_id',
-      label: 'Abstract ID'
+      label: 'Abstract ID',
+      render: (_, row) => row?.abstract_id || row?._id
     },
     {
       key: 'paper_title',
@@ -35,29 +24,24 @@ export const abstractReviewColumns = ({
     {
       key: 'status',
       label: 'Status',
-      render: (_, row) => {
-        return (
-          <>
-            <select
-              className='border border-black rounded-md'
-              value={row.status}
-              onChange={e =>
-                handleChangeStatusOfAbstract(row._id, e.target.value)
-              }
-            >
-              {statuses.map(status => (
-                <option
-                  key={status}
-                  value={status}
-                  disabled={status === 'Paper Submitted'}
-                >
-                  {status}
-                </option>
-              ))}
-            </select>
-          </>
-        )
-      }
+      render: (_, row) => (
+        <div className='w-32 gap-2'>
+          <span
+            className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${getStatusColor(
+              row.status
+            )}`}
+          >
+            {row.status}
+          </span>
+          <br />
+          <button
+            onClick={() => handleOpenStatusModal(row)}
+            className='btn btn-xs btn-outline btn-accent text-xs mt-1 flex items-center gap-1'
+          >
+            Change Decision
+          </button>
+        </div>
+      )
     },
     {
       key: 'conference.name',
@@ -76,36 +60,44 @@ export const abstractReviewColumns = ({
           <span className='text-sm text-gray-400'>N/A</span>
         )
     }
-  ]
+  ];
 
-  const reviewerColumns = Array.from({ length: maxReviewers }).map(
-    (_, index) => ({
+  // Dynamically generate reviewer columns based on the maximum number of reviewers in the data
+  const reviewerColumns = (rowData = []) => {
+    const maxReviewers = Math.max(...rowData.map(r => r.reviews?.length || 0), 0);
+    return Array.from({ length: maxReviewers }).map((_, index) => ({
       key: `reviewer_${index}`,
       label: `Reviewer ${index + 1}`,
       render: (_, row) => {
-        const reviewer = row?.reviews[index]?.reviewer
+        const review = row?.reviews[index];
+        const reviewer = review?.reviewer;
 
-        if (!reviewer) {
-          return <span className='text-sm text-gray-400'>—</span>
-        }
+        if (!reviewer) return <span className='text-sm text-gray-400'>—</span>;
 
-        const { name, email, status } = reviewer
-        const hasReviewed = row?.reviews[index]?.completedAt
-        const hasAccepted = status === 'accepted'
-        const noResponse = !hasAccepted && !hasReviewed
+        const { name, email } = reviewer;
+        const hasReviewed = review?.completedAt && review?.status == 'reviewed';
+        const hasAccepted = review?.status === 'accepted';
+        const noResponse = !hasReviewed;
 
-        let statusLabel = ''
-        let statusColor = ''
+        const now = new Date();
+        const deadline = review?.deadline ? new Date(review.deadline) : null;
+        const isOverdue = deadline && now > deadline && !hasReviewed;
+
+        let statusLabel = '';
+        let statusColor = '';
 
         if (hasReviewed) {
-          statusLabel = 'Reviewed'
-          statusColor = 'text-blue-600'
+          statusLabel = 'Reviewed';
+          statusColor = 'text-blue-600';
+        } else if (isOverdue) {
+          statusLabel = `Overdue (${deadline.toLocaleDateString()})`;
+          statusColor = 'text-red-600';
         } else if (hasAccepted) {
-          statusLabel = 'Under Review'
-          statusColor = 'text-green-600'
+          statusLabel = `Under Review (Deadline: ${format(deadline, 'dd MMM yyyy')})`;
+          statusColor = 'text-green-600';
         } else {
-          statusLabel = 'No Response'
-          statusColor = 'text-yellow-600'
+          statusLabel = 'No Response';
+          statusColor = 'text-yellow-600';
         }
 
         return (
@@ -113,12 +105,10 @@ export const abstractReviewColumns = ({
             <span className='font-medium text-gray-700'>
               {name || email || 'Unnamed Reviewer'}
             </span>
-            <span className={`text-xs font-semibold ${statusColor}`}>
-              {statusLabel}
-            </span>
+            <span className={`text-xs font-semibold ${statusColor}`}>{statusLabel}</span>
             {hasReviewed && (
               <button
-                onClick={() => handleViewReview(row?.reviews[index])}
+                onClick={() => handleViewReview(review)}
                 className='btn btn-sm text-xs btn-accent mt-1'
               >
                 View Review
@@ -126,17 +116,17 @@ export const abstractReviewColumns = ({
             )}
             {noResponse && (
               <button
-                onClick={() => handleSendReminder(row?.reviews[index]?._id)}
+                onClick={() => handleSendReminder(review?._id)}
                 className='btn btn-xs btn-warning mt-1'
               >
                 Reminder
               </button>
             )}
           </div>
-        )
+        );
       }
-    })
-  )
+    }));
+  };
 
   const viewColumn = {
     key: 'view_submission',
@@ -150,73 +140,100 @@ export const abstractReviewColumns = ({
         <FaEye />
       </button>
     )
-  }
+  };
 
-  return [...baseColumns, ...reviewerColumns, viewColumn]
-}
+  return (rowData = []) => [...baseColumns, ...reviewerColumns(rowData), viewColumn];
+};
 
-export const reviewHomeColumn = [
-  {
-    key: '_id',
-    label: 'Abstract ID',
-    render: (_, row) => row?.abstract?._id
-  },
-  {
-    key: 'abstract.paper_title',
-    label: 'Title',
-    render: (_, row) => row?.abstract?.paper_title
-  },
-  {
-    key: 'theme',
-    label: 'Theme',
-    render: (_, row) => row?.abstract?.theme
-  },
-  {
-    key: 'conference.name',
-    label: 'Conference',
-    render: (_, row) => row?.abstract?.conference?.name || 'N/A'
-  },
-  {
-    key: 'status',
-    label: 'Status',
-    render: (_, row) => {
-      const status = row?.status?.toLowerCase() || ''
-      let color = ''
+export const reviewHomeColumn = ({
+  handleViewPaperList,
+  handleOpenAbstract
+}) => {
+  return [
+    {
+      key: '_id',
+      label: 'Abstract ID',
+      render: (_, row) => row?.abstract?.abstract_id
+    },
+    {
+      key: 'abstract.paper_title',
+      label: 'Title',
+      render: (_, row) => row?.abstract?.paper_title
+    },
+    {
+      key: 'theme',
+      label: 'Theme',
+      render: (_, row) => row?.abstract?.theme
+    },
+    {
+      key: 'conference.name',
+      label: 'Conference',
+      render: (_, row) => row?.abstract?.conference?.name || 'N/A'
+    },
+    {
+      key: 'conference.name',
+      label: 'Abstract Status',
+      render: (_, row) =><span className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${ getStatusColor(row?.abstract?.status )}`}>{row?.abstract?.status}</span>|| 'N/A'
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (_, row) => {
+        const status = row?.status?.toLowerCase() || ''
+        // Capitalize first letter
+        const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1)
 
-      // Set colors based on status
-      switch (status) {
-        case 'accepted':
-          color = 'green'
-          break
-        case 'reviewed':
-          color = 'blue'
-          break
-        case 'pending':
-          color = 'orange'
-          break
-        case 'overdue':
-          color = 'red'
-          break
-        default:
-          color = 'gray'
+        return <span className={`px-2 inline-flex text-[10px] leading-5 font-semibold rounded-full ${getStatusColor(row?.status)}`}>{formattedStatus}</span>
       }
-
-      // Capitalize first letter
-      const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1)
-
-      return <span style={{ color }}>{formattedStatus}</span>
-    }
-  },
-  {
-    key: 'abstract.createdAt',
-    label: 'Submission Date',
-    render: (_, row) =>
-      row.abstract?.createdAt ? (
-        <span className='text-sm text-gray-700'>
-          {format(new Date(row?.abstract?.createdAt), 'dd MMM yyyy')}
-        </span>
-      ) : (
-        <span className='text-sm text-gray-400'>N/A</span>
+    },
+    {
+      key: 'abstract.createdAt',
+      label: 'Submission Date',
+      render: (_, row) =>
+        row.abstract?.createdAt ? (
+          <span className='text-sm text-gray-700'>
+            {format(new Date(row?.abstract?.createdAt), 'dd MMM yyyy')}
+          </span>
+        ) : (
+          <span className='text-sm text-gray-400'>N/A</span>
+        )
+    },
+    {
+      key: 'abstract.createdAt',
+      label: 'Review Deadline',
+      render: (_, row) =>
+        row.abstract?.createdAt ? (
+          <span className='text-sm text-gray-700'>
+            {format(new Date(row?.deadline), 'dd MMM yyyy')}
+          </span>
+        ) : (
+          <span className='text-sm text-gray-400'>N/A</span>
+        )
+    },
+    {
+      key: 'view_abstract',
+      label: 'View Abstract',
+      render: (_, row) => (
+        <button
+          className='text-blue-600 hover:underline'
+          onClick={() => handleOpenAbstract(row.abstract)}
+        >
+          View
+        </button>
       )
-  }
-]
+    },
+    {
+      key: 'view_submission',
+      label: 'View Paper',
+      render: (_, row) => (
+        <button
+          onClick={() => handleViewPaperList(row.abstract.paper)}
+          className='btn btn-sm btn-outline text-blue-600 tooltip'
+          data-tip='View Submission Paper'
+        >
+          <FaEye />
+        </button>
+      )
+    }
+  ]
+}

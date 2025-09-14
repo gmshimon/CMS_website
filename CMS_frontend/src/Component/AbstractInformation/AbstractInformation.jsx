@@ -10,11 +10,12 @@ import {
   setOrcidLink,
   setPaperTitle,
   setPresentationMethod,
+  setPrice,
   // setPresentationProfilePicture,
   // setPresentationVideoLink,
   setPublicationOptions,
   setResearchGateLink,
-  setTheme,
+  setTheme
   // setVideoAbstract
 } from '../../Redux/Slice/AbstractSlice'
 const AbstractInformation = ({ activeStep, setActiveStep }) => {
@@ -52,7 +53,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
     if (!abstract?.trim() || !abstract) {
       newErrors.abstract = 'Abstract is required'
     }
-    if (!keywords?.trim() || keywords) {
+    if (!keywords?.trim() || !keywords) {
       newErrors.keywords = 'Keywords are required'
     }
     return newErrors
@@ -60,15 +61,15 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
 
   const handleSubmit = () => {
     const newErrors = validateForm()
-    // if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length === 0) {
       setActiveStep([...activeStep, 'Presenter Information'])
       sessionStorage.setItem(
         'activeStep',
         JSON.stringify([...activeStep, 'Presenter Information'])
       )
-    // } else {
-    //   setErrors(newErrors)
-    // }
+    } else {
+      setErrors(newErrors)
+    }
   }
 
   return (
@@ -111,15 +112,19 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           <select
             name='presentation_method'
             value={presentation_method}
-            onChange={e => dispatch(setPresentationMethod(e.target.value))}
+            onChange={e => {
+              const selectedOption = JSON.parse(e.target.value); // parse the string back to object
+      dispatch(setPresentationMethod(selectedOption.submissionType));
+      dispatch(setPrice(selectedOption.price));
+            }}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presentationMethod ? 'select-error' : ''
             }`}
           >
             <option value=''>Select presentation method</option>
-            {singleConference?.presentation_method?.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
+            {singleConference?.submissionOptions?.map((option, index) => (
+              <option key={index} value={JSON.stringify(option)} >
+                {option.submissionType} ( ${option.price} )
               </option>
             ))}
           </select>

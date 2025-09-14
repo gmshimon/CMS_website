@@ -4,6 +4,8 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 const initialState = {
   papers: [],
 
+  paperErrorMessage: '',
+
   createPostPaperLoading: false,
   createPostPaperSuccess: false,
   createPostPaperError: false,
@@ -48,6 +50,8 @@ const paperSlice = createSlice({
   initialState,
   reducers: {
     paperReset: state => {
+      state.paperErrorMessage = ''
+
       state.createPostPaperLoading = false
       state.createPostPaperSuccess = false
       state.createPostPaperError = false
@@ -70,7 +74,8 @@ const paperSlice = createSlice({
         state.createPostPaperError = false
         state.papers.push(action.payload)
       })
-      .addCase(postPaper.rejected, state => {
+      .addCase(postPaper.rejected, (state,action) => {
+        state.paperErrorMessage = action.payload || action.error.message;
         state.createPostPaperLoading = false
         state.createPostPaperSuccess = false
         state.createPostPaperError = true

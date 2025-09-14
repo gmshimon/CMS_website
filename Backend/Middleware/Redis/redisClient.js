@@ -1,11 +1,8 @@
 // redisClient.js
 import redis from 'redis'
-import dotenv from 'dotenv'
+import { ENV } from '../../config/env.js'
 
-dotenv.config()
-
-const redis_url = process.env.REDIS_URL
-
+const redis_url = ENV.REDIS_URL
 const client = redis.createClient({
   url: redis_url
 })

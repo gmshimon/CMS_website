@@ -28,7 +28,7 @@ const UploadPaperModal = ({ isOpen, onClose, abstractData }) => {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ]
 
-    const maxSize = 15 * 1024 * 1024 // 10MB
+    const maxSize = 15 * 1024 * 1024 // 15MB
 
     if (!allowedTypes.includes(file.type)) {
       toast.error('Please select a PDF or Word document only')
@@ -255,7 +255,7 @@ const UploadPaperModal = ({ isOpen, onClose, abstractData }) => {
         <div className='flex items-center justify-end space-x-4 p-6 border-t border-gray-200 bg-gray-50'>
           <button
             onClick={onClose}
-            className='px-6 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200'
+            className='px-6 py-2 btn btn-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200'
             disabled={createPostPaperLoading}
           >
             Cancel
@@ -263,7 +263,7 @@ const UploadPaperModal = ({ isOpen, onClose, abstractData }) => {
           <button
             onClick={handleUpload}
             disabled={!selectedFile || createPostPaperLoading}
-            className={`px-6 py-2 text-white rounded-lg transition-colors duration-200 ${
+            className={`px-6 py-2 btn btn-sm text-white rounded-lg transition-colors duration-200 ${
               !selectedFile || createPostPaperLoading
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700'

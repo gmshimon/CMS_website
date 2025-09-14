@@ -50,9 +50,9 @@ const initialState = {
 }
 export const fetchReviewStats = createAsyncThunk(
   'admin/fetchReviewStats',
-  async (year, { rejectWithValue }) => {
+  async (conferenceId = null, { rejectWithValue }) => {
     try {
-      const query = year ? `?year=${year}` : ''
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
       const response = await axiosSecure.get(`/review/review-stats${query}`)
       return response.data.data
     } catch (error) {
@@ -70,8 +70,12 @@ export const getAbstractsByCategory = createAsyncThunk(
   'getAbstractsByCategory',
   async (data, { rejectWithValue }) => {
     try {
-      const { category } = data
-      const query = category ? `?category=${category}` : ''
+      const { category, conferenceId } = data
+      let query = ''
+      const params = []
+      if (conferenceId) params.push(`conference_id=${conferenceId}`)
+      if (category) params.push(`category=${category}`)
+      if (params.length) query = '?' + params.join('&')
       const response = await axiosSecure.get(`/review/abstract${query}`)
       return response.data.data
     } catch (error) {
@@ -138,7 +142,6 @@ export const acceptReviewInvitation = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axiosSecure.post(`/review/respond`, data)
-      return response
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
@@ -165,14 +168,20 @@ export const submitReview = createAsyncThunk(
 
 export const changeAbstractStatus = createAsyncThunk(
   'changeAbstractStatus',
-  async ({ id, status }, { rejectWithValue }) => {
+  async ({ id, status, paper_deadline, message }, { rejectWithValue }) => {
     try {
-      const response = await axiosSecure.post(`/abstract/change-status/${id}`, {
-        status: status
-      })
+      const response = await axiosSecure.post(
+        `/abstract/change-review-status/${id}`,
+        {
+          status: status,
+          paper_deadline,
+          message
+        }
+      )
       return {
         id,
-        status
+        status,
+        paper_deadline
       }
     } catch (error) {
       return rejectWithValue(
@@ -384,11 +393,12 @@ const adminSlice = createSlice({
         state.changeAbstractStatusLoading = false
         state.changeAbstractStatusSuccess = true
         state.changeAbstractStatusError = false
-        const { id, status } = action.payload
+        const { id, status, paper_deadline } = action.payload
 
         const index = state.reviews.findIndex(item => item._id == id)
         if (index !== -1) {
           state.reviews[index].status = status
+          state.reviews[index].paper_deadline = paper_deadline
         }
       })
 

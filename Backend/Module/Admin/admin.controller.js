@@ -1,24 +1,17 @@
 import Users from '../User/user.model.js'
 import admin from 'firebase-admin'
-import { readFile } from 'fs/promises'
 import { deleteImageFromS3, s3UserUpload } from '../User/user.s3Uploader.js'
 import {
   accountCreatedTemplateLogin,
   accountCreateTemplate
 } from '../../Utilis/EmailTemplate/createUserTemplate.js'
-import { sendEmail } from '../../Utilis/sendEmail.js'
+import { sendEmail } from '../../Utilis/Services/sendEmail.js'
 import Abstracts from '../Abstract/abstract.model.js'
 import 'dotenv/config'
-import conference from '../Conference/conference.model.js'
 import Reviews from '../Review/review.model.js'
-// const serviceAccount = JSON.parse(
-//   await readFile(
-//     new URL(
-//       '../../cms-website-efbff-firebase-adminsdk-fbsvc-ea47fb1749.json',
-//       import.meta.url
-//     )
-//   )
-// )
+import mongoose from 'mongoose'
+import Conference from '../Conference/conference.model.js'
+import Schedule from '../Schedule/schedule.model.js'
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS)
 
@@ -26,9 +19,64 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
 
+export const getMethodStatsHelper = async ({
+  model,
+  matchField,
+  conference_id,
+  role,
+  allowedRoles = ['Admin', 'registration_committee']
+}) => {
+  // Role check
+  if (!allowedRoles.includes(role)) {
+    const error = new Error('You do not have access')
+    error.statusCode = 403
+    throw error
+  }
+
+  // Match query
+  const match = {}
+  if (conference_id && conference_id !== 'all' && conference_id !== undefined) {
+    match.conference = new mongoose.Types.ObjectId(conference_id)
+  }
+
+  // Aggregate stats
+  const stats = await model.aggregate([
+    { $match: match },
+    {
+      $group: {
+        _id: `$${matchField}`,
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        method: '$_id',
+        count: 1
+      }
+    }
+  ])
+
+  // Ensure all methods exist
+  const methods = [
+    'Paper Presentation Physical',
+    'Paper Presentation Online',
+    'Poster Presentation Physical',
+    'Poster Presentation Online'
+  ]
+
+  return methods.map(method => {
+    const found = stats.find(s => s.method === method)
+    return {
+      method,
+      count: found ? found.count : 0
+    }
+  })
+}
+
 export const getUserRoleCounts = async (req, res, next) => {
   try {
-    const { year } = req.query
+    const { conference_id } = req.query
     const roles = [
       'Presenter',
       'Attendee',
@@ -44,14 +92,19 @@ export const getUserRoleCounts = async (req, res, next) => {
     const matchQuery = {
       role: { $in: roles }
     }
-
-    // Filter by year of createdAt if provided
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      matchQuery.$or = [
+        { role: 'Presenter' }, // presenters always included
+        {
+          role: { $ne: 'Presenter' },
+          conference: new mongoose.Types.ObjectId(conference_id)
+        }
+      ]
     }
-
     const counts = await Users.aggregate([
       { $match: matchQuery },
       {
@@ -162,24 +215,60 @@ export const AdminCreateUser = async (req, res, next) => {
 
 export const getRoleBasedUser = async (req, res, next) => {
   try {
-    const { year } = req.query
+    const { conference_id } = req.query
     const { role } = req.params
     const matchQuery = {
       role: role
     }
+    let selectedConferenceId
 
     // Add year filter if provided
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
+    if (
+      conference_id &&
+      conference_id !== 'all' &&
+      conference_id !== undefined
+    ) {
+      matchQuery.conference = conference_id
+      selectedConferenceId = conference_id
+    } else {
+      const latestConference = await Conference.findOne().sort({
+        createdAt: -1
+      })
+      selectedConferenceId = latestConference._id
     }
-    const users = await Users.find(matchQuery)
+
+    // --- Normal users (non-presenters) ---
+    if (role !== 'Presenter') {
+      const users = await Users.find(matchQuery)
+      return res.status(200).json({
+        status: 'Success',
+        message: `Fetched ${role} users`,
+        data: users
+      })
+    }
+
+    // --- Presenter special case ---
+    const users = await Users.find({
+      role: 'Presenter'
+    })
+    const presentersWithAbstracts = await Promise.all(
+      users.map(async user => {
+        const abstracts = await Abstracts.findOne({
+          createdBy: user._id,
+          conference: selectedConferenceId
+        }).select('_id payment_status status payment_proof')
+
+        return {
+          ...user.toObject(),
+          abstracts
+        }
+      })
+    )
 
     res.status(200).json({
       status: 'Success',
       message: 'Fetch the reviewer user',
-      data: users
+      data: presentersWithAbstracts
     })
   } catch (error) {
     console.error('Error fetching reviewers:', error)
@@ -345,51 +434,41 @@ export const updateUserImage = async (req, res, next) => {
   }
 }
 
-export const getPresentationMethodStats = async (req, res) => {
+export const getPresentationMethodStats = async (req, res, next) => {
   try {
-    const { year } = req.query
-    const matchQuery = {}
-    if (year) {
-      matchQuery.$expr = {
-        $eq: [{ $year: '$createdAt' }, parseInt(year)]
-      }
-    }
-    const stats = await Abstracts.aggregate([
-      {
-        $group: {
-          _id: '$presentation_method',
-          count: { $sum: 1 }
-        }
-      },
-      {
-        $project: {
-          _id: 0,
-          method: '$_id',
-          count: 1
-        }
-      }
-    ])
+    const { conference_id } = req.query
+    const { role } = req.user
 
-    // Optional: Ensure all types are returned (even if count is 0)
-    const methods = [
-      'Paper Presentation Physical',
-      'Paper Presentation Online',
-      'Poster Presentation Physical',
-      'Poster Presentation Online'
-    ]
-
-    const completeStats = methods.map(method => {
-      const found = stats.find(s => s.method === method)
-      return {
-        method,
-        count: found ? found.count : 0
-      }
+    const completeStats = await getMethodStatsHelper({
+      model: Abstracts,
+      matchField: 'presentation_method',
+      conference_id,
+      role
     })
 
     res.status(200).json({ success: true, data: completeStats })
   } catch (error) {
     console.error('Error fetching presentation stats:', error)
-    res.status(500).json({ success: false, message: 'Server error' })
+    next(error)
+  }
+}
+
+export const getScheduleMethodStats = async (req, res, next) => {
+  try {
+    const { conference_id } = req.query
+    const { role } = req.user
+
+    const completeStats = await getMethodStatsHelper({
+      model: Schedule,
+      matchField: 'abstractType',
+      conference_id,
+      role
+    })
+
+    res.status(200).json({ success: true, data: completeStats })
+  } catch (error) {
+    console.error('Error fetching schedule stats:', error)
+    next(error)
   }
 }
 
@@ -403,9 +482,9 @@ export const adminDashboardStats = async (req, res, next) => {
       conferenceId !== undefined &&
       conferenceId !== 'All Conferences'
     ) {
-      matchQuery.conference = conferenceId
+      matchQuery.conference = new mongoose.Types.ObjectId(conferenceId)
     }
-    const activeConference = await conference.countDocuments({
+    const activeConference = await Conference.countDocuments({
       status: 'Active'
     })
 
@@ -422,7 +501,7 @@ export const adminDashboardStats = async (req, res, next) => {
           }
         }
       }
-    ]);
+    ])
     const submission = await Abstracts.countDocuments(matchQuery)
 
     const data = {
@@ -439,5 +518,53 @@ export const adminDashboardStats = async (req, res, next) => {
     })
   } catch (error) {
     next(error)
+  }
+}
+
+export const getAdminAnalytics = async (req, res) => {
+  try {
+    // Total users grouped by role
+    const usersByRole = await Users.aggregate([
+      { $group: { _id: '$role', count: { $sum: 1 } } }
+    ])
+
+    // Total abstracts/papers (conference wise)
+    const abstractsByConference = await Abstracts.aggregate([
+      {
+        $group: {
+          _id: '$conference',
+          totalSubmissions: { $sum: 1 }
+        }
+      },
+      {
+        $lookup: {
+          from: 'conferences',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'conference'
+        }
+      },
+      { $unwind: '$conference' },
+      {
+        $project: {
+          conferenceName: '$conference.name',
+          totalSubmissions: 1
+        }
+      }
+    ])
+
+    // Number of sessions scheduled (oral, keynote, workshop)
+    const sessionsByType = await Schedule.aggregate([
+      { $group: { _id: '$abstractType', count: { $sum: 1 } } }
+    ])
+
+    res.json({
+      usersByRole,
+      abstractsByConference,
+      sessionsByType
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Error fetching analytics' })
   }
 }

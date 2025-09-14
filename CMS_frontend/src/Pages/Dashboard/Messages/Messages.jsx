@@ -16,7 +16,7 @@ const Messages = () => {
   )
   const [currentPage, setCurrentPage] = useState(1)
   const dispatch = useDispatch()
-  const messagesPerPage = 4
+  const messagesPerPage = 5
 
   const [selectedMessage, setSelectedMessage] = useState(null)
   useEffect(() => {
@@ -27,10 +27,6 @@ const Messages = () => {
   const indexOfFirstMessage = indexOfLastMessage - messagesPerPage
   const currentMessages = list?.slice(indexOfFirstMessage, indexOfLastMessage)
   const totalPages = Math.ceil(list?.length / messagesPerPage)
-
-  //   const handlePageChange = pageNumber => {
-  //     setCurrentPage(pageNumber)
-  //   }
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       {getNotificationLoading ? (
@@ -46,28 +42,32 @@ const Messages = () => {
               <div className='p-3 border-b border-gray-200 bg-gradient-to-r from-blue-100 to-blue-50'>
                 <h3 className='text-lg font-semibold text-gray-800'>Inbox</h3>
               </div>
-              <div className='divide-y divide-gray-200'>
+              <div className='divide-y divide-gray-200 h-[27rem]'>
                 {currentMessages?.map(message => (
                   <div
                     key={message._id}
-                    className={`p-4 cursor-pointer transition-all duration-200 transform hover:scale-[1.02] hover:bg-blue-50 ${
-                      selectedMessage?._id === message._id
-                        ? 'bg-blue-100 !border-l-4 !border-blue-600'
-                        : ''
-                    }`}
+                    className={`p-4 cursor-pointer transition-all duration-200 transform hover:scale-[1.02] 
+    ${
+      selectedMessage?._id === message._id
+        ? 'bg-blue-100 border-l-4 border-blue-600'
+        : ''
+    }
+    ${!message.isRead ? 'bg-blue-50 font-semibold' : 'bg-white'}
+  `}
                     onClick={() => {
                       if (!message?.isRead) {
-                        dispatch(updateNotification(message?._id))
                         socket.emit('markAsRead', {
                           notificationId: message?._id
                         })
+                        console.log('📤 emitting markAsRead:', message?._id)
+                        dispatch(updateNotification(message?._id))
                       }
                       setSelectedMessage(message)
                     }}
                   >
                     <div className='flex justify-between items-start mb-1'>
                       <span className='font-semibold text-gray-800 hover:text-blue-700 transition-colors duration-200'>
-                        {message.user.name}
+                        {message.user.name}{' '}
                       </span>
                       <span className='text-sm text-gray-500'>
                         {format(message.createdAt, 'MMM d, yyyy')}

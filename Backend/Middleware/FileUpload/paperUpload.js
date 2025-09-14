@@ -1,22 +1,33 @@
-import multer from 'multer';
-import path from 'path';
+import multer from 'multer'
+import path from 'path'
+import { v4 as uuidv4 } from 'uuid' // install with: npm install uuid
 
-const storage = multer.memoryStorage();
+const storage = multer.memoryStorage()
 
 const paperUploader = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    // Only allow png/jpg/jpeg on either field
-    const supported = /docs|pdf/;
-    const ext = path.extname(file.originalname).toLowerCase();
-    if (!supported.test(ext)) {
-      return cb(new Error('Must be a docs/pdf file'));
+    const ext = path.extname(file.originalname).toLowerCase()
+    const allowedExt = /\.(doc|docx|pdf)$/i
+    const allowedMime = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ]
+
+    if (!allowedExt.test(ext) || !allowedMime.includes(file.mimetype)) {
+      return cb(new Error('Only .doc, .docx, and .pdf files are allowed'))
     }
-    cb(null, true);
+
+    // Generate a safe S3 file name
+    const uniqueName = `${uuidv4()}${ext}`
+    file.safeFilename = uniqueName
+
+    cb(null, true)
   },
   limits: {
-    fileSize: 15 * 1024 * 1024 // 5 MB
+    fileSize: 15 * 1024 * 1024 // 15 MB
   }
-});
+})
 
 export default paperUploader

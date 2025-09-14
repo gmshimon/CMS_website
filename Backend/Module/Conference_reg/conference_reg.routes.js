@@ -1,9 +1,51 @@
-import express from 'express';
-import { getConferenceReg ,getSingleConferenceReg} from './conference_reg.controller.js';
-const router = express.Router();
+import express from 'express'
+import {
+  createConferenceReg,
+  getAttendeeDashboardStats,
+  getConferenceReg,
+  getSingleConferenceReg,
+  updatePaymentDecision,
+  uploadPaymentReceipt
+} from './conference_reg.controller.js'
+import verifyToken from '../../Middleware/verifyToken.js'
+import { mediumLimiter, standardLimiter } from '../../config/rateLimiters.js'
+import paperUploader from '../../Middleware/FileUpload/paperUpload.js'
+import verifyAdminToken from '../../Middleware/verifyAdminToken.js'
+const router = express.Router()
 
-// TODO: add token validation
-router.get('/:conference_id',getConferenceReg)
-router.get('/single_conference_reg/:id',getSingleConferenceReg)
+// Static routes first
+router.get(
+  '/dashboard',
+  verifyToken,
+  standardLimiter,
+  getAttendeeDashboardStats
+)
 
-export default router;
+router.get(
+  '/single_conference_reg/:id',
+  verifyToken,
+  standardLimiter,
+  getSingleConferenceReg
+)
+
+router.post('/create', verifyToken, createConferenceReg)
+
+// Dynamic route LAST
+router.get('/:conference_id', verifyToken, standardLimiter, getConferenceReg)
+
+// Attendee uploads payment receipt
+router.post(
+  '/upload-payment/:id',
+  verifyToken,
+  mediumLimiter,
+  paperUploader.single('file'),
+  uploadPaymentReceipt
+)
+
+router.put(
+  '/payment-decision/:id',
+  verifyAdminToken, // ✅ only admins/committee
+  paperUploader.single('file'),
+  updatePaymentDecision
+)
+export default router

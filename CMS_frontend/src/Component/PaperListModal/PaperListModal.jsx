@@ -1,5 +1,3 @@
-import React from 'react'
-
 const PaperListModal = ({ isOpen, onClose, papers, onView }) => {
   if (!isOpen) return null
   return (
@@ -16,20 +14,17 @@ const PaperListModal = ({ isOpen, onClose, papers, onView }) => {
           </button>
         </div>
 
-        {papers && papers.length ? (
+        {papers ? (
           <div className='divide-y'>
-            {papers.map(paper => (
+            {papers.paper.map(paper => (
               <div
                 key={paper._id}
                 className='py-3 flex items-center justify-between'
               >
                 <div>
-                  <div className='font-medium'>
-                    {paper.title || 'Untitled Paper'}
-                  </div>
+                  <div className='font-medium'>{paper.originalName}</div>
                   <div className='text-xs text-gray-500'>
-                    Submitted:{' '}
-                    {new Date(paper.submissionDate).toLocaleDateString()}
+                    Submitted: {new Date(papers.createdAt).toLocaleDateString()}
                   </div>
                 </div>
                 <button

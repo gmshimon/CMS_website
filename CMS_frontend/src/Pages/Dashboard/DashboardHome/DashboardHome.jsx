@@ -5,10 +5,12 @@ import Loading from '../../../Component/Loading/Loading'
 import AdminHome from '../../../Component/AdminHome/AdminHome'
 
 import ReviewerHome from '../../../Component/ReviewerHome/ReviewerHome'
+import SessionChairHome from '../../../Component/SessionChairHome/SessionChairHome'
+import AttendeeHome from '../../../Component/AttendeeHome/AttendeeHome'
+import RegistrationCommitteeHome from '../../../Component/RegistrationCommitteeHome/RegistrationCommitteeHome'
 
 const DashboardHome = () => {
   const { user, isLoading } = useSelector(state => state.user)
-
   return (
     <>
       {isLoading ? (
@@ -17,7 +19,13 @@ const DashboardHome = () => {
         </div>
       ) : (
         (user?.role === 'Presenter' && <PresenterHome />) ||
-        (user?.role === 'Admin' && <AdminHome />)|| (user?.role==='Reviewer'&&<ReviewerHome/>)
+        (user?.role === 'Admin' && <AdminHome />) ||
+        (user?.role === 'Reviewer' && <ReviewerHome />) ||
+        (user?.role === 'Session Chair' && <SessionChairHome />) ||
+        (user?.role === 'Attendee' && <AttendeeHome />) ||
+        (user?.role === 'registration_committee' && (
+          <RegistrationCommitteeHome />
+        ))
       )}
     </>
   )

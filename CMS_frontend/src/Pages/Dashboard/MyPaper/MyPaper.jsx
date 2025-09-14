@@ -10,11 +10,19 @@ import useAbstract from '../../../Hooks/useAbstract'
 import { FaUpload } from 'react-icons/fa'
 import UploadPaperModal from '../../../Component/UploadPaperModal/UploadPaperModal'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { format } from 'date-fns'
+import { getStatusColor } from '../../../Utilis/getStatusColor'
 
 const MyPaper = () => {
   const { abstracts } = useSelector(state => state.abstract)
-  const { createPostPaperSuccess, createPostPaperError, getPaperLoading } =
-    useSelector(state => state.paper)
+  const {
+    createPostPaperSuccess,
+    createPostPaperError,
+    getPaperLoading,
+    paperErrorMessage
+  } = useSelector(state => state.paper)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedAbstractForUpload, setSelectedAbstractForUpload] =
     useState(null)
@@ -34,9 +42,10 @@ const MyPaper = () => {
       dispatch(paperReset())
     }
     if (createPostPaperError) {
-      showErrorToast('Paper Upload failed')
+      showErrorToast(paperErrorMessage || 'Failed to upload paper')
       dispatch(paperReset())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [createPostPaperSuccess, createPostPaperError, dispatch])
 
   const abstractPerPage = 6
@@ -80,35 +89,10 @@ const MyPaper = () => {
     setSelectedAbstractForUpload(null)
     setIsUploadModalOpen(false)
   }
-  // Function to get status color classes
-  const getStatusColor = status => {
-    switch (status) {
-      case 'Abstract Submitted':
-        return 'bg-blue-100 text-blue-800'
-      case 'Paper Submitted':
-        return 'bg-orange-100 text-orange-800'
-      case 'In Review':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'Accepted':
-        return 'bg-green-100 text-green-800'
-      case 'Rejected':
-        return 'bg-red-100 text-red-800'
-      case 'Minor Revision':
-        return 'bg-orange-100 text-orange-800'
-      case 'Major Revision':
-        return 'bg-purple-100 text-purple-800'
-      case 'Revision Submitted':
-        return 'bg-cyan-100 text-cyan-800'
-      case 'Camera Ready Copy Submitted':
-        return 'bg-emerald-100 text-emerald-800'
-      case 'Withdraw':
-        return 'bg-gray-100 text-gray-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
+
   return (
-    <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+      <ToastContainer />
       {getPaperLoading ? (
         <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
           <Loading />
@@ -131,7 +115,8 @@ const MyPaper = () => {
           {/* Show if no abstracts */}
           {!getPaperLoading && currentAbstracts.length === 0 && (
             <div className='text-center text-gray-600 py-10 text-lg'>
-              No abstracts found. Please submit your abstract first or check if your payment has been completed.
+              No abstracts found. Please submit your abstract first or check if
+              your payment has been completed.
             </div>
           )}
 
@@ -152,6 +137,9 @@ const MyPaper = () => {
                         Author
                       </th>
                       <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                        Submission Deadline
+                      </th>
+                      <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                         Status
                       </th>
                       <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
@@ -167,7 +155,7 @@ const MyPaper = () => {
                       >
                         <td className='px-6 py-4 whitespace-nowrap'>
                           <div className='text-sm font-medium text-gray-900'>
-                            {abstract._id}
+                            {abstract.abstract_id || abstract._id}
                           </div>
                         </td>
                         <td className='px-6 py-4'>
@@ -176,8 +164,37 @@ const MyPaper = () => {
                           </div>
                         </td>
                         <td className='px-6 py-4 whitespace-nowrap'>
-                          <div className='text-sm text-gray-500'>
-                            {abstract.authors[0].name}
+                          <>
+                            <div className='font-medium text-gray-800'>
+                              {abstract.authors.length} Author(s)
+                            </div>
+                            <div className='space-y-1'>
+                              <div className='space-y-1'>
+                                {abstract.authors
+                                  .slice(0, 2)
+                                  .map((item, idx) => (
+                                    <div
+                                      key={idx}
+                                      className='text-gray-600 truncate max-w-44'
+                                      title={item.name}
+                                    >
+                                      • {item.name}
+                                    </div>
+                                  ))}
+                                {abstract.authors.length > 2 && (
+                                  <div className='text-gray-500 text-xs'>
+                                    +{abstract.authors.length - 2} more
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </>
+                        </td>
+                        <td className='px-6 py-4 whitespace-nowrap'>
+                          <div className='text-sm '>
+                            {abstract.paper_deadline
+                              ? format(abstract.paper_deadline, 'MMM d, yyyy')
+                              : 'N/A'}
                           </div>
                         </td>
                         <td className='px-6 py-4 whitespace-nowrap'>
@@ -199,7 +216,7 @@ const MyPaper = () => {
 
                             {[
                               'Abstract Submitted',
-                              'Accepted',
+                              'Abstract Accepted',
                               'Minor Revision',
                               'Major Revision'
                             ].includes(abstract.status) ? (

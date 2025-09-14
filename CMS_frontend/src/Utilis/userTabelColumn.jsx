@@ -392,54 +392,40 @@ export const authorColumns = [
   {
     key: 'submission',
     label: 'Submission Status',
-    render: value => (
+    render: (_,value) => (
       <span
         className={`px-2 py-1 rounded text-xs font-semibold ${
-          value === 'Abstract Submitted'
+          value?.abstracts?.status === 'Abstract Submitted'
             ? 'bg-green-100 text-green-700'
             : 'bg-gray-100 text-gray-700'
         }`}
       >
-        {value}
+        {value?.abstracts?.status || 'No Abstract'}
       </span>
     )
   },
   {
     key: 'payment',
     label: 'Payment Status',
-    render: value => (
+    render: (_, value) => (
       <span
         className={`px-2 py-1 rounded text-xs font-semibold ${
-          value.toLowerCase() === 'paid'
+          value?.abstracts?.payment_status?.toLowerCase() === 'paid'
             ? 'bg-green-100 text-green-700'
             : 'bg-red-100 text-red-700'
         }`}
       >
-        {value}
+        {value?.abstracts?.payment_status || 'No Abstract'}
       </span>
-    )
-  },
-  {
-    key: 'payment_decision',
-    label: 'Payment Decision',
-    render: (value, row) => (
-      <select
-        value={value.toLowerCase()}
-        onChange={e => row.onPaymentDecisionChange(e.target.value, row)}
-        className='bg-white border rounded px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500'
-      >
-        <option value='paid'>Paid</option>
-        <option value='unpaid'>UnPaid</option>
-      </select>
     )
   },
   {
     key: 'payment_proof',
     label: 'Payment Proof',
-    render: value =>
-      value ? (
+    render: (_, value) =>
+      value?.abstracts?.payment_proof ? (
         <a
-          href={value}
+          href={value?.abstracts?.payment_proof}
           target='_blank'
           rel='noopener noreferrer'
           className='text-blue-600 underline hover:text-blue-800 text-sm'

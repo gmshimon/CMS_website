@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import  { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 // eslint-disable-next-line no-unused-vars
@@ -12,7 +13,7 @@ import { adminDashboardStats } from '../../Redux/Slice/AdminSlice'
 const AdminHome = () => {
   const { selectedConference } = useSelector(state => state.conference)
   const { dashboardStats } = useSelector(state => state.admin)
-  const [hoveredRow, setHoveredRow] = useState(null)
+  // const [hoveredRow, setHoveredRow] = useState(null)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const AdminHome = () => {
   const adminActions = [
     {
       title: 'Active Conference',
-      path: '/admin/active-conference',
+      path: '/admin/conference?status=Active',
       icon: IoTimeOutline,
       color: 'bg-blue-50 hover:bg-blue-100',
       stat: `${dashboardStats?.active_conference || 0} Active`,
@@ -43,7 +44,7 @@ const AdminHome = () => {
     },
     {
       title: 'Review Workflow',
-      path: '/admin/review-workflow',
+      path: '/admin/review/details/pending',
       icon: FaFileAlt,
       color: 'bg-purple-50 hover:bg-purple-100',
       stat: `${dashboardStats?.pendingReviews || 0} Pending`,
@@ -51,7 +52,7 @@ const AdminHome = () => {
     },
     {
       title: 'Submissions Received',
-      path: '/admin/submissions',
+      path: '/admin/submission',
       icon: FaUsers,
       color: 'bg-orange-50 hover:bg-orange-100',
       stat: `${dashboardStats?.total_submission || 0} New`,
@@ -74,13 +75,13 @@ const AdminHome = () => {
       description: 'Access comprehensive conference analytics'
     }
   ]
-  const conferenceArchives = [
-    { name: 'EGE MC2020', papers: 156, participants: 230 },
-    { name: 'EGE MC2021', papers: 189, participants: 275 },
-    { name: 'EGE MC20222', papers: 210, participants: 320 },
-    { name: 'EGE MC2023', papers: 245, participants: 380 },
-    { name: 'EGE MC2024', papers: 142, participants: 195 }
-  ]
+  // const conferenceArchives = [
+  //   { name: 'EGE MC2020', papers: 156, participants: 230 },
+  //   { name: 'EGE MC2021', papers: 189, participants: 275 },
+  //   { name: 'EGE MC20222', papers: 210, participants: 320 },
+  //   { name: 'EGE MC2023', papers: 245, participants: 380 },
+  //   { name: 'EGE MC2024', papers: 142, participants: 195 }
+  // ]
 
   return (
     <div className='p-6 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-[calc(100vh-64px)]'>
@@ -111,7 +112,7 @@ const AdminHome = () => {
       </div>
 
       {/* Archive Section */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className='bg-white rounded-xl shadow-lg p-6 border border-gray-100'
@@ -157,7 +158,7 @@ const AdminHome = () => {
             </tbody>
           </table>
         </div>
-      </motion.div>
+      </motion.div> */}
     </div>
   )
 }

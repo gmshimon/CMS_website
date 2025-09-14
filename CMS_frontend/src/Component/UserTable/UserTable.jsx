@@ -7,7 +7,8 @@ const UserTable = ({
   onDelete,
   onEdit,
   columns,
-  onPaymentDecisionChange
+  onPaymentDecisionChange,
+  handlePaymentReminder
 }) => {
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
@@ -23,6 +24,7 @@ const UserTable = ({
                   {col.label}
                 </th>
               ))}
+
               <th className='px-4 py-3 text-left text-xs font-bold text-white uppercase tracking-wider'>
                 Actions
               </th>
@@ -52,10 +54,14 @@ const UserTable = ({
                     </td>
                   ))}
                   <td className='px-4 py-3 whitespace-nowrap space-x-2'>
-                    {user.payment?.toLowerCase() === 'unpaid' ||
-                    user.payment?.toLowerCase() === 'pending' ? (
+                    {user?.abstracts?.payment_status?.toLowerCase() ===
+                      'unpaid' ||
+                    user?.abstracts?.payment_status?.toLowerCase() ===
+                      'pending' ? (
                       <button
-                        // onClick={() => onSendReminder(user)}
+                        onClick={() =>
+                          handlePaymentReminder(user?.abstracts?._id)
+                        }
                         className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
                         title='Send Reminder'
                         aria-label={`Send payment reminder to ${user.name}`}
@@ -70,23 +76,25 @@ const UserTable = ({
                       role === 'technical_committee' ||
                       role === 'registration_committee' ||
                       role === 'Keynote Speaker') && (
-                      <button
-                        onClick={() => onEdit(user)}
-                        className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
-                        title='Send Reminder'
-                        aria-label={`Send payment reminder to ${user.name}`}
-                      >
-                        <FaEdit />
-                      </button>
+                      <>
+                        <button
+                          onClick={() => onEdit(user)}
+                          className='text-blue-600 hover:text-blue-800 transition-colors p-1 rounded-full hover:bg-blue-100'
+                          title='Send Reminder'
+                          aria-label={`Send payment reminder to ${user.name}`}
+                        >
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={() => onDelete(user, role)}
+                          className='text-red-600 hover:text-red-800 transition-colors p-1 rounded-full hover:bg-red-100'
+                          title='Delete'
+                          aria-label={`Delete ${user.name}`}
+                        >
+                          <FaTrash />
+                        </button>
+                      </>
                     )}
-                    <button
-                      onClick={() => onDelete(user, role)}
-                      className='text-red-600 hover:text-red-800 transition-colors p-1 rounded-full hover:bg-red-100'
-                      title='Delete'
-                      aria-label={`Delete ${user.name}`}
-                    >
-                      <FaTrash />
-                    </button>
                   </td>
                 </tr>
               ))

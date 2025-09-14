@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import ConferenceTable from "../../../Component/ConferenceTable/ConferenceTable";
 import { FaPlus } from "react-icons/fa";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { showSuccessToast } from "../../../Utilis/toastUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { reset } from "../../../Redux/Slice/conferenceSlice";
 import Loading from "../../../Component/Loading/Loading";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 const AdminConference = () => {
   const { createConferenceSuccess, conferences, getConferenceLoading,editConferenceSuccess } =
     useSelector((state) => state.conference);
@@ -16,6 +18,17 @@ const AdminConference = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search)
+  const status = queryParams.get('status')
+
+  useEffect(()=>{
+    if(status === 'Active'){
+      setStatusFilter(status)
+    }else{
+      setStatusFilter('')
+    }
+  },[status])
   const conferencesPerPage = 5;
 
   useEffect(() => {
@@ -47,7 +60,7 @@ const AdminConference = () => {
   );
   return (
     <div>
-      <ToastContainer/>
+      <ToastContainer />
       {getConferenceLoading ? (
         <div className="flex justify-center items-center h-[calc(100vh-64px)]">
           <Loading />
@@ -74,8 +87,8 @@ const AdminConference = () => {
                     className="w-full md:w-48 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="de-active">De-active</option>
+                    <option value="Active">Active</option>
+                    <option value="Disable">De-active</option>
                   </select>
                 </div>
                 <div>

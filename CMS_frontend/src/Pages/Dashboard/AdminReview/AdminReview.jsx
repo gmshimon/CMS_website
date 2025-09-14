@@ -50,7 +50,7 @@ const AdminReview = () => {
       color: 'bg-green-100',
       iconColor: 'text-green-600',
       description: 'Successfully submitted reviews'
-    },
+    }
     // {
     //   title: 'Overdue Reviews',
     //   count: reviewStats?.overdueReviews || 0,
@@ -70,8 +70,6 @@ const AdminReview = () => {
     //   description: 'Abstracts with more than 1 review round'
     // }
   ]
-
-  
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 '>

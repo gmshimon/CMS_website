@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
@@ -21,7 +20,7 @@ const initialState = {
 
   editConferenceLoading: false,
   editConferenceSuccess: false,
-  editConferenceError: false
+  editConferenceError: false,
 }
 
 export const getConference = createAsyncThunk(
@@ -29,7 +28,7 @@ export const getConference = createAsyncThunk(
   async (status, { rejectWithValue }) => {
     try {
       const url = status ? `/conference?status=${status}` : '/conference'
-      const response = await axios.get(url)
+      const response = await axiosSecure.get(url)
       return response.data.data
     } catch (error) {
       const message =
@@ -62,7 +61,7 @@ export const getSingleConference = createAsyncThunk(
   'getSingleConference',
   async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/conference/${id}`)
+      const response = await axiosSecure.get(`/conference/${id}`)
       return response.data.data
     } catch (error) {
       const message =
@@ -90,6 +89,8 @@ export const editConference = createAsyncThunk(
     }
   }
 )
+
+
 
 const conferenceSlice = createSlice({
   name: 'conference',

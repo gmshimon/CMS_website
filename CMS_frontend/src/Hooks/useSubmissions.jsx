@@ -8,6 +8,7 @@ import {
   updateAbstract,
   updatePaymentStatus
 } from '../Redux/Slice/AbstractSlice'
+import decodeMethod from '../Utilis/decodeMethod'
 
 const useSubmissions = (method = null) => {
   const { selectedConference } = useSelector(state => state.conference)
@@ -16,16 +17,7 @@ const useSubmissions = (method = null) => {
   useEffect(() => {
     dispatch(
       getAbstractByCategory({
-        presentation_method:
-          method == 'physical-paper'
-            ? 'Paper Presentation Physical'
-            : method === 'online-paper'
-            ? 'Paper Presentation Online'
-            : method == 'physical-poster'
-            ? 'Poster Presentation Physical'
-            : method === 'online-poster'
-            ? 'Poster Presentation Online'
-            : null,
+        presentation_method: decodeMethod(method),
         conference_id: selectedConference
       })
     )
@@ -37,7 +29,6 @@ const useSubmissions = (method = null) => {
 
   const handleEditSubmission = (abstractId, updatedData) => {
     dispatch(updateAbstract({ id: abstractId, data: updatedData }))
-
   }
 
   const handlePaymentDecision = (abstractId, paymentStatus) => {
@@ -47,11 +38,11 @@ const useSubmissions = (method = null) => {
     dispatch(updatePaymentStatus({ id: abstractId, data: updatedData }))
   }
 
-  const handlePaymentReminder=(id)=>{
+  const handlePaymentReminder = id => {
     dispatch(sendPaymentReminder(id))
   }
 
-  const handlePaperSubmitReminder = (id)=>{
+  const handlePaperSubmitReminder = id => {
     dispatch(sendPaperSubmitReminder(id))
   }
   return {

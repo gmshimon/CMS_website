@@ -1,6 +1,6 @@
 import express from 'express'
 import {
-    acceptReviewInvitation,
+  acceptReviewInvitation,
   assignReviewer,
   getAbstractsByCategory,
   getMyReview,
@@ -10,17 +10,47 @@ import {
   submitReview
 } from './review.controller.js'
 import verifyToken from '../../Middleware/verifyToken.js'
+import verifyAdminToken from '../../Middleware/verifyAdminToken.js'
+import {
+  lightLimiter,
+  mediumLimiter,
+  standardLimiter,
+  strictLimiter
+} from '../../config/rateLimiters.js'
 
 const router = express.Router()
 
-// TODO: add JWT validation in all api endpoints
+// 🔹 Reviewer accepts/declines review invitation → per-user
+router.post('/respond', verifyToken, mediumLimiter, acceptReviewInvitation)
 
-router.post('/respond',verifyToken,acceptReviewInvitation)
-router.post('/assign-reviewer', assignReviewer)
-router.get('/review-stats', getReviewDashboardsStats)
-router.get('/abstract', getAbstractsByCategory)
-router.post('/send-reminder', sendReminderToReviewer)
-router.get('/my-review-stats',verifyToken ,getMyReviewStats)
-router.get('/my-review',verifyToken,getMyReview)
-router.post('/submit-review',verifyToken,submitReview)
+// 🔹 Admin assigns reviewers → very sensitive
+router.post('/assign-reviewer', strictLimiter, verifyAdminToken, assignReviewer)
+
+// 🔹 Admin review dashboard stats → read-heavy
+router.get(
+  '/review-stats',
+  standardLimiter,
+  verifyAdminToken,
+  getReviewDashboardsStats
+)
+
+// 🔹 Reviewer fetches abstracts → per-user
+router.get('/abstract', verifyToken, standardLimiter, getAbstractsByCategory)
+
+// 🔹 Admin sends reminder → spam-prone
+router.post(
+  '/send-reminder',
+  lightLimiter,
+  verifyAdminToken,
+  sendReminderToReviewer
+)
+
+// 🔹 Reviewer gets their review stats → per-user
+router.get('/my-review-stats', verifyToken, standardLimiter, getMyReviewStats)
+
+// 🔹 Reviewer fetches their reviews → per-user
+router.get('/my-review', verifyToken, standardLimiter, getMyReview)
+
+// 🔹 Reviewer submits a review → per-user, prevent spam
+router.post('/submit-review', verifyToken, mediumLimiter, submitReview)
 export default router

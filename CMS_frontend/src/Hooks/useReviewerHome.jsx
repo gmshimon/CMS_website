@@ -1,22 +1,27 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { acceptReviewInvitation, getMyReview, getMyReviewStats, submitReview } from '../Redux/Slice/ReviewSlice'
+import {
+  acceptReviewInvitation,
+  getMyReview,
+  getMyReviewStats,
+  submitReview
+} from '../Redux/Slice/ReviewSlice'
 import { FaUserPlus, FaClipboardList, FaCheckDouble } from 'react-icons/fa'
 import { MdOutlineAssignmentLate } from 'react-icons/md'
 
-const useReviewerHome = (category=null) => {
+const useReviewerHome = (category = null) => {
   const { myReviewStat } = useSelector(state => state.review)
   const { selectedConference } = useSelector(state => state.conference)
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getMyReviewStats(selectedConference))
-    if(category){
-        const data={
-            conference:selectedConference,
-            status:category
-        }
-        dispatch(getMyReview(data))
+    if (category) {
+      const data = {
+        conference: selectedConference,
+        status: category
+      }
+      dispatch(getMyReview(data))
     }
   }, [category, dispatch, selectedConference])
 
@@ -44,7 +49,7 @@ const useReviewerHome = (category=null) => {
       color: 'bg-green-50 hover:bg-green-100',
       stat: `${myReviewStat.reviewed || 0} Reviewed`,
       description: 'View all completed reviewer assignments'
-    },
+    }
     // {
     //   title: 'Overdue Review',
     //   path: '/admin/my-review/pending',
@@ -55,13 +60,13 @@ const useReviewerHome = (category=null) => {
     // }
   ]
 
-  const handleRespondReview = (reviewId,status)=>{
-    dispatch(acceptReviewInvitation({reviewId,status}))
+  const handleRespondReview = (reviewId, status) => {
+    dispatch(acceptReviewInvitation({ reviewId, status }))
   }
 
-const handleSubmitReview = data=>{
-  dispatch(submitReview(data))
-}
+  const handleSubmitReview = data => {
+    dispatch(submitReview(data))
+  }
 
   return {
     reviewActions,

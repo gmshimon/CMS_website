@@ -1,4 +1,6 @@
 import mongoose from 'mongoose'
+import Counter from '../Counter/counter.model.js'
+import Conference from '../Conference/conference.model.js'
 
 const abstractSchema = new mongoose.Schema(
   {
@@ -7,11 +9,20 @@ const abstractSchema = new mongoose.Schema(
       ref: 'conference',
       required: true
     },
+    abstract_id: {
+      type: String,
+      unique: true,
+      index: true
+    },
     category: {
       type: String
     },
     member_id: {
       type: String
+    },
+    price:{
+      type: Number,
+      default:0
     },
     payment_status: {
       type: String,
@@ -26,10 +37,28 @@ const abstractSchema = new mongoose.Schema(
     payment_proof: {
       type: String
     },
+    scheduled: {
+      type: Boolean,
+      default: false
+    },
+
+    payment_deadline: {
+      type: Date,
+      default: null
+    },
+    paper_deadline: {
+      type: Date,
+      default: null
+    },
+    amount: {
+      type: Number,
+      default: 0
+    },
     status: {
       type: String,
       enum: [
         'Abstract Submitted',
+        'Abstract Accepted',
         'Paper Submitted',
         'Accepted',
         'Rejected',
@@ -161,6 +190,36 @@ const abstractSchema = new mongoose.Schema(
     timestamps: true
   }
 )
+
+abstractSchema.pre('save', async function (next) {
+  if (this.abstract_id) return next() // skip if already set
+
+  // const Conference = mongoose.model('conference')
+  const conference = await Conference.findById(this.conference)
+
+  if (!conference) {
+    return next(new Error('Conference not found while generating abstract_id'))
+  }
+
+  // Use conference shortName if available, else fallback to name
+  const prefix =
+    conference.shortName || conference.name?.split(' ')[0] || 'CONF'
+
+  // 🔹 Counter key is only the conference
+  const counterKey = prefix
+
+  // Atomically increment or create new counter
+  const counter = await Counter.findOneAndUpdate(
+    { key: counterKey },
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  )
+
+  const sequence = String(counter.seq).padStart(4, '0') // 0001, 0002, ...
+  this.abstract_id = `${prefix}_${sequence}`
+
+  next()
+})
 
 const Abstracts = mongoose.model('abstract', abstractSchema)
 

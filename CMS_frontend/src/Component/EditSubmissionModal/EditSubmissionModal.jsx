@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import dayjs from 'dayjs'
 
 const EditSubmissionModal = ({ isOpen, onClose, onSave, initialData }) => {
   const [formData, setFormData] = useState({
     paper_title: '',
     abstract: '',
-    authors: []
+    authors: [],
+    payment_deadline: '',
+    paper_deadline: ''
   })
 
   useEffect(() => {
@@ -15,7 +18,13 @@ const EditSubmissionModal = ({ isOpen, onClose, onSave, initialData }) => {
         _id: initialData._id || '',
         paper_title: initialData.paper_title || '',
         abstract: initialData.abstract || '',
-        authors: initialData.authors || []
+        authors: initialData.authors || [],
+        payment_deadline: initialData.payment_deadline
+          ? dayjs(initialData.payment_deadline).format('YYYY-MM-DD')
+          : '',
+        paper_deadline: initialData.paper_deadline
+          ? dayjs(initialData.paper_deadline).format('YYYY-MM-DD')
+          : ''
       })
     }
   }, [initialData])
@@ -87,7 +96,31 @@ const EditSubmissionModal = ({ isOpen, onClose, onSave, initialData }) => {
         <ReactQuill
           value={formData.abstract}
           onChange={handleQuillChange}
-          className='mb-12'
+          className='mb-4'
+        />
+
+        {/* Payment Deadline */}
+        <label className='block mb-2 text-sm font-medium text-gray-700'>
+          Payment Deadline
+        </label>
+        <input
+          type='date'
+          name='payment_deadline'
+          value={formData.payment_deadline}
+          onChange={handleInputChange}
+          className='border border-gray-300 p-2 rounded-md w-full mb-4'
+        />
+
+        {/* Paper Deadline */}
+        <label className='block mb-2 text-sm font-medium text-gray-700'>
+          Paper Deadline
+        </label>
+        <input
+          type='date'
+          name='paper_deadline'
+          value={formData.paper_deadline}
+          onChange={handleInputChange}
+          className='border border-gray-300 p-2 rounded-md w-full mb-4'
         />
 
         {/* Authors */}
@@ -183,7 +216,7 @@ const EditSubmissionModal = ({ isOpen, onClose, onSave, initialData }) => {
         {/* Add Author Button */}
         <button
           onClick={handleAddAuthor}
-          className='px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors duration-200 shadow-md hover:shadow-lg'
+          className='px-6 py-2 btn btn-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors duration-200 shadow-md hover:shadow-lg mb-4'
         >
           + Add Author
         </button>
@@ -192,13 +225,13 @@ const EditSubmissionModal = ({ isOpen, onClose, onSave, initialData }) => {
         <div className='flex justify-end mt-6 space-x-2'>
           <button
             onClick={onClose}
-            className='px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400'
+            className='px-4 py-2 btn btn-sm bg-gray-300 text-gray-700 rounded hover:bg-gray-400'
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+            className='px-4 py-2 btn btn-sm bg-blue-600 text-white rounded hover:bg-blue-700'
           >
             Save
           </button>

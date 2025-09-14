@@ -9,6 +9,9 @@ import { format } from 'date-fns'
 import PaymentModal from '../../../Component/PaymentModal/PaymentModal'
 import { makePayment, reset } from '../../../Redux/Slice/AbstractSlice'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
+import { getStatusColor } from '../../../Utilis/getStatusColor'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const MyInvoice = () => {
   const {
@@ -16,7 +19,8 @@ const MyInvoice = () => {
     abstracts,
     makePaymentLoading,
     makePaymentSuccess,
-    makePaymentError
+    makePaymentError,
+    errorMessage
   } = useSelector(state => state.abstract)
   const [selectedAbstract, setSelectedAbstract] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -34,8 +38,9 @@ const MyInvoice = () => {
     if (makePaymentError) {
       dispatch(reset())
       setSelectedAbstract(null)
-      showErrorToast('Failed to upload payment receipt. Please try again.')
+      showErrorToast(errorMessage)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [makePaymentSuccess, makePaymentError, dispatch])
 
   // Filter invoices based on search query
@@ -55,19 +60,6 @@ const MyInvoice = () => {
   )
   const totalPages = Math.ceil(filteredInvoices.length / invoicesPerPage)
 
-  // Get status color
-  const getStatusColor = status => {
-    switch (status.toLowerCase()) {
-      case 'paid':
-        return 'bg-green-100 text-green-800'
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'overdue':
-        return 'bg-red-100 text-red-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
 
   const handleSubmitReceipt = file => {
     const formData = new FormData()
@@ -83,13 +75,15 @@ const MyInvoice = () => {
   if (getAbstractLoading || makePaymentLoading) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
+             <ToastContainer/>
         <Loading />
       </div>
     )
   }
-  console.log(abstracts)
+
   return (
-    <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+      <ToastContainer/>
       <div className='mb-6'>
         <h2 className='text-2xl font-bold text-gray-800 mb-4'>My Invoices</h2>
         <div className='relative'>
@@ -121,7 +115,10 @@ const MyInvoice = () => {
                   Amount
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                  Date
+                  Submission Date
+                </th>
+                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                  Payment Deadline
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
                   Status
@@ -139,7 +136,7 @@ const MyInvoice = () => {
                 >
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                      {item._id}
+                      {item.abstract_id || item._id}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
@@ -154,12 +151,19 @@ const MyInvoice = () => {
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm font-semibold text-gray-900'>
-                      ${item.amount}
+                      $ {item.price || 0}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
                     <div className='text-sm text-gray-500'>
                       {format(item.createdAt, 'MMM d, yyyy')}
+                    </div>
+                  </td>
+                  <td className='px-6 py-4 whitespace-nowrap'>
+                    <div className='text-sm text-gray-500'>
+                      {item?.payment_deadline
+                        ? format(item.payment_deadline, 'MMM d, yyyy')
+                        : 'N/A'}
                     </div>
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>

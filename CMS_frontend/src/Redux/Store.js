@@ -7,6 +7,7 @@ import paperSlice from './Slice/PaperSlice'
 import notificationSlice from './Slice/notificationSlice'
 import adminSlice from './Slice/AdminSlice'
 import reviewSlice from './Slice/ReviewSlice'
+import scheduleSlice from './Slice/ScheduleSlice'
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     paper: paperSlice,
     notifications: notificationSlice,
     admin: adminSlice,
-    review: reviewSlice
+    review: reviewSlice,
+    schedule: scheduleSlice
   } // Define your reducers here
 })

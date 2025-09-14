@@ -4,6 +4,12 @@ import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
   abstracts: [],
+  unscheduleAbstract: [],
+
+  errorMessage: '',
+
+  pagination: null,
+
   conference: null,
   member_id: null,
   theme: null,
@@ -28,6 +34,8 @@ const initialState = {
   mailing_address: null,
   presenter_status: null,
   authors: [],
+  price: 0,
+
   conference_registration: {},
 
   createAbstractLoading: false,
@@ -56,7 +64,11 @@ const initialState = {
 
   changeAbstractDecisionLoading: false,
   changeAbstractDecisionSuccess: false,
-  changeAbstractDecisionError: false
+  changeAbstractDecisionError: false,
+
+  getUnscheduledAbstractsLoading: false,
+  getUnscheduledAbstractsSuccess: false,
+  getUnscheduledAbstractsError: false
 }
 
 export const createAbstract = createAsyncThunk(
@@ -76,13 +88,16 @@ export const createAbstract = createAsyncThunk(
 
 export const getAbstract = createAsyncThunk(
   'createAbstract',
-  async ({ id, payment_status = null }, { rejectWithValue }) => {
+  async (
+    { id, payment_status = null, page = 1, limit = 10,search = ''},
+    { rejectWithValue }
+  ) => {
     try {
-      let url = `/abstract/${id}`
+      let url = `/abstract/${id}?page=${page}&limit=${limit}&search=${search}`
 
       // Append payment_status as query param if it exists
       if (payment_status) {
-        url += `?payment_status=${payment_status}`
+        url += `&payment_status=${payment_status}`
       }
 
       const response = await axiosSecure.get(url)
@@ -110,6 +125,30 @@ export const getAbstractByCategory = createAsyncThunk(
       const response = await axiosSecure.get(
         `/abstract/get-abstract-category${query}`
       )
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while fetching abstracts by category'
+      return rejectWithValue(message)
+    }
+  }
+)
+
+export const getUnscheduledAbstracts = createAsyncThunk(
+  'getUnscheduledAbstracts',
+  async (
+    { conference_id = null, presentation_method },
+    { rejectWithValue }
+  ) => {
+    try {
+      let query = ''
+      const params = []
+      if (conference_id) params.push(`conference_id=${conference_id}`)
+      if (presentation_method)
+        params.push(`presentation_method=${presentation_method}`)
+      if (params.length) query = '?' + params.join('&')
+      const response = await axiosSecure.get(`/abstract/unscheduled/${query}`)
       return response.data.data
     } catch (error) {
       const message =
@@ -228,6 +267,8 @@ const abstractSlice = createSlice({
   reducers: {
     // reset the flags
     reset: state => {
+      state.errorMessage = ''
+
       state.createAbstractLoading = false
       state.createAbstractSuccess = false
       state.createAbstractError = false
@@ -255,6 +296,10 @@ const abstractSlice = createSlice({
       state.paperReminderLoading = false
       state.paperReminderSuccess = false
       state.paperReminderError = false
+
+      state.getUnscheduledAbstractsLoading = false
+      state.getUnscheduledAbstractsSuccess = false
+      state.getUnscheduledAbstractsError = false
     },
     resetForm: state => {
       state.conference = null
@@ -282,6 +327,7 @@ const abstractSlice = createSlice({
       state.presenter_status = null
       state.authors = []
       state.conference_registration = {}
+      state.price = 0
     },
     // setters for each field
     setAbstracts: (state, { payload }) => {
@@ -361,6 +407,9 @@ const abstractSlice = createSlice({
     },
     setConferenceRegistration: (state, { payload }) => {
       state.conference_registration = payload
+    },
+    setPrice: (state, { payload }) => {
+      state.price = payload
     }
   },
   extraReducers: builder => {
@@ -387,12 +436,19 @@ const abstractSlice = createSlice({
         state.getAbstractError = false
       })
       .addCase(getAbstract.fulfilled, (state, action) => {
-        state.abstracts = action.payload
+        state.abstracts = action.payload.abstractsWithPapers
+        state.pagination = {
+          total: action.payload.total,
+          page: action.payload.page,
+          limit: action.payload.limit,
+          totalPages: action.payload.totalPages
+        }
         state.getAbstractLoading = false
         state.getAbstractSuccess = true
         state.getAbstractError = false
       })
       .addCase(getAbstract.rejected, state => {
+        state.pagination = null
         state.getAbstractLoading = false
         state.getAbstractSuccess = false
         state.getAbstractError = true
@@ -474,10 +530,11 @@ const abstractSlice = createSlice({
         state.makePaymentSuccess = true
         state.makePaymentError = false
       })
-      .addCase(makePayment.rejected, state => {
+      .addCase(makePayment.rejected, (state, action) => {
         state.makePaymentLoading = false
         state.makePaymentSuccess = false
         state.makePaymentError = true
+        state.errorMessage = action.payload || action.error.message // store error message
       })
       .addCase(updatePaymentStatus.pending, state => {
         state.makePaymentLoading = true
@@ -531,6 +588,22 @@ const abstractSlice = createSlice({
         state.paperReminderSuccess = false
         state.paperReminderError = true
       })
+      .addCase(getUnscheduledAbstracts.pending, state => {
+        state.getUnscheduledAbstractsLoading = true
+        state.getUnscheduledAbstractsSuccess = false
+        state.getUnscheduledAbstractsError = false
+      })
+      .addCase(getUnscheduledAbstracts.fulfilled, (state, action) => {
+        state.getUnscheduledAbstractsLoading = false
+        state.getUnscheduledAbstractsSuccess = true
+        state.getUnscheduledAbstractsError = false
+        state.unscheduleAbstract = action.payload
+      })
+      .addCase(getUnscheduledAbstracts.rejected, state => {
+        state.getUnscheduledAbstractsLoading = false
+        state.getUnscheduledAbstractsSuccess = false
+        state.getUnscheduledAbstractsError = true
+      })
   }
 })
 
@@ -562,7 +635,8 @@ export const {
   setMailingAddress,
   setPresenterStatus,
   setAbstractAuthors,
-  setConferenceRegistration
+  setConferenceRegistration,
+  setPrice
 } = abstractSlice.actions
 
 export default abstractSlice.reducer

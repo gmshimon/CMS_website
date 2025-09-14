@@ -17,7 +17,7 @@ const SelectConference = () => {
             htmlFor='hear'
             className='block text-gray-700 text-sm font-bold mb-2 ml-1'
           >
-            Select Conference *
+            Select Category *
           </label>
           <select
             id='hear'

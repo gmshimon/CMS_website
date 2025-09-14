@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { FaSearch } from 'react-icons/fa'
+import  { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
 import Loading from '../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
 import { reset } from '../Redux/Slice/AbstractSlice'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Submission = () => {
   const {
@@ -108,6 +109,7 @@ const Submission = () => {
   }
   return (
     <div className='p-6'>
+      <ToastContainer/>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/submission'
           ? 'Submission Overview'

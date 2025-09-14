@@ -25,7 +25,7 @@ export const reviewerAssignmentTemplate = ({
     <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
       <h2 style="color: #2c3e50;">Dear ${reviewerName},</h2>
       <p>You have been invited to review the abstract titled <strong>"${abstractTitle}"</strong> for the <strong>${conferenceName}</strong>.</p>
-      <p>Please <a href="${acceptanceLink}" style="color: #1a73e8; text-decoration: none;">click here</a> to accept or decline this review assignment.</p>
+      <p>Please to accept or decline this review assignment from the portal.</p>
       <p><strong>Note:</strong> Once accepted, the review deadline will be 7 days from the acceptance date.</p>
       <p>Your timely review is crucial for the smooth progress of the conference.</p>
       <br />
@@ -77,6 +77,31 @@ export const reviewerConfirmationTemplate = ({
       
       <hr />
       <p style="font-size: 12px; color: #aaa;">This is an automated confirmation from the ${conferenceName} Conference System.</p>
+    </div>
+  `
+}
+
+export const reviewerRevisionRequestTemplate = ({
+  reviewerName,
+  abstractTitle,
+  conferenceName,
+  revisionType,
+  deadline
+}) => {
+  return `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+      <h2 style="color: #2c3e50;">Hi ${reviewerName},</h2>
+      <p>The abstract <strong>"${abstractTitle}"</strong> in the <strong>${conferenceName}</strong> conference has been marked for <strong>${revisionType}</strong>.</p>
+      <p>Please be ready to review the revised submission once it is resubmitted by the author.</p>
+      ${
+        deadline
+          ? `<p>The author has been given until <strong>${deadline}</strong> to make revisions.</p>`
+          : ''
+      }
+      <br/>
+      <p style="color: #888;">Thank you for your contribution as a reviewer.</p>
+      <hr/>
+      <p style="font-size: 12px; color: #aaa;">This is an automated message from ConferenceX.</p>
     </div>
   `
 }

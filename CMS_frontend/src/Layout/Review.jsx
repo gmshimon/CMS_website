@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
-import { setSelectedYear } from '../Redux/Slice/AdminSlice'
-import { FaSearch } from 'react-icons/fa'
 import Loading from '../Component/Loading/Loading'
 import { showErrorToast, showSuccessToast } from '../Utilis/toastUtils'
 import { clearReviewStats } from '../Redux/Slice/ReviewSlice'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Review = () => {
   const {
     assigningReviewerLoading,
     assigningReviewerSuccess,
     assigningReviewerError,
-    sentReviewerReminderLoading,
     sentReviewerReminderSuccess,
     sentReviewerReminderError,
     changeAbstractStatusLoading,
@@ -20,7 +19,6 @@ const Review = () => {
     changeAbstractStatusError,
     getReviewStatsError
   } = useSelector(state => state.review)
-  const [yearInput, setYearInput] = useState('')
   const location = useLocation()
   const dispatch = useDispatch()
 
@@ -60,18 +58,8 @@ const Review = () => {
     sentReviewerReminderSuccess
   ])
 
-  const handleSearch = () => {
-    if (!yearInput || yearInput < 1900 || yearInput > 3000) {
-      alert('Please enter a valid year')
-      dispatch(setSelectedYear(null))
-      return
-    }
-    dispatch(setSelectedYear(yearInput))
-  }
-
   if (
     assigningReviewerLoading ||
-    sentReviewerReminderLoading ||
     changeAbstractStatusLoading
   ) {
     return (
@@ -81,33 +69,21 @@ const Review = () => {
     )
   }
   return (
-    <div className='p-6'>
+    <div className='p-4'>
+      <ToastContainer/>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
-        {location.pathname === '/admin/users'
-          ? 'User Overview'
-          : location?.pathname === '/admin/users/authors'
-          ? 'Manage Authors'
-          : location.pathname === '/admin/users/reviewers'
-          ? 'Manage Reviewers'
-          : location.pathname === '/admin/users/session-chairs'
-          ? 'Manage Session Chair'
-          : location.pathname === '/admin/users/keynote-speakers'
-          ? 'Manage Key Note Speaker'
-          : location.pathname === '/admin/users/moderators'
-          ? 'Manage Moderator'
-          : location.pathname === '/admin/users/committee'
-          ? 'Manage Committee'
-          : location.pathname === '/admin/users/committee/scientific'
-          ? 'Manage Scientific Committee'
-          : location.pathname === '/admin/users/committee/technical'
-          ? 'Manage Technical Committee'
-          : location.pathname === '/admin/users/committee/registration'
-          ? 'Manage Registration Committee'
-          : 'User Overview'}
+        {location.pathname === '/admin/review/details/all'
+          ? 'Total Submissions'
+          : location?.pathname === '/admin/review/details/pending'
+          ? 'Pending Reviews'
+          : location.pathname === '/admin/review/details/unassigned'
+          ? 'Unassigned Reviewers'
+          : location.pathname === '/admin/review/details/reviewed'
+          ? 'Completed Reviewers': 'Review Management'}
       </h2>
 
       {/* Standard Year Search Field */}
-      <div className='mb-4 max-w-md'>
+      {/* <div className='mb-4 max-w-md'>
         <label
           htmlFor='year'
           className='block text-sm font-medium text-gray-700 mb-2'
@@ -131,7 +107,7 @@ const Review = () => {
             Search
           </button>
         </div>
-      </div>
+      </div> */}
       <Outlet />
     </div>
   )

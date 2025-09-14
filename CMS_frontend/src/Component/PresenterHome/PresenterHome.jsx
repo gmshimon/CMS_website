@@ -1,26 +1,36 @@
-
-import React, {  useState } from 'react'
-import {
-  IoDocumentText,
-  IoWallet,
-  IoReceipt,
-  IoNewspaper
-} from 'react-icons/io5'
+import React, { useEffect } from 'react'
+import { IoDocumentText, IoWallet, IoNewspaper } from 'react-icons/io5'
+import { GrSchedule } from 'react-icons/gr'
 import { FaDownload } from 'react-icons/fa'
-import PaymentModal from '../../Component//PaymentModal/PaymentModal'
 import StatCard from '../StatCard/StatCard'
+import { useDispatch, useSelector } from 'react-redux'
+import { getMyDashboardStats } from '../../Redux/Slice/AuthSlice'
+import Loading from '../Loading/Loading'
+import { formatDistanceToNow } from 'date-fns'
 
 const PresenterHome = () => {
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  const { myStats, getMyStatsLoading } = useSelector(state => state.user)
+  const { selectedConference } = useSelector(state => state.conference)
 
-  // Sample data - replace with actual data from your backend
-  const stats = {
-    abstracts: 12,
-    papers: 8,
-    payments: 5,
-    revisions: 3
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(
+      getMyDashboardStats(
+        sessionStorage.getItem('selectedConference')
+          ? sessionStorage.getItem('selectedConference')
+          : selectedConference
+      )
+    )
+  }, [dispatch, selectedConference])
+
+  if (getMyStatsLoading) {
+    return (
+      <div className='flex justify-center h-[calc(100vh-120px)] items-center'>
+        <Loading />
+      </div>
+    )
   }
-
 
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
@@ -31,42 +41,31 @@ const PresenterHome = () => {
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
         <StatCard
           title='Abstracts'
-          count={stats.abstracts}
+          count={myStats?.totalAbstracts || 0}
           icon={IoDocumentText}
           link='/admin/abstract'
           color='bg-blue-50 hover:bg-blue-100'
         />
         <StatCard
           title='Papers'
-          count={stats.papers}
+          count={myStats?.totalPapers || 0}
           icon={IoNewspaper}
           link='/admin/my-paper'
           color='bg-green-50 hover:bg-green-100'
         />
-        <div onClick={() => setIsPaymentModalOpen(true)}>
-          <div
-            className={`p-6 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-all duration-300 bg-purple-50 hover:bg-purple-100`}
-          >
-            <div className='flex items-center justify-between'>
-              <div>
-                <h3 className='text-xl font-semibold text-gray-800 mb-2'>
-                  Payments
-                </h3>
-                <p className='text-3xl font-bold text-gray-900'>12</p>
-              </div>
-              <IoWallet className='text-4xl text-gray-700 opacity-80' />
-            </div>
-            <p className='mt-4 text-sm text-gray-600 hover:text-gray-800'>
-              View Details →
-            </p>
-          </div>
-        </div>
+        <StatCard
+          title=' Payments'
+          count={myStats?.totalPayments || 0}
+          icon={IoWallet}
+          link='/admin/my-paper'
+          color='bg-purple-50 hover:bg-purple-100'
+        />
 
         <StatCard
-          title='Revisions'
-          count={stats.revisions}
-          icon={IoReceipt}
-          link='/admin/revisions'
+          title='Schedule'
+          count={myStats?.totalSchedules || 0}
+          icon={GrSchedule}
+          link='/admin/presenter/scheduling'
           color='bg-orange-50 hover:bg-orange-100'
         />
       </div>
@@ -103,71 +102,114 @@ const PresenterHome = () => {
             Recent Submissions
           </h3>
           <div className='space-y-4'>
-            {/* Sample recent submissions - replace with actual data */}
-            <div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
-              <div>
-                <p className='font-medium text-gray-800'>
-                  Machine Learning in Healthcare
-                </p>
-                <p className='text-sm text-gray-600'>Abstract submitted</p>
+            {myStats?.recentSubmissions?.map((item,idx) => (
+              <div key={idx} className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+                <div>
+                  <p className='font-medium text-gray-800'>
+                    {item?.paper_title}
+                  </p>
+                  <p className='text-sm text-gray-600'>{item?.status}</p>
+                </div>
+                <span className='text-sm text-gray-500'>
+                  {formatDistanceToNow(new Date(item.createdAt), {
+                    addSuffix: true
+                  })}
+                </span>
               </div>
-              <span className='text-sm text-gray-500'>2 days ago</span>
-            </div>
-            <div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
-              <div>
-                <p className='font-medium text-gray-800'>
-                  Blockchain Technology
-                </p>
-                <p className='text-sm text-gray-600'>Paper under review</p>
-              </div>
-              <span className='text-sm text-gray-500'>5 days ago</span>
-            </div>
+            ))}
           </div>
         </div>
 
         <div className='bg-white rounded-lg shadow-md p-6'>
           <h3 className='text-xl font-semibold text-gray-800 mb-4'>
-            Payment History
+            Certificate History
           </h3>
-          <div className='space-y-4'>
-            {/* Sample payment history - replace with actual data */}
-            <div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
-              <div className='flex-1'>
-                <p className='font-medium text-gray-800'>
-                  Abstract Submission Fee
-                </p>
-                <p className='text-sm text-gray-600'>Payment completed</p>
-              </div>
-              <span className='text-green-600 font-medium'>$50.00</span>
+
+          {myStats?.certificateHistory.length === 0 ? (
+            <p className='text-gray-500 text-sm'>No certificates found.</p>
+          ) : (
+            <div className='space-y-4'>
+              {myStats?.certificateHistory.map((cert, index) => (
+                <div
+                  key={cert._id || index}
+                  className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'
+                >
+                  <div className='flex-1'>
+                    <p className='font-medium text-gray-800'>
+                      {cert.title || 'Certificate'}
+                    </p>
+                    <p className='text-sm text-gray-600'>
+                      Issued on{' '}
+                      {new Date(cert.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </p>
+                  </div>
+
+                  {/* Download / View button */}
+                  {cert.fileUrl ? (
+                    <a
+                      href={cert.fileUrl}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='text-blue-600 font-medium hover:underline'
+                    >
+                      View
+                    </a>
+                  ) : (
+                    <span className='text-gray-400 text-sm'>Not available</span>
+                  )}
+                </div>
+              ))}
             </div>
-            <div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
-              <div className='flex-1'>
-                <p className='font-medium text-gray-800'>
-                  Paper Publication Fee
-                </p>
-                <p className='text-sm text-gray-600'>Payment pending</p>
-              </div>
-              <span className='text-yellow-600 font-medium'>$150.00</span>
-            </div>
-          </div>
+          )}
         </div>
       </div>
-      <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        abstracts={[
-          {
-            abstractId: 'ABS-2024-001',
-            title: 'Abstract Submission Fee',
-            receiptUrl: '/receipts/receipt-001.pdf'
-          },
-          {
-            abstractId: 'ABS-2024-002',
-            title: 'Paper Publication Fee',
-            receiptUrl: '/receipts/receipt-002.pdf'
-          }
-        ]}
-      />
+      <div className='mt-8 grid grid-cols-1'>
+  <div className='bg-white rounded-lg shadow-md p-6'>
+    <h3 className='text-xl font-semibold text-gray-800 mb-4'>
+      File Naming Instructions
+    </h3>
+    <p className='text-gray-700 mb-4'>
+      To ensure your submissions are processed smoothly, please follow the
+      naming guidelines below when uploading your documents:
+    </p>
+
+    <ul className='space-y-3 text-gray-700'>
+      <li className='flex items-start'>
+        <span className='w-2 h-2 mt-2 bg-blue-500 rounded-full mr-3'></span>
+        <span>
+          <strong>First Submission:</strong> Keep the file name simple and
+          clear. For example: <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title.pdf</code>
+        </span>
+      </li>
+      <li className='flex items-start'>
+        <span className='w-2 h-2 mt-2 bg-yellow-500 rounded-full mr-3'></span>
+        <span>
+          <strong>Minor Revision:</strong> Mention the revision type in the
+          file name. For example:{' '}
+          <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title_MinorRevision.pdf</code>
+        </span>
+      </li>
+      <li className='flex items-start'>
+        <span className='w-2 h-2 mt-2 bg-red-500 rounded-full mr-3'></span>
+        <span>
+          <strong>Major Revision:</strong> Clearly indicate the revision in
+          the file name. For example:{' '}
+          <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title_MajorRevision.pdf</code>
+        </span>
+      </li>
+    </ul>
+
+    <p className='mt-4 text-sm text-gray-600 italic'>
+      💡 Following these instructions helps reviewers and administrators
+      easily track your submission versions.
+    </p>
+  </div>
+</div>
+
     </div>
   )
 }

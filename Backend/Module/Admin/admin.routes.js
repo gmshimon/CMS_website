@@ -7,40 +7,80 @@ import {
   adminDashboardStats,
   deleteUser,
   deleteUserImage,
+  getAdminAnalytics,
   getPresentationMethodStats,
   getRoleBasedUser,
   getUserRoleCounts,
   updateUser,
-  updateUserImage
+  updateUserImage,
+  getScheduleMethodStats
 } from './admin.controller.js'
+import verifyAdminToken from '../../Middleware/verifyAdminToken.js'
+import {
+  lightLimiter,
+  mediumLimiter,
+  standardLimiter,
+  strictLimiter
+} from '../../config/rateLimiters.js'
 const router = express.Router()
 
-// TODO:: add validation of user
-router.route('/delete/user/:id').delete(deleteUser)
+// 🔹 Delete a user → destructive operation → medium limiter
+router.delete('/delete/user/:id', mediumLimiter, verifyAdminToken, deleteUser)
 
-// TODO:: add validation of user
-router.route('/update/user').put(updateUser)
+// 🔹 Update user → destructive, admin-only → per-IP limiter first
+router.put('/update/user', mediumLimiter, verifyAdminToken, updateUser)
 
-// TODO:: add validation of user
-router.route('/delete/user-image/:id').delete(deleteUserImage)
+// 🔹 Delete user image → per-user action → verifyToken first
+router.delete(
+  '/delete/user-image/:id',
+  verifyToken,
+  standardLimiter,
+  deleteUserImage
+)
 
-// TODO:: add validation of user
-router
-  .route('/update/user-image/:id')
-  .put(userImageUploader.single('image'), updateUserImage)
+// 🔹 Update user image → file upload (S3), per-user → verifyToken first
+router.put(
+  '/update/user-image/:id',
+  verifyToken,
+  mediumLimiter,
+  userImageUploader.single('image'),
+  updateUserImage
+)
 
-// TODO:: add validation of user
-router.route('/total-user').get(getUserRoleCounts)
+// 🔹 Get role-based counts → admin-only, read query → per-IP limiter first
+router.get('/total-user', standardLimiter, verifyAdminToken, getUserRoleCounts)
 
-router
-  .route('/create-user')
-  .post(userImageUploader.single('image'), AdminCreateUser)
+// 🔹 Create new user → very sensitive, admin-only → per-IP limiter first
+router.post(
+  '/create-user',
+  strictLimiter,
+  verifyAdminToken,
+  userImageUploader.single('image'),
+  AdminCreateUser
+)
 
-// TODO:: add validation of user
-router.route('/get/:role').get(getRoleBasedUser)
+// 🔹 Get users by role → admin-only, aggregation query → per-IP limiter first
+router.get('/get/:role', verifyAdminToken, standardLimiter, getRoleBasedUser)
 
-router.route('/dashboard').get(verifyToken,adminDashboardStats)
+// 🔹 Admin dashboard stats → sensitive but not destructive → standard limiter
+router.get('/dashboard',standardLimiter, verifyAdminToken, adminDashboardStats)
 
-router.get('/presentation-stats', getPresentationMethodStats)
+// 🔹 Presentation method stats → admin-only, light query → per-IP limiter first
+router.get(
+  '/presentation-stats',
+  lightLimiter,
+  verifyToken,
+  getPresentationMethodStats
+)
+
+router.get(
+  '/schedule-stats',
+  lightLimiter,
+  verifyToken,
+  getScheduleMethodStats
+)
+
+// 🔹 Admin analytics → heaviest query (multiple aggregations) → medium limiter
+router.get('/', mediumLimiter,verifyAdminToken, getAdminAnalytics)
 
 export default router

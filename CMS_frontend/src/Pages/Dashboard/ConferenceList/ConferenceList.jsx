@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
-import { IoMdEye } from 'react-icons/io'
-import { Link } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { getConferenceRegs } from '../../../Redux/Slice/conference_regSlice'
 import Loading from '../../../Component/Loading/Loading'
+import ConferenceListTable from '../../../Component/ConferenceListTable/ConferenceListTable'
 
 const ConferenceList = () => {
   const { conference_regs, getConferenceRegLoading } = useSelector(
@@ -43,7 +42,7 @@ const ConferenceList = () => {
   const totalPages = Math.ceil(filteredConferences.length / conferencesPerPage)
 
   return (
-    <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       {getConferenceRegLoading || getConferenceLoading ? (
         <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
           <Loading />
@@ -65,65 +64,13 @@ const ConferenceList = () => {
             </div>
           </div>
 
-          <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-            <div className='overflow-x-auto h-[400px] overflow-y-auto'>
-              <table className='min-w-full divide-y divide-gray-200 table-zebra'>
-                <thead className='bg-slate-500'>
-                  <tr>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Abstract ID
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Abstract Title
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Presenter
-                    </th>
-
-                    <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className='bg-white divide-y divide-gray-200'>
-                  {currentConferences.map((conference, index) => (
-                    <tr key={index}>
-                      <td className='px-6 py-4 whitespace-nowrap'>
-                        <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                          {conference.abstract._id}
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 whitespace-nowrap'>
-                        <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                          {conference.abstract.paper_title}
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 whitespace-nowrap'>
-                        <div className='text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                          {conference.presenterName}
-                        </div>
-                      </td>
-
-                      <td className='px-10  whitespace-nowrap text-sm text-gray-500'>
-                        <Link to={`/admin/conference/${conference?._id}`}>
-                          <button className='cursor-pointer hover:text-blue-500'>
-                            <IoMdEye className='text-xl' />
-                          </button>
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className='px-4 py-3 border-t border-gray-200'>
-              <ResponsivePagination
-                current={currentPage}
-                total={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </div>
+          <ConferenceListTable data={currentConferences} abstract_title={true}/>
+          <div className='px-4 py-3 border-t border-gray-200'>
+            <ResponsivePagination
+              current={currentPage}
+              total={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </>
       )}

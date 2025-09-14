@@ -58,7 +58,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
 
       setAuthors([data])
     }
-  }, [user])
+  }, [authors, user])
 
   useEffect(() => {
     dispatch(setAbstractAuthors(addAuthors))
@@ -180,7 +180,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className='flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg'
+          className='flex items-center gap-2 btn btn-sm btn-active btn-primary'
         >
           <FaPlus className='text-sm' />
           Add Author

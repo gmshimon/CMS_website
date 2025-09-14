@@ -67,8 +67,6 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
     }
     if (!presenter_email?.trim() || !presenter_email) {
       newErrors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
     }
     if (!organization?.trim() || !organization) {
       newErrors.organization = 'Organization/University is required'
@@ -97,17 +95,16 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
   const handleSubmit = e => {
     e.preventDefault()
     const newErrors = validateForm()
-    // if (Object.keys(newErrors).length === 0) {
+    if (Object.keys(newErrors).length === 0) {
     setActiveStep([...activeStep, 'Author'])
     sessionStorage.setItem(
       'activeStep',
       JSON.stringify([...activeStep, 'Author'])
     )
-    // Here you would typically make an API call to submit the form data
-    console.log('Form Data:', formData)
-    // } else {
-    //     setErrors(newErrors);
-    // }
+    setErrors({})
+    } else {
+        setErrors(newErrors);
+    }
   }
 
   return (

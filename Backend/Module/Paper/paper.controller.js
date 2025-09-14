@@ -1,73 +1,113 @@
+import dayjs from 'dayjs'
 import Abstracts from '../Abstract/abstract.model.js'
 import Paper from './paper.model.js'
 import {
   s3PaperDeleteService,
   s3PaperUploadService
 } from './paper.s3Service.js'
+import { notifyAdmins } from '../Admin/admin.service.js'
+import { adminPaperNotificationTemplate } from '../../Utilis/EmailTemplate/abstractCreatedTemplate.js'
 
 export const postPaper = async (req, res, next) => {
   try {
     const { abstractId } = req.params
-    const { _id } = req.user
+    const { _id: userId, name: userName } = req.user
 
-    const paperFile = req.file
-    let fileUrl = null
+    const isAbstract = await Abstracts.findOne({ _id: abstractId }).populate(
+      'conference',
+      'name'
+    )
 
-    if (paperFile) {
-      fileUrl = await s3PaperUploadService(paperFile)
+    if (!isAbstract) {
+      const error = new Error('Abstract not found')
+      error.statusCode = 404
+      return next(error)
     }
 
-    const isPaperExist = await Paper.findOne({
-      abstract: abstractId
-    })
-    // if paper exist update the paper
-    if (isPaperExist) {
-      await Paper.updateOne(
-        { _id: isPaperExist._id },
-        {
-          $push: {
-            paper: paperFile
-          }
-        }
-      )
-
-      const getPaper = await Paper.findOne({ _id: isPaperExist._id })
-      return res.status(200).json({
-        status: 'Success',
-        message: 'Paper Uploaded Successfully',
-        data: result
+    if (!req.file) {
+      return res.status(400).json({
+        status: 'Failed',
+        message: 'No file uploaded'
       })
     }
 
-    const data = req.body
-
-    data.createdBy = _id
-    data.paper = [fileUrl]
-
-    const result = await Paper.create(data)
-
-    await Abstracts.updateOne(
-      { _id: abstractId },
-      {
-        $set: {
-          status: 'Paper Submitted'
-        }
-      }
-    )
-    res.status(200).json({
-      status: 'Success',
-      message: 'Paper Uploaded Successfully',
-      data: result
-    })
-  } catch (error) {
-    if (req.file) {
-      await s3PaperDeleteService(`/paper/${req.file.originalname}`)
+    // Check if payment deadline exists and is still valid
+    if (
+      isAbstract.paper_deadline &&
+      dayjs().isAfter(dayjs(isAbstract.paper_deadline))
+    ) {
+      const error = new Error(
+        'Paper Submission deadline has passed. You can no longer make the payment.'
+      )
+      error.statusCode = 403
+      return next(error)
     }
 
-    res.status(400).json({
-      status: 'Failed',
-      message: error.message
+    // Upload to S3
+    const fileUrl = await s3PaperUploadService(req.file, req.file.safeFilename)
+
+    // Prepare file object with URL and original name
+    const fileObj = {
+      url: fileUrl,
+      originalName: req.file.originalname
+    }
+
+    // Check if a paper already exists
+    let paperDoc = await Paper.findOne({ abstract: abstractId })
+    let status
+
+    if (paperDoc) {
+      // Append or replace based on your use case
+      paperDoc.paper.push(fileObj)
+      await paperDoc.save()
+      status = 'Revision Submitted'
+    } else {
+      // Create new paper
+      paperDoc = await Paper.create({
+        ...req.body,
+        createdBy: userId,
+        abstract: abstractId,
+        paper: [fileObj]
+      })
+      status = 'Paper Submitted'
+    }
+
+    await Abstracts.updateOne({ _id: abstractId }, { $set: { status } })
+
+    // ✅ Notify admins asynchronously
+    const adminMessage = `${userName} has ${status.toLowerCase()} for abstract "${
+      isAbstract.paper_title
+    }"`
+    const adminType = 'paper_submission'
+
+    notifyAdmins({
+      message: adminMessage,
+      type: adminType,
+      emailTemplate: admin =>
+        adminPaperNotificationTemplate({
+          adminName: admin.name,
+          userName,
+          abstractTitle: isAbstract.paper_title,
+          paperStatus: status, // 👈 drives dynamic text
+          conferenceName: isAbstract.conference?.name || 'N/A'
+        })
     })
+
+    return res.status(paperDoc.isNew ? 201 : 200).json({
+      status: 'Success',
+      message: 'Paper uploaded successfully',
+      data: paperDoc
+    })
+  } catch (error) {
+    // Cleanup S3 if upload failed
+    if (req.file?.safeFilename) {
+      try {
+        await s3PaperDeleteService(req.file.key || req.file.safeFilename)
+      } catch (cleanupErr) {
+        console.error('S3 cleanup failed:', cleanupErr.message)
+      }
+    }
+    next(error)
   }
 }
 

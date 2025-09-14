@@ -175,7 +175,7 @@ const SingleConference = () => {
               </div>
 
               {/* Site Seeing Tour */}
-              <div>
+              {/* <div>
                 <label className='block text-sm font-medium text-gray-700 mb-2'>
                   <FaMapMarkerAlt className='inline mr-2 text-blue-600' />
                   Site Seeing Tour
@@ -183,7 +183,7 @@ const SingleConference = () => {
                 <div className='border border-black rounded-md p-2 w-full text-black'>
                   {registrationData.siteSeeingTour}
                 </div>
-              </div>
+              </div> */}
 
               {/* Any Special Request */}
               <div>
@@ -200,7 +200,7 @@ const SingleConference = () => {
               <div className='flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200'>
                 <Link
                   to='/admin/conference-list'
-                  className='px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200 shadow-md hover:shadow-lg flex-1 sm:flex-none text-center'
+                  className='px-8 py-3 btn btn-sm btn-primary'
                 >
                   Back to List
                 </Link>

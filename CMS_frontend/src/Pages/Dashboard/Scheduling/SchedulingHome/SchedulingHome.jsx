@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion'
 import {
@@ -8,34 +8,35 @@ import {
   FaProjectDiagram
 } from 'react-icons/fa'
 import StatCard from '../../../../Component/StatCard/StatCard'
-import { useSelector } from 'react-redux'
-import useScheduling from '../../../../Hooks/useScheduling'
+import { useDispatch, useSelector } from 'react-redux'
+import { getScheduleMethodStats } from '../../../../Redux/Slice/AdminSlice'
+import Loading from '../../../../Component/Loading/Loading'
 
 const methodMeta = {
   'Paper Presentation Physical': {
     icon: FaChalkboardTeacher,
-    link: '/admin/scheduling/paper-physical',
+    link: '/admin/scheduling/physical-paper',
     color: 'bg-green-100',
     iconColor: 'text-green-600',
     description: 'Papers presented in person.'
   },
   'Paper Presentation Online': {
     icon: FaVideo,
-    link: '/admin/scheduling/paper-online',
+    link: '/admin/scheduling/online-paper',
     color: 'bg-blue-100',
     iconColor: 'text-blue-600',
     description: 'Papers presented virtually.'
   },
   'Poster Presentation Physical': {
     icon: FaImage,
-    link: '/admin/scheduling/poster-physical',
+    link: '/admin/scheduling/physical-poster',
     color: 'bg-yellow-100',
     iconColor: 'text-yellow-600',
     description: 'Posters displayed physically.'
   },
   'Poster Presentation Online': {
     icon: FaProjectDiagram,
-    link: '/admin/scheduling/poster-online',
+    link: '/admin/scheduling/online-poster',
     color: 'bg-purple-100',
     iconColor: 'text-purple-600',
     description: 'Poster presented virtually.'
@@ -43,8 +44,24 @@ const methodMeta = {
 }
 
 const SchedulingHome = () => {
-  const { presentationStats } = useSelector((state) => state.admin)
-  useScheduling()
+  const { selectedConference } = useSelector(state => state.conference)
+  const { presentationStats,getPresentationStatsLoading } = useSelector(state => state.admin)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (selectedConference) {
+      dispatch(getScheduleMethodStats(selectedConference))
+    } else {
+      dispatch(getScheduleMethodStats())
+    }
+  }, [dispatch, selectedConference])
+
+if(getPresentationStatsLoading){
+  return <div className='flex justify-center items-center h-[calc(100vh-130px)]'>
+    <Loading/>
+  </div>
+}
 
   return (
     <div>

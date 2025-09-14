@@ -5,9 +5,10 @@ import axios from '../../Utilis/axios.js'
 import axiosSecure from '../../Utilis/axiosSecure.js'
 
 const initialState = {
-  dashboardStats:[],
+  dashboardStats: [],
   roleCounts: {},
   users: [],
+  presenter: [],
   reviewers: [],
   session_chairs: [],
   keynote_speakers: [],
@@ -42,7 +43,7 @@ export const adminCreateUser = createAsyncThunk(
   'adminCreateUser',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/admin/create-user', data)
+      const response = await axiosSecure.post('/admin/create-user', data)
       return response.data.data
     } catch (error) {
       const message =
@@ -55,10 +56,10 @@ export const adminCreateUser = createAsyncThunk(
 
 export const getUserRoleCounts = createAsyncThunk(
   'getUserRoleCounts',
-  async (year, { rejectWithValue }) => {
+  async (conference_id = null, { rejectWithValue }) => {
     try {
-      const query = year ? `?year=${year}` : ''
-      const response = await axios.get(`/admin/total-user${query}`)
+      const query = conference_id ? `?conference_id=${conference_id}` : ''
+      const response = await axiosSecure.get(`/admin/total-user${query}`)
       return response.data.data
     } catch (error) {
       const message =
@@ -71,9 +72,10 @@ export const getUserRoleCounts = createAsyncThunk(
 
 export const getRoleBasedUser = createAsyncThunk(
   'getRoleBasedUser',
-  async ({ data, role }, { rejectWithValue }) => {
+  async ({ conference_id = null, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`/admin/get/${role}`, data)
+      const query = conference_id ? `?conference_id=${conference_id}` : ''
+      const response = await axiosSecure.get(`/admin/get/${role}${query}`)
       return {
         data: response.data.data,
         role
@@ -91,7 +93,7 @@ export const deleteUserFromDb = createAsyncThunk(
   'deleteUserFromDb',
   async ({ id, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/admin/delete/user/${id}`)
+      const response = await axiosSecure.delete(`/admin/delete/user/${id}`)
       return { id, role }
     } catch (error) {
       const message =
@@ -105,7 +107,7 @@ export const updateUser = createAsyncThunk(
   'updateUser',
   async ({ data, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/admin/update/user/`, data)
+      const response = await axiosSecure.put(`/admin/update/user/`, data)
       return { data: response.data.data, role }
     } catch (error) {
       const message =
@@ -119,7 +121,9 @@ export const deleteUserImage = createAsyncThunk(
   'deleteUserImage',
   async ({ id, role }, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/admin/delete/user-image/${id}`)
+      const response = await axiosSecure.delete(
+        `/admin/delete/user-image/${id}`
+      )
       return {
         id,
         role
@@ -136,7 +140,10 @@ export const updateUserImage = createAsyncThunk(
   'updateUserImage',
   async ({ id, role, data }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/admin/update/user-image/${id}`, data)
+      const response = await axiosSecure.put(
+        `/admin/update/user-image/${id}`,
+        data
+      )
       return {
         id,
         data: response.data.data,
@@ -153,9 +160,9 @@ export const updateUserImage = createAsyncThunk(
 
 export const getPresentationMethodStats = createAsyncThunk(
   'getPresentationMethodStats',
-  async (year, { rejectWithValue }) => {
+  async (conferenceId = null, { rejectWithValue }) => {
     try {
-      const query = year ? `?year=${year}` : ''
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
       const response = await axiosSecure.get(
         `/admin/presentation-stats/${query}`
       )
@@ -169,9 +176,26 @@ export const getPresentationMethodStats = createAsyncThunk(
   }
 )
 
+export const getScheduleMethodStats = createAsyncThunk(
+  'getScheduleMethodStats',
+  async (conferenceId = null, { rejectWithValue }) => {
+    try {
+      const query = conferenceId ? `?conference_id=${conferenceId}` : ''
+      const response = await axiosSecure.get(`/admin/schedule-stats${query}`)
+
+      return response.data.data
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        'An error occurred while updating user image'
+      return rejectWithValue(message)
+    }
+  }
+)
+
 export const adminDashboardStats = createAsyncThunk(
   'adminDashboardStats',
-  async (conferenceId=null, { rejectWithValue }) => {
+  async (conferenceId = null, { rejectWithValue }) => {
     try {
       const query = conferenceId ? `?conferenceId=${conferenceId}` : ''
       const response = await axiosSecure.get(`/admin/dashboard${query}`)
@@ -262,6 +286,8 @@ const adminSlice = createSlice({
           state.technicalCommittee = data
         } else if (role === 'registration_committee') {
           state.registrationCommittee = data
+        } else if (role === 'Presenter') {
+          state.presenter = data
         }
       })
       .addCase(getUserRoleCounts.pending, state => {
@@ -453,18 +479,34 @@ const adminSlice = createSlice({
         state.getPresentationStatsSuccess = false
         state.getPresentationStatsError = true
       })
+      .addCase(getScheduleMethodStats.pending, state => {
+        state.getPresentationStatsLoading = true
+        state.getPresentationStatsSuccess = false
+        state.getPresentationStatsError = false
+      })
+      .addCase(getScheduleMethodStats.fulfilled, (state, action) => {
+        state.getPresentationStatsLoading = false
+        state.getPresentationStatsSuccess = true
+        state.getPresentationStatsError = false
+        state.presentationStats = action.payload
+      })
+      .addCase(getScheduleMethodStats.rejected, state => {
+        state.getPresentationStatsLoading = false
+        state.getPresentationStatsSuccess = false
+        state.getPresentationStatsError = true
+      })
       .addCase(adminDashboardStats.pending, state => {
         state.getAdminDashboardLoading = true
         state.getAdminDashboardSuccess = false
         state.getAdminDashboardError = false
       })
-      .addCase(adminDashboardStats.fulfilled, (state,action) => {
+      .addCase(adminDashboardStats.fulfilled, (state, action) => {
         state.dashboardStats = action.payload
         state.getAdminDashboardLoading = false
         state.getAdminDashboardSuccess = true
         state.getAdminDashboardError = false
       })
-      .addCase(adminDashboardStats.rejected, (state,action) => {
+      .addCase(adminDashboardStats.rejected, (state, action) => {
         state.getAdminDashboardLoading = false
         state.getAdminDashboardSuccess = false
         state.getAdminDashboardError = true

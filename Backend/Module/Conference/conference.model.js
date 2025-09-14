@@ -13,6 +13,24 @@ const conferenceSchema = mongoose.Schema(
     },
     category: [String],
     theme: [String],
+    submissionOptions: [
+      {
+        submissionType: {
+          type: String,
+          enum: [
+            'Paper Presentation Online',
+            'Paper Presentation Physical',
+            'Poster Presentation Online',
+            'Poster Presentation Physical'
+          ],
+          required: true
+        },
+        price: {
+          type: Number,
+          default: 0
+        }
+      }
+    ],
     presentation_method: [String],
     publication_option: [String],
     workshopOptions: [
@@ -49,11 +67,6 @@ const conferenceSchema = mongoose.Schema(
       type: Date,
       required: true
     },
-    mode: {
-      type: String,
-      enum: ['online', 'onsite', 'hybrid'],
-      default: 'hybrid'
-    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'users'
@@ -69,6 +82,6 @@ const conferenceSchema = mongoose.Schema(
   }
 )
 
-const conference = mongoose.model('conference', conferenceSchema)
+const Conference = mongoose.model('conference', conferenceSchema)
 
-export default conference
+export default Conference

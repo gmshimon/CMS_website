@@ -8,7 +8,9 @@ import { reviewHomeColumn } from '../../../Utilis/reviewTableColumn'
 import { showErrorToast, showSuccessToast } from '../../../Utilis/toastUtils'
 import { clearReviewStats } from '../../../Redux/Slice/ReviewSlice'
 import ReviewModal from '../../../Component/ReviewModal/ReviewModal'
-
+import PaperListModal from '../../../Component/PaperListModal/PaperListModal'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 const MyReviewDetailPage = () => {
   const {
     myReviewData,
@@ -16,13 +18,16 @@ const MyReviewDetailPage = () => {
     respondReviewSuccess,
     respondReviewLoading,
     getMyReviewStatsError,
-    submitReviewLoading,
     submitReviewSuccess,
     submitReviewError
   } = useSelector(state => state.review)
   const [openModal, setOpenModal] = useState(false)
   const [isEditable, setIsEditable] = useState(true)
   const [selectedReview, setSelectedReview] = useState(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [papers, setPapers] = useState([])
+  const [openAbstract, setOpenAbstract] = useState(false)
+  const [abstract, setAbstract] = useState('')
   const { category } = useParams()
   const location = useLocation()
   const { handleRespondReview, handleSubmitReview } = useReviewerHome(category)
@@ -55,13 +60,21 @@ const MyReviewDetailPage = () => {
     submitReviewSuccess
   ])
 
+  const handleViewPaperList = papers => {
+    setPapers(papers)
+    setModalOpen(true)
+  }
+
   const handleOpenReviewModal = (row, edit) => {
     setIsEditable(edit)
     setSelectedReview(row)
     setOpenModal(true)
   }
+  const handleView = paper => {
+    window.open(paper.url, '_blank')
+  }
 
-  if (respondReviewLoading || submitReviewLoading) {
+  if (respondReviewLoading ) {
     return (
       <div className='flex justify-center h-[calc(100vh-100px)] items-center'>
         <Loading />
@@ -69,8 +82,17 @@ const MyReviewDetailPage = () => {
     )
   }
 
+  const columns = reviewHomeColumn({
+    handleViewPaperList,
+    handleOpenAbstract: abstract => {
+      setAbstract(abstract)
+      setOpenAbstract(true)
+    }
+  })
+
   return (
-    <div className='p-6'>
+    <div className='p-3'>
+      <ToastContainer />
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/my-review/pending'
           ? 'New Invitation'
@@ -82,7 +104,7 @@ const MyReviewDetailPage = () => {
       </h2>
       <div>
         <ReviewTable
-          columns={reviewHomeColumn}
+          columns={columns}
           data={myReviewData}
           mode='reviewer'
           category={category}
@@ -97,6 +119,56 @@ const MyReviewDetailPage = () => {
           onSubmit={handleSubmitReview}
           paper={selectedReview}
         />
+
+        <PaperListModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          papers={papers}
+          onView={handleView}
+        />
+
+        {openAbstract && (
+          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 '>
+            <div className='bg-white p-6 rounded-lg max-w-lg w-full shadow-lg relative h-96 overflow-y-auto'>
+              <h2 className='text-lg font-bold mb-4 sticky'>Abstract</h2>
+              <p className='text-gray-700 whitespace-pre-wrap'>
+                <div
+                  className='text-justify'
+                  dangerouslySetInnerHTML={{ __html: abstract?.abstract }}
+                />
+              </p>
+              <div className='bg-gray-50 p-4 rounded-lg hover:bg-gray-100 mt-2 transition-colors duration-200'>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-2'>
+                  <p className='text-sm font-semibold text-gray-500'>
+                    Keywords
+                  </p>
+                  <div className='flex flex-wrap gap-2 md:col-span-2'>
+                    {Array.isArray(abstract.keywords) ? (
+                      abstract.keywords.map((keyword, index) => (
+                        <span
+                          key={index}
+                          className='px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors duration-200'
+                        >
+                          {keyword}
+                        </span>
+                      ))
+                    ) : (
+                      <span className='px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full hover:bg-blue-200 transition-colors duration-200'>
+                        {abstract.keywords}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button
+                onClick={() => setOpenAbstract(false)}
+                className='absolute top-2 right-2 text-gray-600 hover:text-black text-xl'
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
