@@ -19,7 +19,7 @@ const verifyJWT = token => {
 const setupWebSocket = server => {
   io = new Server(server, {
     cors: {
-      origin:  '*',
+      origin: 'https://vgw4k0og4cw48oww0k4sw400.31.97.71.226.sslip.io',
       methods: ['GET', 'POST']
     }
   })
@@ -29,7 +29,8 @@ const setupWebSocket = server => {
     try {
       const { token } = socket.handshake.auth
       const jwtToken = JSON.parse(token).access_token
-      if (!jwtToken) return next(new Error('Unauthorized: No access_token provided'))
+      if (!jwtToken)
+        return next(new Error('Unauthorized: No access_token provided'))
 
       const user = verifyJWT(jwtToken)
       socket.user = user
