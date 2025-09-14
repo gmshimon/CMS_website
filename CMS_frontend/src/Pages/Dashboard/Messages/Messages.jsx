@@ -25,10 +25,7 @@ const Messages = () => {
   // Calculate pagination
   const indexOfLastMessage = currentPage * messagesPerPage
   const indexOfFirstMessage = indexOfLastMessage - messagesPerPage
-  const currentMessages = list?.slice(
-    indexOfFirstMessage,
-    indexOfLastMessage
-  )
+  const currentMessages = list?.slice(indexOfFirstMessage, indexOfLastMessage)
   const totalPages = Math.ceil(list?.length / messagesPerPage)
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
@@ -49,11 +46,14 @@ const Messages = () => {
                 {currentMessages?.map(message => (
                   <div
                     key={message._id}
-                    className={`p-4 cursor-pointer transition-all duration-200 transform hover:scale-[1.02] hover:bg-blue-50 ${
-                      selectedMessage?._id === message._id
-                        ? 'bg-blue-100 !border-l-4 !border-blue-600'
-                        : ''
-                    }`}
+                    className={`p-4 cursor-pointer transition-all duration-200 transform hover:scale-[1.02] 
+    ${
+      selectedMessage?._id === message._id
+        ? 'bg-blue-100 border-l-4 border-blue-600'
+        : ''
+    }
+    ${!message.isRead ? 'bg-blue-50 font-semibold' : 'bg-white'}
+  `}
                     onClick={() => {
                       if (!message?.isRead) {
                         socket.emit('markAsRead', {

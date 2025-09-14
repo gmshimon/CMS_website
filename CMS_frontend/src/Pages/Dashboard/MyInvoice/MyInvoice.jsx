@@ -75,6 +75,7 @@ const MyInvoice = () => {
   if (getAbstractLoading || makePaymentLoading) {
     return (
       <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
+             <ToastContainer/>
         <Loading />
       </div>
     )

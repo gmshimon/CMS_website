@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import logo from '../../assets/EGE_logo.png'
+
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -24,7 +24,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className='flex items-center space-x-3'>
             <div>
-              <img src={logo} alt='Conference Logo' className='h-12 w-auto' />
+              <img src="/assets/EGE_logo.png" alt='Conference Logo' className='h-12 w-auto' />
             </div>
           </div>
 
