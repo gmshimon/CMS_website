@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 const token = localStorage.getItem('userToken')
-const socket = io('http://localhost:5000', {
+const socket = io('http://so00gsss8g8ccggg44ccsowc.31.97.71.226.sslip.io', {
   transports: ['websocket'],
   withCredentials: true,
   reconnectionAttempts: 5,
