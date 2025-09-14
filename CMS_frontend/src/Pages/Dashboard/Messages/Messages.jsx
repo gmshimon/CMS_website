@@ -25,12 +25,11 @@ const Messages = () => {
   // Calculate pagination
   const indexOfLastMessage = currentPage * messagesPerPage
   const indexOfFirstMessage = indexOfLastMessage - messagesPerPage
-  const currentMessages = list?.notifications?.slice(indexOfFirstMessage, indexOfLastMessage)
-  const totalPages = Math.ceil(list?.notifications?.length / messagesPerPage)
-
-  //   const handlePageChange = pageNumber => {
-  //     setCurrentPage(pageNumber)
-  //   }
+  const currentMessages = list?.slice(
+    indexOfFirstMessage,
+    indexOfLastMessage
+  )
+  const totalPages = Math.ceil(list?.length / messagesPerPage)
   return (
     <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       {getNotificationLoading ? (
@@ -57,17 +56,18 @@ const Messages = () => {
                     }`}
                     onClick={() => {
                       if (!message?.isRead) {
-                        dispatch(updateNotification(message?._id))
                         socket.emit('markAsRead', {
                           notificationId: message?._id
                         })
+                        console.log('📤 emitting markAsRead:', message?._id)
+                        dispatch(updateNotification(message?._id))
                       }
                       setSelectedMessage(message)
                     }}
                   >
                     <div className='flex justify-between items-start mb-1'>
                       <span className='font-semibold text-gray-800 hover:text-blue-700 transition-colors duration-200'>
-                        {message.user.name}
+                        {message.user.name}{' '}
                       </span>
                       <span className='text-sm text-gray-500'>
                         {format(message.createdAt, 'MMM d, yyyy')}

@@ -187,10 +187,7 @@ export const getRegistrationCommitteeDashboard = createAsyncThunk(
   'getRegistrationCommitteeDashboard',
   async (conference_id, { rejectWithValue }) => {
     try {
-      let query
-      if(conference_id){
-        query = `?conference_id=${conference_id}`
-      }
+      const query = conference_id ? `?conference_id=${conference_id}` : ''
       const response = await axiosSecure.get(`/user/dashboard${query}`)
       return response.data.data
     } catch (error) {

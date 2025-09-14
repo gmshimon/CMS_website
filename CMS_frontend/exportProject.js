@@ -6,7 +6,7 @@ const projectRoot = process.cwd() // current folder where you run the script
 const outputFile = path.join(projectRoot, 'Frontend_code.txt')
 
 // ignore folders that don't matter
-const ignore = ['node_modules', '.git', 'dist', '.vscode','exportProject.js','public']
+const ignore = ['node_modules', '.git', 'dist', '.vscode','exportProject.js','public',"src/assets/EGE_logo.png"]
 
 // recursively walk directory
 function walk (dir) {

@@ -1,28 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react'
-import { FaAward, FaBook, FaHome, FaListUl } from 'react-icons/fa'
-import {
-  IoDocumentAttachSharp,
-  IoNewspaperSharp,
-  IoPerson
-} from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { LuMessageSquare } from 'react-icons/lu'
-import { FaMessage } from 'react-icons/fa6'
+
 import MessageList from '../Component/MessageList/MessageList'
 import CurrentUser from '../Utilis/CurrentUser'
 import {
   getConference,
   setSelectedConference
 } from '../Redux/Slice/conferenceSlice'
-import socket from '../Socket/socket'
-import {
-  addNotification,
-  getNotifications,
-  updateNotification
-} from '../Redux/Slice/notificationSlice'
-import axiosSecure from '../Utilis/axiosSecure'
 import {
   adminNavOptions,
   attendee_chair_navOptions,
@@ -33,22 +20,25 @@ import {
 } from '../Utilis/navOptions'
 import { logOut, reset } from '../Redux/Slice/AuthSlice'
 import { showSuccessToast } from '../Utilis/toastUtils'
+import useSocket from '../Hooks/useSocket'
+import { getNotifications } from '../Redux/Slice/notificationSlice'
 
 const Dashboard = () => {
   const { isLoginSuccess, user } = useSelector(state => state.user)
   const { conferences, selectedConference } = useSelector(
     state => state.conference
   )
-  const { list } = useSelector(state => state.notifications)
+  const { unRead } = useSelector(state => state.notifications)
   const [navOptions, setNavOptions] = useState([])
   const [activeOptions, setActiveOptions] = useState('Home')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   CurrentUser()
+  useSocket()
   const dispatch = useDispatch()
-
   useEffect(() => {
     if (isLoginSuccess) {
       showSuccessToast('Login Successful')
+
       dispatch(reset())
     }
   }, [dispatch, isLoginSuccess])
@@ -59,13 +49,11 @@ const Dashboard = () => {
         setSelectedConference(sessionStorage.getItem('selectedConference'))
       )
     }
-    if (!socket.connected) {
-      socket.connect()
-    }
     if (!user) {
       return
     }
     if (user?._id) {
+      dispatch(getNotifications())
       if (user?.role === 'Presenter') {
         setNavOptions(presenterNavOptions)
       }
@@ -75,37 +63,16 @@ const Dashboard = () => {
       if (user?.role === 'Reviewer') {
         setNavOptions(reviewerNavOptions)
       }
-      if(user?.role === 'Session Chair'){
+      if (user?.role === 'Session Chair') {
         setNavOptions(session_chair_navOptions)
       }
-      if(user?.role === 'Attendee'){
+      if (user?.role === 'Attendee') {
         setNavOptions(attendee_chair_navOptions)
       }
-      if(user?.role === 'registration_committee'){
+      if (user?.role === 'registration_committee') {
         setNavOptions(registration_committee_navOptions)
       }
-
-      //dispatch(getNotifications())
-      // socket.emit('register', user?._id)
     }
-    // socket.on('sendNotification', notification => {
-    //   dispatch(addNotification(notification))
-    //   // toast.info(`New notification: ${notification.message}`)
-    //   if ('Notification' in window && Notification.permission === 'granted') {
-    //     new Notification(notification.title, {
-    //       body: notification.message,
-    //       icon: '/logo192.png' // Optional icon — use your own image path
-    //     })
-    //   }
-    // })
-
-    // socket.on('notificationRead', ({ notificationId }) => {
-    //   dispatch(updateNotification(notificationId))
-    // })
-    // return () => {
-    //   socket.off('sendNotification')
-    //   socket.off('notificationRead')
-    // }
   }, [dispatch, user, user?._id])
 
   const navigate = useNavigate()
@@ -117,22 +84,6 @@ const Dashboard = () => {
       dispatch(getConference('Active'))
     }
   }, [dispatch, user?.role])
-
-  //   const handleTestNotification = async () => {
-  //   const testNotification = {
-  //     user: user?._id,
-  //     title: 'Test Notification',
-  //     message: 'This is a test notification'
-  //   }
-
-  //   try {
-  //     const res = await axiosSecure.post('/notification', testNotification)
-  //     toast.success('Test notification sent via API!')
-  //   } catch (err) {
-  //     console.error(err)
-  //     toast.error('Failed to send test notification')
-  //   }
-  // }
 
   return (
     <section>
@@ -206,8 +157,8 @@ const Dashboard = () => {
                     <div className='indicator'>
                       <LuMessageSquare className='text-xl' />
                       <span className='badge badge-xs indicator-item'>
-                        {list?.unreadCount }
-                      </span>
+                        {unRead}
+                      </span> 
                     </div>
                   </div>
                   <div
@@ -273,10 +224,6 @@ const Dashboard = () => {
             className='drawer-overlay'
           ></label>
           <ul className='menu bg-slate-600 text-white min-h-full w-56 flex flex-col'>
-            {/* <h1 className='text-2xl py-7 text-center border-b'></h1> */}
-            {/* <Link to='/'> */}
-            {/* <img className='py-7 cursor-pointer' src={logo} alt='' /> */}
-            {/* </Link> */}
             {/* Sidebar content here */}
             {navOptions.map((option, index) => (
               <Link key={index} to={option.path}>

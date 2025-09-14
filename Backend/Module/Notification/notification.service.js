@@ -1,22 +1,33 @@
-import { io } from '../../socket/index.js'
+import { connectedUsers, io } from '../../socket/index.js'
 import notification from './notification.model.js'
 
-export const createNotificationService = async (user, title, message,type=null) => {
+export const createNotificationService = async (
+  user,
+  title,
+  message,
+  type = null
+) => {
   try {
     const data = {
       user,
       message,
       title,
-      type: type || 'abstract_created',
+      type: type || 'abstract_created'
     }
 
+    // 1️⃣ Save in DB
     const result = await notification.create(data)
-    const getNot = await notification
-      .findOne({ _id: result._id })
-      .populate('user')
-    io.emit('sendNotification', getNot)
+    const populated = await notification.findById(result._id).populate('user')
 
-    return result
+    // 2️⃣ Emit only to this user's sockets
+    const receiverSockets = connectedUsers.get(user.toString()) || []
+    if (receiverSockets.length > 0) {
+      receiverSockets.forEach(sid => {
+        io.to(sid).emit('newNotification', populated)
+      })
+    }
+
+    return populated
   } catch (error) {
     throw new Error(error.message)
   }
