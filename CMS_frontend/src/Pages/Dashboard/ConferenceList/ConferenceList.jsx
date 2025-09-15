@@ -1,45 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
-import { useDispatch, useSelector } from 'react-redux'
-import { getConferenceRegs } from '../../../Redux/Slice/conference_regSlice'
+import { useSelector } from 'react-redux'
 import Loading from '../../../Component/Loading/Loading'
 import ConferenceListTable from '../../../Component/ConferenceListTable/ConferenceListTable'
+import useConferece_reg from '../../../Hooks/useConferece_reg'
 
 const ConferenceList = () => {
-  const { conference_regs, getConferenceRegLoading } = useSelector(
+  const { conference_regs, getConferenceRegLoading, pagination } = useSelector(
     state => state.conferenceReg
   )
-  const { selectedConference, getConferenceLoading } = useSelector(
-    state => state.conference
-  )
+  const { getConferenceLoading } = useSelector(state => state.conference)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const conferencesPerPage = 6
-  const dispatch = useDispatch()
 
-  useEffect(() => {
-    dispatch(getConferenceRegs(selectedConference))
-  }, [selectedConference, dispatch])
-
-  // Filter conferences based on search query
-  const filteredConferences = conference_regs.filter(
-    conference =>
-      conference?.abstract?.paper_title
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-    // conference.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    // conference.status.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-
-  // // Calculate pagination
-  const indexOfLastConference = currentPage * conferencesPerPage
-  const indexOfFirstConference = indexOfLastConference - conferencesPerPage
-  const currentConferences = filteredConferences.slice(
-    indexOfFirstConference,
-    indexOfLastConference
-  )
-  const totalPages = Math.ceil(filteredConferences.length / conferencesPerPage)
+  useConferece_reg(currentPage, 10, searchQuery)
 
   return (
     <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
@@ -64,11 +39,11 @@ const ConferenceList = () => {
             </div>
           </div>
 
-          <ConferenceListTable data={currentConferences} abstract_title={true}/>
+          <ConferenceListTable data={conference_regs} abstract_title={true} />
           <div className='px-4 py-3 border-t border-gray-200'>
             <ResponsivePagination
               current={currentPage}
-              total={totalPages}
+              total={pagination?.totalPages}
               onPageChange={setCurrentPage}
             />
           </div>

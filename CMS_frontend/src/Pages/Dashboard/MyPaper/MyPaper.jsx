@@ -16,7 +16,7 @@ import { format } from 'date-fns'
 import { getStatusColor } from '../../../Utilis/getStatusColor'
 
 const MyPaper = () => {
-  const { abstracts } = useSelector(state => state.abstract)
+  const { abstracts,getAbstractLoading } = useSelector(state => state.abstract)
   const {
     createPostPaperSuccess,
     createPostPaperError,
@@ -90,6 +90,12 @@ const MyPaper = () => {
     setIsUploadModalOpen(false)
   }
 
+if(getPaperLoading || getAbstractLoading){
+  return <div className='flex justify-center items-center h-[calc(100vh-112px)]'>
+    <Loading/>
+  </div>
+}
+  
   return (
     <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       <ToastContainer />

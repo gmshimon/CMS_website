@@ -319,20 +319,20 @@ const userSlice = createSlice({
 
       //Login using the google providers
       .addCase(loginWithGoogle.pending, state => {
-          state.isLoginWithGooglePending = true
-      state.isLoginWithGoogleSuccess = false
-      state.isLoginWithGoogleError = false
+        state.isLoginWithGooglePending = true
+        state.isLoginWithGoogleSuccess = false
+        state.isLoginWithGoogleError = false
       })
       .addCase(loginWithGoogle.fulfilled, (state, action) => {
         state.user = action.payload
-      state.isLoginWithGooglePending = false
-      state.isLoginWithGoogleSuccess = true
-      state.isLoginWithGoogleError = false
+        state.isLoginWithGooglePending = false
+        state.isLoginWithGoogleSuccess = true
+        state.isLoginWithGoogleError = false
       })
       .addCase(loginWithGoogle.rejected, state => {
-      state.isLoginWithGooglePending = false
-      state.isLoginWithGoogleSuccess = false
-      state.isLoginWithGoogleError = true
+        state.isLoginWithGooglePending = false
+        state.isLoginWithGoogleSuccess = false
+        state.isLoginWithGoogleError = true
       })
 
       // Fetch User

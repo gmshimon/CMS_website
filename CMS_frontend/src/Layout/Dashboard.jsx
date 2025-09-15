@@ -24,7 +24,9 @@ import useSocket from '../Hooks/useSocket'
 import { getNotifications } from '../Redux/Slice/notificationSlice'
 
 const Dashboard = () => {
-  const { isLoginSuccess, user } = useSelector(state => state.user)
+  const { isLoginSuccess, isLoginWithGoogleSuccess, user } = useSelector(
+    state => state.user
+  )
   const { conferences, selectedConference } = useSelector(
     state => state.conference
   )
@@ -41,7 +43,13 @@ const Dashboard = () => {
 
       dispatch(reset())
     }
-  }, [dispatch, isLoginSuccess])
+    console.log(isLoginWithGoogleSuccess)
+    if (isLoginWithGoogleSuccess) {
+      showSuccessToast('Login Successful')
+
+      dispatch(reset())
+    }
+  }, [dispatch, isLoginSuccess, isLoginWithGoogleSuccess])
 
   useEffect(() => {
     if (sessionStorage.getItem('selectedConference')) {
@@ -158,7 +166,7 @@ const Dashboard = () => {
                       <LuMessageSquare className='text-xl' />
                       <span className='badge badge-xs indicator-item'>
                         {unRead}
-                      </span> 
+                      </span>
                     </div>
                   </div>
                   <div
