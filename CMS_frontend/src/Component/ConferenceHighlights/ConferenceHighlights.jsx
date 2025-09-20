@@ -23,10 +23,10 @@ const ConferenceHighlights = () => {
 
   const targetCounts = {
     days: 3,
-    workshops: 3,
+    workshops: 4,
     delegates: 50,
     speakers: 5,
-    countries: 13
+    countries: 33
   }
 
   // Intersection Observer for counter animation
@@ -73,8 +73,6 @@ const ConferenceHighlights = () => {
     }, stepDuration)
   }
 
-
-
   const stats = [
     {
       value: animatedCounts.days,
@@ -107,15 +105,14 @@ const ConferenceHighlights = () => {
     {
       value: `${animatedCounts.countries}+`,
       label: '',
-      subtitle: 'ASIAN COUNTRIES',
+      subtitle: 'COUNTRIES',
       color: 'text-yellow-400',
       icon: MapPin
     }
   ]
 
-
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden'>
+    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-950 to-purple-900 relative overflow-hidden'>
       {/* Background Pattern */}
       <div className='absolute inset-0 opacity-10'>
         <div
@@ -134,12 +131,12 @@ const ConferenceHighlights = () => {
           </h2>
 
           {/* Statistics Grid */}
-          <div className='grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 max-w-7xl mx-auto mb-20'>
+          <div className='grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 max-w-full mx-auto mb-20'>
             {stats.map((stat, index) => (
               <div key={index} className='text-center group'>
                 <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 md:p-4 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 border border-white/20'>
                   {/* Icon */}
-                  <stat.icon className='w-8 h-8 md:w-10 md:h-12 text-yellow-400 mx-auto mb-4 group-hover:scale-110 transition-transform duration-200' />
+                  <stat.icon className='w-8 h-8 md:w-10 md:h-12 text-yellow-400 mx-auto mb-4 hover:scale-110 transition-transform duration-200' />
 
                   <div className='flex justify-center items-center'>
                     {/* Number */}
@@ -183,40 +180,29 @@ const ConferenceHighlights = () => {
             <div className='bg-white/90 backdrop-blur-sm rounded-lg p-8 hover:bg-white/95 transition-all duration-300'>
               <h3 className='text-2xl md:text-3xl font-bold text-gray-800 mb-6'>
                 Elite Global Excellence International Multidisciplinary Research
-                Conference 2025 (EGEIMRC2025)
+                Conference 2026 (EGEIMRC2026)
               </h3>
 
               <div className='text-gray-700 leading-relaxed space-y-4 text-sm md:text-base'>
                 <p>
-                  The Elite Global Excellence International Multidisciplinary
-                  Research Conference 2025 (EGEIMRC2025) is a prestigious global
-                  forum designed to ignite innovation, foster collaboration, and
-                  accelerate knowledge across diverse fields—all through the
-                  transformative power of Artificial Intelligence.
+                  Elite Global Excellence International Multidisciplinary
+                  Research Conference 2026 (EGEIMRC2026) Welcome to the Elite
+                  Global Excellence International Multidisciplinary Research
+                  Conference 2026 (EGEIMRC2026), where we unite brilliant minds
+                  from across the globe to explore The Power of
+                  Interdisciplinary Knowledge in Solving Complex Problems:
+                  Bridging Science, Technology, Humanities and Beyond. This
+                  theme captures the essence of collaboration, innovation, and
+                  creativity, inviting researchers, scholars and visionaries to
+                  combine their expertise and tackle the world's most pressing
+                  challenges.
                 </p>
 
                 <p>
-                  Organized by Elite Global Excellence, this landmark event
-                  brings together a vibrant community of researchers,
-                  academicians, professionals, and industry pioneers from around
-                  the world to explore how AI is revolutionizing domains such as
-                  healthcare, education, engineering, agriculture, economics,
-                  social sciences, law, and beyond.
+                  The Elite Global Excellence International Multidisciplinary Research Conference 2026 (EGEIMRC2026) is a prestigious global research event organized by Elite Global Excellence Sdn. Bhd. With a mission to bring together scholars, researchers, students and industry professionals from diverse academic and professional fields, this conference serves as a powerful platform for sharing knowledge, presenting research findings, and exploring transformative ideas that address real-world challenges. EGEIMRC2026 welcomes participants from all disciplines and strongly encourages cross-field collaboration to inspire innovation and progress.
                 </p>
-
-                <p>
-                  EGEIMRC2025 is not just a conference—it's a convergence of
-                  disciplines and ideas, where cutting-edge research meets
-                  real-world applications. With world-renowned keynote speakers,
-                  thematic technical sessions, engaging panel discussions, and a
-                  strong focus on cross-sector innovation, this event promises
-                  to be a cornerstone in shaping a smarter, more sustainable,
-                  and inclusive future.
-                </p>
-
                 <p className='font-semibold text-blue-800'>
-                  Join us in redefining what's possible when intelligence meets
-                  excellence.
+                  Join us in redefining what's possible when intelligence meets excellence.
                 </p>
               </div>
             </div>
@@ -224,7 +210,16 @@ const ConferenceHighlights = () => {
             {/* Video Player */}
             <div className='bg-gray-900 rounded-lg overflow-hidden shadow-2xl'>
               {/* Video Container */}
-              <iframe width="100%" height="100%" src="https://www.youtube.com/embed/Yw2x6jugFhA?si=1RU4q3keRI7kkwX6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              <iframe
+                width='100%'
+                height='100%'
+                src='https://www.youtube.com/embed/Yw2x6jugFhA?si=1RU4q3keRI7kkwX6'
+                title='YouTube video player'
+                frameborder='0'
+                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                referrerpolicy='strict-origin-when-cross-origin'
+                allowfullscreen
+              ></iframe>
             </div>
           </div>
 

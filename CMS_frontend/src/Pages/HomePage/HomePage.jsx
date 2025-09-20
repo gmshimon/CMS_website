@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  ChevronDown,
-  Calendar,
-  MapPin,
-  Users,
-  Award,
-  BookOpen
-} from 'lucide-react'
+import { Calendar, MapPin, Users, Award, BookOpen } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import ConferenceHighlights from '../../Component/ConferenceHighlights/ConferenceHighlights'
 import SpeakersLineup from '../../Component/SpeakersLineup/SpeakersLineup'
@@ -25,11 +18,9 @@ const HomePage = () => {
     seconds: 0
   })
 
-
-
   // Calculate countdown
   useEffect(() => {
-    const targetDate = new Date('2025-11-21T00:00:00').getTime()
+    const targetDate = new Date('2025-11-20T00:00:00').getTime()
 
     const timer = setInterval(() => {
       const now = new Date().getTime()
@@ -54,7 +45,6 @@ const HomePage = () => {
 
   const navigate = useNavigate()
 
-
   const features = [
     {
       icon: Users,
@@ -75,15 +65,17 @@ const HomePage = () => {
 
   return (
     <>
-      <div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden'>
-        {/* Background Pattern */}
-        <div className='absolute inset-0 opacity-10'>
-          <div
-            className='absolute top-0 left-0 w-full h-full'
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-            }}
-          ></div>
+      <div className='min-h-screen  relative overflow-hidden'>
+        {/* 🎥 Video Background */}
+        <div className='absolute inset-0 overflow-hidden'>
+          <iframe
+            className='w-full h-full'
+            src='https://www.youtube.com/embed/gDPb6YXKVrc?autoplay=1&mute=1&loop=1&playlist=gDPb6YXKVrc&controls=0&showinfo=0&modestbranding=1'
+            title='YouTube video background'
+            frameBorder='0'
+            allow='autoplay; fullscreen'
+          />
+          <div className='absolute inset-0 bg-black/50'></div> {/* overlay */}
         </div>
 
         {/* Hero Section */}
@@ -94,14 +86,14 @@ const HomePage = () => {
               Elite Global Excellence
             </h1>
             <h2 className='text-2xl md:text-4xl lg:text-5xl font-bold text-yellow-400 mb-4'>
-              International Multidisciplinary Research Conference 2025
+              International Multidisciplinary Research Conference 2026
             </h2>
             <h3 className='text-xl md:text-2xl lg:text-3xl font-bold text-yellow-400 mb-8'>
-              (EGEIMRC2025)
+              (EGEIMRC2026)
             </h3>
 
             <p className='text-lg md:text-xl lg:text-2xl text-white/90 italic font-light mb-12 max-w-4xl mx-auto leading-relaxed'>
-              "AI-Driven Innovation: Bridging Science, Society, and Technology"
+              "The Power of Interdisciplinary Knowledge in Solving Complex Problems: Bridging Science, Technology, Humanities and Beyond."
             </p>
           </div>
 
@@ -111,13 +103,13 @@ const HomePage = () => {
               <div className='flex items-center space-x-2'>
                 <Calendar className='w-6 h-6 text-blue-600' />
                 <span className='text-lg font-semibold text-gray-800'>
-                  November 21st - 23rd 2025
+                  April 3rd – 5th 2026
                 </span>
               </div>
               <div className='flex items-center space-x-2'>
                 <MapPin className='w-6 h-6 text-blue-600' />
                 <span className='text-lg font-semibold text-blue-600'>
-                  UTM Skudai, JB MALAYSIA
+                  Universiti Teknologi Malaysia, Johor Bahru, Malaysia
                 </span>
               </div>
             </div>
@@ -152,10 +144,11 @@ const HomePage = () => {
               Fuel your research journey—Register now!
             </h3>
             <button
-            onClick={()=>{
+              onClick={() => {
                 navigate('/login')
-            }}
-             className='btn btn-lg bg-yellow-500 hover:bg-yellow-400 text-black font-bold border-none px-12 py-4 text-xl rounded-lg transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl'>
+              }}
+              className='btn btn-lg bg-yellow-500 hover:bg-yellow-400 text-black font-bold border-none px-12 py-4 text-xl rounded-lg transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl'
+            >
               Register
             </button>
           </div>
@@ -173,11 +166,6 @@ const HomePage = () => {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Scroll Indicator */}
-          <div className='absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce'>
-            <ChevronDown className='w-8 h-8 text-white/60' />
           </div>
         </div>
 
@@ -198,13 +186,13 @@ const HomePage = () => {
           }
         `}</style>
       </div>
-      <ConferenceHighlights/>
-      <SpeakersLineup/>
+      <ConferenceHighlights />
+      <SpeakersLineup />
       <ConferenceTracks />
-      <ImportantDatesPublication/>
-      <UnmissableBenefits/>
-      <OurPartners/>
-      <UpcomingConferences/>
+      <ImportantDatesPublication />
+      <UnmissableBenefits />
+      <OurPartners />
+      <UpcomingConferences />
     </>
   )
 }

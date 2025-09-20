@@ -36,7 +36,7 @@ const EGEConferenceIntroduction = () => {
       id: 'theme',
       title: 'Conference Theme',
       icon: Lightbulb,
-      bgColor: 'bg-green-500'
+      bgColor: 'bg-orange-500'
     },
     {
       id: 'objectives',
@@ -96,7 +96,7 @@ const EGEConferenceIntroduction = () => {
     impact: {
       title: "Global Impact",
       content: `EGEIMRC2025 creates lasting global impact through research dissemination, policy influence, and technology transfer. Our conferences have contributed to breakthrough innovations in AI applications, influenced international research agendas, and created a worldwide network of collaborating researchers committed to solving global challenges through artificial intelligence.`,
-      backgroundImage: "https://images.unsplash.com/photo-1569982175971-d92b01cf8694?w=800&h=400&fit=crop&crop=center"
+      backgroundImage: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=400&fit=crop&crop=center"
     },
     researchers: {
       title: "Opportunities for Researchers",
@@ -125,26 +125,26 @@ const EGEConferenceIntroduction = () => {
     }
   }
 
-//   const conferenceFeatures = [
-//     {
-//       title: 'EGEIMRC - International Multidisciplinary Research Conference',
-//       description: 'Our flagship conference brings together researchers from diverse disciplines to share innovative research and foster collaboration.',
-//       image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop&crop=center',
-//       features: ['Multidisciplinary Research', 'Global Participation', 'IEEE Publications', 'Best Paper Awards']
-//     },
-//     {
-//       title: 'EGEIURC - International Undergraduate Research Conference',
-//       description: 'Dedicated platform for undergraduate students to present their research and connect with the global academic community.',
-//       image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=300&fit=crop&crop=center',
-//       features: ['Student Focus', 'Mentorship Programs', 'Research Guidance', 'Future Leaders']
-//     },
-//     {
-//       title: 'Specialized Domain Conferences',
-//       description: 'Domain-specific conferences in AI, Healthcare, Sustainability, and other emerging research areas.',
-//       image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=300&fit=crop&crop=center',
-//       features: ['Specialized Topics', 'Expert Panels', 'Industry Insights', 'Innovation Showcase']
-//     }
-//   ]
+  const conferenceFeatures = [
+    {
+      title: 'EGEIMRC - International Multidisciplinary Research Conference',
+      description: 'Our flagship conference brings together researchers from diverse disciplines to share innovative research and foster collaboration.',
+      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop&crop=center',
+      features: ['Multidisciplinary Research', 'Global Participation', 'IEEE Publications', 'Best Paper Awards']
+    },
+    {
+      title: 'EGEIURC - International Undergraduate Research Conference',
+      description: 'Dedicated platform for undergraduate students to present their research and connect with the global academic community.',
+      image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=300&fit=crop&crop=center',
+      features: ['Student Focus', 'Mentorship Programs', 'Research Guidance', 'Future Leaders']
+    },
+    {
+      title: 'Specialized Domain Conferences',
+      description: 'Domain-specific conferences in AI, Healthcare, Sustainability, and other emerging research areas.',
+      image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=300&fit=crop&crop=center',
+      features: ['Specialized Topics', 'Expert Panels', 'Industry Insights', 'Innovation Showcase']
+    }
+  ]
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900'>
@@ -231,7 +231,7 @@ const EGEConferenceIntroduction = () => {
         </div>
 
         {/* Conference Features */}
-        {/* <div className='space-y-8'>
+        <div className='space-y-8'>
           {conferenceFeatures.map((feature, index) => (
             <div
               key={index}
@@ -271,7 +271,7 @@ const EGEConferenceIntroduction = () => {
               </div>
             </div>
           ))}
-        </div> */}
+        </div>
 
         {/* Conference Impact */}
         <div className='bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 md:p-12 text-center text-white'>
