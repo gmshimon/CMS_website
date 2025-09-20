@@ -19,7 +19,8 @@ const verifyJWT = token => {
 const setupWebSocket = server => {
   io = new Server(server, {
     cors: {
-      origin: 'http://vgw4k0og4cw48oww0k4sw400.31.97.71.226.sslip.io',
+      // origin: 'http://vgw4k0og4cw48oww0k4sw400.31.97.71.226.sslip.io',
+      origin: '*',
       methods: ['GET', 'POST']
     }
   })

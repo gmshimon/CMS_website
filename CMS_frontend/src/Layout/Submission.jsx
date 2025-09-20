@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react'
+import  { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Outlet, useLocation } from 'react-router'
 import Loading from '../Component/Loading/Loading'
@@ -23,21 +23,11 @@ const Submission = () => {
     paymentReminderError,
     paperReminderLoading,
     paperReminderSuccess,
-    paperReminderError
+    paperReminderError,
   } = useSelector(state => state.abstract)
-  // eslint-disable-next-line no-unused-vars
-  const [yearInput, setYearInput] = useState('')
+
   const dispatch = useDispatch()
   const location = useLocation()
-  // eslint-disable-next-line no-unused-vars
-  const handleSearch = () => {
-    if (!yearInput || yearInput < 1900 || yearInput > 3000) {
-      alert('Please enter a valid year')
-      return
-    }
-    // TODO: Trigger API or filter logic using yearInput
-    console.log('Searching submissions for year:', yearInput)
-  }
 
   useEffect(() => {
     if (changeAbstractDecisionSuccess) {
@@ -108,7 +98,7 @@ const Submission = () => {
     )
   }
   return (
-    <div className='p-6'>
+    <div className='p-3'>
       <ToastContainer/>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         {location.pathname === '/admin/submission'

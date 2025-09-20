@@ -33,7 +33,7 @@ const PresenterHome = () => {
   }
 
   return (
-    <div className='p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>
         Dashboard Overview
       </h2>
@@ -102,8 +102,11 @@ const PresenterHome = () => {
             Recent Submissions
           </h3>
           <div className='space-y-4'>
-            {myStats?.recentSubmissions?.map((item,idx) => (
-              <div key={idx} className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'>
+            {myStats?.recentSubmissions?.map((item, idx) => (
+              <div
+                key={idx}
+                className='flex items-center justify-between p-4 bg-gray-50 rounded-lg'
+              >
                 <div>
                   <p className='font-medium text-gray-800'>
                     {item?.paper_title}
@@ -168,48 +171,54 @@ const PresenterHome = () => {
         </div>
       </div>
       <div className='mt-8 grid grid-cols-1'>
-  <div className='bg-white rounded-lg shadow-md p-6'>
-    <h3 className='text-xl font-semibold text-gray-800 mb-4'>
-      File Naming Instructions
-    </h3>
-    <p className='text-gray-700 mb-4'>
-      To ensure your submissions are processed smoothly, please follow the
-      naming guidelines below when uploading your documents:
-    </p>
+        <div className='bg-white rounded-lg shadow-md p-6'>
+          <h3 className='text-xl font-semibold text-gray-800 mb-4'>
+            File Naming Instructions
+          </h3>
+          <p className='text-gray-700 mb-4'>
+            To ensure your submissions are processed smoothly, please follow the
+            naming guidelines below when uploading your documents:
+          </p>
 
-    <ul className='space-y-3 text-gray-700'>
-      <li className='flex items-start'>
-        <span className='w-2 h-2 mt-2 bg-blue-500 rounded-full mr-3'></span>
-        <span>
-          <strong>First Submission:</strong> Keep the file name simple and
-          clear. For example: <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title.pdf</code>
-        </span>
-      </li>
-      <li className='flex items-start'>
-        <span className='w-2 h-2 mt-2 bg-yellow-500 rounded-full mr-3'></span>
-        <span>
-          <strong>Minor Revision:</strong> Mention the revision type in the
-          file name. For example:{' '}
-          <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title_MinorRevision.pdf</code>
-        </span>
-      </li>
-      <li className='flex items-start'>
-        <span className='w-2 h-2 mt-2 bg-red-500 rounded-full mr-3'></span>
-        <span>
-          <strong>Major Revision:</strong> Clearly indicate the revision in
-          the file name. For example:{' '}
-          <code className='bg-gray-100 px-1 py-0.5 rounded'>Paper_Title_MajorRevision.pdf</code>
-        </span>
-      </li>
-    </ul>
+          <ul className='space-y-3 text-gray-700'>
+            <li className='flex items-start'>
+              <span className='w-2 h-2 mt-2 bg-blue-500 rounded-full mr-3'></span>
+              <span>
+                <strong>First Submission:</strong> Keep the file name simple and
+                clear. For example:{' '}
+                <code className='bg-gray-100 px-1 py-0.5 rounded'>
+                  Paper_Title.pdf
+                </code>
+              </span>
+            </li>
+            <li className='flex items-start'>
+              <span className='w-2 h-2 mt-2 bg-yellow-500 rounded-full mr-3'></span>
+              <span>
+                <strong>Minor Revision:</strong> Mention the revision type in
+                the file name. For example:{' '}
+                <code className='bg-gray-100 px-1 py-0.5 rounded'>
+                  Paper_Title_MinorRevision.pdf
+                </code>
+              </span>
+            </li>
+            <li className='flex items-start'>
+              <span className='w-2 h-2 mt-2 bg-red-500 rounded-full mr-3'></span>
+              <span>
+                <strong>Major Revision:</strong> Clearly indicate the revision
+                in the file name. For example:{' '}
+                <code className='bg-gray-100 px-1 py-0.5 rounded'>
+                  Paper_Title_MajorRevision.pdf
+                </code>
+              </span>
+            </li>
+          </ul>
 
-    <p className='mt-4 text-sm text-gray-600 italic'>
-      💡 Following these instructions helps reviewers and administrators
-      easily track your submission versions.
-    </p>
-  </div>
-</div>
-
+          <p className='mt-4 text-sm text-gray-600 italic'>
+            💡 Following these instructions helps reviewers and administrators
+            easily track your submission versions.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

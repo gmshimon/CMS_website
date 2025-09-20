@@ -84,7 +84,7 @@ const AdminHome = () => {
   // ]
 
   return (
-    <div className='p-6 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-[calc(100vh-64px)]'>
+    <div className='p-3 bg-gradient-to-br from-blue-50 via-white to-indigo-50 min-h-[calc(100vh-64px)]'>
       <h2 className='text-2xl font-bold text-gray-800 mb-6'>Dashboard Overview</h2>
 
       {/* Action Cards */}

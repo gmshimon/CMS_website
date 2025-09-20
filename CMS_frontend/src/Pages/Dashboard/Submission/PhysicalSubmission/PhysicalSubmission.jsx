@@ -5,9 +5,10 @@ import useSubmissions from '../../../../Hooks/useSubmissions'
 import { useSelector } from 'react-redux'
 import EditSubmissionModal from '../../../../Component/EditSubmissionModal/EditSubmissionModal'
 import { getStatusColor } from '../../../../Utilis/getStatusColor'
+import Loading from '../../../../Component/Loading/Loading'
 
 const PhysicalSubmission = () => {
-  const { abstracts } = useSelector(state => state.abstract)
+  const { abstracts, getAbstractLoading } = useSelector(state => state.abstract)
   const [modalOpen, setModalOpen] = useState(false)
   const [data, setData] = useState()
 
@@ -24,7 +25,13 @@ const PhysicalSubmission = () => {
     setData(row)
     setModalOpen(true)
   }
-
+  if (getAbstractLoading) {
+    return (
+      <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
+        <Loading />
+      </div>
+    )
+  }
 
   return (
     <div>

@@ -5,9 +5,10 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import CurrentUser from '../../Utilis/CurrentUser'
 
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({ children, allowedRoles }) => {
   const { user, isGetUserDataLoading } = useSelector(state => state.user)
   const navigate = useNavigate()
+  const location = useLocation()
 
   CurrentUser()
 
@@ -31,6 +32,17 @@ const PrivateRoute = ({ children }) => {
       </div>
     )
   }
+
+  // not logged in
+  if (!user?.email) {
+    return <Navigate to='/login' state={{ from: location }} replace />
+  }
+
+  // role-based check
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to='/unauthorized' replace />
+  }
+
   // authenticated!
   return <>{children}</>
 }

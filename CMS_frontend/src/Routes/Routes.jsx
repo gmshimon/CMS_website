@@ -177,16 +177,16 @@ export const router = createBrowserRouter([
         element: <MyReviewDetailPage />
       },
       {
-        path:'list',
-        element:<AdminAttendeeList/>
+        path: 'list',
+        element: <AdminAttendeeList />
       },
       {
         path: 'schedule/:id',
         element: <ScheduleAbstractsPage />
       },
       {
-        path:'attendee-list',
-        element:<AttendeeListPage/>
+        path: 'attendee-list',
+        element: <AttendeeListPage />
       },
       // Scheduling Routes Admin
       {

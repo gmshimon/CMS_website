@@ -43,7 +43,6 @@ const Dashboard = () => {
 
       dispatch(reset())
     }
-    console.log(isLoginWithGoogleSuccess)
     if (isLoginWithGoogleSuccess) {
       showSuccessToast('Login Successful')
 

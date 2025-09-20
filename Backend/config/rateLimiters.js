@@ -19,7 +19,7 @@ export const mediumLimiter = createRateLimiter({
 // Standard API usage (general browsing, dashboards)
 export const standardLimiter = createRateLimiter({
   windowMs: 1 * 60 * 1000, // 1 min
-  max: 100,
+  max: 200,
   keyType: 'hybrid',
 })
 
