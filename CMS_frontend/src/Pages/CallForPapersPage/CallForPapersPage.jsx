@@ -5,8 +5,17 @@ import {
   BookOpen,
   Users,
   Award,
-  Target
+  Computer,
+  BatteryPlus,
+  Earth,
+  Building2,
+  Component,
+  Vegan,
+  Factory
 } from 'lucide-react'
+import { MdScience,MdOutlinePsychology,MdOutlineEmojiTransportation   } from "react-icons/md";
+import { GiRevolt } from "react-icons/gi";
+import { RiGovernmentFill } from "react-icons/ri";
 
 const CallForPapersPage = () => {
   const [expandedTrack, setExpandedTrack] = useState(null)
@@ -14,121 +23,219 @@ const CallForPapersPage = () => {
   const tracks = [
     {
       id: 1,
-      title: 'Computer Science & Information Technology',
-      icon: BookOpen,
+      title: 'Science, Technology & Engineering',
+      icon: MdScience,
       subtopics: [
-        'Artificial Intelligence & Machine Learning',
-        'Natural Language Processing',
-        'Computer Vision & Image Processing',
-        'Data Science & Big Data Analytics',
-        'Cybersecurity & Blockchain',
-        'Internet of Things (IoT) & AIoT',
-        'Human-Computer Interaction',
-        'Cloud & Edge Computing',
-        'Software Engineering',
-        'Quantum Computing'
+        'Aerospace & Automotive Engineering',
+        'Artificial Intelligence, Machine Learning & Deep Learning',
+        'Data Science & Data Analytics ',
+        'Chemical & Materials Engineering',
+        'Civil, Structural & Environmental Engineering',
+        'Electrical, Electronics & Communication Engineering',
+        'Internet of Things (IoT) & Smart Systems',
+        'Mechanical & Industrial Engineering',
+        'Quantum Computing & Emerging Technologies',
+        'Renewable Energy & Sustainable Engineering',
+        'Robotics ',
+        'Automation & Control Systems'
       ]
     },
     {
       id: 2,
-      title: 'Business, Management & Finance',
-      icon: Target,
+      title: 'Information & Communication Technology (ICT)',
+      icon: Computer,
       subtopics: [
-        'Digital Transformation & AI in Business',
-        'Financial Technology & Fintech Innovation',
-        'Supply Chain Management & Optimization',
-        'Strategic Management & Leadership',
-        'Marketing Analytics & Consumer Behavior',
-        'Entrepreneurship & Innovation Management',
-        'Risk Management & Financial Modeling',
-        'E-commerce & Digital Marketing',
-        'Human Resource Management',
-        'Sustainable Business Practices'
+        '5G & Next-Generation Networks',
+        'Blockchain Technology & Cryptography',
+        'Cloud Computing & Big Data Analytics',
+        'Cybersecurity & Privacy',
+        'Digital Transformation & Society',
+        'Human-Computer Interaction (HCI)',
+        'ICT for Development (ICT4D)',
+        'Information Systems & Knowledge Management',
+        'Software Engineering & Application Development',
+        'Virtual, Augmented & Mixed Reality'
       ]
     },
     {
       id: 3,
-      title: 'Civil & Environmental Engineering',
-      icon: Award,
+      title: 'Health, Medicine & Life Sciences',
+      icon: BatteryPlus,
       subtopics: [
-        'Smart Cities & Urban Planning',
-        'Sustainable Infrastructure Development',
-        'Environmental Monitoring & Protection',
-        'Climate Change & Adaptation Strategies',
-        'Water Resources Management',
-        'Geotechnical & Structural Engineering',
-        'Transportation Systems & Mobility',
-        'Green Building & Construction Technology',
-        'Disaster Risk Management',
-        'Renewable Energy Systems'
+        'Biomedical Engineering & Biotechnology',
+        'Healthcare Policy & Management',
+        'Medical Imaging & Diagnostics',
+        'Mental Health & Psychology',
+        'Nursing & Clinical Care',
+        'Nutrition & Food Sciences',
+        'Pharmaceuticals & Drug Development',
+        'Precision Medicine & Genomics',
+        'Public Health & Epidemiology',
+        'Telemedicine & Digital Health'
       ]
     },
     {
       id: 4,
-      title: 'Social Sciences & Humanities',
-      icon: Users,
+      title: 'Environmental & Earth Sciences',
+      icon: Earth,
       subtopics: [
-        'AI Ethics & Society',
-        'Digital Humanities & Cultural Studies',
-        'Psychology & Behavioral Sciences',
-        'Education Technology & Learning Analytics',
-        'Communication & Media Studies',
-        'Political Science & Governance',
-        'Sociology & Social Innovation',
-        'Philosophy & Technology',
-        'Anthropology & Digital Culture',
-        'Linguistics & Language Technology'
+        'Agriculture, Forestry & Aquaculture',
+        'Biodiversity & Conservation',
+        'Climate Change & Sustainability',
+        'Disaster Risk Reduction & Management',
+        'Environmental Policy & Governance',
+        'Environmental Pollution & Remediation',
+        'Geology, Geophysics & Geoinformatics',
+        'Renewable Energy & Green Technologies',
+        'Urban Planning & Smart Cities',
+        'Water Resources & Hydrology'
       ]
     },
     {
       id: 5,
-      title: 'Mechanical & Industrial Engineering',
-      icon: Target,
+      title: 'Social Sciences & Humanities',
+      icon: GiRevolt,
       subtopics: [
-        'Industry 4.0 & Smart Manufacturing',
-        'Robotics & Automation',
-        'Advanced Materials & Nanotechnology',
-        'Energy Systems & Thermal Engineering',
-        'Manufacturing Processes & Quality Control',
-        'Mechanical Design & CAD/CAM',
-        'Operations Research & Optimization',
-        'Supply Chain & Logistics Engineering',
-        'Maintenance & Reliability Engineering',
-        'Additive Manufacturing & 3D Printing'
+        'Communication, Media & Journalism',
+        'Economics, Development Studies & Global Trade',
+        'Education, Pedagogy & Teacher Training',
+        'Gender Studies & Social Justice',
+        'History, Archaeology & Heritage Preservation',
+        'Law, Human Rights & International Relations',
+        'Linguistics, Literature & Languages',
+        'Political Science, Governance & Public Policy',
+        'Psychology, Counselling & Behavioural Studies',
+        'Sociology, Anthropology & Cultural Studies'
       ]
     },
     {
       id: 6,
-      title: 'Electrical & Electronics Engineering',
-      icon: Award,
+      title: 'Business, Management & Economics',
+      icon: Building2,
       subtopics: [
-        'Power Systems & Smart Grid Technology',
-        'Electronic Circuits & VLSI Design',
-        'Signal Processing & Communications',
-        'Control Systems & Automation',
-        'Renewable Energy & Power Electronics',
-        'Embedded Systems & Microcontrollers',
-        'Wireless Networks & 5G Technology',
-        'Sensors & Instrumentation',
-        'Electromagnetic Engineering',
-        'Biomedical Electronics'
+        'Strategic Management & Leadership',
+        'Entrepreneurship & Innovation',
+        'Digital Business & E-Commerce',
+        'Banking, Finance & Investment',
+        'Supply Chain & Operations Management',
+        'Marketing, Consumer Behaviour & Branding',
+        'International Business & Trade',
+        'Corporate Social Responsibility & Ethics',
+        'Tourism, Hospitality & Event Management',
+        'Human Resource Management & Organisational Behaviour'
       ]
     },
     {
       id: 7,
-      title: 'Health & Biomedical Sciences',
-      icon: Users,
+      title: 'Arts, Design & Creative Industries',
+      icon: Component,
       subtopics: [
-        'AI in Healthcare & Medical Diagnosis',
-        'Biomedical Engineering & Medical Devices',
-        'Precision Medicine & Genomics',
-        'Health Informatics & Digital Health',
-        'Pharmaceutical Sciences & Drug Discovery',
-        'Public Health & Epidemiology',
-        'Medical Imaging & Radiology',
-        'Telemedicine & Remote Healthcare',
-        'Biotechnology & Bioengineering',
-        'Clinical Research & Evidence-Based Medicine'
+        'Architecture & Interior Design',
+        'Art History & Criticism',
+        'Creative Writing & Literary Arts',
+        'Fashion Design & Textile Studies',
+        'Film, Television & Digital Media',
+        'Fine Arts, Painting & Sculpture',
+        'Game Design & Interactive Media',
+        'Graphic Design & Multimedia Arts',
+        'Performing Arts (Music, Dance, Theatre)',
+        'Photography, Visual Arts & Storytelling'
+      ]
+    },
+    {
+      id: 8,
+      title: 'Education, Learning & Pedagogy',
+      icon: BookOpen ,
+      subtopics: [
+        'Assessment, Testing & Evaluation',
+        'Curriculum Development & Instructional Design',
+        'Early Childhood Education',
+        'Educational Technology & E-Learning',
+        'Global Education Policies & Reforms',
+        'Higher Education & University Management',
+        'Inclusive & Special Needs Education',
+        'Lifelong Learning & Adult Education',
+        'STEM Education & Innovative Teaching Methods',
+        'Teacher Professional Development'
+      ]
+    },
+    {
+      id: 9,
+      title: 'Agriculture, Food & Rural Development',
+      icon: Vegan,
+      subtopics: [
+        'Agricultural Economics & Policy',
+        'Climate-Resilient Farming',
+        'Crop Science & Soil Management',
+        'Fisheries & Aquaculture Technology',
+        'Food Safety & Quality',
+        'Livestock Production & Veterinary Science',
+        'Post-Harvest Technology & Food Processing',
+        'Rural Development & Poverty Alleviation',
+        'Smart Farming & AgriTech',
+        'Sustainable Agriculture Practices'
+      ]
+    },
+    {
+      id: 10,
+      title: 'Energy, Power & Industrial Innovation',
+      icon: Factory,
+      subtopics: [
+        'Renewable Energy Systems (Solar, Wind, Hydro)',
+        'Energy Storage & Battery Technologies',
+        'Nuclear Energy & Safety',
+        'Oil, Gas & Petrochemical Innovations',
+        'Smart Grids & Power Distribution',
+        'Energy Efficiency & Conservation',
+        'Industrial Automation & Industry 4.0',
+        'Sustainable Manufacturing Technologies',
+        'Industrial Safety & Risk Management',
+        'Circular Economy & Waste-to-Energy Solutions'
+      ]
+    },
+    {
+      id: 11,
+      title: 'Policy & Governance ',
+      icon: RiGovernmentFill,
+      subtopics: [
+        'Intellectual Property Rights (IPR)',
+        'Human Rights & Social Justice',
+        'Public Administration & Governance',
+        'Anti-Corruption, Ethics & Transparency'
+      ]
+    },
+    {
+      id: 12,
+      title: 'Psychology, Behaviour & Society',
+      icon: MdOutlinePsychology ,
+      subtopics: [
+        'Social & Behavioural Psychology',
+        'Cognitive Neuroscience & Brain Studies',
+        'Developmental & Educational Psychology',
+        'Industrial & Organisational Psychology',
+        'Counselling & Mental Health Interventions',
+        'Cross-Cultural Psychology',
+        'Health Psychology & Behavioural Medicine',
+        'Personality & Individual Differences',
+        'Positive Psychology & Well-being',
+        'Forensic Psychology & Crime Behaviour'
+      ]
+    },
+    {
+      id: 13,
+      title: 'Transport, Logistics & Infrastructure',
+      icon: MdOutlineEmojiTransportation ,
+      subtopics: [
+        'Intelligent Transportation Systems (ITS)',
+        'Sustainable Urban Mobility',
+        'Aviation & Aeronautical Systems',
+        'Marine & Shipping Logistics',
+        'Railway Systems & High-Speed Transport',
+        'Supply Chain Digitalisation',
+        'Freight Management & Warehousing',
+        'Public Transport Policy & Planning',
+        'Road Safety & Traffic Management',
+        'Infrastructure Development & Maintenance'
       ]
     }
   ]
@@ -153,12 +260,25 @@ const CallForPapersPage = () => {
           <h1 className='text-4xl md:text-6xl font-bold mb-6 tracking-wider text-yellow-500'>
             Call For Papers
           </h1>
-          <p className='text-lg md:text-xl text-justify text-white/80 max-w-3xl mx-auto leading-relaxed'>
-            EGEIMRC2025 offers a diverse array of session tracks designed to
-            provide comprehensive insights and foster discussions across various
-            disciplines. We invite researchers, academicians and professionals
-            to submit their papers. Topics of interest include but are not
-            limited to:
+          <p className='text-lg md:text-xl text-justify text-white/80 max-w-7xl mx-auto leading-relaxed'>
+            The Elite Global Excellence International Multidisciplinary Research
+            Conference 2026 (EGEIMRC2026) invites researchers, academicians,
+            industry professionals and thought leaders from around the world to
+            contribute to this prestigious platform. With its diverse and
+            inclusive nature, EGEIMRC2026 offers a wide range of session tracks
+            that reflect the richness of multidisciplinary research and its
+            power to address today’s most complex global challenges. <br/>
+            We welcome original research papers including case studies, review papers and
+            innovative project findings that inspire dialogue, encourage
+            collaboration, and open pathways to impactful solutions.
+            Participants will benefit from peer-reviewed feedback, international
+            recognition, publication opportunities, and the chance to present
+            their work before a global audience of experts and practitioners.
+            Topics of interest include, but are not limited to, the wide
+            spectrum of disciplines highlighted in the list below. By exploring
+            this variety, we aim to bridge science, technology, humanities,
+            business, health, environment and beyond—ensuring that every voice
+            and field of knowledge contributes to shaping the future.
           </p>
         </div>
       </div>
