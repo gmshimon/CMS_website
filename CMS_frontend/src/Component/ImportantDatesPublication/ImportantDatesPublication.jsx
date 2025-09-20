@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Calendar,
   Clock,
@@ -10,7 +10,6 @@ import {
 import Marquee from 'react-fast-marquee'
 
 const ImportantDatesPublication = () => {
-  const [currentDate, setCurrentDate] = useState(new Date())
   const [timeRemaining, setTimeRemaining] = useState({})
 
   // Important dates data
@@ -64,22 +63,34 @@ const ImportantDatesPublication = () => {
 
   // Partner logos data
   const partners = [
-    { name: 'PEOPLEAPS', logo: 'PEOPLEAPS' },
-    { name: 'SKILLSTURE', logo: 'SKILLSTURE' },
-    { name: 'TALENT', logo: 'TALENT' },
-    { name: 'SKILL', logo: 'SKILL' },
-    { name: 'GOAL', logo: 'GOAL' },
-    { name: 'SOUL', logo: 'SOUL' },
-    { name: 'PEOPLElogy', logo: 'PEOPLElogy' },
-    { name: 'managemen', logo: 'managemen' },
-    { name: 'CompTIA', logo: 'CompTIA' }
+    {
+      name: 'City University pakistan',
+      logo: '/Collaborators Logos/City University pakistan.png'
+    },
+    { name: 'Fatima-Jinnah-Women-University', logo: '/Collaborators Logos/Fatima-Jinnah-Women-University-logo.png' },
+    { name: 'federal university of technology minna', logo: '/Collaborators Logos/federal university of technology minna.png' },
+    { name: 'Fedral University DUTSE', logo: '/Collaborators Logos/Fedral University DUTSE.jpeg' },
+    { name: 'Gift University Logo', logo: '/Collaborators Logos/Gift University Logo.webp' },
+    { name: 'Great St.petersburg Polytechnic University', logo: '/Collaborators Logos/Great St.petersburg Polytechnic University.jpg' },
+    { name: 'UTM', logo: '/Collaborators Logos/LOGO-UTM.png' },
+    { name: 'Mehran University', logo: '/Collaborators Logos/Mehran University.png' },
+    { name: 'Multi media university', logo: '/Collaborators Logos/Multi media university.jpeg' },
+    { name: 'NUST', logo: '/Collaborators Logos/NUST-logo.png' },
+    { name: 'Pak Austria University', logo: '/Collaborators Logos/Pak Austria University.png' },
+    { name: 'Soft Skill Academy indinesi', logo: '/Collaborators Logos/Soft Skill Academy indinesia.jpeg' },
+    { name: 'Telkom University indonesia', logo: '/Collaborators Logos/Telkom University indonesia.png' },
+    { name: 'Universit of Faisalaabad', logo: '/Collaborators Logos/Universit of Faisalaabad.png' },
+    { name: 'university of baghdad', logo: '/Collaborators Logos/university of baghdad.png' },
+    { name: 'University of Cape Coast', logo: '/Collaborators Logos/University of Cape Coast.png' },
+    { name: 'University of Mosul', logo: '/Collaborators Logos/University of Mosul.png' },
+    { name: 'Unoiversity of Sargodha', logo: '/Collaborators Logos/Unoiversity of Sargodha.jpg' },
+    { name: 'VTT Technical Research Center of Finland', logo: '/Collaborators Logos/VTT Technical Research Center of Finland.png' },
   ]
 
   // Calculate time remaining for each date
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date()
-      setCurrentDate(now)
 
       const newTimeRemaining = {}
       importantDates.forEach(item => {
@@ -218,14 +229,16 @@ const ImportantDatesPublication = () => {
             </h2>
             <div className='max-w-6xl mx-auto'>
               <p className='text-lg md:text-xl text-white/90 leading-relaxed'>
-                All submitted papers will be reviewed and evaluated based on
-                originality, technical, research content, contributions, and
-                readability. Accepted papers will be submitted for inclusion
-                into{' '}
-                <span className='text-yellow-400 font-bold'>
+                All submitted papers will undergo a rigorous peer-review process
+                and will be evaluated based on originality, technical quality,
+                research depth, contribution to the field and overall
+                readability. Accepted high-quality papers will be considered for
+                publication in well-reputed, high-impact factor journals,
+                aligned with the specific discipline of desire paper.{' '}
+                {/* <span className='text-yellow-400 font-bold'>
                   IEEE Xplore (Indexed by SCOPUS)
                 </span>
-                .
+                . */}
               </p>
             </div>
           </div>
@@ -236,7 +249,8 @@ const ImportantDatesPublication = () => {
               <Award className='w-12 h-12 text-yellow-400 mx-auto mb-4' />
               <h3 className='text-xl font-bold text-white mb-3'>IEEE Xplore</h3>
               <p className='text-white/80'>
-                Published in prestigious IEEE digital library
+                Web of Science (Publish in Prestigious Web of Science Index
+                Journal){' '}
               </p>
             </div>
             <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center hover:bg-white/15 transition-all duration-300'>
@@ -272,9 +286,14 @@ const ImportantDatesPublication = () => {
                   key={index}
                   className='group bg-white rounded-lg p-4  transition-all duration-300 transform mt-2 flex items-center justify-center h-24 mx-4 min-w-[120px]'
                 >
-                  <div className='text-sm font-bold text-gray-700 group-hover:text-blue-600 transition-colors duration-200'>
+                  <img
+                    className='h-16 object-contain'
+                    src={partner.logo}
+                    alt=''
+                  />
+                  {/* <div className='text-sm font-bold text-gray-700 group-hover:text-blue-600 transition-colors duration-200'>
                     {partner.logo}
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </Marquee>
@@ -282,11 +301,13 @@ const ImportantDatesPublication = () => {
             {/* Partnership Call to Action */}
             <div className='text-center mt-8 pt-8 border-t border-gray-200'>
               <p className='text-gray-600 mb-4'>
-                Interested in becoming a partner?
+               Interested in becoming a partner??
               </p>
+              <a href="https://forms.gle/v55KdZNj5JB2HxaC8" target='_blank'>
               <button className='bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg'>
-                Partner With Us
+                Collaborate With US
               </button>
+              </a>
             </div>
           </div>
         </div>
