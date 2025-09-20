@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 
 const OurPartners = () => {
+  // eslint-disable-next-line no-unused-vars
   const [activeTab, setActiveTab] = useState('sponsors')
 
   const sponsors = [
@@ -174,7 +175,7 @@ const OurPartners = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden py-16 px-4'>
+    <div className='min-h-screen bg-gradient-to-br from-gray-950 via-blue-950 to-purple-950 relative overflow-hidden py-16 px-4'>
       {/* Background Pattern */}
       <div className='absolute inset-0 opacity-5'>
         <div
@@ -193,13 +194,13 @@ const OurPartners = () => {
             <span className='text-white'>PARTNERS</span>
           </h1>
           <p className='text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed'>
-            Meet our valued sponsors and exhibitors who make EGEIMRC2025
+            Meet our valued sponsors and exhibitors who make EGEIMRC2026
             possible
           </p>
         </div>
 
         {/* Tabs */}
-        <div className='flex justify-center mb-12'>
+        {/* <div className='flex justify-center mb-12'>
           <div className='bg-white/10 backdrop-blur-sm rounded-full p-2 inline-flex'>
             <button
               onClick={() => setActiveTab('sponsors')}
@@ -224,7 +225,7 @@ const OurPartners = () => {
               Exhibitors
             </button>
           </div>
-        </div>
+        </div> */}
 
         {/* Content */}
         <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8'>
@@ -324,21 +325,23 @@ const OurPartners = () => {
             <div className='flex items-center justify-center mb-6'>
               <Users className='w-12 h-12 text-black mr-4' />
               <h3 className='text-2xl md:text-4xl font-bold text-black'>
-                Become Our Partner
+                Become Our Sponsor
               </h3>
             </div>
             <p className='text-black/80 mb-8 text-lg leading-relaxed'>
-              Join our prestigious list of {activeTab} and gain global exposure
-              at EGEIMRC2025
+              Join our prestigious list of sponsors and gain global exposure at
+              EGEIMRC2026
             </p>
             <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <button className='bg-black hover:bg-gray-800 text-white font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-300 shadow-lg'>
+              <a href="https://forms.gle/tkuJ15hSmkCWMAXH9" target='_blank'>
+                <button className='bg-black hover:bg-gray-800 text-white font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-300 shadow-lg h-full'>
                 {activeTab === 'sponsors'
                   ? 'Become a Sponsor'
                   : 'Book Exhibition Space'}
               </button>
+              </a>
               <button className='bg-transparent border-2 border-black hover:bg-black hover:text-white text-black font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-300'>
-                Partnership Package
+                Sponsor Package
               </button>
             </div>
           </div>

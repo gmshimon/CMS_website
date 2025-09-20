@@ -6,7 +6,7 @@ const UpcomingConferences = () => {
     title: 'Elite Global Excellence International',
     subtitle: 'Undergraduate Research Conference 2026',
     shortName: 'EGEIURC2026',
-    date: 'March 15-17, 2026',
+    date: 'November 4-7, 2027',
     fullDate: '2026-03-15T00:00:00',
     location: 'Kuala Lumpur, Malaysia',
     description:
@@ -42,9 +42,11 @@ const UpcomingConferences = () => {
           <h1 className='text-4xl md:text-6xl font-bold text-white mb-6 tracking-wider'>
             Upcoming Conferences
           </h1>
-          <p className='text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed'>
-            Discover our exciting lineup of international conferences designed
-            to advance research and foster global collaboration
+          <p className='text-lg md:text-xl text-white/80 max-w-4xl mx-auto leading-relaxed'>
+            Be part of our upcoming international gatherings where knowledge
+            meets opportunity—bringing together scholars, professionals, and
+            innovators from diverse fields to exchange ideas, showcase research,
+            and build collaborations that shape a better future.
           </p>
         </div>
 

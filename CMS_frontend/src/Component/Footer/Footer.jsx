@@ -1,5 +1,14 @@
 import { NavLink } from 'react-router-dom'
-
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaTiktok,
+  FaYoutube,
+  FaTelegramPlane,
+  FaWhatsapp,
+  FaLinkedinIn
+} from 'react-icons/fa'
+import { FaXTwitter } from 'react-icons/fa6'
 const Footer = () => {
   const quickLinks = [
     { label: 'Home', to: '/' },
@@ -28,26 +37,7 @@ const Footer = () => {
             {/* Brand */}
             <div>
               <div className='flex items-center space-x-3'>
-                <div
-                  className='w-12 h-12 rounded-full flex items-center justify-center shadow-md'
-                  style={{ backgroundColor: 'rgb(61,43,137)' }}
-                >
-                  <span className='text-white font-bold text-sm'>EGE</span>
-                </div>
-                <div>
-                  <h2
-                    className='text-xl font-bold'
-                    style={{ color: 'rgb(61,43,137)' }}
-                  >
-                    ELITE GLOBAL
-                  </h2>
-                  <p
-                    className='text-sm font-semibold'
-                    style={{ color: '#FFD66B' }}
-                  >
-                    EXCELLENCE
-                  </p>
-                </div>
+                <img src='/assets/EGE_logo.png' alt='' />
               </div>
               <p className='mt-4 text-sm text-gray-600 leading-relaxed'>
                 Elite Global Excellence (EGE) advances research and
@@ -148,6 +138,73 @@ const Footer = () => {
                   </button>
                 </div>
               </form>
+              {/* Social Media Icons */}
+              <div className='mt-6'>
+                <div className='flex flex-wrap gap-4 justify-center lg:justify-start'>
+                  {[
+                    {
+                      name: 'Facebook',
+                      color: 'bg-blue-600',
+                      icon: <FaFacebookF />,
+                      link: 'https://www.facebook.com/Eliteglobalexcellence'
+                    },
+                    {
+                      name: 'Instagram',
+                      color: 'bg-gradient-to-tr from-pink-500 to-yellow-400',
+                      icon: <FaInstagram />,
+                      link: 'https://www.instagram.com/eliteglobalexcellence?igsh=MWZubDNzdnJuYmt4Yw=='
+                    },
+                    {
+                      name: 'Twitter',
+                      color: 'bg-black',
+                      icon: <FaXTwitter />,
+                      link: 'https://twitter.com/'
+                    },
+                    {
+                      name: 'TikTok',
+                      color: 'bg-black',
+                      icon: <FaTiktok />,
+                      link: 'https://www.tiktok.com/@eliteglobalexcellence?_t=ZS-8zjLvUNVZ8D&_r=1'
+                    },
+                    {
+                      name: 'YouTube',
+                      color: 'bg-red-600',
+                      icon: <FaYoutube />,
+                      link: 'https://www.youtube.com/@eliteglobalexcellence'
+                    },
+                    {
+                      name: 'Telegram',
+                      color: 'bg-sky-500',
+                      icon: <FaTelegramPlane />,
+                      link: 'https://t.me/'
+                    },
+                    {
+                      name: 'WhatsApp',
+                      color: 'bg-green-500',
+                      icon: <FaWhatsapp />,
+                      link: 'https://wa.me/+60 11-2116 6164' // ✅ replace with your number
+                    },
+                    {
+                      name: 'LinkedIn',
+                      color: 'bg-blue-700',
+                      icon: <FaLinkedinIn />,
+                      link: 'https://www.linkedin.com/company/elite-global-excellence/'
+                    }
+                  ].map((social, index) => (
+                    <a
+                      key={index}
+                      href={social.link}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className={`w-12 h-12 ${social.color} text-white text-xl rounded-lg flex items-center justify-center 
+                    shadow-md hover:shadow-lg hover:scale-110 transition-all duration-300 cursor-pointer`}
+                      title={social.name}
+                    >
+                      <span className='text-4xl'>{social.icon}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>

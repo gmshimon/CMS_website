@@ -19,7 +19,7 @@ const UnmissableBenefits = () => {
       title: 'SHOWCASE YOUR RESEARCH TO A GLOBAL AUDIENCE',
       subtitle: 'Present to International Experts',
       description:
-        'Share your groundbreaking research with leading academics, industry professionals, and researchers from around the world. Gain valuable feedback and recognition for your work in front of a prestigious international audience.',
+        'Your research will be published in prestigious well-reputed journals, indexed in Scopus or Web of Science, ensuring maximum visibility and citations for your work. Boost your academic profile and research impact.',
       icon: Users,
       color: 'from-blue-600 to-blue-800',
       image:
@@ -136,7 +136,7 @@ const UnmissableBenefits = () => {
           <h1 className='text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-wide'>
             <span className='text-yellow-400'>UNMISSABLE</span>{' '}
             <span className='text-white'>BENEFITS OF JOINING</span>{' '}
-            <span className='text-yellow-400'>EGEIMRC2025</span>
+            <span className='text-yellow-400'>EGEIMRC2026</span>
           </h1>
           <p className='text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed'>
             Discover the exceptional opportunities that await you at our premier
@@ -244,7 +244,7 @@ const UnmissableBenefits = () => {
         <div className='mt-16 grid grid-cols-2 md:grid-cols-4 gap-6'>
           {[
             { number: '500+', label: 'Global Participants' },
-            { number: '50+', label: 'Countries Represented' },
+            { number: '33+', label: 'Countries Represented' },
             { number: '200+', label: 'Research Papers' },
             { number: '25+', label: 'Keynote Speakers' }
           ].map((stat, index) => (

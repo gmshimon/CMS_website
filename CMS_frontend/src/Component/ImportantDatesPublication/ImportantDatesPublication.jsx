@@ -67,24 +67,72 @@ const ImportantDatesPublication = () => {
       name: 'City University pakistan',
       logo: '/Collaborators Logos/City University pakistan.png'
     },
-    { name: 'Fatima-Jinnah-Women-University', logo: '/Collaborators Logos/Fatima-Jinnah-Women-University-logo.png' },
-    { name: 'federal university of technology minna', logo: '/Collaborators Logos/federal university of technology minna.png' },
-    { name: 'Fedral University DUTSE', logo: '/Collaborators Logos/Fedral University DUTSE.jpeg' },
-    { name: 'Gift University Logo', logo: '/Collaborators Logos/Gift University Logo.webp' },
-    { name: 'Great St.petersburg Polytechnic University', logo: '/Collaborators Logos/Great St.petersburg Polytechnic University.jpg' },
+    {
+      name: 'Fatima-Jinnah-Women-University',
+      logo: '/Collaborators Logos/Fatima-Jinnah-Women-University-logo.png'
+    },
+    {
+      name: 'federal university of technology minna',
+      logo: '/Collaborators Logos/federal university of technology minna.png'
+    },
+    {
+      name: 'Fedral University DUTSE',
+      logo: '/Collaborators Logos/Fedral University DUTSE.jpeg'
+    },
+    {
+      name: 'Gift University Logo',
+      logo: '/Collaborators Logos/Gift University Logo.webp'
+    },
+    {
+      name: 'Great St.petersburg Polytechnic University',
+      logo: '/Collaborators Logos/Great St.petersburg Polytechnic University.jpg'
+    },
     { name: 'UTM', logo: '/Collaborators Logos/LOGO-UTM.png' },
-    { name: 'Mehran University', logo: '/Collaborators Logos/Mehran University.png' },
-    { name: 'Multi media university', logo: '/Collaborators Logos/Multi media university.jpeg' },
+    {
+      name: 'Mehran University',
+      logo: '/Collaborators Logos/Mehran University.png'
+    },
+    {
+      name: 'Multi media university',
+      logo: '/Collaborators Logos/Multi media university.jpeg'
+    },
     { name: 'NUST', logo: '/Collaborators Logos/NUST-logo.png' },
-    { name: 'Pak Austria University', logo: '/Collaborators Logos/Pak Austria University.png' },
-    { name: 'Soft Skill Academy indinesi', logo: '/Collaborators Logos/Soft Skill Academy indinesia.jpeg' },
-    { name: 'Telkom University indonesia', logo: '/Collaborators Logos/Telkom University indonesia.png' },
-    { name: 'Universit of Faisalaabad', logo: '/Collaborators Logos/Universit of Faisalaabad.png' },
-    { name: 'university of baghdad', logo: '/Collaborators Logos/university of baghdad.png' },
-    { name: 'University of Cape Coast', logo: '/Collaborators Logos/University of Cape Coast.png' },
-    { name: 'University of Mosul', logo: '/Collaborators Logos/University of Mosul.png' },
-    { name: 'Unoiversity of Sargodha', logo: '/Collaborators Logos/Unoiversity of Sargodha.jpg' },
-    { name: 'VTT Technical Research Center of Finland', logo: '/Collaborators Logos/VTT Technical Research Center of Finland.png' },
+    {
+      name: 'Pak Austria University',
+      logo: '/Collaborators Logos/Pak Austria University.png'
+    },
+    {
+      name: 'Soft Skill Academy indinesi',
+      logo: '/Collaborators Logos/Soft Skill Academy indinesia.jpeg'
+    },
+    {
+      name: 'Telkom University indonesia',
+      logo: '/Collaborators Logos/Telkom University indonesia.png'
+    },
+    {
+      name: 'Universit of Faisalaabad',
+      logo: '/Collaborators Logos/Universit of Faisalaabad.png'
+    },
+    {
+      name: 'university of baghdad',
+      logo: '/Collaborators Logos/university of baghdad.png'
+    },
+    {
+      name: 'University of Cape Coast',
+      logo: '/Collaborators Logos/University of Cape Coast.png'
+    },
+    {
+      name: 'University of Mosul',
+      logo: '/Collaborators Logos/University of Mosul.png'
+    },
+    {
+      name: 'Unoiversity of Sargodha',
+      logo: '/Collaborators Logos/Unoiversity of Sargodha.jpg'
+    },
+    {
+      name: 'VTT Technical Research Center of Finland',
+      logo: '/Collaborators Logos/VTT Technical Research Center of Finland.png'
+    }
   ]
 
   // Calculate time remaining for each date
@@ -219,9 +267,28 @@ const ImportantDatesPublication = () => {
             })}
           </div>
         </div>
-
+        {/* Call to Action */}
+        <div className='text-center mt-16'>
+          <div className='bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl p-8 max-w-6xl mx-auto'>
+            <h3 className='text-2xl md:text-3xl font-bold text-black mb-4'>
+              Don't Miss These Important Deadlines!
+            </h3>
+            <p className='text-black/80 mb-6 leading-relaxed'>
+              Register early and submit your research to be part of this
+              prestigious international conference.
+            </p>
+            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+              <button className='bg-black hover:bg-gray-800 text-white font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg'>
+                Register Now
+              </button>
+              <button className='bg-transparent border-2 border-black hover:bg-black hover:text-white text-black font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200'>
+                Submit Paper
+              </button>
+            </div>
+          </div>
+        </div>
         {/* Publication Section */}
-        <div className='mb-20'>
+        <div className='mt-20'>
           {/* Header */}
           <div className='text-center mb-16'>
             <h2 className='text-4xl md:text-6xl font-bold text-yellow-400 mb-8 tracking-wider'>
@@ -301,34 +368,13 @@ const ImportantDatesPublication = () => {
             {/* Partnership Call to Action */}
             <div className='text-center mt-8 pt-8 border-t border-gray-200'>
               <p className='text-gray-600 mb-4'>
-               Interested in becoming a partner??
+                Interested in becoming a partner??
               </p>
-              <a href="https://forms.gle/v55KdZNj5JB2HxaC8" target='_blank'>
-              <button className='bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg'>
-                Collaborate With US
-              </button>
+              <a href='https://forms.gle/v55KdZNj5JB2HxaC8' target='_blank'>
+                <button className='bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg'>
+                  Collaborate With US
+                </button>
               </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Call to Action */}
-        <div className='text-center mt-16'>
-          <div className='bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl p-8 max-w-4xl mx-auto'>
-            <h3 className='text-2xl md:text-3xl font-bold text-black mb-4'>
-              Don't Miss These Important Deadlines!
-            </h3>
-            <p className='text-black/80 mb-6 leading-relaxed'>
-              Register early and submit your research to be part of this
-              prestigious international conference.
-            </p>
-            <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-              <button className='bg-black hover:bg-gray-800 text-white font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg'>
-                Register Now
-              </button>
-              <button className='bg-transparent border-2 border-black hover:bg-black hover:text-white text-black font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200'>
-                Submit Paper
-              </button>
             </div>
           </div>
         </div>
