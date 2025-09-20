@@ -11,20 +11,20 @@ import { useNavigate } from 'react-router'
 
 const RegistrationDetailsPage = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('qr')
-const  navigate = useNavigate()
+  const navigate = useNavigate()
   const registrationFees = [
     {
       category: 'Paper',
       modes: [
-        { type: 'Physical', early: 149, normal: 199, attendee: 49 },
-        { type: 'Online', early: 99, normal: 149, attendee: 29 }
+        { type: 'Physical', early: 150, normal: 175, attendee: 70 },
+        { type: 'Online', early: 100, normal: 150, attendee: 50 }
       ]
     },
     {
       category: 'Poster',
       modes: [
-        { type: 'Physical', early: 149, normal: 199, attendee: 49 },
-        { type: 'Online', early: 99, normal: 149, attendee: 29 }
+        { type: 'Physical', early: 150, normal: 175, attendee: 70 },
+        { type: 'Online', early: 100, normal: 150, attendee: 50 }
       ]
     }
   ]
@@ -49,14 +49,14 @@ const  navigate = useNavigate()
       title: 'METHOD 1: QR CODE PAYMENT',
       subtitle: 'FOR ALL PARTICIPANTS',
       description:
-        'Payment should be made via e-payment through QR CODE to MUAFAKAT POLYCC ICGESD 2025.',
+        'Payment can be made easily by scanning the official conference bank QR codes provided. Please follow the steps below carefully to ensure smooth processing of your registration:',
       steps: [
-        'Scan the QR code provided',
-        'Complete payment through your banking app',
-        'Save and rename the Bank Receipt using paper ID according to parallel conference (Example: ICEESS01.pdf)',
-        'Upload the "Proof of Payment" to the Author Portal',
-        'Payment Confirmation will be emailed within 5 days',
-        'All payments are NON-REFUNDABLE'
+        'Scan the QR code provided using your preferred banking app.',
+        'Complete the payment securely through your app',
+        'Save and rename the bank receipt using your assigned Abstract ID (e.g., EGEIMRC2027-001.pdf).',
+        'Upload the “Proof of Payment” (receipt file) to the Author Portal.',
+        'A payment confirmation email will be sent to the registered author within 5 working days after verification',
+        'Please note that all payments are strictly non-refundable.'
       ]
     },
     {
@@ -66,11 +66,12 @@ const  navigate = useNavigate()
       description:
         'Payment should be made via online transfer to the following account:',
       steps: [
-        'Use the bank details provided in the table',
-        'Include your Paper ID in the reference/remarks field',
-        'Save your transaction receipt',
-        'Upload the receipt to the Author Portal',
-        'Wait for email confirmation within 5 days'
+        'Use the bank details provided above to complete your transfer.',
+        'Enter your Paper ID in the reference/remarks field (e.g., EGEIMRC2026-001).',
+        'Save and rename your transaction receipt using your Paper ID.',
+        'Upload the receipt to the Author Portal.',
+        'A payment confirmation email will be sent within 5 working days after verification.',
+        'Please note that all payments are strictly non-refundable.'
       ]
     },
     {
@@ -91,12 +92,27 @@ const  navigate = useNavigate()
   ]
 
   const bankDetails = [
-    { field: 'Bank Name', value: 'Bank Islam Malaysia Berhad' },
-    { field: 'Account Number', value: '14066010001234' },
-    { field: 'Account Holder Name', value: 'MUAFAKAT POLYCC ICGESD' },
-    { field: 'Swift Code', value: 'BIMBMYKL' },
-    { field: 'Remarks/Reference', value: 'Your Paper ID + EGEIMRC2025' }
-  ]
+  {
+    bank: 'HSBC Bank Malaysia Berhad',
+    details: [
+      { field: 'Account Number', value: '4617 7290 2181 0495' },
+      { field: 'Account Holder Name', value: 'Dr Syed Hamid Hussain Madni' },
+      { field: 'Swift Code', value: 'HMABMYKL' },
+      { field: 'Remarks/Reference', value: 'Your Paper ID + EGEIMRC2026' }
+    ]
+  },
+  {
+    bank: 'United Bank Limited (UBL Bank)',
+    details: [
+      { field: 'Account Number', value: '1488336162003' },
+      { field: 'Account Holder Name', value: 'Elite Global Excellence' },
+      { field: 'IBAN CODE', value: 'PK78UNIL0109000336162003' },
+      { field: 'Swift Code', value: 'UNILPKKA741' },
+      { field: 'Remarks/Reference', value: 'Your Paper ID + EGEIMRC2026' }
+    ]
+  }
+]
+
 
   const handlePayWithPayPal = () => {
     // Replace with your PayPal.Me or hosted checkout link
@@ -112,7 +128,7 @@ const  navigate = useNavigate()
             <span className='text-yellow-500'>Registration Fees</span>
           </h1>
           <p className='text-lg md:text-xl text-white/80 max-w-4xl mx-auto leading-relaxed'>
-            Secure your participation in EGEIMRC2025 with our flexible
+            Secure your participation in EGEIMRC2026 with our flexible
             registration options
           </p>
         </div>
@@ -157,7 +173,7 @@ const  navigate = useNavigate()
                           {category.category}
                         </td>
                       )}
-                      <td className='px-6 py-4 font-semibold text-blue-800 bg-blue-700 text-white text-center'>
+                      <td className='px-6 py-4 font-semibold text-blue-800 bg-blue-700  text-center'>
                         {mode.type}
                       </td>
                       <td className='px-6 py-4 text-center font-bold text-2xl text-green-600'>
@@ -180,10 +196,10 @@ const  navigate = useNavigate()
         {/* Author Rights Statement */}
         <div className='bg-white/95 backdrop-blur-sm rounded-3xl p-8 mb-12 shadow-2xl'>
           <p className='text-lg text-gray-800 text-center leading-relaxed'>
-            At EGEIMRC2025, we believe authors should own and control their
-            intellectual work. We provide a publishing environment that is
-            ethical, author-friendly, and transparent, while ensuring global
-            visibility and academic recognition for your contributions.
+            At EGEIMRC2026, we are committed to breaking financial barriers by
+            providing one of the most competitive pricing structures worldwide
+            ensuring that researchers from every corner of the globe can
+            participate and share their work.
           </p>
         </div>
 
@@ -244,21 +260,26 @@ const  navigate = useNavigate()
                             <h4 className='text-xl font-bold text-gray-800 mb-4'>
                               Bank Details
                             </h4>
-                            <div className='space-y-3'>
-                              {bankDetails.map((detail, index) => (
-                                <div
-                                  key={index}
-                                  className='flex justify-between items-center border-b border-gray-200 pb-2'
-                                >
-                                  <span className='font-semibold text-gray-700'>
-                                    {detail.field}:
-                                  </span>
-                                  <span className='text-gray-800 font-mono'>
-                                    {detail.value}
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
+                            <div className="space-y-8">
+  {bankDetails.map((bank, bankIndex) => (
+    <div key={bankIndex} className="space-y-3">
+      <h3 className="text-lg font-bold text-gray-900 border-b pb-2">
+        {bank.bank}
+      </h3>
+      {bank.details.map((detail, index) => (
+        <div
+          key={index}
+          className="flex justify-between items-center border-b border-gray-200 pb-2"
+        >
+          <span className="font-semibold text-gray-700">
+            {detail.field}:
+          </span>
+          <span className="text-gray-800 font-mono">{detail.value}</span>
+        </div>
+      ))}
+    </div>
+  ))}
+</div>
                           </div>
                         )}
 
@@ -283,7 +304,7 @@ const  navigate = useNavigate()
                                 <span className='font-semibold'>Paper ID</span>{' '}
                                 and the text{' '}
                                 <span className='font-semibold'>
-                                  EGEIMRC2025
+                                  EGEIMRC2026
                                 </span>
                                 .
                               </li>
@@ -310,13 +331,13 @@ const  navigate = useNavigate()
                       <div className='flex justify-center'>
                         {method.id === 'qr' && (
                           <div className='bg-gradient-to-b from-pink-500 to-red-600 p-6 rounded-2xl shadow-xl'>
-                            <div className='bg-white p-4 rounded-xl mb-4'>
-                              <div className='w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center'>
-                                <QrCode className='w-32 h-32 text-gray-400' />
+                            <div className='bg-white p-2 rounded-xl '>
+                              <div className='w-72 h-full bg-gray-200 rounded-lg flex items-center justify-center'>
+                                <img src="/public/qr-code.jpg"/>
                               </div>
-                              <div className='text-center mt-4 text-sm text-gray-600'>
-                                <p className='font-bold'>MUAFAKAT POLYCC</p>
-                                <p>ICGESD PUO 2025</p>
+                              <div className='text-center  text-md text-gray-600'>
+                                <p className='font-bold'>Dr Syed Hamid Hussain Madni</p>
+                                {/* <p>ICGESD PUO 2025</p> */}
                               </div>
                             </div>
                             <div className='text-center text-white font-bold'>
@@ -328,7 +349,7 @@ const  navigate = useNavigate()
                               </p>
                               <div className='flex justify-center mt-2'>
                                 <div className='bg-white px-3 py-1 rounded text-gray-800 text-xs font-bold'>
-                                  BANK ISLAM
+                                  HSBC Bank Malaysia Berhad
                                 </div>
                               </div>
                             </div>
@@ -454,7 +475,7 @@ const  navigate = useNavigate()
               <p>
                 • If you cannot attend the conference due to some reasons, we
                 will email the proceedings to you together with the payment
-                receipt/Fapiao.
+                receipt/invoice.
               </p>
               <p>
                 • If an author or co-author is NOT available to present the
@@ -518,7 +539,7 @@ const  navigate = useNavigate()
             We respect your privacy. The information you provide during
             registration is used solely for conference administration,
             communication, billing, and publishing purposes related to
-            EGEIMRC2025.
+            EGEIMRC2026.
           </p>
           <ul className='list-disc pl-6 space-y-2 text-gray-700'>
             <li>
@@ -551,7 +572,7 @@ const  navigate = useNavigate()
             className='bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-bold px-12 py-6 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl'
           >
             <Users className='w-6 h-6 inline-block mr-3' />
-            Register Now for EGEIMRC2025
+            Register Now for EGEIMRC2026
           </button>
           <p className='text-white/80 mt-4 text-lg'>
             Secure your spot at the premier international research conference

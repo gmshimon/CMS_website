@@ -46,19 +46,19 @@ const ContactPage = () => {
     {
       icon: <Mail className='w-8 h-8' />,
       title: 'Email Address',
-      details: ['info@egeimrc2025.org', 'support@egeimrc2025.org'],
+      details: ['info@eliteglobalexcellence.com', 'assistance@eliteglobalexcellence.com'],
       color: 'from-blue-500 to-blue-700'
     },
     {
       icon: <Phone className='w-8 h-8' />,
       title: 'Phone Numbers',
-      details: ['+60 3-1234 5678', '+60 12-345 6789'],
+      details: ['+601111306130'],
       color: 'from-green-500 to-green-700'
     },
     {
       icon: <MapPin className='w-8 h-8' />,
       title: 'Conference Venue',
-      details: ['Kuala Lumpur Convention Centre', 'Malaysia'],
+      details: ['Taman Universiti', 'Johor Bahru Malaysia'],
       color: 'from-purple-500 to-purple-700'
     },
     {
@@ -69,6 +69,7 @@ const ContactPage = () => {
     }
   ]
 
+  // eslint-disable-next-line no-unused-vars
   const departments = [
     {
       title: 'General Inquiries',
@@ -144,7 +145,7 @@ const ContactPage = () => {
         </div>
 
         {/* Main Content Grid */}
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16'>
+        <div className='grid grid-cols-1 lg:grid-cols-1 gap-8 mb-16'>
           
           {/* Contact Form */}
           <div className='bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl'>
@@ -264,7 +265,7 @@ const ContactPage = () => {
           </div>
 
           {/* Department Contacts */}
-          <div className='bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl'>
+          {/* <div className='bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl'>
             <div className='bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-2xl mb-8'>
               <h2 className='text-2xl font-bold text-white flex items-center'>
                 <Users className='w-8 h-8 mr-3' />
@@ -300,7 +301,7 @@ const ContactPage = () => {
               ))}
             </div>
 
-            {/* Quick Info */}
+        
             <div className='mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-xl'>
               <h4 className='text-lg font-bold text-gray-800 mb-3 flex items-center'>
                 <Clock className='w-5 h-5 mr-2 text-yellow-600' />
@@ -312,7 +313,7 @@ const ContactPage = () => {
                 <li>• Urgent matters: Within 6 hours</li>
               </ul>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Conference Information */}
@@ -323,14 +324,14 @@ const ContactPage = () => {
                 <Calendar className='w-12 h-12 text-white' />
               </div>
               <h3 className='text-xl font-bold text-gray-800 mb-2'>Conference Dates</h3>
-              <p className='text-gray-600'>March 15-17, 2025</p>
+              <p className='text-gray-600'>April 3 – 5, 2026</p>
             </div>
             <div>
               <div className='bg-gradient-to-r from-purple-500 to-indigo-600 p-4 rounded-2xl mb-4 inline-block'>
                 <MapPin className='w-12 h-12 text-white' />
               </div>
               <h3 className='text-xl font-bold text-gray-800 mb-2'>Location</h3>
-              <p className='text-gray-600'>Kuala Lumpur, Malaysia</p>
+              <p className='text-gray-600'>Taman Universiti, Johor Bahru Malaysia</p>
             </div>
             <div>
               <div className='bg-gradient-to-r from-orange-500 to-red-600 p-4 rounded-2xl mb-4 inline-block'>

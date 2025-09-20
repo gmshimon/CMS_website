@@ -176,7 +176,7 @@ const Footer = () => {
                       name: 'Telegram',
                       color: 'bg-sky-500',
                       icon: <FaTelegramPlane />,
-                      link: 'https://t.me/'
+                      link: 'https://t.me/+soo_r8rFs29mMjU9'
                     },
                     {
                       name: 'WhatsApp',

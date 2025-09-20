@@ -17,7 +17,7 @@ const CommitteePage = () => {
   const [activeTab, setActiveTab] = useState('scientific')
 
   const tabs = [
-    { id: 'scientific', label: 'Scientific Committee', icon: BookOpen, color: 'yellow' },
+    { id: 'scientific', label: 'Scientific Committee', icon: BookOpen, color: 'yellow',count:53 },
     { id: 'technical', label: 'Technical Committee', icon: Settings, color: 'blue' },
     { id: 'registration', label: 'Registration Committee', icon: ClipboardList, color: 'green' },
     { id: 'moderator', label: 'Session Moderators', icon: Mic, color: 'purple' }
@@ -307,7 +307,7 @@ const CommitteePage = () => {
               Committee Members
             </h1>
             <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
-              Meet our distinguished committee members who ensure the success and quality of EGEIMRC2025. 
+              Meet our distinguished committee members who ensure the success and quality of EGEIMRC2026. 
               Our committees comprise renowned experts from leading universities and institutions worldwide.
             </p>
           </div>
