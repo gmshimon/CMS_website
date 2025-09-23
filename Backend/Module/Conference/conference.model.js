@@ -13,7 +13,11 @@ const conferenceSchema = mongoose.Schema(
       type: Number,
       default: 0
     },
-    mode: { type: String, enum: ['Online', 'Physical', 'Hybrid'], required: true },
+    mode: {
+      type: String,
+      enum: ['Online', 'Physical', 'Hybrid'],
+      required: true
+    },
     category: [String],
     theme: [String],
     tracks: [
