@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import ResponsivePagination from 'react-responsive-pagination'
 import 'react-responsive-pagination/themes/classic.css'
-import { FaPlus } from 'react-icons/fa'
 import PaperModal from '../../../Component/PaperModal/PaperModal'
 import { useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
@@ -92,8 +91,8 @@ const filteredAbstracts = abstracts?.filter(abstract => {
       ) : (
         <>
           <div className='mb-6'>
-            <h2 className='text-2xl font-bold text-gray-800 mb-4'>Abstracts</h2>
-            <div className='flex flex-col md:flex-row items-center '>
+            <h2 className='text-2xl font-bold text-gray-800 mb-4'>Abstract List</h2>
+            <div className='flex flex-col md:flex-row md:justify-between items-center '>
               <div className='flex flex-col md:flex-row gap-4  mr-4'>
                 <input
                   type='text'
@@ -123,7 +122,7 @@ const filteredAbstracts = abstracts?.filter(abstract => {
                     onClick={() => navigate(`/admin/abstract/add`)}
                     className='btn btn-active btn-primary'
                   >
-                    Abstract <FaPlus />
+                    Submit New Abstract
                   </button>
                 </div>
               )}

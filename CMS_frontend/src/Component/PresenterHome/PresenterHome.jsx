@@ -7,13 +7,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getMyDashboardStats } from '../../Redux/Slice/AuthSlice'
 import Loading from '../Loading/Loading'
 import { formatDistanceToNow } from 'date-fns'
+import { useNavigate } from 'react-router'
 
 const PresenterHome = () => {
-  const { myStats, getMyStatsLoading } = useSelector(state => state.user)
+  const { myStats, getMyStatsLoading, user } = useSelector(state => state.user)
   const { selectedConference } = useSelector(state => state.conference)
 
   const dispatch = useDispatch()
-
+  const navigate = useNavigate()
   useEffect(() => {
     dispatch(
       getMyDashboardStats(
@@ -34,9 +35,21 @@ const PresenterHome = () => {
 
   return (
     <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
-      <h2 className='text-2xl font-bold text-gray-800 mb-6'>
-        Dashboard Overview
-      </h2>
+      <div className='flex flex-col md:flex-row md:justify-between items-center mb-6'>
+        <h2 className='text-2xl font-bold text-gray-800'>
+          Dashboard Overview
+        </h2>
+        {user?.role === 'Presenter' && (
+          <div>
+            <button
+              onClick={() => navigate(`/admin/abstract/add`)}
+              className='btn btn-active btn-primary'
+            >
+              Submit New Abstract
+            </button>
+          </div>
+        )}
+      </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
         <StatCard
@@ -78,7 +91,9 @@ const PresenterHome = () => {
           <div className='space-y-4'>
             <div className='flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200'>
               <div className='flex-1'>
-                <p className='font-medium text-gray-800'>Abstract Template</p>
+                <p className='font-medium text-gray-800'>
+                  Abstract Submission Manual
+                </p>
                 <p className='text-sm text-gray-600'>Word document format</p>
               </div>
               <button className='btn btn-sm btn-primary'>

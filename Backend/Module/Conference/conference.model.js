@@ -7,12 +7,28 @@ const conferenceSchema = mongoose.Schema(
       unique: true,
       required: true
     },
+    shortName: { type: String, unique: true, required: true },
+
     price: {
       type: Number,
       default: 0
     },
+    mode: { type: String, enum: ['Online', 'Physical', 'Hybrid'], required: true },
     category: [String],
     theme: [String],
+    tracks: [
+      {
+        title: { type: String, required: true },
+        subTracks: [String]
+      }
+    ],
+    importantDates: [
+      {
+        title: { type: String, required: true },
+        description: { type: String },
+        date: { type: Date, required: true }
+      }
+    ],
     submissionOptions: [
       {
         submissionType: {
@@ -25,10 +41,10 @@ const conferenceSchema = mongoose.Schema(
           ],
           required: true
         },
-        price: {
-          type: Number,
-          default: 0
-        }
+        earlyBird: { type: Number, default: 0 },
+        normal: { type: Number, default: 0 },
+        attendee: { type: Number, default: 0 },
+        currency: { type: String, default: 'USD' }
       }
     ],
     presentation_method: [String],
@@ -40,7 +56,8 @@ const conferenceSchema = mongoose.Schema(
         },
         price: {
           type: Number
-        }
+        },
+        date: { type: Date }
       }
     ],
     year: {

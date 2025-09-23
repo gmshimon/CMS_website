@@ -5,16 +5,20 @@ import { useSelector } from 'react-redux'
 import Loading from '../../../Component/Loading/Loading'
 import ConferenceListTable from '../../../Component/ConferenceListTable/ConferenceListTable'
 import useConferece_reg from '../../../Hooks/useConferece_reg'
+import { useNavigate } from 'react-router'
 
 const ConferenceList = () => {
   const { conference_regs, getConferenceRegLoading, pagination } = useSelector(
     state => state.conferenceReg
   )
+  const { user } = useSelector(state => state.user)
   const { getConferenceLoading } = useSelector(state => state.conference)
   const [searchQuery, setSearchQuery] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
 
   useConferece_reg(currentPage, 10, searchQuery)
+
+  const navigate = useNavigate()
 
   return (
     <div className='p-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
@@ -25,9 +29,22 @@ const ConferenceList = () => {
       ) : (
         <>
           <div className='mb-6'>
-            <h2 className='text-2xl font-bold text-gray-800 mb-4'>
-              Conference List
-            </h2>
+            <div className='flex flex-col md:flex-row md:justify-between items-center '>
+              <h2 className='text-2xl font-bold text-gray-800 '>
+                Conference List
+              </h2>
+              {user?.role === 'Presenter' && (
+                <div>
+                  <button
+                    onClick={() => navigate(`/admin/abstract/add`)}
+                    className='btn btn-active btn-primary'
+                  >
+                    Submit New Abstract
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className='relative'>
               <input
                 type='text'
