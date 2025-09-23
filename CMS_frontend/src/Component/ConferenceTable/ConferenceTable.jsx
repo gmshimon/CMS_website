@@ -38,6 +38,9 @@ const ConferenceTable = ({
                   Start Date
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                  Close Date
+                </th>
+                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
                   Location
                 </th>
                 <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
@@ -68,7 +71,10 @@ const ConferenceTable = ({
                       {conference.name}
                     </td>
                     <td className='px-6 py-4 text-sm text-gray-700'>
-                      {format(conference.createdAt, 'MMM d, yyyy')}
+                      {format(conference.startingDate, 'MMM d, yyyy')}
+                    </td>
+                    <td className='px-6 py-4 text-sm text-gray-700'>
+                      {format(conference.closingDate, 'MMM d, yyyy')}
                     </td>
                     <td className='px-6 py-4 text-sm text-gray-700'>
                       {conference.city},{conference.country}

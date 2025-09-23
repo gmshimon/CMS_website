@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router'
 import { ToastContainer } from 'react-toastify'
@@ -9,7 +9,7 @@ import {
   createUser,
   loginWithGoogle
 } from '../../Redux/Slice/AuthSlice'
-import { showErrorToast, showSuccessToast } from '../../Utilis/toastUtils'
+import { showErrorToast } from '../../Utilis/toastUtils'
 import {
   FaFacebookF,
   FaInstagram,
@@ -21,52 +21,7 @@ import {
 } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
 import Loading from '../../Component/Loading/Loading'
-
-const countries = [
-  'Afghanistan',
-  'Albania',
-  'Algeria',
-  'Andorra',
-  'Angola',
-  'Argentina',
-  'Armenia',
-  'Australia',
-  'Austria',
-  'Azerbaijan',
-  'Bangladesh',
-  'Belgium',
-  'Brazil',
-  'Canada',
-  'China',
-  'Denmark',
-  'Egypt',
-  'Finland',
-  'France',
-  'Germany',
-  'Greece',
-  'India',
-  'Indonesia',
-  'Italy',
-  'Japan',
-  'Kenya',
-  'Malaysia',
-  'Nepal',
-  'Netherlands',
-  'Pakistan',
-  'Philippines',
-  'Russia',
-  'Saudi Arabia',
-  'South Africa',
-  'Spain',
-  'Sweden',
-  'Switzerland',
-  'Thailand',
-  'Turkey',
-  'United Arab Emirates',
-  'United Kingdom',
-  'United States',
-  'Vietnam'
-]
+import { countries } from '../../Utilis/countryList'
 
 const Registration = () => {
   const {
@@ -90,7 +45,6 @@ const Registration = () => {
   const [department, setDepartment] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [fileName, setFileName] = useState('')
   const [hear, setHear] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -103,8 +57,7 @@ const Registration = () => {
       dispatch(reset())
     }
     if (isCreateUserSuccess) {
-      showSuccessToast('User Registration Successful')
-      dispatch(reset())
+      navigate('/admin')
     }
     if (isLoginWithGoogleSuccess) {
       navigate('/admin')
@@ -126,12 +79,6 @@ const Registration = () => {
     dispatch(getRole())
   }, [dispatch])
 
-  const handleFileChange = event => {
-    const file = event.target.files[0]
-    if (file) {
-      setFileName(file)
-    }
-  }
   const handleClickShowPassword = () => setShowPassword(show => !show)
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword(show => !show)
@@ -143,7 +90,6 @@ const Registration = () => {
       formData.append('name', name)
       formData.append('email', email)
       formData.append('role', selectedRole)
-      formData.append('image', fileName) // if fileName is a file, otherwise ensure you're appending a file object
       formData.append('address', address)
       formData.append('country', country)
       formData.append('city', city)
@@ -174,7 +120,7 @@ const Registration = () => {
       <div className='flex flex-col lg:flex-row min-h-screen'>
         {/* Left side - Registration Form */}
         <div className='lg:w-2/5 w-full flex items-center justify-center p-6 lg:p-7'>
-          <div className='w-full max-w-2xl'>
+          <div className='w-full max-w-3xl'>
             {/* Logo Section */}
             <div className='text-center mb-5'>
               <img src='/assets/EGE_logo.png' alt='' />
@@ -241,7 +187,7 @@ const Registration = () => {
                     {/* Just styling improvements: padding, rounded, focus ring */}
                     <div>
                       <label className='block text-sm font-medium text-gray-700 mb-1'>
-                        Presenter Name *
+                        Full Name *
                       </label>
                       <input
                         type='text'
@@ -269,6 +215,43 @@ const Registration = () => {
                       />
                     </div>
 
+                    {/* Affiliation */}
+                    <div>
+                      <label
+                        htmlFor='affiliation'
+                        className='block text-gray-700 text-sm font-bold mb-1'
+                      >
+                        Affiliation (University/Institute) *
+                      </label>
+                      <input
+                        type='text'
+                        id='affiliation'
+                        value={affiliation}
+                        onChange={e => setAffiliation(e.target.value)}
+                        className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                        placeholder='Enter your affiliation'
+                        required
+                      />
+                    </div>
+
+                    {/* Department */}
+                    <div>
+                      <label
+                        htmlFor='department'
+                        className='block text-gray-700 text-sm font-bold mb-1'
+                      >
+                        Faculty Department *
+                      </label>
+                      <input
+                        type='text'
+                        id='department'
+                        value={department}
+                        onChange={e => setDepartment(e.target.value)}
+                        className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                        placeholder='Enter your department'
+                        required
+                      />
+                    </div>
                     {/* Address */}
                     <div className='md:col-span-2'>
                       <label
@@ -365,44 +348,6 @@ const Registration = () => {
                           </option>
                         ))}
                       </select>
-                    </div>
-
-                    {/* Affiliation */}
-                    <div>
-                      <label
-                        htmlFor='affiliation'
-                        className='block text-gray-700 text-sm font-bold mb-1'
-                      >
-                        Affiliation (University/Institute) *
-                      </label>
-                      <input
-                        type='text'
-                        id='affiliation'
-                        value={affiliation}
-                        onChange={e => setAffiliation(e.target.value)}
-                        className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                        placeholder='Enter your affiliation'
-                        required
-                      />
-                    </div>
-
-                    {/* Department */}
-                    <div>
-                      <label
-                        htmlFor='department'
-                        className='block text-gray-700 text-sm font-bold mb-1'
-                      >
-                        Faculty Department *
-                      </label>
-                      <input
-                        type='text'
-                        id='department'
-                        value={department}
-                        onChange={e => setDepartment(e.target.value)}
-                        className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                        placeholder='Enter your department'
-                        required
-                      />
                     </div>
 
                     {/* Password */}
@@ -529,24 +474,11 @@ const Registration = () => {
                           )}
                         </button>
                       </div>
+                      {/* Error message for the password */}
+                      {confirmPassword && password != confirmPassword && (
+                        <p className='text-red-600'>Password didn't match</p>
+                      )}
                     </div>
-                    {/* Profile Picture Upload */}
-                    <div>
-                      <label
-                        htmlFor='profilePicture'
-                        className='block text-gray-700 text-sm font-bold mb-1'
-                      >
-                        Profile Picture
-                      </label>
-                      <input
-                        type='file'
-                        id='profilePicture'
-                        onChange={handleFileChange}
-                        accept='image/*'
-                        className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                      />
-                    </div>
-
                     {/* How did you hear about us */}
                     <div>
                       <label

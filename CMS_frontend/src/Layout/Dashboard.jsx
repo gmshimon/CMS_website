@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { LuMessageSquare } from 'react-icons/lu'
-
 import MessageList from '../Component/MessageList/MessageList'
 import CurrentUser from '../Utilis/CurrentUser'
 import {
@@ -22,11 +21,16 @@ import { logOut, reset } from '../Redux/Slice/AuthSlice'
 import { showSuccessToast } from '../Utilis/toastUtils'
 import useSocket from '../Hooks/useSocket'
 import { getNotifications } from '../Redux/Slice/notificationSlice'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const Dashboard = () => {
-  const { isLoginSuccess, isLoginWithGoogleSuccess, user } = useSelector(
-    state => state.user
-  )
+  const {
+    isLoginSuccess,
+    isLoginWithGoogleSuccess,
+    user,
+    isCreateUserSuccess
+  } = useSelector(state => state.user)
   const { conferences, selectedConference } = useSelector(
     state => state.conference
   )
@@ -40,15 +44,17 @@ const Dashboard = () => {
   useEffect(() => {
     if (isLoginSuccess) {
       showSuccessToast('Login Successful')
-
       dispatch(reset())
     }
     if (isLoginWithGoogleSuccess) {
       showSuccessToast('Login Successful')
-
       dispatch(reset())
     }
-  }, [dispatch, isLoginSuccess, isLoginWithGoogleSuccess])
+    if (isCreateUserSuccess) {
+      showSuccessToast('User Registration Successful')
+      dispatch(reset())
+    }
+  }, [dispatch, isCreateUserSuccess, isLoginSuccess, isLoginWithGoogleSuccess])
 
   useEffect(() => {
     if (sessionStorage.getItem('selectedConference')) {
@@ -94,6 +100,7 @@ const Dashboard = () => {
 
   return (
     <section>
+      <ToastContainer/>
       <div className='drawer lg:drawer-open'>
         <input id='my-drawer-3' type='checkbox' className='drawer-toggle' />
         <div className='drawer-content flex flex-col'>
@@ -120,7 +127,7 @@ const Dashboard = () => {
                 </svg>
               </label>
             </div>
-            <div className='mx-2 flex-1 px-2'>CMS</div>
+            <div className='mx-2 flex-1 px-2'>Elite Global Excellence CMS</div>
             <div className='navbar-end'>
               {/* Dropdown Select */}
 
@@ -139,7 +146,7 @@ const Dashboard = () => {
                   }}
                   defaultValue='default'
                 >
-                  <option value='default' className='text-black' disabled>
+                  <option value='default' className='text-gray-300' disabled>
                     Select Conference
                   </option>
                   <option value={'all'} className='text-white'>
