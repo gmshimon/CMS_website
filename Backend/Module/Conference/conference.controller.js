@@ -14,6 +14,7 @@ export const createConference = async (req, res, next) => {
       data: response
     })
   } catch (error) {
+    console.log(error)
     res.status(400).json({
       status: 'Failed',
       message: error.message

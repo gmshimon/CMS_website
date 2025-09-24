@@ -65,7 +65,7 @@ const ConferenceTable = ({
                 currentConferences.map(conference => (
                   <tr key={conference._id}>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                      {conference._id}
+                      {conference.shortName}
                     </td>
                     <td className='px-6 py-4 text-sm text-gray-700'>
                       {conference.name}

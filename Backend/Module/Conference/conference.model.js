@@ -47,7 +47,7 @@ const conferenceSchema = mongoose.Schema(
         },
         earlyBird: { type: Number, default: 0 },
         normal: { type: Number, default: 0 },
-        attendee: { type: Number, default: 0 },
+        // attendee: { type: Number, default: 0 },
         currency: { type: String, default: 'USD' }
       }
     ],

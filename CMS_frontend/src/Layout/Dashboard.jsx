@@ -154,7 +154,7 @@ const Dashboard = () => {
                   </option>
                   {conferences?.map((opt, index) => (
                     <option key={index} value={opt._id}>
-                      {opt.name}
+                      {opt.shortName}
                     </option>
                   ))}
                 </select>

@@ -49,6 +49,7 @@ export const createConference = createAsyncThunk(
       )
       return response.data.data
     } catch (error) {
+      console.log("error: ",error)
       const message =
         error.response?.data?.message ||
         'An error occurred while getting conference'

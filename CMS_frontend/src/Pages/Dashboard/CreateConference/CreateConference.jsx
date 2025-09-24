@@ -18,11 +18,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { countries } from '../../../Utilis/countryList'
 import { createConference } from '../../../Redux/Slice/conferenceSlice'
 import { useNavigate } from 'react-router'
+import { showErrorToast } from '../../../Utilis/toastUtils'
 
 const CreateConference = () => {
-  const { createConferenceLoading, createConferenceSuccess } = useSelector(
-    state => state.conference
-  )
+  const {
+    createConferenceLoading,
+    createConferenceSuccess,
+    createConferenceError
+  } = useSelector(state => state.conference)
   const [formData, setFormData] = useState({
     name: '',
     shortName: '',
@@ -53,7 +56,7 @@ const CreateConference = () => {
 
   const [currentCategory, setCurrentCategory] = useState('')
   const [currentTheme, setCurrentTheme] = useState('')
-  const [currentPresentationMethod, setCurrentPresentationMethod] = useState('')
+  // const [currentPresentationMethod, setCurrentPresentationMethod] = useState('')
   const [currentPublicationOption, setCurrentPublicationOption] = useState('')
   const [currentSubTrack, setCurrentSubTrack] = useState('')
 
@@ -62,28 +65,28 @@ const CreateConference = () => {
       submissionType: 'Paper Presentation Online',
       earlyBird: 0,
       normal: 0,
-      attendee: 0,
+      // attendee: 0,
       currency: 'USD'
     },
     {
       submissionType: 'Paper Presentation Physical',
       earlyBird: 0,
       normal: 0,
-      attendee: 0,
+      // attendee: 0,
       currency: 'USD'
     },
     {
       submissionType: 'Poster Presentation Online',
       earlyBird: 0,
       normal: 0,
-      attendee: 0,
+      // attendee: 0,
       currency: 'USD'
     },
     {
       submissionType: 'Poster Presentation Physical',
       earlyBird: 0,
       normal: 0,
-      attendee: 0,
+      // attendee: 0,
       currency: 'USD'
     }
   ])
@@ -95,7 +98,10 @@ const CreateConference = () => {
     if (createConferenceSuccess) {
       navigate('/admin/conference')
     }
-  }, [dispatch, createConferenceSuccess, navigate])
+    if (createConferenceError) {
+      showErrorToast('Something went wrong')
+    }
+  }, [dispatch, createConferenceSuccess, navigate, createConferenceError])
 
   const handleInputChange = e => {
     const { name, value } = e.target
@@ -274,7 +280,7 @@ const CreateConference = () => {
     }
     console.log(data)
     dispatch(createConference(data))
-    resetForm()
+    // resetForm()
   }
 
   return (
@@ -422,7 +428,7 @@ const CreateConference = () => {
                               parseFloat(e.target.value) || 0
                             setSubmissionOptions(newOptions)
                           }}
-                         className='border border-black rounded-md p-2 w-full text-black'
+                          className='border border-black rounded-md p-2 w-full text-black'
                           placeholder='0'
                           min='0'
                         />
@@ -445,7 +451,7 @@ const CreateConference = () => {
                           min='0'
                         />
                       </div>
-                      <div>
+                      {/* <div>
                         <label className='text-sm text-gray-600'>
                           Attendee Price
                         </label>
@@ -462,7 +468,7 @@ const CreateConference = () => {
                           placeholder='0'
                           min='0'
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <label className='text-sm text-gray-600'>
                           Currency
@@ -474,7 +480,7 @@ const CreateConference = () => {
                             newOptions[index].currency = e.target.value
                             setSubmissionOptions(newOptions)
                           }}
-                         className='border border-black rounded-md p-2 w-full text-black'
+                          className='border border-black rounded-md p-2 w-full text-black'
                         >
                           <option value='USD'>USD</option>
                           <option value='EUR'>EUR</option>
@@ -889,7 +895,7 @@ const CreateConference = () => {
             </motion.div>
 
             {/* Presentation Methods */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
@@ -950,7 +956,7 @@ const CreateConference = () => {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Publication Options */}
             <motion.div
@@ -1100,7 +1106,7 @@ const CreateConference = () => {
               <button
                 type='button'
                 onClick={addWorkshopOption}
-               className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
               >
                 <FaPlus className='inline mr-2' /> Add Workshop Option
               </button>
@@ -1115,7 +1121,7 @@ const CreateConference = () => {
             >
               <button
                 type='button'
-               className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-neutral'
+                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-neutral'
                 onClick={resetForm}
               >
                 Reset Form
