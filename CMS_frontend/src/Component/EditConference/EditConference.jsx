@@ -51,17 +51,16 @@ const EditConference = () => {
     { title: '', price: 0 }
   ])
 
-  
   const [currentCategory, setCurrentCategory] = useState('')
   const [currentTheme, setCurrentTheme] = useState('')
   const [currentPresentationMethod, setCurrentPresentationMethod] = useState('')
   const [currentPublicationOption, setCurrentPublicationOption] = useState('')
   // ✅ extra states
-  const [tracks, setTracks] = useState([{ title: "", subTracks: [] }]);
-  const [currentSubTrack, setCurrentSubTrack] = useState("");
+  const [tracks, setTracks] = useState([{ title: '', subTracks: [] }])
+  const [currentSubTrack, setCurrentSubTrack] = useState('')
   const [importantDates, setImportantDates] = useState([
-    { title: "", description: "", date: "" },
-  ]);
+    { title: '', description: '', date: '' }
+  ])
   const [submissionOptions, setSubmissionOptions] = useState([
     {
       submissionType: 'Paper Presentation Online',
@@ -98,46 +97,48 @@ const EditConference = () => {
     dispatch(getSingleConference(id))
   }, [dispatch, id])
 
-    useEffect(() => {
+  useEffect(() => {
     if (singleConference) {
       setFormData({
-        name: singleConference.name || "",
-        shortName: singleConference.shortName || "",
+        name: singleConference.name || '',
+        shortName: singleConference.shortName || '',
         category: singleConference.category || [],
         theme: singleConference.theme || [],
         price: singleConference.price || 0,
         presentation_method: singleConference.presentation_method || [],
         publication_option: singleConference.publication_option || [],
         year: singleConference.year || new Date().getFullYear(),
-        country: singleConference.country || "",
-        city: singleConference.city || "",
-        venue: singleConference.venue || "",
-        startingDate:
-          singleConference.startingDate?.substring(0, 10) || "",
-        closingDate:
-          singleConference.closingDate?.substring(0, 10) || "",
-        mode: singleConference.mode || "hybrid",
-        status: singleConference?.status || "Active",
-        submissionOptions: singleConference.submissionOptions || [],
-      });
+        country: singleConference.country || '',
+        city: singleConference.city || '',
+        venue: singleConference.venue || '',
+        startingDate: singleConference.startingDate?.substring(0, 10) || '',
+        closingDate: singleConference.closingDate?.substring(0, 10) || '',
+        mode: singleConference.mode || 'hybrid',
+        status: singleConference?.status || 'Active',
+        submissionOptions: singleConference.submissionOptions || []
+      })
 
       if (
         singleConference.workshopOptions &&
         singleConference.workshopOptions.length > 0
       ) {
-        setWorkshopOptions(singleConference.workshopOptions);
+        setWorkshopOptions(singleConference.workshopOptions)
       }
 
       // preload importantDates + tracks if backend later supports
       if (singleConference.importantDates) {
-        setImportantDates(singleConference.importantDates);
+        setImportantDates(
+          singleConference.importantDates.map(d => ({
+            ...d,
+            date: d.date ? d.date.substring(0, 10) : ''
+          }))
+        )
       }
       if (singleConference.tracks) {
-        setTracks(singleConference.tracks);
+        setTracks(singleConference.tracks)
       }
     }
-  }, [singleConference]);
-
+  }, [singleConference])
 
   useEffect(() => {
     if (editConferenceSuccess) {
@@ -192,68 +193,63 @@ const EditConference = () => {
     )
   }
 
-// --- Tracks functions ---
+  // --- Tracks functions ---
   const addTrack = () =>
-    setTracks((prev) => [...prev, { title: "", subTracks: [] }]);
+    setTracks(prev => [...prev, { title: '', subTracks: [] }])
 
-  const removeTrack = (index) =>
-    setTracks((prev) => prev.filter((_, i) => i !== index));
+  const removeTrack = index =>
+    setTracks(prev => prev.filter((_, i) => i !== index))
 
   const updateTrack = (index, field, value) => {
-    setTracks((prev) =>
+    setTracks(prev =>
       prev.map((track, i) =>
         i === index ? { ...track, [field]: value } : track
       )
-    );
-  };
+    )
+  }
   const addSubTrack = (trackIndex, value) => {
-    if (!value.trim()) return;
-    setTracks((prev) =>
+    if (!value.trim()) return
+    setTracks(prev =>
       prev.map((track, i) =>
         i === trackIndex
           ? { ...track, subTracks: [...track.subTracks, value.trim()] }
           : track
       )
-    );
-    setCurrentSubTrack("");
-  };
+    )
+    setCurrentSubTrack('')
+  }
 
   const removeSubTrack = (trackIndex, subTrackIndex) => {
-    setTracks((prev) =>
+    setTracks(prev =>
       prev.map((track, i) =>
         i === trackIndex
           ? {
               ...track,
-              subTracks: track.subTracks.filter(
-                (_, j) => j !== subTrackIndex
-              ),
+              subTracks: track.subTracks.filter((_, j) => j !== subTrackIndex)
             }
           : track
       )
-    );
-  };
+    )
+  }
 
-    // --- Important Dates functions ---
+  // --- Important Dates functions ---
   const addImportantDate = () =>
-    setImportantDates((prev) => [
+    setImportantDates(prev => [
       ...prev,
-      { title: "", description: "", date: "" },
-    ]);
+      { title: '', description: '', date: '' }
+    ])
 
   const updateImportantDate = (index, field, value) => {
-    setImportantDates((prev) =>
-      prev.map((date, i) =>
-        i === index ? { ...date, [field]: value } : date
-      )
-    );
-  };
+    setImportantDates(prev =>
+      prev.map((date, i) => (i === index ? { ...date, [field]: value } : date))
+    )
+  }
 
-  const removeImportantDate = (index) => {
+  const removeImportantDate = index => {
     if (importantDates.length > 1) {
-      setImportantDates((prev) => prev.filter((_, i) => i !== index));
+      setImportantDates(prev => prev.filter((_, i) => i !== index))
     }
-  };
-
+  }
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -429,10 +425,17 @@ const EditConference = () => {
                           type='number'
                           value={option.earlyBird}
                           onChange={e => {
-                            const newOptions = [...submissionOptions]
-                            newOptions[index].earlyBird =
-                              parseFloat(e.target.value) || 0
-                            setSubmissionOptions(newOptions)
+                            const value = parseFloat(e.target.value) || 0
+                            const newOptions = [...formData.submissionOptions]
+                            // clone the object before updating
+                            newOptions[index] = {
+                              ...newOptions[index],
+                              earlyBird: value
+                            }
+                            setFormData(prev => ({
+                              ...prev,
+                              submissionOptions: newOptions
+                            }))
                           }}
                           className='border border-black rounded-md p-2 w-full text-black'
                           placeholder='0'
@@ -447,10 +450,13 @@ const EditConference = () => {
                           type='number'
                           value={option.normal}
                           onChange={e => {
-                            const newOptions = [...submissionOptions]
+                            const newOptions = [...formData.submissionOptions]
                             newOptions[index].normal =
                               parseFloat(e.target.value) || 0
-                            setSubmissionOptions(newOptions)
+                            setFormData(prev => ({
+                              ...prev,
+                              submissionOptions: newOptions
+                            }))
                           }}
                           className='border border-black rounded-md p-2 w-full text-black'
                           placeholder='0'
@@ -500,7 +506,7 @@ const EditConference = () => {
               </div>
             </motion.div>
 
- {/* Tracks Section */}
+            {/* Tracks Section */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -677,7 +683,7 @@ const EditConference = () => {
                 <FaPlus className='inline mr-2' /> Add Important Date
               </button>
             </motion.div>
-            
+
             {/* Location Information */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -843,7 +849,7 @@ const EditConference = () => {
                       setCurrentCategory
                     )
                   }
-                  className='px-6 py-5 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
                 >
                   <FaPlus /> Add
                 </button>
@@ -897,7 +903,7 @@ const EditConference = () => {
                   onClick={() =>
                     addArrayItem('theme', currentTheme, setCurrentTheme)
                   }
-                  className='px-6 py-5 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
                 >
                   <FaPlus /> Add
                 </button>
@@ -959,7 +965,7 @@ const EditConference = () => {
                       setCurrentPresentationMethod
                     )
                   }
-                  className='px-6 py-5 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
                 >
                   <FaPlus /> Add
                 </button>
@@ -1023,7 +1029,7 @@ const EditConference = () => {
                       setCurrentPublicationOption
                     )
                   }
-                  className='px-6 py-5 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
                 >
                   <FaPlus /> Add
                 </button>
@@ -1122,7 +1128,7 @@ const EditConference = () => {
               <button
                 type='button'
                 onClick={addWorkshopOption}
-                className='px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
               >
                 <FaPlus /> Add Workshop Option
               </button>
@@ -1138,7 +1144,7 @@ const EditConference = () => {
               <button
                 type='submit'
                 disabled={editConferenceLoading}
-                className='px-6 py-4 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
               >
                 {editConferenceLoading ? (
                   <>
