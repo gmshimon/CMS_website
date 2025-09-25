@@ -5,11 +5,14 @@ import {
   setContactNumber,
   setCountry,
   setDepartment,
+  setGoogleScholarLink,
   setMailingAddress,
+  setOrcidLink,
   setOrganization,
   setPresenterEmail,
   setPresenterName,
-  setPresenterStatus
+  setPresenterStatus,
+  setResearchGateLink
 } from '../../Redux/Slice/AbstractSlice'
 
 const PresenterInformation = ({ activeStep, setActiveStep }) => {
@@ -21,7 +24,10 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
     country,
     contact_number,
     mailing_address,
-    presenter_status
+    presenter_status,
+        researchGate_link,
+        orcid_link,
+        google_scholar_link
   } = useSelector(state => state.abstract)
   const [formData, setFormData] = useState({
     presenterName: '',
@@ -312,6 +318,54 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
               )}
             </div>
           )}
+        </div>
+
+        <div>
+          <label className='label'>
+            <span className='label-text font-medium text-black'>
+              Researchgate Link
+            </span>
+          </label>
+          <input
+            type='url'
+            name='researchGate_link'
+            value={researchGate_link}
+            onChange={e => dispatch(setResearchGateLink(e.target.value))}
+            className='border border-black rounded-md p-2 w-full text-black'
+            placeholder='Enter Researchgate profile link'
+          />
+        </div>
+
+        <div>
+          <label className='label'>
+            <span className='label-text font-medium text-black'>
+              ORCID Link
+            </span>
+          </label>
+          <input
+            type='url'
+            name='orcid_link'
+            value={orcid_link}
+            onChange={e => dispatch(setOrcidLink(e.target.value))}
+            className='border border-black rounded-md p-2 w-full text-black'
+            placeholder='Enter ORCID profile link'
+          />
+        </div>
+
+        <div>
+          <label className='label'>
+            <span className='label-text font-medium text-black'>
+              Google Scholar Link
+            </span>
+          </label>
+          <input
+            type='url'
+            name='google_scholar_link'
+            value={google_scholar_link}
+            onChange={e => dispatch(setGoogleScholarLink(e.target.value))}
+            className='border border-black rounded-md p-2 w-full text-black'
+            placeholder='Enter Google Scholar profile link'
+          />
         </div>
       </form>
       <button

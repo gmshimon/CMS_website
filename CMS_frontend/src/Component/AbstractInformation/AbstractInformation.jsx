@@ -4,32 +4,15 @@ import 'react-quill/dist/quill.snow.css' // Import the styles
 import { useDispatch, useSelector } from 'react-redux'
 import {
   setAbstract,
-  setGoogleScholarLink,
-  // setGraphicalAbstract,
   setKeywords,
-  setOrcidLink,
   setPaperTitle,
   setPresentationMethod,
   setPrice,
-  // setPresentationProfilePicture,
-  // setPresentationVideoLink,
-  setPublicationOptions,
-  setResearchGateLink,
   setTheme
-  // setVideoAbstract
 } from '../../Redux/Slice/AbstractSlice'
 const AbstractInformation = ({ activeStep, setActiveStep }) => {
-  const {
-    theme,
-    presentation_method,
-    publication_options,
-    paper_title,
-    abstract,
-    keywords,
-    researchGate_link,
-    orcid_link,
-    google_scholar_link
-  } = useSelector(state => state.abstract)
+  const { theme, presentation_method, paper_title, abstract, keywords } =
+    useSelector(state => state.abstract)
   const { singleConference } = useSelector(state => state.conference)
 
   const [errors, setErrors] = useState({})
@@ -44,9 +27,9 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
     if (!presentation_method) {
       newErrors.presentationMethod = 'Presentation method is required'
     }
-    if (!publication_options) {
-      newErrors.publicationOptions = 'Publication option is required'
-    }
+    // if (!publication_options) {
+    //   newErrors.publicationOptions = 'Publication option is required'
+    // }
     if (!paper_title?.trim() || !paper_title) {
       newErrors.paperTitle = 'Paper title is required'
     }
@@ -113,9 +96,9 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             name='presentation_method'
             value={presentation_method}
             onChange={e => {
-              const selectedOption = JSON.parse(e.target.value); // parse the string back to object
-      dispatch(setPresentationMethod(selectedOption.submissionType));
-      dispatch(setPrice(selectedOption.price));
+              const selectedOption = JSON.parse(e.target.value) // parse the string back to object
+              dispatch(setPresentationMethod(selectedOption.submissionType))
+              dispatch(setPrice(selectedOption.price))
             }}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presentationMethod ? 'select-error' : ''
@@ -123,8 +106,8 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           >
             <option value=''>Select presentation method</option>
             {singleConference?.submissionOptions?.map((option, index) => (
-              <option key={index} value={JSON.stringify(option)} >
-                {option.submissionType} ( ${option.price} )
+              <option key={index} value={JSON.stringify(option)}>
+                {option.submissionType}
               </option>
             ))}
           </select>
@@ -136,7 +119,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
         </div>
 
         {/* Publication Options */}
-        <div>
+        {/* <div>
           <label className='label'>
             <span className='label-text font-medium text-black'>
               Publication Options *
@@ -162,7 +145,7 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
               {errors.publicationOptions}
             </p>
           )}
-        </div>
+        </div> */}
 
         {/* Paper Title */}
         <div>
@@ -296,53 +279,6 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
         </div> */}
 
         {/* Social Media Links */}
-        <div>
-          <label className='label'>
-            <span className='label-text font-medium text-black'>
-              Researchgate Link
-            </span>
-          </label>
-          <input
-            type='url'
-            name='researchGate_link'
-            value={researchGate_link}
-            onChange={e => dispatch(setResearchGateLink(e.target.value))}
-            className='border border-black rounded-md p-2 w-full text-black'
-            placeholder='Enter Researchgate profile link'
-          />
-        </div>
-
-        <div>
-          <label className='label'>
-            <span className='label-text font-medium text-black'>
-              ORCID Link
-            </span>
-          </label>
-          <input
-            type='url'
-            name='orcid_link'
-            value={orcid_link}
-            onChange={e => dispatch(setOrcidLink(e.target.value))}
-            className='border border-black rounded-md p-2 w-full text-black'
-            placeholder='Enter ORCID profile link'
-          />
-        </div>
-
-        <div>
-          <label className='label'>
-            <span className='label-text font-medium text-black'>
-              Google Scholar Link
-            </span>
-          </label>
-          <input
-            type='url'
-            name='google_scholar_link'
-            value={google_scholar_link}
-            onChange={e => dispatch(setGoogleScholarLink(e.target.value))}
-            className='border border-black rounded-md p-2 w-full text-black'
-            placeholder='Enter Google Scholar profile link'
-          />
-        </div>
       </form>
       <button
         onClick={() => {
