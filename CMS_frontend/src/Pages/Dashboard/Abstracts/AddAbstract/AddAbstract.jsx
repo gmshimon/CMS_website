@@ -19,7 +19,8 @@ const steps = [
 const AddAbstract = () => {
   const { getConferenceLoading} = useSelector(state => state.conference)
   const [activeStep, setActiveStep] = useState([])
-  useAbstract()
+  const [currentConference,setCurrentConference] = useState(null)
+  useAbstract({currentConference})
  
 
   useEffect(() => {
@@ -56,19 +57,8 @@ const AddAbstract = () => {
           <div className='bg-white md:max-w-7xl  mx-auto rounded-lg shadow-lg mt-2 p-3'>
             {activeStep[activeStep.length - 1] == 'Select Conference' && (
               <div>
-                <SelectConference />
-                <button
-                  onClick={() => {
-                    setActiveStep([...activeStep, 'Abstract Information'])
-                    sessionStorage.setItem(
-                      'activeStep',
-                      JSON.stringify([...activeStep, 'Abstract Information'])
-                    )
-                  }}
-                  className='mt-4 px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
-                >
-                  Next
-                </button>
+                <SelectConference setCurrentConference={setCurrentConference} setActiveStep={setActiveStep} activeStep={activeStep}/>
+                
               </div>
             )}
             {activeStep[activeStep.length - 1] == 'Abstract Information' && (

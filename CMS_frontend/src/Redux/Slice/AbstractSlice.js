@@ -11,6 +11,9 @@ const initialState = {
   pagination: null,
 
   conference: null,
+  category:null,
+  track: null,
+  subTrack: null,
   member_id: null,
   theme: null,
   presentation_method: null,
@@ -89,7 +92,7 @@ export const createAbstract = createAsyncThunk(
 export const getAbstract = createAsyncThunk(
   'createAbstract',
   async (
-    { id, payment_status = null, page = 1, limit = 10,search = ''},
+    { id, payment_status = null, page = 1, limit = 10, search = '' },
     { rejectWithValue }
   ) => {
     try {
@@ -335,6 +338,15 @@ const abstractSlice = createSlice({
     },
     setConference: (state, { payload }) => {
       state.conference = payload
+    },
+    setCategory:(state,{payload})=>{
+      state.category = payload
+    },
+    setTrack:(state,{ payload })=>{
+      state.track = payload
+    },
+    setSubTrack:(state,{ payload })=>{
+      state.subTrack = payload
     },
     setMemberId: (state, { payload }) => {
       state.member_id = payload
@@ -612,6 +624,9 @@ export const {
   resetForm,
   setAbstracts,
   setConference,
+  setCategory,
+  setTrack,
+  setSubTrack,
   setMemberId,
   setTheme,
   setPresentationMethod,

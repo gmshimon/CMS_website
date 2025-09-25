@@ -7,7 +7,8 @@ const useAbstract = ({
   payment_status = null,
   page = 1,
   limit = 10,
-  searchQuery
+  searchQuery,
+  currentConference
 } = {}) => {
   const { createPostPaperSuccess } = useSelector(state => state.paper)
   const { selectedConference } = useSelector(state => state.conference)
@@ -24,8 +25,8 @@ const useAbstract = ({
         search: searchQuery
       })
     )
-    if (selectedConference) {
-      dispatch(getSingleConference(selectedConference))
+    if (currentConference) {
+      dispatch(getSingleConference(currentConference))
     }
   }, [
     dispatch,
@@ -34,8 +35,8 @@ const useAbstract = ({
     payment_status,
     page,
     limit,
-
-    searchQuery
+    searchQuery,
+    currentConference
   ])
 }
 
