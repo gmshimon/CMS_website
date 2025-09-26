@@ -29,6 +29,7 @@ const initialState = {
   orcid_link: null,
   google_scholar_link: null,
   presenter_name: null,
+  presenter_title:null,
   presenter_email: null,
   organization: null,
   department: null,
@@ -393,6 +394,9 @@ const abstractSlice = createSlice({
     setPresenterName: (state, { payload }) => {
       state.presenter_name = payload
     },
+    setPresenterTitle: (state, { payload }) => {
+      state.presenter_title = payload
+    },
     setPresenterEmail: (state, { payload }) => {
       state.presenter_email = payload
     },
@@ -642,6 +646,7 @@ export const {
   setOrcidLink,
   setGoogleScholarLink,
   setPresenterName,
+  setPresenterTitle,
   setPresenterEmail,
   setOrganization,
   setDepartment,

@@ -14,15 +14,23 @@ const abstractSchema = new mongoose.Schema(
       unique: true,
       index: true
     },
+    track: {
+      type: String,
+      required: true
+    },
+    subTrack: {
+      type: String,
+      required: true
+    },
     category: {
       type: String
     },
     member_id: {
       type: String
     },
-    price:{
+    price: {
       type: Number,
-      default:0
+      default: 0
     },
     payment_status: {
       type: String,
@@ -78,10 +86,10 @@ const abstractSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    publication_options: {
-      type: String,
-      required: true
-    },
+    // publication_options: {
+    //   type: String,
+    //   required: true
+    // },
     paper_title: {
       type: String,
       required: true
@@ -121,6 +129,10 @@ const abstractSchema = new mongoose.Schema(
       required: true
     },
     presenter: {
+      presenter_title: {
+        type: String,
+        default: 'Mr. '
+      },
       presenter_name: {
         type: String,
         required: true
@@ -201,21 +213,33 @@ abstractSchema.pre('save', async function (next) {
     return next(new Error('Conference not found while generating abstract_id'))
   }
 
-  // Use conference shortName if available, else fallback to name
-  const prefix =
+  // ✅ Build prefix: shortName + year + track
+  const shortName =
     conference.shortName || conference.name?.split(' ')[0] || 'CONF'
+  const year = new Date().getFullYear()
+  // ✅ Generate short track code
+  function getTrackCode (track) {
+    return track
+      .split(/\s+/)
+      .map(word => word[0]) // first letter of each word
+      .join('')
+      .toUpperCase()
+  }
+  const trackCode = this.track ? getTrackCode(this.track) : 'GEN'
+
+  const prefix = `${shortName}_${trackCode}`
 
   // 🔹 Counter key is only the conference
   const counterKey = prefix
 
-  // Atomically increment or create new counter
+  // Counter key = prefix
   const counter = await Counter.findOneAndUpdate(
-    { key: counterKey },
+    { key: prefix },
     { $inc: { seq: 1 } },
     { new: true, upsert: true }
   )
 
-  const sequence = String(counter.seq).padStart(4, '0') // 0001, 0002, ...
+  const sequence = String(counter.seq).padStart(4, '0')
   this.abstract_id = `${prefix}_${sequence}`
 
   next()

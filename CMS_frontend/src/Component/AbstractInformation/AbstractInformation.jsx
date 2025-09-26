@@ -97,8 +97,23 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             value={presentation_method}
             onChange={e => {
               const selectedOption = JSON.parse(e.target.value) // parse the string back to object
+
+              // find early bird deadline from importantDates
+              const earlyBirdDeadline = singleConference?.importantDates?.find(
+                d => d.title.toLowerCase().includes('early bird')
+              )?.date
+
+              let price = 0
+              const today = new Date()
+
+              if (earlyBirdDeadline && today <= new Date(earlyBirdDeadline)) {
+                price = selectedOption.earlyBird // ✅ early bird price
+              } else {
+                price = selectedOption.normal // ✅ normal price
+              }
+
               dispatch(setPresentationMethod(selectedOption.submissionType))
-              dispatch(setPrice(selectedOption.price))
+              dispatch(setPrice(price))
             }}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.presentationMethod ? 'select-error' : ''

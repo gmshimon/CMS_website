@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import {useState } from 'react'
 import SelectConference from '../../../../Component/SelectConference/SelectConference'
 import PresenterInformation from '../../../../Component/PresenterInformation/PresenterInformation'
 import AbstractInformation from '../../../../Component/AbstractInformation/AbstractInformation'
@@ -18,17 +18,17 @@ const steps = [
 
 const AddAbstract = () => {
   const { getConferenceLoading} = useSelector(state => state.conference)
-  const [activeStep, setActiveStep] = useState([])
+  const [activeStep, setActiveStep] = useState(["Select Conference"])
   const [currentConference,setCurrentConference] = useState(null)
   useAbstract({currentConference})
  
 
-  useEffect(() => {
-    if (sessionStorage.getItem('activeStep')) {
-      const activeStep = JSON.parse(sessionStorage.getItem('activeStep'))
-      setActiveStep(activeStep)
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (sessionStorage.getItem('activeStep')) {
+  //     const activeStep = JSON.parse(sessionStorage.getItem('activeStep'))
+  //     setActiveStep(activeStep)
+  //   }
+  // }, [])
   return (
     <section className='md:p-6 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
       {getConferenceLoading ? (

@@ -11,14 +11,16 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
     conference,
     member_id,
     theme,
+    track,
+    subTrack,
     presentation_method,
-    publication_options,
     paper_title,
     abstract,
     keywords,
     researchGate_link,
     orcid_link,
     google_scholar_link,
+    presenter_title,
     presenter_name,
     presenter_email,
     organization,
@@ -125,7 +127,6 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       }))
     }
   }
-
   const handleWorkshopChange = workshop => {
     setFormData(prev => ({
       ...prev,
@@ -160,8 +161,9 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       category: conference,
       member_id,
       theme,
+      track,
+      subTrack,
       presentation_method,
-      publication_options,
       paper_title,
       abstract,
       keywords,
@@ -182,6 +184,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
         preConferenceWorkshops: formData.preConferenceWorkshops
       },
       presenter: {
+        presenter_title,
         presenter_name,
         presenter_email,
         organization,
@@ -413,8 +416,8 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                 ))}
               </select>
               <p className='text-sm text-gray-500 mt-1'>
-                A dinner will be held for the conference participants on 22nd
-                July 2023
+                A Gala Dinner will be held for the conference participants on
+                the last day of the conference
               </p>
             </div>
 
@@ -474,8 +477,10 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                   ))}
                 </div>
                 <p className='text-sm text-gray-500 mt-3'>
-                  Base fee of RM 0.00 will be added to your invoice if you
-                  select one or more workshop(s).
+                  Please note that conference workshops are complimentary only
+                  for the presenter or main author of the accepted paper.
+                  Co-authors who wish to attend the workshops are required to
+                  register as conference attendees.”
                 </p>
               </div>
             </div>

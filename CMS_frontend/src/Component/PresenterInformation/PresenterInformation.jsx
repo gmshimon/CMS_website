@@ -12,11 +12,14 @@ import {
   setPresenterEmail,
   setPresenterName,
   setPresenterStatus,
+  setPresenterTitle,
   setResearchGateLink
 } from '../../Redux/Slice/AbstractSlice'
+import { countries } from '../../Utilis/countryList'
 
 const PresenterInformation = ({ activeStep, setActiveStep }) => {
   const {
+    presenter_title,
     presenter_name,
     presenter_email,
     organization,
@@ -25,9 +28,9 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
     contact_number,
     mailing_address,
     presenter_status,
-        researchGate_link,
-        orcid_link,
-        google_scholar_link
+    researchGate_link,
+    orcid_link,
+    google_scholar_link
   } = useSelector(state => state.abstract)
   const [formData, setFormData] = useState({
     presenterName: '',
@@ -43,6 +46,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
 
   const [errors, setErrors] = useState({})
   const dispatch = useDispatch()
+  const titleOptions = ['Dr.', 'Assoc. Prof.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.']
   const presenterStatusOptions = [
     'Student',
     'Faculty Member',
@@ -71,6 +75,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
     if (!presenter_name?.trim() || !presenter_name) {
       newErrors.presenterName = 'Presenter name is required'
     }
+    if (!presenter_title) newErrors.title = 'Title is required'
     if (!presenter_email?.trim() || !presenter_email) {
       newErrors.email = 'Email is required'
     }
@@ -101,16 +106,16 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
   const handleSubmit = e => {
     e.preventDefault()
     const newErrors = validateForm()
-    if (Object.keys(newErrors).length === 0) {
+    // if (Object.keys(newErrors).length === 0) {
     setActiveStep([...activeStep, 'Author'])
     sessionStorage.setItem(
       'activeStep',
       JSON.stringify([...activeStep, 'Author'])
     )
     setErrors({})
-    } else {
-        setErrors(newErrors);
-    }
+    // } else {
+    //     setErrors(newErrors);
+    // }
   }
 
   return (
@@ -118,6 +123,33 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
       <h2 className='text-2xl font-bold mb-3'>Presenter Information</h2>
 
       <form onSubmit={handleSubmit} className='space-y-2'>
+        {/* Presenter title */}
+        <div>
+          <label className='label'>
+            <span className='label-text font-medium text-black'>
+              Presenter Title *
+            </span>
+          </label>
+          <select
+            name='title'
+            value={presenter_title}
+            onChange={e => dispatch(setPresenterTitle(e.target.value))}
+            className={`border border-black rounded-md p-2 w-full text-black ${
+              errors.title ? 'border-red-500' : 'border-black'
+            }`}
+          >
+            <option value=''>Choose</option>
+            {titleOptions.map(title => (
+              <option key={title} value={title}>
+                {title}
+              </option>
+            ))}
+          </select>
+
+          {errors.title && (
+            <p className='text-error text-sm mt-1'>{errors.title}</p>
+          )}
+        </div>
         {/* Presenter Name */}
         <div>
           <label className='label'>
@@ -211,7 +243,22 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
           <label className='label'>
             <span className='label-text font-medium text-black'>Country *</span>
           </label>
-          <input
+          <select
+                                name='country'
+                                value={country}
+                                onChange={e => dispatch(setCountry(e.target.value))}
+                                className={`border border-black rounded-md p-2 w-full text-black ${
+                                  errors.country ? 'border-red-500' : 'border-black'
+                                }`}
+                              >
+                                <option value=''>Choose</option>
+                                {countries.map(country => (
+                                  <option key={country} value={country}>
+                                    {country}
+                                  </option>
+                                ))}
+                              </select>
+          {/* <input
             type='text'
             name='country'
             value={country}
@@ -220,7 +267,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
               errors.country ? 'input-error' : ''
             }`}
             placeholder='Enter your country'
-          />
+          /> */}
           {errors.country && (
             <p className='text-error text-sm mt-1'>{errors.country}</p>
           )}
@@ -264,7 +311,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
             name='mailingAddress'
             value={mailing_address}
             onChange={e => dispatch(setMailingAddress(e.target.value))}
-            className={`border border-black rounded-md p-2 w-full text-black h-24 ${
+            className={`border border-black rounded-md p-2 w-full text-black h-12 ${
               errors.mailingAddress ? 'textarea-error' : ''
             }`}
             placeholder='Enter your complete mailing address'

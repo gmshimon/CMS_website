@@ -213,7 +213,7 @@ const ConferenceHighlights = () => {
               <iframe
                 width='100%'
                 height='100%'
-                src='https://www.youtube.com/embed/Yw2x6jugFhA?si=1RU4q3keRI7kkwX6'
+                src='https://www.youtube.com/embed/naUGRVRFmXQ?si=Ut5li803L-MlNZLT'
                 title='YouTube video player'
                 frameborder='0'
                 allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'

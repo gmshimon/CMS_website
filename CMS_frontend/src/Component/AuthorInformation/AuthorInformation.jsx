@@ -3,6 +3,7 @@ import { FaPlus, FaTimes, FaTrash, FaEdit } from 'react-icons/fa'
 import { IoPersonAdd } from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
 import { setAbstractAuthors } from '../../Redux/Slice/AbstractSlice'
+import { countries } from '../../Utilis/countryList'
 
 const AuthorInformation = ({ activeStep, setActiveStep }) => {
   const { user } = useSelector(state => state.user)
@@ -22,25 +23,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
 
   const [errors, setErrors] = useState({})
   const dispatch = useDispatch()
-  const titleOptions = ['Dr.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.']
-  const countryOptions = [
-    'Malaysia',
-    'Singapore',
-    'Indonesia',
-    'Thailand',
-    'Philippines',
-    'United States',
-    'United Kingdom',
-    'Canada',
-    'Australia',
-    'India',
-    'China',
-    'Japan',
-    'South Korea',
-    'Germany',
-    'France',
-    'Other'
-  ]
+  const titleOptions = ['Dr.', 'Assoc. Prof.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.']
 
   useEffect(() => {
     if (authors.length > 1) {
@@ -421,7 +404,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
                       }`}
                     >
                       <option value=''>Choose</option>
-                      {countryOptions.map(country => (
+                      {countries.map(country => (
                         <option key={country} value={country}>
                           {country}
                         </option>
