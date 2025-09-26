@@ -222,7 +222,7 @@ const ConferenceHighlights = () => {
             <div className='bg-gray-900 rounded-lg overflow-hidden shadow-2xl'>
               {/* Video Container */}
               <video
-                src='/public/video/Elegant Gloss Logo Reveal_1080p.mp4'
+                src='https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/video/Elegant+Gloss+Logo+Reveal_1080p.mp4'
                 className='w-full h-full'
                 autoPlay
                 muted

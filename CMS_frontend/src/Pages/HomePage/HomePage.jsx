@@ -69,7 +69,7 @@ const HomePage = () => {
         {/* 🎥 Video Background */}
         <div className='absolute inset-0 overflow-hidden'>
           <video
-            src='/public/video/Background Video.mp4'
+            src='https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/video/Background+Video.mp4'
             autoPlay
             muted
             loop
