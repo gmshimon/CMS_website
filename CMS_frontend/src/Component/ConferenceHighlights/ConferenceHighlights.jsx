@@ -199,10 +199,21 @@ const ConferenceHighlights = () => {
                 </p>
 
                 <p>
-                  The Elite Global Excellence International Multidisciplinary Research Conference 2026 (EGEIMRC2026) is a prestigious global research event organized by Elite Global Excellence Sdn. Bhd. With a mission to bring together scholars, researchers, students and industry professionals from diverse academic and professional fields, this conference serves as a powerful platform for sharing knowledge, presenting research findings, and exploring transformative ideas that address real-world challenges. EGEIMRC2026 welcomes participants from all disciplines and strongly encourages cross-field collaboration to inspire innovation and progress.
+                  The Elite Global Excellence International Multidisciplinary
+                  Research Conference 2026 (EGEIMRC2026) is a prestigious global
+                  research event organized by Elite Global Excellence Sdn. Bhd.
+                  With a mission to bring together scholars, researchers,
+                  students and industry professionals from diverse academic and
+                  professional fields, this conference serves as a powerful
+                  platform for sharing knowledge, presenting research findings,
+                  and exploring transformative ideas that address real-world
+                  challenges. EGEIMRC2026 welcomes participants from all
+                  disciplines and strongly encourages cross-field collaboration
+                  to inspire innovation and progress.
                 </p>
                 <p className='font-semibold text-blue-800'>
-                  Join us in redefining what's possible when intelligence meets excellence.
+                  Join us in redefining what's possible when intelligence meets
+                  excellence.
                 </p>
               </div>
             </div>
@@ -210,16 +221,14 @@ const ConferenceHighlights = () => {
             {/* Video Player */}
             <div className='bg-gray-900 rounded-lg overflow-hidden shadow-2xl'>
               {/* Video Container */}
-              <iframe
-                width='100%'
-                height='100%'
-                src='https://www.youtube.com/embed/naUGRVRFmXQ?si=Ut5li803L-MlNZLT'
-                title='YouTube video player'
-                frameborder='0'
-                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                referrerpolicy='strict-origin-when-cross-origin'
-                allowfullscreen
-              ></iframe>
+              <video
+                src='/public/video/Elegant Gloss Logo Reveal_1080p.mp4'
+                className='w-full h-full'
+                autoPlay
+                muted
+                loop
+                playsInline
+              ></video>
             </div>
           </div>
 

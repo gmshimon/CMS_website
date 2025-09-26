@@ -75,6 +75,7 @@ const AdminAttendeeList = () => {
           <input
             type='text'
             value={searchQuery}
+            placeholder='Abstract ID (e.g.AIDS2026_REG_0001)'
             onChange={e => {
               setSearchQuery(e.target.value)
               setCurrentPage(1) // reset to first page when search changes

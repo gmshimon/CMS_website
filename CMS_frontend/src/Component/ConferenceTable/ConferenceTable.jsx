@@ -22,31 +22,31 @@ const ConferenceTable = ({
     }
   }
   return (
-    <div className='px-3 bg-gradient-to-r from-blue-50 to-gray-100 min-h-[calc(100vh-64px)]'>
+    <div className='px-3 bg-gradient-to-r from-blue-50 to-gray-100'>
       <div className='bg-white rounded-lg shadow-md overflow-hidden'>
         <div className='overflow-x-auto h-[400px] overflow-y-auto'>
           <table className='min-w-full divide-y divide-gray-200 table-zebra'>
             <thead className='bg-slate-500'>
               <tr>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase'>
                   Conference ID
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase'>
                   Name
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase'>
                   Start Date
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase'>
                   Close Date
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase'>
                   Location
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase'>
                   Status
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase'>
                   Actions
                 </th>
               </tr>

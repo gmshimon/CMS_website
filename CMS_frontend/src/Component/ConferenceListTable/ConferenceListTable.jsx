@@ -12,39 +12,39 @@ const ConferenceListTable = ({
 }) => {
   return (
     <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-      <div className='overflow-x-auto h-[620px] overflow-y-auto'>
+      <div className='overflow-x-auto h-[450px] overflow-y-auto'>
         <table className='min-w-full divide-y divide-gray-200 table-zebra'>
           <thead className='bg-slate-500'>
             <tr>
-              <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+              <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                 Abstract ID
               </th>
               {abstract_title && (
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Abstract Title
                 </th>
               )}
-              <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+              <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                 Date
               </th>
-              <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+              <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                 Location
               </th>
 
-              <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+              <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                 Presenter
               </th>
               {admin && (
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Payment Proof
                 </th>
               )}
               {admin && (
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Payment Decision
                 </th>
               )}
-              <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+              <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                 Actions
               </th>
             </tr>

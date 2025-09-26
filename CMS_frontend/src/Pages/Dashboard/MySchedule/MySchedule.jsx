@@ -69,31 +69,31 @@ const MySchedule = () => {
           <table className='min-w-full divide-y divide-gray-200 table-zebra'>
             <thead className='bg-slate-500'>
               <tr>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Abstract ID
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Paper Title
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Status
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Presentation
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Day / Date
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Session / Time
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Venue / Meeting
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Chair
                 </th>
-                <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+                <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
                   Moderator
                 </th>
               </tr>

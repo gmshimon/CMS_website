@@ -68,16 +68,16 @@ const HomePage = () => {
       <div className='min-h-screen  relative overflow-hidden'>
         {/* 🎥 Video Background */}
         <div className='absolute inset-0 overflow-hidden'>
-          <iframe
-            className='w-full h-full'
-            src='https://www.youtube.com/embed/gDPb6YXKVrc?autoplay=1&mute=1&loop=1&playlist=gDPb6YXKVrc&controls=0&showinfo=0&modestbranding=1'
-            title='YouTube video background'
-            frameBorder='0'
-            allow='autoplay; fullscreen'
-          />
+          <video
+            src='/public/video/Background Video.mp4'
+            autoPlay
+            muted
+            loop
+            playsInline
+            className='w-full h-full object-cover'
+          ></video>
           <div className='absolute inset-0 bg-black/50'></div> {/* overlay */}
         </div>
-
         {/* Hero Section */}
         <div className='relative z-10 container mx-auto px-4 pt-12 pb-20'>
           {/* Main Title */}
@@ -93,12 +93,13 @@ const HomePage = () => {
             </h3>
 
             <p className='text-lg md:text-xl lg:text-2xl text-white/90 italic font-light mb-12 max-w-4xl mx-auto leading-relaxed'>
-              "The Power of Interdisciplinary Knowledge in Solving Complex Problems: Bridging Science, Technology, Humanities and Beyond."
+              "The Power of Interdisciplinary Knowledge in Solving Complex
+              Problems: Bridging Science, Technology, Humanities and Beyond."
             </p>
           </div>
 
           {/* Conference Details */}
-          <div className='bg-white/90 backdrop-blur-sm rounded-lg p-6 mb-12 max-w-4xl mx-auto'>
+          <div className='bg-white/90 backdrop-blur-sm rounded-lg p-6 mb-4 max-w-4xl mx-auto'>
             <div className='flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8'>
               <div className='flex items-center space-x-2'>
                 <Calendar className='w-6 h-6 text-blue-600' />
@@ -116,7 +117,7 @@ const HomePage = () => {
           </div>
 
           {/* Countdown Timer */}
-          <div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-2xl mx-auto mb-12'>
+          <div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-2xl mx-auto mb-4'>
             {[
               { value: timeLeft.days, label: 'Days' },
               { value: timeLeft.hours, label: 'Hours' },
@@ -139,7 +140,7 @@ const HomePage = () => {
           </div>
 
           {/* Call to Action */}
-          <div className='text-center mb-12'>
+          <div className='text-center mb-4'>
             <h3 className='text-2xl md:text-3xl font-bold text-white mb-8'>
               Fuel your research journey—Register now!
             </h3>
@@ -154,7 +155,7 @@ const HomePage = () => {
           </div>
 
           {/* Features Section */}
-          <div className='grid md:grid-cols-3 gap-8 mt-20'>
+          <div className='grid md:grid-cols-3 gap-8 '>
             {features.map((feature, index) => (
               <div key={index} className='text-center group'>
                 <div className='bg-white/10 backdrop-blur-sm rounded-lg p-8 hover:bg-white/20 transition-all duration-300 transform hover:scale-105'>

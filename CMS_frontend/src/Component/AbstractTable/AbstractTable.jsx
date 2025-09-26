@@ -32,31 +32,31 @@ const AbstractTable = ({ data, handleOpenModal }) => {
       <table className='min-w-full divide-y divide-gray-200 table-zebra'>
         <thead className='bg-slate-500'>
           <tr>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Abstract ID
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Title
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Author
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Theme
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Type
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Submission Date
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Deadline
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Status
             </th>
-            <th className='px-6 py-3 text-left text-xs text-black font-bold uppercase tracking-wider'>
+            <th className='px-6 py-3 text-left text-xs text-white font-bold uppercase tracking-wider'>
               Actions
             </th>
           </tr>
