@@ -8,6 +8,8 @@ import ImportantDatesPublication from '../../Component/ImportantDatesPublication
 import UnmissableBenefits from '../../Component/UnmissableBenefits/UnmissableBenefits'
 import OurPartners from '../../Component/OurPartners/OurPartners'
 import UpcomingConferences from '../../Component/UpcomingConferences/UpcomingConferences'
+import VideoTestimonials from '../../Component/VideoTestimonials/VideoTestimonials'
+import ConferenceTestimonials from '../../Component/ConferenceTestimonials/ConferenceTestimonials'
 
 const HomePage = () => {
   // Countdown timer state
@@ -192,7 +194,9 @@ const HomePage = () => {
       <ConferenceTracks />
       <ImportantDatesPublication />
       <UnmissableBenefits />
+      <VideoTestimonials/>
       <OurPartners />
+      <ConferenceTestimonials/>
       <UpcomingConferences />
     </>
   )
