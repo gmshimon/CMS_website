@@ -94,14 +94,6 @@ jobs:
             build-args: |
                 NODE_ENV=production
                 PORT=5000
-                MONGO_URI=${{ secrets.MONGODB_URI }}
-                TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}
-                SESSION_SECRET=${{ secrets.SESSION_SECRET }}
-                AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-                AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                AWS_REGION=${{ secrets.AWS_REGION }}
-                AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}
-                socket_originsocket_origin=${{ secrets.SOCKET_ORIGIN }}
             
       - name: Build and Push Frontend Docker Image
         uses: docker/build-push-action@v4
