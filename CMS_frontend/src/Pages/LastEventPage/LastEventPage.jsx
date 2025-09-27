@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 
 const AboutLastEventPage = () => {
+  const [activeTab, setActiveTab] = useState('conference')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
@@ -312,311 +313,391 @@ const AboutLastEventPage = () => {
 
           {/* Daily Schedule Section */}
           <div className='mb-20'>
-            <h2 className='text-3xl font-bold text-white mb-12 text-center'>
+            {/* <h2 className='text-3xl font-bold text-white mb-12 text-center'>
               Conference Schedule
-            </h2>
-
-            {/* Day 1 */}
-            <div className='mb-12'>
-              <div className='bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden'>
-                <div className='bg-yellow-500/20 px-8 py-4 border-b border-white/20'>
-                  <h3 className='text-2xl font-bold text-yellow-400 flex items-center'>
-                    <Calendar className='w-6 h-6 mr-3' />
-                    Day 1 - March 15, 2024
-                  </h3>
-                  <p className='text-white/80 mt-2'>
-                    Opening Ceremony & Keynote Sessions
-                  </p>
-                </div>
-
-                <div className='p-8'>
-                  <div className='grid gap-6'>
-                    {/* Morning Session */}
-                    <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
-                      <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
-                        <div className='w-3 h-3 rounded-full bg-yellow-400 mr-3'></div>
-                        Morning Session (9:00 AM - 12:30 PM)
-                      </h4>
-                      <div className='space-y-4'>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            09:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Registration & Welcome Coffee
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Participant check-in and networking breakfast
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            10:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Opening Ceremony
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Welcome address by conference chairs and
-                              distinguished guests
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            11:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Keynote Speech I
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              <strong>Dr. Sarah Johnson (MIT):</strong> "The
-                              Future of AI in Engineering"
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            12:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Networking & Coffee Break
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Interactive networking session with refreshments
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+            </h2> */}
+            {/* Tabs */}
+            <div className='flex justify-center mb-8 space-x-4'>
+              <button
+                onClick={() => setActiveTab('conference')}
+                className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
+                  activeTab === 'conference'
+                    ? 'bg-yellow-500 text-black shadow-lg'
+                    : 'bg-white/10 text-white/80 hover:bg-white/20'
+                }`}
+              >
+                Conference Schedule
+              </button>
+              <button
+                onClick={() => setActiveTab('event')}
+                className={`px-6 py-2 rounded-lg font-semibold transition-all duration-300 ${
+                  activeTab === 'event'
+                    ? 'bg-yellow-500 text-black shadow-lg'
+                    : 'bg-white/10 text-white/80 hover:bg-white/20'
+                }`}
+              >
+                Event Schedule
+              </button>
+            </div>
+            {/*Conference Schedule */}
+            {activeTab === 'conference' && (
+              <div>
+                {/* Day 1 */}
+                <div className='mb-12'>
+                  <div className='bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden'>
+                    <div className='bg-yellow-500/20 px-8 py-4 border-b border-white/20'>
+                      <h3 className='text-2xl font-bold text-yellow-400 flex items-center'>
+                        <Calendar className='w-6 h-6 mr-3' />
+                        Day 1 - March 15, 2024
+                      </h3>
+                      <p className='text-white/80 mt-2'>
+                        Opening Ceremony & Keynote Sessions
+                      </p>
                     </div>
 
-                    {/* Afternoon Session */}
-                    <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
-                      <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
-                        <div className='w-3 h-3 rounded-full bg-blue-400 mr-3'></div>
-                        Afternoon Session (2:00 PM - 6:00 PM)
-                      </h4>
-                      <div className='space-y-4'>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            14:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Technical Session I
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Computer Science & AI Research Presentations (8
-                              papers)
-                            </p>
+                    <div className='p-8'>
+                      <div className='grid gap-6'>
+                        {/* Morning Session */}
+                        <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
+                          <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
+                            <div className='w-3 h-3 rounded-full bg-yellow-400 mr-3'></div>
+                            Morning Session (9:00 AM - 12:30 PM)
+                          </h4>
+                          <div className='space-y-4'>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                09:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Registration & Welcome Coffee
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Participant check-in and networking breakfast
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                10:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Opening Ceremony
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Welcome address by conference chairs and
+                                  distinguished guests
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                11:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Keynote Speech I
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  <strong>Dr. Sarah Johnson (MIT):</strong> "The
+                                  Future of AI in Engineering"
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                12:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Networking & Coffee Break
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Interactive networking session with
+                                  refreshments
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            15:30
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Panel Discussion
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              "Emerging Technologies and Their Impact on
-                              Society"
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            16:30
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Workshop Session
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Hands-on Machine Learning Workshop
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            18:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Welcome Reception
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Cocktail reception and cultural program
-                            </p>
+
+                        {/* Afternoon Session */}
+                        <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
+                          <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
+                            <div className='w-3 h-3 rounded-full bg-blue-400 mr-3'></div>
+                            Afternoon Session (2:00 PM - 6:00 PM)
+                          </h4>
+                          <div className='space-y-4'>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                14:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Technical Session I
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Computer Science & AI Research Presentations
+                                  (8 papers)
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                15:30
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Panel Discussion
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  "Emerging Technologies and Their Impact on
+                                  Society"
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                16:30
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Workshop Session
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Hands-on Machine Learning Workshop
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                18:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Welcome Reception
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Cocktail reception and cultural program
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Day 2 */}
-            <div className='mb-12'>
-              <div className='bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden'>
-                <div className='bg-blue-500/20 px-8 py-4 border-b border-white/20'>
-                  <h3 className='text-2xl font-bold text-blue-400 flex items-center'>
-                    <Calendar className='w-6 h-6 mr-3' />
-                    Day 2 - March 16, 2024
-                  </h3>
-                  <p className='text-white/80 mt-2'>
-                    Research Sessions & Awards Ceremony
-                  </p>
-                </div>
-
-                <div className='p-8'>
-                  <div className='grid gap-6'>
-                    {/* Morning Session Day 2 */}
-                    <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
-                      <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
-                        <div className='w-3 h-3 rounded-full bg-green-400 mr-3'></div>
-                        Morning Session (9:00 AM - 12:30 PM)
-                      </h4>
-                      <div className='space-y-4'>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            09:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Keynote Speech II
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              <strong>Prof. Ahmed Hassan (Oxford):</strong>{' '}
-                              "Sustainable Engineering for Climate Change"
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            10:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Technical Session II
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Engineering & Environmental Sciences (10 papers)
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            11:30
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Coffee Break & Poster Session
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Interactive poster presentations (50+ posters)
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+                {/* Day 2 */}
+                <div className='mb-12'>
+                  <div className='bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden'>
+                    <div className='bg-blue-500/20 px-8 py-4 border-b border-white/20'>
+                      <h3 className='text-2xl font-bold text-blue-400 flex items-center'>
+                        <Calendar className='w-6 h-6 mr-3' />
+                        Day 2 - March 16, 2024
+                      </h3>
+                      <p className='text-white/80 mt-2'>
+                        Research Sessions & Awards Ceremony
+                      </p>
                     </div>
 
-                    {/* Afternoon Session Day 2 */}
-                    <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
-                      <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
-                        <div className='w-3 h-3 rounded-full bg-purple-400 mr-3'></div>
-                        Afternoon Session (2:00 PM - 7:00 PM)
-                      </h4>
-                      <div className='space-y-4'>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            14:00
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Technical Session III
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Business Innovation & Management (12 papers)
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            15:30
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Industry Session
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Technology Transfer and Commercialization
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            16:30
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Best Paper Awards
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Recognition of outstanding research contributions
-                            </p>
-                          </div>
-                        </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            17:30
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Closing Ceremony
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Conference wrap-up and announcement of next year
-                            </p>
+                    <div className='p-8'>
+                      <div className='grid gap-6'>
+                        {/* Morning Session Day 2 */}
+                        <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
+                          <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
+                            <div className='w-3 h-3 rounded-full bg-green-400 mr-3'></div>
+                            Morning Session (9:00 AM - 12:30 PM)
+                          </h4>
+                          <div className='space-y-4'>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                09:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Keynote Speech II
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  <strong>Prof. Ahmed Hassan (Oxford):</strong>{' '}
+                                  "Sustainable Engineering for Climate Change"
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                10:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Technical Session II
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Engineering & Environmental Sciences (10
+                                  papers)
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                11:30
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Coffee Break & Poster Session
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Interactive poster presentations (50+ posters)
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div className='flex items-start space-x-4'>
-                          <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
-                            18:30
-                          </div>
-                          <div className='flex-1'>
-                            <h5 className='font-semibold text-white'>
-                              Gala Dinner
-                            </h5>
-                            <p className='text-white/70 text-sm'>
-                              Celebration dinner with entertainment and
-                              networking
-                            </p>
+
+                        {/* Afternoon Session Day 2 */}
+                        <div className='bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-colors duration-300'>
+                          <h4 className='text-lg font-bold text-white mb-4 flex items-center'>
+                            <div className='w-3 h-3 rounded-full bg-purple-400 mr-3'></div>
+                            Afternoon Session (2:00 PM - 7:00 PM)
+                          </h4>
+                          <div className='space-y-4'>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                14:00
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Technical Session III
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Business Innovation & Management (12 papers)
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                15:30
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Industry Session
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Technology Transfer and Commercialization
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                16:30
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Best Paper Awards
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Recognition of outstanding research
+                                  contributions
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                17:30
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Closing Ceremony
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Conference wrap-up and announcement of next
+                                  year
+                                </p>
+                              </div>
+                            </div>
+                            <div className='flex items-start space-x-4'>
+                              <div className='text-yellow-400 font-mono text-sm min-w-[80px]'>
+                                18:30
+                              </div>
+                              <div className='flex-1'>
+                                <h5 className='font-semibold text-white'>
+                                  Gala Dinner
+                                </h5>
+                                <p className='text-white/70 text-sm'>
+                                  Celebration dinner with entertainment and
+                                  networking
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Day 3 Preview */}
-            <div className='bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-6 border border-purple-500/30 text-center'>
-              <h3 className='text-xl font-bold text-white mb-2'>
-                Day 3 - March 17, 2024
-              </h3>
-              <p className='text-white/80'>
-                Optional workshops, site visits, and departure arrangements
-              </p>
-            </div>
+                {/* Day 3 Preview */}
+                <div className='bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-sm rounded-xl p-6 border border-purple-500/30 text-center'>
+                  <h3 className='text-xl font-bold text-white mb-2'>
+                    Day 3 - March 17, 2024
+                  </h3>
+                  <p className='text-white/80'>
+                    Optional workshops, site visits, and departure arrangements
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Event Schedule */}
+            {activeTab === 'event' && (
+              <div className='space-y-12'>
+                {/* Example Event Schedule */}
+                <div className='bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden'>
+                  <div className='bg-blue-500/20 px-8 py-4 border-b border-white/20'>
+                    <h3 className='text-2xl font-bold text-blue-400 flex items-center'>
+                      <Calendar className='w-6 h-6 mr-3' />
+                      Day 1 - Evening Events
+                    </h3>
+                    <p className='text-white/80 mt-2'>
+                      Networking & Cultural Events
+                    </p>
+                  </div>
+
+                  <div className='p-8 space-y-4'>
+                    <div className='flex items-start space-x-4'>
+                      <div className='text-blue-400 font-mono text-sm min-w-[80px]'>
+                        19:00
+                      </div>
+                      <div>
+                        <h5 className='font-semibold text-white'>
+                          Welcome Dinner
+                        </h5>
+                        <p className='text-white/70 text-sm'>
+                          Dinner with cultural performances
+                        </p>
+                      </div>
+                    </div>
+                    <div className='flex items-start space-x-4'>
+                      <div className='text-blue-400 font-mono text-sm min-w-[80px]'>
+                        21:00
+                      </div>
+                      <div>
+                        <h5 className='font-semibold text-white'>
+                          Networking Night
+                        </h5>
+                        <p className='text-white/70 text-sm'>
+                          Informal networking with live music
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Add more days/events as needed */}
+              </div>
+            )}
           </div>
 
           {/* Key Highlights */}
@@ -747,7 +828,7 @@ const AboutLastEventPage = () => {
                     <div className='flex-1 lg:px-12 lg:py-6 bg-white/95'>
                       <div className='h-full flex flex-col justify-between'>
                         {/* Content */}
-                        <div >
+                        <div>
                           <h3 className='text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-2 leading-tight'>
                             {card.title}
                           </h3>
