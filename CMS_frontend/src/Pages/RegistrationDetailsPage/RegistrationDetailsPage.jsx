@@ -92,27 +92,26 @@ const RegistrationDetailsPage = () => {
   ]
 
   const bankDetails = [
-  {
-    bank: 'HSBC Bank Malaysia Berhad',
-    details: [
-      { field: 'Account Number', value: '4617 7290 2181 0495' },
-      { field: 'Account Holder Name', value: 'Dr Syed Hamid Hussain Madni' },
-      { field: 'Swift Code', value: 'HMABMYKL' },
-      { field: 'Remarks/Reference', value: 'Your Paper ID + EGEIMRC2026' }
-    ]
-  },
-  {
-    bank: 'United Bank Limited (UBL Bank)',
-    details: [
-      { field: 'Account Number', value: '1488336162003' },
-      { field: 'Account Holder Name', value: 'Elite Global Excellence' },
-      { field: 'IBAN CODE', value: 'PK78UNIL0109000336162003' },
-      { field: 'Swift Code', value: 'UNILPKKA741' },
-      { field: 'Remarks/Reference', value: 'Your Paper ID + EGEIMRC2026' }
-    ]
-  }
-]
-
+    {
+      bank: 'HSBC Bank Malaysia Berhad',
+      details: [
+        { field: 'Account Number', value: '4617 7290 2181 0495' },
+        { field: 'Account Holder Name', value: 'Dr Syed Hamid Hussain Madni' },
+        { field: 'Swift Code', value: 'HMABMYKL' },
+        { field: 'Remarks/Reference', value: 'Your Paper ID + EGEIMRC2026' }
+      ]
+    },
+    {
+      bank: 'United Bank Limited (UBL Bank)',
+      details: [
+        { field: 'Account Number', value: '1488336162003' },
+        { field: 'Account Holder Name', value: 'Elite Global Excellence' },
+        { field: 'IBAN CODE', value: 'PK78UNIL0109000336162003' },
+        { field: 'Swift Code', value: 'UNILPKKA741' },
+        { field: 'Remarks/Reference', value: 'Your Paper ID + EGEIMRC2026' }
+      ]
+    }
+  ]
 
   const handlePayWithPayPal = () => {
     // Replace with your PayPal.Me or hosted checkout link
@@ -134,25 +133,21 @@ const RegistrationDetailsPage = () => {
         </div>
 
         {/* Registration Fees Table */}
-        <div className='bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl mb-12'>
+        <div className='bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl mb-12 border border-blue-200'>
           <div className='overflow-x-auto'>
-            <table className='w-full'>
+            <table className='w-full border-collapse'>
               <thead>
-                <tr className='bg-gradient-to-r from-blue-600 to-blue-800 text-white'>
-                  <th className='px-6 py-4 text-left font-bold text-yellow-300'>
+                <tr className='bg-gradient-to-r from-blue-700 to-blue-900 text-white text-sm uppercase tracking-wider'>
+                  <th className='px-6 py-4 text-left font-semibold'>
                     Categories
                   </th>
-                  <th className='px-6 py-4 text-center font-bold text-yellow-300'>
-                    Mode
+                  <th className='px-6 py-4 text-center font-semibold'>Mode</th>
+                  <th className='px-6 py-4 text-center font-semibold'>Early</th>
+                  <th className='px-6 py-4 text-center font-semibold'>
+                    Normal
                   </th>
-                  <th className='px-6 py-4 text-center font-bold text-yellow-300'>
-                    Early Registration
-                  </th>
-                  <th className='px-6 py-4 text-center font-bold text-yellow-300'>
-                    Normal Registration
-                  </th>
-                  <th className='px-6 py-4 text-center font-bold text-yellow-300'>
-                    Attendee Registration
+                  <th className='px-6 py-4 text-center font-semibold'>
+                    Attendee
                   </th>
                 </tr>
               </thead>
@@ -161,28 +156,30 @@ const RegistrationDetailsPage = () => {
                   category.modes.map((mode, modeIndex) => (
                     <tr
                       key={`${categoryIndex}-${modeIndex}`}
-                      className={`${
-                        modeIndex % 2 === 0 ? 'bg-blue-50' : 'bg-blue-100'
-                      } hover:bg-blue-200 transition-colors`}
+                      className={`transition-all duration-200 ${
+                        modeIndex % 2 === 0
+                          ? 'bg-blue-50 hover:bg-blue-100'
+                          : 'bg-white hover:bg-blue-50'
+                      }`}
                     >
                       {modeIndex === 0 && (
                         <td
-                          className={`px-6 py-4 font-bold text-yellow-600 text-xl bg-blue-600 text-white`}
+                          className='px-6 py-4 font-bold text-blue-900 text-lg border-r border-blue-200 bg-gradient-to-b from-blue-100 to-blue-200'
                           rowSpan={category.modes.length}
                         >
                           {category.category}
                         </td>
                       )}
-                      <td className='px-6 py-4 font-semibold text-blue-800 bg-blue-700  text-center'>
+                      <td className='px-6 py-4 text-center font-medium text-blue-700'>
                         {mode.type}
                       </td>
-                      <td className='px-6 py-4 text-center font-bold text-2xl text-green-600'>
+                      <td className='px-6 py-4 text-center font-bold text-green-600'>
                         ${mode.early}
                       </td>
-                      <td className='px-6 py-4 text-center font-bold text-2xl text-orange-600'>
+                      <td className='px-6 py-4 text-center font-bold text-orange-600'>
                         ${mode.normal}
                       </td>
-                      <td className='px-6 py-4 text-center font-bold text-2xl text-blue-600'>
+                      <td className='px-6 py-4 text-center font-bold text-indigo-600'>
                         ${mode.attendee}
                       </td>
                     </tr>
@@ -260,26 +257,28 @@ const RegistrationDetailsPage = () => {
                             <h4 className='text-xl font-bold text-gray-800 mb-4'>
                               Bank Details
                             </h4>
-                            <div className="space-y-8">
-  {bankDetails.map((bank, bankIndex) => (
-    <div key={bankIndex} className="space-y-3">
-      <h3 className="text-lg font-bold text-gray-900 border-b pb-2">
-        {bank.bank}
-      </h3>
-      {bank.details.map((detail, index) => (
-        <div
-          key={index}
-          className="flex justify-between items-center border-b border-gray-200 pb-2"
-        >
-          <span className="font-semibold text-gray-700">
-            {detail.field}:
-          </span>
-          <span className="text-gray-800 font-mono">{detail.value}</span>
-        </div>
-      ))}
-    </div>
-  ))}
-</div>
+                            <div className='space-y-8'>
+                              {bankDetails.map((bank, bankIndex) => (
+                                <div key={bankIndex} className='space-y-3'>
+                                  <h3 className='text-lg font-bold text-gray-900 border-b pb-2'>
+                                    {bank.bank}
+                                  </h3>
+                                  {bank.details.map((detail, index) => (
+                                    <div
+                                      key={index}
+                                      className='flex justify-between items-center border-b border-gray-200 pb-2'
+                                    >
+                                      <span className='font-semibold text-gray-700'>
+                                        {detail.field}:
+                                      </span>
+                                      <span className='text-gray-800 font-mono'>
+                                        {detail.value}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
 
@@ -333,10 +332,12 @@ const RegistrationDetailsPage = () => {
                           <div className='bg-gradient-to-b from-pink-500 to-red-600 p-6 rounded-2xl shadow-xl'>
                             <div className='bg-white p-2 rounded-xl '>
                               <div className='w-72 h-full bg-gray-200 rounded-lg flex items-center justify-center'>
-                                <img src="/public/qr-code.jpg"/>
+                                <img src='/public/qr-code.jpg' />
                               </div>
                               <div className='text-center  text-md text-gray-600'>
-                                <p className='font-bold'>Dr Syed Hamid Hussain Madni</p>
+                                <p className='font-bold'>
+                                  Dr Syed Hamid Hussain Madni
+                                </p>
                                 {/* <p>ICGESD PUO 2025</p> */}
                               </div>
                             </div>

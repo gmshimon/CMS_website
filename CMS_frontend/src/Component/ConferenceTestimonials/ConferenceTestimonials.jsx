@@ -211,7 +211,7 @@ const ConferenceTestimonials = () => {
                       )
                       .map(testimonial => (
                         <div key={testimonial.id} className='w-full'>
-                          <div className='bg-gradient-to-br from-teal-600 to-teal-800 rounded-2xl p-4 xl:p-6 h-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 relative overflow-hidden min-h-[320px]'>
+                          <div className='bg-gradient-to-br from-teal-600 to-teal-800 rounded-2xl p-4 xl:p-6 h-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 relative overflow-hidden '>
                             {/* Quote Icon */}
                             <div className='absolute top-3 right-3 opacity-20'>
                               <Quote className='w-6 h-6 xl:w-8 xl:h-8 text-white' />
@@ -219,11 +219,7 @@ const ConferenceTestimonials = () => {
 
                             {/* Profile Section */}
                             <div className='flex items-center mb-3 xl:mb-4'>
-                              <img
-                                src={testimonial.image}
-                                alt={testimonial.name}
-                                className='w-12 h-12 xl:w-16 xl:h-16 rounded-full object-cover border-2 xl:border-3 border-white/20 mr-3'
-                              />
+                              
                               <div className='flex-1 min-w-0'>
                                 <h3 className='text-white font-bold text-sm xl:text-lg leading-tight truncate'>
                                   {testimonial.name}
@@ -238,14 +234,14 @@ const ConferenceTestimonials = () => {
                             </div>
 
                             {/* Rating */}
-                            <div className='flex mb-3 xl:mb-4'>
+                            {/* <div className='flex mb-3 xl:mb-4'>
                               {[...Array(testimonial.rating)].map((_, i) => (
                                 <Star
                                   key={i}
                                   className='w-4 h-4 xl:w-5 xl:h-5 text-yellow-400 fill-current'
                                 />
                               ))}
-                            </div>
+                            </div> */}
 
                             {/* Message */}
                             <p className='text-white/90 text-xs xl:text-sm leading-relaxed mb-3 xl:mb-4 line-clamp-4'>

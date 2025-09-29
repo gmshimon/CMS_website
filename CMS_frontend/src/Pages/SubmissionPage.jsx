@@ -14,11 +14,90 @@ import {
   Calendar,
   Target
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const SubmissionPage = () => {
-  const [activePolicy, setActivePolicy] = useState('policies')
+  const [timeRemaining, setTimeRemaining] = useState({})
 
+  const [activePolicy, setActivePolicy] = useState('policies')
+  // Important dates data
+  const importantDates = [
+    {
+      id: 1,
+      title: 'Early Bird Registration',
+      date: 'Saturday, 15 October 2025',
+      fullDate: '2025-10-15T23:59:59',
+      icon: Users,
+      color: 'bg-green-500',
+      description: 'Get the best rates for conference registration'
+    },
+    {
+      id: 2,
+      title: 'Abstract submission',
+      date: 'Tuesday, 31 October 2025',
+      fullDate: '2025-10-31T23:59:59',
+      icon: AlertCircle,
+      color: 'bg-blue-500',
+      description: 'Submit your research abstract'
+    },
+    {
+      id: 3,
+      title: 'Normal Registration',
+      date: 'Friday, 15 November 2025',
+      fullDate: '2025-11-15T23:59:59',
+      icon: Calendar,
+      color: 'bg-orange-500',
+      description: 'Standard registration deadline'
+    },
+    {
+      id: 4,
+      title: 'Full paper submission',
+      date: 'Friday, 15 November 2025',
+      fullDate: '2025-11-15T23:59:59',
+      icon: Award,
+      color: 'bg-purple-500',
+      description: 'Submit your complete research paper'
+    },
+    {
+      id: 5,
+      title: 'Conference Date',
+      date: 'November 21st - 23rd 2025',
+      fullDate: '2025-11-21T00:00:00',
+      icon: CheckCircle,
+      color: 'bg-red-500',
+      description: 'The main conference event'
+    }
+  ]
+  // Calculate time remaining for each date
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const now = new Date()
+
+      const newTimeRemaining = {}
+      importantDates.forEach(item => {
+        const targetDate = new Date(item.fullDate)
+        const difference = targetDate - now
+
+        if (difference > 0) {
+          const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+          const hours = Math.floor(
+            (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          )
+          const minutes = Math.floor(
+            (difference % (1000 * 60 * 60)) / (1000 * 60)
+          )
+
+          newTimeRemaining[item.id] = { days, hours, minutes }
+        } else {
+          newTimeRemaining[item.id] = null // Past date
+        }
+      })
+
+      setTimeRemaining(newTimeRemaining)
+    }, 60000) // Update every minute
+
+    return () => clearInterval(timer)
+  }, [])
   const policyItems = [
     {
       id: 'policies',
@@ -119,9 +198,6 @@ const SubmissionPage = () => {
       content: `All submissions to <strong>EGEIMRC2026</strong> undergo a <strong>rigorous double peer review process</strong> conducted by at least two independent reviewers with expertise in the relevant research area. Each paper is evaluated on its <strong>originality, methodology, significance, clarity and adherence to conference standards</strong>. Regardless of acceptance status, authors receive <strong>detailed and constructive feedback </strong>to help improve the quality of their work.<br/>
 High-quality papers selected for publication will also be subject to an <strong>additional review by the respective journals</strong>, following their specific editorial and formatting guidelines. This double peer review process ensures that every accepted paper not only meets the standards of the conference but also aligns with the requirements of reputable indexed journals. By maintaining this rigorous evaluation system, EGEIMRC2026 upholds its commitment to <strong>academic excellence, research integrity, and the dissemination of impactful knowledge</strong>
 
-<strong class="underline">Research Quality Standards (Currently Ok No Changes)
-
-Plagiarism and AI Content Policy (Currently Ok No Changes)</strong>
 `
     },
     quality: {
@@ -139,6 +215,13 @@ Published papers may also be made available through selected journals and indexi
 This approach ensures that authors maintain ownership of their intellectual contributions while benefiting from the global dissemination and impact that the conference provides.
 `
     }
+  }
+  const getDateStatus = dateId => {
+    const remaining = timeRemaining[dateId]
+    if (!remaining) return 'past'
+    if (remaining.days <= 7) return 'urgent'
+    if (remaining.days <= 30) return 'soon'
+    return 'normal'
   }
 
   return (
@@ -254,39 +337,74 @@ This approach ensures that authors maintain ownership of their intellectual cont
           </div>
         </div>
 
-        {/* Key Dates & Contact */}
-        <div className='grid grid-cols-1 md:grid-cols-1 gap-8 mt-12'>
-          {/* Key Dates */}
-          <div className='bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 text-white'>
-            <div className='flex items-center mb-6'>
-              <Calendar className='w-8 h-8 mr-4 text-yellow-300' />
-              <h3 className='text-2xl font-bold'>Important Dates</h3>
-            </div>
-            <div className='space-y-4'>
-              <div className='flex justify-between items-center border-b border-white/20 pb-2'>
-                <span>Paper Submission Deadline:</span>
-                <span className='font-bold text-yellow-300'>
-                  October 31, 2025
-                </span>
-              </div>
-              <div className='flex justify-between items-center border-b border-white/20 pb-2'>
-                <span>Notification of Acceptance:</span>
-                <span className='font-bold text-yellow-300'>
-                  November 10, 2025
-                </span>
-              </div>
-              <div className='flex justify-between items-center border-b border-white/20 pb-2'>
-                <span>Camera-Ready Submission:</span>
-                <span className='font-bold text-yellow-300'>November 15, 2025</span>
-              </div>
-              <div className='flex justify-between items-center'>
-                <span>Conference Dates:</span>
-                <span className='font-bold text-yellow-300'>
-                  November 21-23, 2025
-                </span>
-              </div>
-            </div>
+          <div className='max-w-7xl mx-auto space-y-4 mt-12'>
+            {importantDates.map((item) => {
+              const status = getDateStatus(item.id)
+              const remaining = timeRemaining[item.id]
+
+              return (
+                <div
+                  key={item.id}
+                  className={`bg-yellow-400 backdrop-blur-sm rounded-lg p-4 md:p-6 transform hover:scale-102 transition-all duration-300 shadow-lg hover:shadow-xl ${
+                    status === 'past' ? 'opacity-60' : ''
+                  }`}
+                >
+                  <div className='flex flex-col md:flex-row md:items-center md:justify-between'>
+                    {/* Left Side - Title and Icon */}
+                    <div className='flex items-center space-x-4 mb-4 md:mb-0'>
+                      <div className={`${item.color} p-3 rounded-lg shadow-md`}>
+                        <item.icon className='w-6 h-6 text-white' />
+                      </div>
+                      <div>
+                        <h3 className='text-lg md:text-xl font-bold text-gray-800'>
+                          {item.title}
+                        </h3>
+                        <p className='text-gray-700 text-sm md:text-base'>
+                          {item.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Side - Date and Countdown */}
+                    <div className='text-right'>
+                      <div className='text-xl md:text-2xl font-bold text-gray-800 italic mb-2'>
+                        {item.date}
+                      </div>
+
+                      {/* Countdown Timer */}
+                      {remaining && (
+                        <div className='flex items-center justify-end space-x-4'>
+                          <div
+                            className={`px-3 py-1 rounded-full text-xs font-bold ${
+                              status === 'urgent'
+                                ? 'bg-red-500 text-white'
+                                : status === 'soon'
+                                ? 'bg-orange-500 text-white'
+                                : 'bg-green-500 text-white'
+                            }`}
+                          >
+                            {remaining.days}d {remaining.hours}h{' '}
+                            {remaining.minutes}m left
+                          </div>
+                          <Clock className='w-4 h-4 text-gray-600' />
+                        </div>
+                      )}
+
+                      {!remaining && (
+                        <div className='px-3 py-1 bg-gray-500 text-white rounded-full text-xs font-bold inline-flex items-center'>
+                          <CheckCircle className='w-3 h-3 mr-1' />
+                          Completed
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
           </div>
+        {/* Key Dates & Contact */}
+        {/* <div className='grid grid-cols-1 md:grid-cols-1 gap-8 mt-12 w-full'> */}
+          {/* Dates Timeline */}
 
           {/* Contact Information */}
           {/* <div className='bg-gradient-to-r from-green-600 to-teal-600 rounded-3xl p-8 text-white'>
@@ -321,7 +439,7 @@ This approach ensures that authors maintain ownership of their intellectual cont
               </div>
             </div>
           </div> */}
-        </div>
+        {/* </div> */}
 
         {/* Submission Checklist */}
         {/* <div className='bg-white/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 mt-12 shadow-2xl'>

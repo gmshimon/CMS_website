@@ -98,9 +98,11 @@ const UpcomingConferences = () => {
                       </div>
 
                       {/* Register Button */}
-                      <button className='bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-8 py-4 rounded-full text-lg transform hover:scale-105 transition-all duration-300 shadow-lg'>
+                      <a href="http://vgw4k0og4cw48oww0k4sw400.31.97.71.226.sslip.io/register" target='_blank'>
+                        <button className='bg-yellow-400 hover:bg-yellow-500 text-black font-bold px-8 py-4 rounded-full text-lg transform hover:scale-105 transition-all duration-300 shadow-lg'>
                         Register Now
                       </button>
+                      </a>
                     </div>
                   </div>
                 </div>

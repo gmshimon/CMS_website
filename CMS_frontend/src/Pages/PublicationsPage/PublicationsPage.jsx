@@ -40,7 +40,7 @@ const PublicationsPage = () => {
                 
                 {/* IEEE Xplore */}
                 <div className='text-center'>
-                  <img className='w-72' src="/public/assets/EGE_logo.png" alt="" srcset="" />
+                  <img className='w-72' src="/public/assets/logo_conference.png" alt="" srcset="" />
                   
                 </div>
 
@@ -68,10 +68,12 @@ const PublicationsPage = () => {
 
         {/* Call to Action */}
         <div className='text-center mt-12'>
-          <button className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold px-12 py-6 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl'>
+          <a href='http://vgw4k0og4cw48oww0k4sw400.31.97.71.226.sslip.io/register' target='_blank'>
+            <button className='bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold px-12 py-6 rounded-full text-xl transition-all duration-300 transform hover:scale-105 shadow-2xl'>
             <FileText className='w-6 h-6 inline-block mr-3' />
             Submit Your Paper
           </button>
+          </a>
           <p className='text-white/80 mt-4 text-lg'>
             Join the global research community at EGEIMRC2026
           </p>

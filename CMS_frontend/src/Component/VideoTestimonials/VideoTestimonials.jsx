@@ -17,11 +17,6 @@ const VideoTestimonials = () => {
     {
       id: 1,
       title: 'Welcome Message from Conference Chair',
-      speaker: 'Dr. Sarah Johnson',
-      position: 'Conference Chair, EGEIMRC2026',
-      country: 'United States',
-      message:
-        'Join us for an unprecedented journey of innovation and collaboration',
       thumbnail:
         'https://images.unsplash.com/photo-1494790108755-2616c79e2bf1?w=400&h=300&fit=crop&crop=face',
       videoUrl:
@@ -29,11 +24,7 @@ const VideoTestimonials = () => {
     },
     {
       id: 2,
-      title: 'AI Research Insights',
-      speaker: 'Prof. Chen Fong Tuan',
-      position: 'AI Research Director',
-      country: 'Singapore',
-      message: "Discover cutting-edge AI research that's shaping our future",
+      title: 'AI Research Insights', 
       thumbnail:
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=300&fit=crop&crop=face',
       videoUrl:
@@ -42,11 +33,6 @@ const VideoTestimonials = () => {
     {
       id: 3,
       title: 'Industry Innovation Spotlight',
-      speaker: 'Dr. Maria Rodriguez',
-      position: 'Tech Innovation Lead',
-      country: 'Spain',
-      message:
-        'Bridging the gap between academic research and industry applications',
       thumbnail:
         'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=300&fit=crop&crop=face',
       videoUrl:
@@ -55,10 +41,6 @@ const VideoTestimonials = () => {
     {
       id: 4,
       title: 'Global Collaboration Vision',
-      speaker: 'Prof. Raj Patel',
-      position: 'International Relations',
-      country: 'India',
-      message: 'Building bridges across continents through innovative research',
       thumbnail:
         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&crop=face',
       videoUrl:
@@ -67,10 +49,6 @@ const VideoTestimonials = () => {
     {
       id: 5,
       title: 'Future of Technology',
-      speaker: 'Dr. Emma Thompson',
-      position: 'Technology Strategist',
-      country: 'United Kingdom',
-      message: "Exploring tomorrow's technology solutions today",
       thumbnail:
         'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=400&h=300&fit=crop&crop=face',
       videoUrl:
@@ -109,7 +87,7 @@ const VideoTestimonials = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 py-16 px-4 relative'>
+    <div className='bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 py-16 px-4 relative'>
       <div className='container mx-auto max-w-7xl'>
         <div className='text-center mb-16'>
           <h1 className='text-4xl font-bold text-white'>
@@ -207,38 +185,17 @@ const VideoTestimonials = () => {
                 </div>
 
                 {/* Speaker Info */}
-                <div className='p-6 bg-gradient-to-r from-blue-900 to-purple-900'>
-                  <div className='flex items-start space-x-4'>
-                    <div className='w-16 h-16 rounded-full overflow-hidden border-2 border-yellow-400'>
-                      <img
-                        src={video.thumbnail}
-                        alt={video.speaker}
-                        className='w-full h-full object-cover'
-                      />
-                    </div>
-                    <div>
-                      <h4 className='text-white text-lg font-bold'>
-                        {video.speaker}
-                      </h4>
-                      <p className='text-white/80 text-sm'>
-                        📍 {video.country}
-                      </p>
-                      <p className='text-white/90 text-sm italic mt-2'>
-                        "{video.message}"
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
 
         {/* External Navigation Buttons */}
-        <button className='swiper-prev absolute left-40 top-1/2 -translate-y-1/2 bg-white/20 text-white p-3 rounded-full hover:bg-white/40'>
+        <button className='swiper-prev absolute left-40 top-2/3 -translate-y-1/2 bg-white/20 text-white p-3 rounded-full hover:bg-white/40'>
           ❮
         </button>
-        <button className='swiper-next absolute right-40 top-1/2 -translate-y-1/2 bg-white/20 text-white p-3 rounded-full hover:bg-white/40'>
+        <button className='swiper-next absolute right-40 top-2/3 -translate-y-1/2 bg-white/20 text-white p-3 rounded-full hover:bg-white/40'>
           ❯
         </button>
       </div>

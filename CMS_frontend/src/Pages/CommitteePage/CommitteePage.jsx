@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 
 const CommitteePage = () => {
-  const [activeTab, setActiveTab] = useState('scientific')
+  const [activeTab, setActiveTab] = useState('executive')
 
   const tabs = [
     {
@@ -43,7 +43,7 @@ const CommitteePage = () => {
       icon: ClipboardList,
       color: 'green'
     },
-    { id: 'moderator', label: 'Session Moderators', icon: Mic, color: 'purple' }
+    // { id: 'moderator', label: 'Session Moderators', icon: Mic, color: 'purple' }
   ]
 
   const committees = {
@@ -60,7 +60,7 @@ const CommitteePage = () => {
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Prof. Madya Dr. Norma Bt Alias.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Prof.+Madya+Dr.+Norma+Bt+Alias.jpg',
           achievements: [],
           bio: 'We are proud to have Associate Professor Dr. Norma Bt Alias as the Main Conference Advisor for EGEIMRC2026. She holds a Ph.D. in Industrial Computing from Universiti Kebangsaan Malaysia (UKM) and is widely recognized for her contributions in high-performance computing, big data analytics, and interdisciplinary research towards Industry 5.0. With extensive experience in organizing international conferences, serving on editorial boards, and mentoring future-ready educators and researchers, Dr. Norma brings invaluable expertise and guidance to the success of this global event.'
         },
@@ -73,7 +73,7 @@ const CommitteePage = () => {
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Prof Siti Zaiton.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Prof+Siti+Zaiton.jpg',
           achievements: [],
           bio: `As a Conference Advisor, Prof. Dr. Siti Zaiton brings exceptional academic leadership, research insight, and innovative vision to guide the conference towards achieving excellence in knowledge sharing and global collaboration.
 Prof. Dr. Siti Zaiton Bt. Mohd Hashim is a distinguished Professor at the Faculty of Computing, Universiti Teknologi Malaysia (UTM), where she also serves as the Deputy Dean of Research and Innovation. She holds a B.Sc. in Computer Science from the University of Hartford (USA), an M.Sc. in Computing from the University of Bradford (UK), and a Ph.D. in Soft Computing from The University of Sheffield (UK).
@@ -91,7 +91,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Syed Hamid Hussain Madni.png',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Syed+Hamid+Hussain+Madni.png',
           achievements: [],
           bio: `We are honored to have Dr. Syed Hamid Hussain Madni, Founder and CEO of Elite Global Excellence Sdn Bhd, serving as the Chairman of EGEIMRC2026. An accomplished academic leader and researcher with over 15 years of teaching and research experience, Dr. Madni is currently an Assistant Professor at the University of Southampton Malaysia. Holding a Ph.D. in Computer Science from Universiti Teknologi Malaysia, he has published over 40 ISI/Scopus-indexed papers, with notable contributions in AI, IoT, Cloud Computing, Big Data, and Cybersecurity. With extensive experience leading research projects, securing grants, and delivering keynote addresses worldwide, Dr. Madni brings visionary leadership to the conference, fostering innovation, collaboration, and impactful knowledge exchange on a global scale.
 `
@@ -105,7 +105,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Sajid Shah Leadership.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Sajid+Shah+Leadership.jpg',
           achievements: [],
           bio: `We are pleased to introduce Mr. Sajid Shah, Co-Founder and Research & Development Director of Elite Global Excellence Sdn Bhd, as the Vice Chairman of EGEIMRC2026. An emerging researcher and dedicated software engineer, he specializes in Artificial Intelligence, Machine Learning, IoT, and Cloud Computing. Currently pursuing his MPhil in Computer Science at Universiti Teknologi Malaysia, Mr. Shah has contributed to ISI/Scopus-indexed publications, multi-national research projects, and funded initiatives in Industrial IoT and Multi-Omics data analysis. Recognized as a speaker, reviewer, and coordinator in international conferences, he brings innovative vision and strong academic leadership to his role, supporting the mission of EGEIMRC2026 in advancing research and global collaboration.
 `
@@ -119,7 +119,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr Ayuba Jhon.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr+Ayuba+Jhon.jpg',
           achievements: [],
           bio: `We are delighted to have Dr. Ayuba John serving as the Conference Secretary for EGEIMRC2026. He obtained his Ph.D. in Computer Science from Universiti Teknologi Malaysia (UTM) in 2025, following his M.Eng. in Computer Engineering from the University of Benin, Nigeria, and B.Eng. in Computer Engineering from the University of Maiduguri, Nigeria. With professional experience as a Transmission Engineer at the National Control Centre (Transmission Company of Nigeria) and as a member of the Nigerian Society of Engineers (NSE), Dr. John brings both academic and industry expertise. Currently a lecturer at the Federal University Dutse, his research focuses on cybersecurity, machine learning, and wireless sensor networks, making him a valuable contributor to the success and organization of EGEIMRC2026.
 `
@@ -133,7 +133,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr. Zuriahati Binti Mohd Yunos.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr.+Zuriahati+Binti+Mohd+Yunos.jpg',
           achievements: [],
           bio: `
 `
@@ -147,7 +147,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr. Ekaterina Shevchu.png',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr.+Ekaterina+Shevchu.png',
           achievements: [],
           bio: `
           Dr. Ekaterina Shevchuk is an accomplished researcher and academic affiliated with Peter the Great St. Petersburg Polytechnic University, specializing in marketing, digital branding, customer experience, and interdisciplinary communication. With a prolific record of publications spanning international journals, conference proceedings, and books, she has made significant contributions to digital marketing, brand management, and innovative promotion strategies. Her extensive experience in research dissemination and engagement makes her an ideal leader for the Publicity, Promotion & Marketing Committee of EGEIMRC2026, where she drives strategic visibility, outreach, and promotion of the conference to a global audience.
@@ -162,7 +162,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr. Nelli Kozlova.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr.+Nelli+Kozlova.jpg',
           achievements: [],
           bio: `
          
@@ -177,7 +177,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/DR. MUHAMMAD ASIM SIDDIQUE.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/DR.+MUHAMMAD+ASIM+SIDDIQUE.jpg',
           achievements: [],
           bio: `
           Dr. Muhammad Asim Siddique, a distinguished digital media expert and General Manager at SAMAA TV, holds a PhD in Software Engineering and brings extensive expertise in digital media strategies, content creation, and technology-driven innovation. With a robust background in digital media production, content writing, social media management, data analysis, and digital marketing, he is a thought leader in IT, AI revolution, economic trends, and security issues. As the Head of the Multimedia Committee for the Elite Global Excellence International Multidisciplinary Research Conference 2026 (EGEIMRC2026), Dr. Siddique is poised to drive impactful multimedia initiatives, fostering collaboration and innovation across diverse disciplines.
@@ -193,7 +193,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr. Hadi Susanto.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr.+Hadi+Susanto.jpg',
           achievements: [],
           bio: `
           Dr. Hadi Susanto, a distinguished industrial engineer, holds a PhD in Industrial Management from National Taiwan University of Science and Technology (NTUST), complemented by a dual-degree Master’s (MBA and MT) from NTUST and Institut Teknologi Bandung (ITB), graduating with a perfect 4.0 GPA in just seven months as the fastest Indonesian graduate at NTUST. A recipient of prestigious scholarships, including Taiwan Tech’s full scholarship and DIKTI’s Beasiswa Unggulan, he excels in optimization, location routing, vehicle routing, shelf space allocation, and queueing theory, with proven leadership in student organizations and international cultural exhibitions. As Head of the Logistics, Food, and Drinks Committee for the Elite Global Excellence International Multidisciplinary Research Conference 2026 (EGEIMRC2026), Dr. Hadi leverages his exceptional organizational skills, target-oriented approach, and expertise to ensure seamless operations, fostering collaboration and elevating the conference experience through his commitment to sharing knowledge for societal advancement.
@@ -209,7 +209,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr Abdurauf Bhatti.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr+Abdurauf+Bhatti.jpg',
           achievements: [],
           bio: `
           We are privileged to have Prof. Dr. Abdul Rauf Bhatti, Professor of Electrical Engineering and Dean, Faculty of Engineering & Technology at Government College University Faisalabad (GCUF), serving as the Head of the Technical Program Committee for EGEIMRC2026. He earned his Ph.D. in Electrical Engineering with distinction from Universiti Teknologi Malaysia (UTM) in 2017 and has since been recognized with numerous national and international awards, including Best Teacher and Outstanding Researcher at GCUF, Most Downloaded Paper by Wiley Online Library, and Best Paper at the IEEE International Conference on Power and Energy in Malaysia. Ranked among the World’s Top 2% Scientists (2024), Dr. Bhatti has published extensively with over 80 research articles, an h-index of 25, and more than 2,700 citations. His expertise spans electrical energy management, electric vehicle charging, solar photovoltaics, forecasting, artificial intelligence, and renewable energy, bringing exceptional technical depth and leadership to the success of EGEIMRC2026.
@@ -225,7 +225,7 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr Yusra.png',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr+Yusra.png',
           achievements: [],
           bio: `
           Associate Prof. Dr. Yousra Abdul Alsahib S. Aldeen, Associate Dean for Scientific Affairs and Graduate Studies at the College of Science for Women, University of Baghdad, is a distinguished scholar in computer networks, cloud privacy, IoT, and smart cities. With over 16 publications and international research recognition, she brings extensive expertise in privacy-preserving data mining, cloud security, and emerging technologies. As Head of the Publication Committee at EGEIMRC2026, she plays a vital role in ensuring high-quality research dissemination through indexed journals and conference proceedings.
@@ -241,13 +241,13 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           email: '',
           website: '',
           image:
-            '/public/EGEIMRC2026 Conference Executive Committee/Dr Zeeshan Anjum.jpg',
+            'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/EGEIMRC2026+Conference+Executive+Committee/Dr+Zeeshan+Anjum.jpg',
           achievements: [],
           bio: `
           Dr. Zeeshan Anjum Memon, PhD in Electrical Engineering, serves as the Head of the Virtual Conference Committee. His expertise lies in electric vehicle (EV) integration with modern power grids, distributed generation allocation, and hybrid metaheuristic optimization algorithms. He has authored impactful journal articles, books, and research projects, while actively contributing as a reviewer for esteemed journals. With a strong commitment to collaboration and innovation, Dr. Zeeshan leads research initiatives, student mentorship, and academic knowledge-sharing to advance sustainable solutions in power systems and EV technologies.
          
 `
-        },
+        }
       ]
     },
     scientific: {
@@ -263,98 +263,74 @@ Her research expertise spans artificial intelligence, soft computing, and machin
           expertise: '',
           email: '',
           website: '',
-          image:
-            '/public/EGEIMRC2026 Conference Executive Committee',
-          achievements: [
-            
-          ],
+          image: '',
+          achievements: [],
           bio: ''
         },
         {
-          name: 'Prof. Ahmed Hassan',
-          title: 'Vice Chair',
-          university: 'University of Oxford',
-          country: 'United Kingdom',
-          expertise: 'Sustainable Engineering & Climate Tech',
-          email: 'a.hassan@oxford.ac.uk',
-          website: 'https://oxford.ac.uk/~hassan',
-          image:
-            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
-          achievements: [
-            'Royal Society Fellow',
-            '200+ Citations',
-            'Climate Innovation Award'
-          ],
-          bio: 'Renowned expert in sustainable engineering solutions and environmental technology.'
+          name: 'Assoc. Prof. Dr. Omar Ismael Al-Sanjary',
+          title: 'Head of ICT Research Unit Computer Center',
+          university: 'University of Mosul',
+          country: 'Iraq',
+          expertise: '',
+          email: '',
+          website: '',
+          image: '',
+          achievements: [],
+          bio: ''
         },
         {
-          name: 'Dr. Li Chen',
-          title: 'Scientific Secretary',
-          university: 'Stanford University',
-          country: 'United States',
-          expertise: 'Computer Vision & Robotics',
-          email: 'l.chen@stanford.edu',
-          website: 'https://stanford.edu/~lchen',
+          name: 'Dr. Liyanna Rosely ',
+          title: 'School of Computer Science Faculty of Innovation and Technology',
+          university: "Taylor's University",
+          country: 'Malaysia',
+          expertise: '',
+          email: '',
+          website: '',
           image:
-            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
-          achievements: [
-            'ACM Distinguished Scientist',
-            '80+ Publications',
-            'Innovation Excellence Award'
-          ],
-          bio: 'Expert in computer vision and robotic systems with focus on autonomous navigation.'
+            '',
+          achievements: [],
+          bio: ''
         },
         {
-          name: 'Prof. Maria Rodriguez',
-          title: 'Review Coordinator',
-          university: 'ETH Zurich',
-          country: 'Switzerland',
-          expertise: 'Biomedical Engineering & Healthcare IT',
-          email: 'm.rodriguez@ethz.ch',
-          website: 'https://ethz.ch/~mrodriguez',
+          name: 'Dr. Rayner Bin Tangkui	',
+          title: 'Institute of Teacher Education Malaysia Keningau Campus	',
+          university: 'Malaysia Keningau Campus',
+          country: 'Malaysia',
+          expertise: '',
+          email: '',
+          website: '',
           image:
-            'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=300&h=300&fit=crop&crop=face',
-          achievements: [
-            'Swiss National Science Fellow',
-            '120+ Publications',
-            'Healthcare Innovation Award'
-          ],
-          bio: 'Pioneer in biomedical engineering applications and digital healthcare solutions.'
+            '',
+          achievements: [],
+          bio: ''
         },
         {
-          name: 'Dr. James Wilson',
-          title: 'Quality Assurance',
-          university: 'Cambridge University',
-          country: 'United Kingdom',
-          expertise: 'Data Science & Analytics',
-          email: 'j.wilson@cam.ac.uk',
-          website: 'https://cam.ac.uk/~jwilson',
+          name: 'Dr. Christopher Yarkwah',
+          title: 'Head Department of Mathematics and ICT Education. Faculty of Science and Technology Education ',
+          university: ' University of Cape Coast',
+          country: 'Ghana',
+          expertise: '',
+          email: '',
+          website: '',
           image:
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-          achievements: [
-            'Data Science Excellence Award',
-            '90+ Publications',
-            'Industry Partnership Medal'
-          ],
-          bio: 'Leading expert in big data analytics and statistical modeling for engineering applications.'
+            '',
+          achievements: [],
+          bio: ''
         },
         {
-          name: 'Prof. Yuki Tanaka',
-          title: 'International Liaison',
-          university: 'University of Tokyo',
-          country: 'Japan',
-          expertise: 'IoT & Smart Systems',
-          email: 'y.tanaka@u-tokyo.ac.jp',
-          website: 'https://u-tokyo.ac.jp/~tanaka',
+          name: 'Dr. Fahad Alotaibi',
+          title: 'Faculty of Computing and Information Technology',
+          university: 'King Abdulaziz University Saudi Arabia',
+          country: 'Saudi Arabia',
+          expertise: '',
+          email: '',
+          website: '',
           image:
-            'https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=300&h=300&fit=crop&crop=face',
-          achievements: [
-            'IoT Innovation Award',
-            '110+ Publications',
-            'Japan Science Medal'
-          ],
-          bio: 'International authority on Internet of Things and smart city technologies.'
-        }
+            '',
+          achievements: [],
+          bio: ''
+        },
       ]
     },
     technical: {
@@ -680,13 +656,11 @@ Her research expertise spans artificial intelligence, soft computing, and machin
               >
                 {/* Member Photo */}
                 <div className='relative mb-4'>
-                  <div className='w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-white/20 group-hover:border-white/40 transition-colors duration-300'>
-                    <img
-                      src={member.image}
-                      alt={member.name}
-                      className=''
-                    />
+                  {
+                    member.image && <div className='w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-white/20 group-hover:border-white/40 transition-colors duration-300'>
+                    <img src={member.image} alt={member.name} className='' />
                   </div>
+                  }
                   {member.title.includes('Chair') && (
                     <div className='absolute -top-1 -right-1 bg-yellow-500 rounded-full p-1'>
                       <Award className='w-4 h-4 text-black' />
@@ -752,20 +726,24 @@ Her research expertise spans artificial intelligence, soft computing, and machin
 
                 {/* Contact Links */}
                 <div className='flex justify-center space-x-3 pt-4 border-t border-white/10'>
-                  {member?.email && <a
-                    href={`mailto:${member.email}`}
-                    className='p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors duration-300 group'
-                  >
-                    <Mail className='w-4 h-4 text-white/60 group-hover:text-white' />
-                  </a>}
-                  {member.website&&<a
-                    href={member.website}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors duration-300 group'
-                  >
-                    <Globe className='w-4 h-4 text-white/60 group-hover:text-white' />
-                  </a>}
+                  {member?.email && (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className='p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors duration-300 group'
+                    >
+                      <Mail className='w-4 h-4 text-white/60 group-hover:text-white' />
+                    </a>
+                  )}
+                  {member.website && (
+                    <a
+                      href={member.website}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='p-2 bg-white/5 hover:bg-white/10 rounded-full transition-colors duration-300 group'
+                    >
+                      <Globe className='w-4 h-4 text-white/60 group-hover:text-white' />
+                    </a>
+                  )}
                 </div>
               </div>
             ))}

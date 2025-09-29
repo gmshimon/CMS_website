@@ -131,7 +131,7 @@ const ConferenceHighlights = () => {
           </h2>
 
           {/* Statistics Grid */}
-          <div className='grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 max-w-full mx-auto mb-20'>
+          <div className='grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-4 max-w-full mx-auto mb-20'>
             {stats.map((stat, index) => (
               <div key={index} className='text-center group'>
                 <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 md:p-4 hover:bg-white/20 transition-all duration-300 transform hover:scale-105 border border-white/20'>

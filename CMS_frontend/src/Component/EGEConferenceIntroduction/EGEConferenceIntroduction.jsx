@@ -106,19 +106,19 @@ Our theme celebrates the beauty of diverse perspectives coming together. It enco
     },
     objectives: {
       title: 'Conference Objectives',
-      content: `(i)	To Promote Interdisciplinary Collaboration
+      content: `<strong>To Promote Interdisciplinary Collaboration</strong>
 Facilitate meaningful interaction among researchers, scholars, and professionals from diverse academic and industry backgrounds to encourage the integration of knowledge and expertise across disciplines.<br/><br/>
 
-(ii)	To Provide a Global Platform for Research Exchange
+<strong>To Provide a Global Platform for Research Exchange</strong>
 Offer an international stage where participants from different countries can share their research findings, experiences, and innovations, fostering a more inclusive and culturally diverse research environment.<br/><br/>
 
-(iii)	To Support the Dissemination of Cutting-edge Knowledge
-Enable the presentation and discussion of the latest developments, emerging technologies and innovative solutions that address both local and global challenges across various fields.<br/>
+<strong>To Support the Dissemination of Cutting-edge Knowledge</strong>
+Enable the presentation and discussion of the latest developments, emerging technologies and innovative solutions that address both local and global challenges across various fields.<br/><br/>
 
-(iv)	To Encourage the Application of Emerging Technologies Across Fields
+<strong>To Encourage the Application of Emerging Technologies Across Fields</strong>
 Highlight the role and potential of modern tools such as artificial intelligence, data analytics, and digital platforms in enhancing research, problem-solving and development across multiple domains.<br/><br/>
 
-(v)	To Inspire Young Researchers and Students
+<strong>To Inspire Young Researchers and Students</strong>
 Engage postgraduate students, early-career researchers, and young professionals by providing a supportive platform for presenting their work, receiving feedback and learning from experienced experts
 `,
       backgroundImage:
@@ -269,13 +269,16 @@ Through keynote sessions, panel discussions and research presentations, particip
                 }}
               />
               <div className='relative z-10 bg-gradient-to-r from-gray-800/90 to-gray-900/90 h-full'>
-                <div className='p-8 md:p-12 flex flex-col justify-center h-full'>
+                <div className='p-8 md:p-12 flex flex-col  h-full'>
                   <h2 className='text-3xl md:text-3xl font-bold text-yellow-400 mb-6'>
                     {sectionContent[activeSection]?.title}
                   </h2>
-                  <p className='text-white/90 text-lg text-justify leading-relaxed' dangerouslySetInnerHTML={{
-    __html: sectionContent[activeSection]?.content
-  }}/>
+                  <p
+                    className='text-white/90 text-lg text-justify leading-relaxed'
+                    dangerouslySetInnerHTML={{
+                      __html: sectionContent[activeSection]?.content
+                    }}
+                  />
                 </div>
               </div>
             </div>

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
-
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
@@ -14,22 +13,27 @@ const Navbar = () => {
     { label: 'Keynote Speakers', path: '/keynote-speakers' },
     { label: 'Publications', path: '/publications' },
     { label: 'Committee', path: '/committee' },
-    { label: 'Past Events', path: '/past-events' },
+    { label: 'Event Schedule', path: '/past-events' }, // later it will be past events
     { label: 'Contact', path: '/contact' }
   ]
+
   return (
-    <nav className='relative z-50 bg-white/95 backdrop-blur-sm shadow-lg'>
-      <div className='container mx-auto px-4'>
-        <div className='flex items-center justify-between h-12 md:h-16'>
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-sm shadow-lg mb-10">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-12 md:h-16">
           {/* Logo */}
-          <div className='flex items-center space-x-3'>
+          <div className="flex items-center space-x-3">
             <div>
-              <img src="/assets/EGE_logo.png" alt='Conference Logo' className='h-12 w-auto' />
+              <img
+                src="/assets/EGE_logo.png"
+                alt="Conference Logo"
+                className="h-12 w-auto"
+              />
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <div className='hidden md:flex space-x-6'>
+          <div className="hidden md:flex space-x-6">
             {navItems.map(item => (
               <NavLink
                 key={item.path}
@@ -49,20 +53,20 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className='lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md'
+            className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-md"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <svg
-              className='w-6 h-6'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
               <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 strokeWidth={2}
-                d='M4 6h16M4 12h16M4 18h16'
+                d="M4 6h16M4 12h16M4 18h16"
               />
             </svg>
           </button>
@@ -70,8 +74,8 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className='lg:hidden py-4 border-t border-gray-200'>
-            <div className='grid grid-cols-2 gap-2'>
+          <div className="lg:hidden py-4 border-t border-gray-200">
+            <div className="grid grid-cols-2 gap-2">
               {navItems.map(item => (
                 <NavLink
                   key={item.path}

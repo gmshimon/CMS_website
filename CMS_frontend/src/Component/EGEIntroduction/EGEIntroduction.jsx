@@ -11,7 +11,7 @@ const EGEIntroduction = () => {
       name: 'Dr. Syed Hamid Hussain Madni',
       title: 'Founder and CEO',
       category: 'LEADERSHIP',
-      image: '/public/Leadership Pictures/Syed Hamid Hussain Madni.png',
+      image: 'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/Leadership+Pictures/Syed+Hamid+Hussain+Madni.png',
       bio: 'Dr. Syed Hamid Hussain Madni, Founder and CEO of Elite Global Excellence Sdn Bhd, is an accomplished academic leader and researcher with over 15 years of teaching and research experience. Currently serving as an Assistant Professor at the University of Southampton Malaysia, he holds a PhD in Computer Science from Universiti Teknologi Malaysia. With 40+ ISI/Scopus-indexed publications, an H-index of 17, and ground-breaking contributions in AI, IoT, Cloud Computing, Big Data and Cybersecurity, Dr. Madni has led 20+ national and international research projects and secured multiple research grants across Malaysia, Pakistan, and Saudi Arabia. A frequent keynote speaker and global collaborator, he continues to inspire innovation, foster academic excellence, and bridge the gap between research and real-world impact.',
       email: 'madni4all@yahoo.com',
       linkedin: 'https://www.linkedin.com/in/syed-hamid-hussain-madni-7b623b72',
@@ -31,7 +31,7 @@ const EGEIntroduction = () => {
       name: 'Mr. Sajid Shah',
       title: 'Co-Founder',
       category: 'LEADERSHIP',
-      image: '/public/Leadership Pictures/Sajid Shah Leadership.jpg',
+      image: 'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/Leadership+Pictures/Sajid+Shah+Leadership.jpg',
       bio: 'Mr. Sajid Shah, Co-Founder and Research & Development Director of Elite Global Excellence Sdn Bhd, is a dedicated software engineer and emerging researcher with expertise in Artificial Intelligence, Machine Learning, IoT and Cloud Computing. He is currently pursuing his Master of Philosophy (MPhil) in Computer Science at Universiti Teknologi Malaysia, where he also contributes as a lecturer and teaching assistant. With a strong academic foundation, Mr. Sajid Shah has published impactful research in ISI/Scopus-indexed journals, contributed to multi-national research projects, and worked as a research assistant on several funded projects in areas such as Industrial IoT and Multi-Omics data analysis. He has also earned recognition as a speaker, reviewer, and coordinator for prestigious international conferences. His passion lies in bridging research and innovation, developing real-world technological solutions, and fostering global academic collaborations through his leadership role at EGE.',
       email: 'sajidshah232@gmail.com',
       linkedin:
@@ -51,7 +51,7 @@ const EGEIntroduction = () => {
       name: 'Dr. Shahid Kamal',
       title: 'Director of Publications & Editorial Affairs',
       category: 'RESEARCH',
-      image: '/public/Leadership Pictures/Dr Shahid Kamal.png',
+      image: 'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/Leadership+Pictures/Dr+Shahid+Kamal.png',
       bio: 'Dr. Shahid Kamal, Director of Publications & Editorial Affairs at Elite Global Excellence Sdn Bhd, is an Assistant Professor at the Faculty of Computing and Informatics, Multimedia University, Malaysia. He holds a Ph.D. in Computer Science with a specialization in Software Engineering from Universiti Teknologi Malaysia (UTM). With a strong academic and research background, he has authored a book, contributed multiple book chapters, and published extensively in peer-reviewed journals. His research interests include non-functional requirements (NFRs), semantic search optimization, and quality-centric API frameworks. In addition to his research contributions, Dr. Shahid Kamal actively serves as an Area Editor and reviewer for several ISI-indexed international journals, reflecting his commitment to advancing scholarly excellence and supporting the global research community.',
       email: 'shahid.kamal@mmu.edu.my',
       linkedin:
@@ -70,7 +70,7 @@ const EGEIntroduction = () => {
       name: 'Dr. Muhammad Faheem',
       title: 'Director of Strategy & Planning',
       category: 'LEADERSHIP',
-      image: '/public/Leadership Pictures/Muhammad Faheem.jpg',
+      image: 'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/Leadership+Pictures/Muhammad+Faheem.jpg',
       bio: 'We are honored to have Dr. Muhammad Faheem as the Director of Strategy & Planning at Elite Global Excellence. He is a Senior Scientist at VTT Technical Research Centre of Finland with a distinguished academic and professional career spanning institutions in Turkey, Pakistan, Malaysia, and Finland. Dr. Faheem has received multiple international accolades, including the Stanford Top 2% Scientist Award (2023–2024) and the Elsevier Highly Cited Scientist Award (2024). Actively engaged in global research networks, he serves on editorial boards of leading journals (Elsevier, PLOS ONE, Frontiers, Wiley, MDPI) and has chaired sessions at international IEEE conferences. His expertise covers cybersecurity, AI, machine learning, blockchain, smart grids, and IoT, with a focus on developing advanced digital solutions for sustainable and secure systems. At Elite Global Excellence, he plays a key role in shaping strategic directions and fostering impactful global collaborations.',
       email: 'muhammad.faheem@vtt.fi',
       linkedin: 'https://www.linkedin.com/in/muhammad-faheem-945b3457',
@@ -87,7 +87,7 @@ const EGEIntroduction = () => {
       name: 'Dr. Shafi’i Muhammad Abdulhamid',
       title: 'Director of Training & Capacity Building',
       category: 'LEADERSHIP',
-      image: '/public/Leadership Pictures/Dr. Shafii Abdul Hamid.jpg',
+      image: 'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/Leadership+Pictures/Dr.+Shafii+Abdul+Hamid.jpg',
       bio: 'As the Director of Training & Capacity Building at Elite Global Excellence, Dr. Shafi’i Muhammad Abdulhamid, an Assistant Professor of Cybersecurity at the Community College of Qatar, brings unparalleled expertise from his pioneering role as Head of the first Department of Cyber Security Science at Nigeria’s Federal University of Technology, Minna, and a Ph.D. in Computer Science from the University of Technology Malaysia. Recognized among the World’s Top 2% Scientists by Stanford University in 2022 and 2024, with over 150 publications and nearly 5,000 citations, his research spans cloud security, digital forensics, and cybersecurity. A senior member of IEEE, IACSIT and other prestigious societies, and an editor for Springer’s Discover Computing journal, Dr. Shafi’i leverages his extensive academic and professional experience, including Huawei ICT Academy certifications and leadership in accreditation committees, to drive innovative training initiatives for the Elite Global Excellence.',
       email: 'shafii.abdulhamid@futminna.edu.ng',
       linkedin:
@@ -198,7 +198,7 @@ const EGEIntroduction = () => {
       {/* EGE Community */}
       <div className='bg-white/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-xl'>
         <h2 className='text-3xl md:text-4xl font-bold text-center mb-12'>
-          <span className='text-yellow-500'>EGE</span> Community
+          <span className='text-yellow-500'>EGE</span> Leadership
         </h2>
 
         <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6'>

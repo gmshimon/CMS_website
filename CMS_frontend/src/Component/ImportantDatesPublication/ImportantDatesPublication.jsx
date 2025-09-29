@@ -314,10 +314,9 @@ const ImportantDatesPublication = () => {
           <div className='grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16'>
             <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center hover:bg-white/15 transition-all duration-300'>
               <Award className='w-12 h-12 text-yellow-400 mx-auto mb-4' />
-              <h3 className='text-xl font-bold text-white mb-3'>IEEE Xplore</h3>
+              <h3 className='text-xl font-bold text-white mb-3'>Web of Science </h3>
               <p className='text-white/80'>
-                Web of Science (Publish in Prestigious Web of Science Index
-                Journal){' '}
+                Publish in Prestigious Web of Science Index Journal{' '}
               </p>
             </div>
             <div className='bg-white/10 backdrop-blur-sm rounded-lg p-6 text-center hover:bg-white/15 transition-all duration-300'>
@@ -343,7 +342,7 @@ const ImportantDatesPublication = () => {
         <div>
           <div className='bg-white/95 backdrop-blur-sm rounded-2xl p-8 max-w-7xl mx-auto'>
             <h3 className='text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8'>
-              Our Partners & Sponsors
+              Our Collaborators
             </h3>
 
             {/* Partners Grid */}
@@ -354,7 +353,7 @@ const ImportantDatesPublication = () => {
                   className='group bg-white rounded-lg p-4  transition-all duration-300 transform mt-2 flex items-center justify-center h-24 mx-4 min-w-[120px]'
                 >
                   <img
-                    className='h-16 object-contain'
+                    className='h-24 object-contain'
                     src={partner.logo}
                     alt=''
                   />
@@ -368,7 +367,7 @@ const ImportantDatesPublication = () => {
             {/* Partnership Call to Action */}
             <div className='text-center mt-8 pt-8 border-t border-gray-200'>
               <p className='text-gray-600 mb-4'>
-                Interested in becoming a partner??
+                Interested in becoming a collaborator??
               </p>
               <a href='https://forms.gle/v55KdZNj5JB2HxaC8' target='_blank'>
                 <button className='bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-full transform hover:scale-105 transition-all duration-200 shadow-lg'>

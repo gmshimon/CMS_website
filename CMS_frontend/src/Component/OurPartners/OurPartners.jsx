@@ -47,39 +47,39 @@ const OurPartners = () => {
       type: 'Silver Sponsor',
       color: 'from-purple-500 to-purple-700'
     },
-    {
-      id: 4,
-      name: 'EduGlobal Solutions',
-      country: 'Thailand',
-      flag: '🇹🇭',
-      logo: 'EDU',
-      description: 'Educational technology and research solutions',
-      website: 'https://eduglobal.th',
-      type: 'Bronze Sponsor',
-      color: 'from-orange-500 to-orange-700'
-    },
-    {
-      id: 5,
-      name: 'ResearchTech Labs',
-      country: 'Indonesia',
-      flag: '🇮🇩',
-      logo: 'RTL',
-      description: 'Advanced research and development laboratory',
-      website: 'https://researchtech.id',
-      type: 'Supporting Sponsor',
-      color: 'from-teal-500 to-teal-700'
-    },
-    {
-      id: 6,
-      name: 'Innovation Hub Asia',
-      country: 'Vietnam',
-      flag: '🇻🇳',
-      logo: 'IHA',
-      description: 'Regional innovation and startup ecosystem',
-      website: 'https://innovationhub.vn',
-      type: 'Supporting Sponsor',
-      color: 'from-red-500 to-red-700'
-    }
+    // {
+    //   id: 4,
+    //   name: 'EduGlobal Solutions',
+    //   country: 'Thailand',
+    //   flag: '🇹🇭',
+    //   logo: 'EDU',
+    //   description: 'Educational technology and research solutions',
+    //   website: 'https://eduglobal.th',
+    //   type: 'Bronze Sponsor',
+    //   color: 'from-orange-500 to-orange-700'
+    // },
+    // {
+    //   id: 5,
+    //   name: 'ResearchTech Labs',
+    //   country: 'Indonesia',
+    //   flag: '🇮🇩',
+    //   logo: 'RTL',
+    //   description: 'Advanced research and development laboratory',
+    //   website: 'https://researchtech.id',
+    //   type: 'Supporting Sponsor',
+    //   color: 'from-teal-500 to-teal-700'
+    // },
+    // {
+    //   id: 6,
+    //   name: 'Innovation Hub Asia',
+    //   country: 'Vietnam',
+    //   flag: '🇻🇳',
+    //   logo: 'IHA',
+    //   description: 'Regional innovation and startup ecosystem',
+    //   website: 'https://innovationhub.vn',
+    //   type: 'Supporting Sponsor',
+    //   color: 'from-red-500 to-red-700'
+    // }
   ]
 
   const exhibitors = [

@@ -23,7 +23,7 @@ const UnmissableBenefits = () => {
       icon: Users,
       color: 'from-blue-600 to-blue-800',
       image:
-        'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=300&fit=crop&crop=center',
+        'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/UNMISSABLE+BENEFITS+OF+JOINING+EGEIMRC2026/SHOWCASE+YOUR+RESEARCH+TO+A.jpg',
       features: [
         'Global reach',
         'Expert audience',
@@ -40,7 +40,7 @@ const UnmissableBenefits = () => {
       icon: Handshake,
       color: 'from-green-600 to-green-800',
       image:
-        'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=500&h=300&fit=crop&crop=center',
+        'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/UNMISSABLE+BENEFITS+OF+JOINING+EGEIMRC2026/CONNECT+ACROSS+CONTINENTS.jpg',
       features: [
         'International networking',
         'Cross-disciplinary collaboration',
@@ -57,7 +57,7 @@ const UnmissableBenefits = () => {
       icon: Award,
       color: 'from-purple-600 to-purple-800',
       image:
-        'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=300&fit=crop&crop=center',
+        'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/UNMISSABLE+BENEFITS+OF+JOINING+EGEIMRC2026/INSIGHTFUL+KEYNOTES+%26+AI.jpg',
       features: [
         'Expert keynotes',
         'AI-focused content',
@@ -67,19 +67,19 @@ const UnmissableBenefits = () => {
     },
     {
       id: 4,
-      title: 'GET PUBLISHED IN HIGH-VALUE PROCEEDINGS',
-      subtitle: 'IEEE Xplore & SCOPUS Indexed',
+      title: 'GET PUBLISHED IN WELL REPUTED JOURNALS',
+      subtitle: 'Web of Science Publication & SCOPUS Indexed',
       description:
-        'Your research will be published in prestigious proceedings, indexed in IEEE Xplore and SCOPUS, ensuring maximum visibility and citations for your work. Boost your academic profile and research impact.',
+        'Your research will be published in prestigious well-reputed journals, indexed in Scopus or Web of Science, ensuring maximum visibility and citations for your work. Boost your academic profile and research impact.',
       icon: BookOpen,
       color: 'from-orange-600 to-orange-800',
       image:
-        'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=300&fit=crop&crop=center',
+        'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/UNMISSABLE+BENEFITS+OF+JOINING+EGEIMRC2026/GET+PUBLISHED+IN+HIGH-VALUE.jpg',
       features: [
-        'IEEE Xplore publication',
-        'SCOPUS indexing',
-        'High citation potential',
-        'Academic recognition'
+        'WoS, Scopus and HEC',
+        'EGE Conference Proceedings',
+        'High Citation Potential',
+        'Academic Recognition',
       ]
     },
     {
@@ -91,7 +91,7 @@ const UnmissableBenefits = () => {
       icon: Trophy,
       color: 'from-yellow-600 to-yellow-800',
       image:
-        'https://images.unsplash.com/photo-1569025690938-a00729c9e1f7?w=500&h=300&fit=crop&crop=center',
+        'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/UNMISSABLE+BENEFITS+OF+JOINING+EGEIMRC2026/ELITE+INNOVATION+%26+BEST+PAPER.jpg',
       features: [
         'Best paper awards',
         'Innovation recognition',
@@ -108,7 +108,7 @@ const UnmissableBenefits = () => {
       icon: Mountain,
       color: 'from-teal-600 to-teal-800',
       image:
-        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop&crop=center',
+        'https://conferencewebsiteglobal.s3.ap-southeast-2.amazonaws.com/UNMISSABLE+BENEFITS+OF+JOINING+EGEIMRC2026/GROW+BEYOND+BOUNDARIES.jpg',
       features: [
         'Career advancement',
         'Research collaboration',

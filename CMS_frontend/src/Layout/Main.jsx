@@ -10,7 +10,9 @@ const Main = () => {
 
   return (
     <div>
-      {isLocation && <Navbar />}
+     <div className='mb-16'>
+       {isLocation && <Navbar />}
+     </div>
       <Outlet />
       {isLocation && <Footer />}
     </div>

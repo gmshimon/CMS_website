@@ -18,57 +18,57 @@ import {
 
 const AboutLastEventPage = () => {
   const [activeTab, setActiveTab] = useState('conference')
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
+  // const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  // const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
   // Sample images for the gallery
-  const eventImages = [
-    {
-      id: 1,
-      src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop',
-      title: 'Opening Ceremony',
-      description: 'Distinguished guests at the inaugural session'
-    },
-    {
-      id: 2,
-      src: 'https://images.unsplash.com/photo-1559223607-b4d0555ae227?w=800&h=600&fit=crop',
-      title: 'Keynote Speaker',
-      description: 'Dr. Sarah Johnson delivering the main keynote'
-    },
-    {
-      id: 3,
-      src: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&h=600&fit=crop',
-      title: 'Panel Discussion',
-      description: 'Expert panel on AI and Future Technologies'
-    },
-    {
-      id: 4,
-      src: 'https://images.unsplash.com/photo-1551818255-e6e10975bc17?w=800&h=600&fit=crop',
-      title: 'Networking Session',
-      description: 'Participants engaging in productive discussions'
-    },
-    {
-      id: 5,
-      src: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&h=600&fit=crop',
-      title: 'Award Ceremony',
-      description: 'Recognizing outstanding research contributions'
-    },
-    {
-      id: 6,
-      src: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&h=600&fit=crop',
-      title: 'Workshop Session',
-      description: 'Hands-on AI and Machine Learning workshop'
-    }
-  ]
+  // const eventImages = [
+  //   {
+  //     id: 1,
+  //     src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop',
+  //     title: 'Opening Ceremony',
+  //     description: 'Distinguished guests at the inaugural session'
+  //   },
+  //   {
+  //     id: 2,
+  //     src: 'https://images.unsplash.com/photo-1559223607-b4d0555ae227?w=800&h=600&fit=crop',
+  //     title: 'Keynote Speaker',
+  //     description: 'Dr. Sarah Johnson delivering the main keynote'
+  //   },
+  //   {
+  //     id: 3,
+  //     src: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&h=600&fit=crop',
+  //     title: 'Panel Discussion',
+  //     description: 'Expert panel on AI and Future Technologies'
+  //   },
+  //   {
+  //     id: 4,
+  //     src: 'https://images.unsplash.com/photo-1551818255-e6e10975bc17?w=800&h=600&fit=crop',
+  //     title: 'Networking Session',
+  //     description: 'Participants engaging in productive discussions'
+  //   },
+  //   {
+  //     id: 5,
+  //     src: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=800&h=600&fit=crop',
+  //     title: 'Award Ceremony',
+  //     description: 'Recognizing outstanding research contributions'
+  //   },
+  //   {
+  //     id: 6,
+  //     src: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&h=600&fit=crop',
+  //     title: 'Workshop Session',
+  //     description: 'Hands-on AI and Machine Learning workshop'
+  //   }
+  // ]
 
-  const eventStats = [
-    { icon: Users, value: '850+', label: 'Participants' },
-    { icon: Globe, value: '45', label: 'Countries' },
-    { icon: BookOpen, value: '320', label: 'Research Papers' },
-    { icon: Award, value: '25', label: 'Awards Given' },
-    { icon: Users, value: '80', label: 'Speakers' },
-    { icon: TrendingUp, value: '95%', label: 'Satisfaction Rate' }
-  ]
+  // const eventStats = [
+  //   { icon: Users, value: '850+', label: 'Participants' },
+  //   { icon: Globe, value: '45', label: 'Countries' },
+  //   { icon: BookOpen, value: '320', label: 'Research Papers' },
+  //   { icon: Award, value: '25', label: 'Awards Given' },
+  //   { icon: Users, value: '80', label: 'Speakers' },
+  //   { icon: TrendingUp, value: '95%', label: 'Satisfaction Rate' }
+  // ]
 
   const keyHighlights = [
     {
@@ -133,15 +133,15 @@ const AboutLastEventPage = () => {
       buttonText: 'Download Program'
     }
   ]
-  const nextImage = () => {
-    setCurrentImageIndex(prev => (prev + 1) % eventImages.length)
-  }
+  // const nextImage = () => {
+  //   setCurrentImageIndex(prev => (prev + 1) % eventImages.length)
+  // }
 
-  const prevImage = () => {
-    setCurrentImageIndex(
-      prev => (prev - 1 + eventImages.length) % eventImages.length
-    )
-  }
+  // const prevImage = () => {
+  //   setCurrentImageIndex(
+  //     prev => (prev - 1 + eventImages.length) % eventImages.length
+  //   )
+  // }
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden'>
@@ -158,7 +158,7 @@ const AboutLastEventPage = () => {
       <div className='relative z-10 py-16 px-4'>
         {/* Header Section */}
         <div className='container mx-auto max-w-7xl'>
-          <div className='text-center mb-16'>
+          {/* <div className='text-center mb-16'>
             <h1 className='text-4xl md:text-6xl font-bold mb-6 tracking-wider text-yellow-500'>
               EGEIMRC 2024
             </h1>
@@ -168,7 +168,7 @@ const AboutLastEventPage = () => {
               innovation, and technology.
             </p>
 
-            {/* Event Basic Info */}
+             Event Basic Info 
             <div className='flex flex-wrap justify-center gap-6 text-white/90'>
               <div className='flex items-center space-x-2'>
                 <Calendar className='w-5 h-5 text-yellow-400' />
@@ -183,10 +183,10 @@ const AboutLastEventPage = () => {
                 <span>850+ Participants</span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Video Section */}
-          <div className='mb-20'>
+          {/* <div className='mb-20'>
             <div className='bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20'>
               <h2 className='text-3xl font-bold text-white mb-6 text-center'>
                 Event Highlights Video
@@ -224,10 +224,10 @@ const AboutLastEventPage = () => {
                 speeches, panel discussions, and networking moments.
               </p>
             </div>
-          </div>
+          </div> */}
 
           {/* Statistics Section */}
-          <div className='mb-20'>
+          {/* <div className='mb-20'>
             <h2 className='text-3xl font-bold text-white mb-12 text-center'>
               Event Statistics
             </h2>
@@ -245,15 +245,15 @@ const AboutLastEventPage = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Image Gallery */}
-          <div className='mb-20'>
+          {/* <div className='mb-20'>
             <h2 className='text-3xl font-bold text-white mb-12 text-center'>
               Photo Gallery
             </h2>
             <div className='bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20'>
-              {/* Main Image Display */}
+
               <div className='relative mb-6'>
                 <div className='aspect-video rounded-xl overflow-hidden'>
                   <img
@@ -263,7 +263,7 @@ const AboutLastEventPage = () => {
                   />
                 </div>
 
-                {/* Navigation Arrows */}
+             Navigation Arrows 
                 <button
                   onClick={prevImage}
                   className='absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 rounded-full p-2 transition-colors duration-300'
@@ -278,7 +278,7 @@ const AboutLastEventPage = () => {
                 </button>
               </div>
 
-              {/* Image Info */}
+          Image Info *
               <div className='text-center mb-6'>
                 <h3 className='text-xl font-bold text-white mb-2'>
                   {eventImages[currentImageIndex].title}
@@ -288,7 +288,7 @@ const AboutLastEventPage = () => {
                 </p>
               </div>
 
-              {/* Thumbnail Navigation */}
+             Thumbnail Navigation 
               <div className='flex justify-center space-x-2 overflow-x-auto pb-2'>
                 {eventImages.map((image, index) => (
                   <button
@@ -309,7 +309,7 @@ const AboutLastEventPage = () => {
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Daily Schedule Section */}
           <div className='mb-20'>
@@ -694,8 +694,6 @@ const AboutLastEventPage = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Add more days/events as needed */}
               </div>
             )}
           </div>
@@ -869,6 +867,88 @@ const AboutLastEventPage = () => {
               </div>
             </div>
           </div> */}
+        </div>
+      </div>
+
+      {/* Venue Details Section */}
+      <div className='mb-20 mx-auto max-w-7xl'>
+        <h2 className='text-3xl font-bold text-white mb-12 text-center'>
+          Venue Details
+        </h2>
+        <div className='bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden shadow-xl border border-white/20'>
+          <div className='grid md:grid-cols-2'>
+            {/* Venue Images Gallery */}
+            <div className='grid grid-cols-2 gap-2 p-4'>
+              <div className='col-span-2 relative'>
+                <img
+                  src='https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?w=1200&h=800&fit=crop'
+                  alt='Main Conference Hall'
+                  className='w-full h-64 md:h-full object-cover rounded-xl'
+                />
+                <div className='absolute bottom-4 left-4 bg-black/60 px-3 py-1 rounded-lg'>
+                  <h3 className='text-lg font-semibold text-white'>
+                    Istanbul Congress Center
+                  </h3>
+                </div>
+              </div>
+              <img
+                src='https://images.unsplash.com/photo-1522199710521-72d69614c702?w=600&h=400&fit=crop'
+                alt='Lobby Area'
+                className='w-full h-40 object-cover rounded-xl'
+              />
+              <img
+                src='https://images.unsplash.com/photo-1503424886301-8913de08b3f9?w=600&h=400&fit=crop'
+                alt='Conference Hall'
+                className='w-full h-40 object-cover rounded-xl'
+              />
+            </div>
+
+            {/* Venue Info */}
+            <div className='p-8 flex flex-col justify-center bg-gradient-to-br from-blue-900/60 to-purple-900/60'>
+              <h3 className='text-2xl font-bold text-yellow-400 mb-4'>
+                Conference Venue
+              </h3>
+              <p className='text-white/80 mb-4 leading-relaxed'>
+                The EGEIMRC 2024 conference will take place at the prestigious{' '}
+                <span className='font-semibold text-white'>
+                  Istanbul Congress Center
+                </span>
+                , located in the heart of Istanbul, Turkey. The venue offers
+                state-of-the-art facilities for international conferences and
+                events.
+              </p>
+
+              {/* Venue Details List */}
+              <ul className='space-y-3 text-white/80'>
+                <li className='flex items-center space-x-3'>
+                  <MapPin className='w-5 h-5 text-yellow-400' />
+                  <span>
+                    Harbiye, Darülbedai Cd. No:3, 34367 Şişli/İstanbul, Turkey
+                  </span>
+                </li>
+                <li className='flex items-center space-x-3'>
+                  <Calendar className='w-5 h-5 text-yellow-400' />
+                  <span>March 15-17, 2024</span>
+                </li>
+                <li className='flex items-center space-x-3'>
+                  <Users className='w-5 h-5 text-yellow-400' />
+                  <span>850+ Participants Expected</span>
+                </li>
+              </ul>
+
+              {/* Google Maps Button */}
+              <div className='mt-6'>
+                <a
+                  href='https://www.google.com/maps/place/Istanbul+Congress+Center/'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='inline-block bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-3 px-6 rounded-lg transform hover:scale-105 transition-all duration-300 shadow-lg'
+                >
+                  View on Google Maps →
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
