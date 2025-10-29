@@ -37,7 +37,7 @@ const ConferenceList = () => {
                 <div>
                   <button
                     onClick={() => navigate(`/admin/abstract/add`)}
-                    className='btn btn-active btn-primary'
+                    className='btn btn-lg btn-active btn-primary'
                   >
                     Submit New Abstract
                   </button>

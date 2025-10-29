@@ -4,7 +4,8 @@ import {
   setMemberId,
   setTrack,
   setSubTrack,
-  setCategory
+  setTheme,
+  // setCategory
 } from '../../Redux/Slice/AbstractSlice'
 import { useState } from 'react'
 
@@ -13,7 +14,7 @@ const SelectConference = ({
   setActiveStep,
   activeStep
 }) => {
-  const { conference, category, member_id, track, subTrack } = useSelector(
+  const { conference, member_id, track, subTrack } = useSelector(
     state => state.abstract
   )
   const { singleConference, conferences } = useSelector(
@@ -28,7 +29,7 @@ const SelectConference = ({
   const validateForm = () => {
     const newErrors = {}
     if (!conference) newErrors.conference = 'Conference is required'
-    if (!category) newErrors.category = 'Category is required'
+    // if (!category) newErrors.category = 'Category is required'
     if (!track) newErrors.track = 'Track is required'
     if (selectedTrack?.subTracks?.length > 0 && !subTrack)
       newErrors.subTrack = 'Sub-Track is required'
@@ -55,6 +56,7 @@ const SelectConference = ({
             onChange={e => {
               dispatch(setConference(e.target.value))
               setCurrentConference(e.target.value)
+              dispatch(setTheme(singleConference?.theme))
             }}
             className='w-full border border-black rounded-md p-2'
             required
@@ -72,7 +74,7 @@ const SelectConference = ({
         </div>
 
         {/* Select Category */}
-        <div className='mt-5'>
+        {/* <div className='mt-5'>
           <label
             htmlFor='category'
             className='block text-gray-700 text-sm font-bold mb-2 ml-1'
@@ -96,7 +98,7 @@ const SelectConference = ({
           {errors.category && (
             <p className='text-red-500 text-sm mt-1'>{errors.category}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Select Track */}
         <div className='mt-5'>

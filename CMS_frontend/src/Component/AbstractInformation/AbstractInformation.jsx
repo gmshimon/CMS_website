@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css' // Import the styles
 import { useDispatch, useSelector } from 'react-redux'
@@ -14,11 +14,13 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
   const { theme, presentation_method, paper_title, abstract, keywords } =
     useSelector(state => state.abstract)
   const { singleConference } = useSelector(state => state.conference)
-
+  const dispatch = useDispatch()
+useEffect(()=>{
+  dispatch(setTheme(singleConference.theme))
+},[dispatch, singleConference.theme])
   const [errors, setErrors] = useState({})
 
-  const dispatch = useDispatch()
-
+  
   const validateForm = () => {
     const newErrors = {}
     if (!theme) {
@@ -54,7 +56,6 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
       setErrors(newErrors)
     }
   }
-
   return (
     <div>
       <h2 className='text-2xl font-bold mb-6'>Abstract Information</h2>
@@ -65,21 +66,15 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           <label className='label'>
             <span className='label-text font-medium text-black'>Theme *</span>
           </label>
-          <select
+          <input
             name='theme'
             value={theme}
-            onChange={e => dispatch(setTheme(e.target.value))}
+            readOnly
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.theme ? 'select-error' : ''
             }`}
-          >
-            <option value=''>Select a theme</option>
-            {singleConference?.theme?.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          />
+            
           {errors.theme && (
             <p className='text-error text-sm mt-1'>{errors.theme}</p>
           )}
@@ -94,25 +89,30 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           </label>
           <select
             name='presentation_method'
-            value={presentation_method}
+            value={presentation_method || ''} // <-- store submissionType in state or Redux
             onChange={e => {
-              const selectedOption = JSON.parse(e.target.value) // parse the string back to object
+              const selectedSubmissionType = e.target.value
 
-              // find early bird deadline from importantDates
+              // find full object based on submissionType
+              const selectedOption = singleConference?.submissionOptions?.find(
+                option => option.submissionType === selectedSubmissionType
+              )
+
+              // find early bird deadline
               const earlyBirdDeadline = singleConference?.importantDates?.find(
                 d => d.title.toLowerCase().includes('early bird')
               )?.date
 
-              let price = 0
               const today = new Date()
+              const price =
+                earlyBirdDeadline && today <= new Date(earlyBirdDeadline)
+                  ? selectedOption.earlyBird
+                  : selectedOption.normal
 
-              if (earlyBirdDeadline && today <= new Date(earlyBirdDeadline)) {
-                price = selectedOption.earlyBird // ✅ early bird price
-              } else {
-                price = selectedOption.normal // ✅ normal price
-              }
-
+              // ✅ Save submissionType (for API)
               dispatch(setPresentationMethod(selectedOption.submissionType))
+
+              // ✅ Save calculated price
               dispatch(setPrice(price))
             }}
             className={`border border-black rounded-md p-2 w-full text-black ${
@@ -120,8 +120,8 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             }`}
           >
             <option value=''>Select presentation method</option>
-            {singleConference?.submissionOptions?.map((option, index) => (
-              <option key={index} value={JSON.stringify(option)}>
+            {singleConference?.submissionOptions?.map(option => (
+              <option key={option._id} value={option.submissionType}>
                 {option.submissionType}
               </option>
             ))}

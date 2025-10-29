@@ -479,7 +479,7 @@ const Registration = () => {
                         htmlFor='hear'
                         className='block text-gray-700 text-sm font-bold mb-2'
                       >
-                        How did you hear about Connecting Asia? *
+                        How did you hear about EGE? *
                       </label>
                       <select
                         id='hear'

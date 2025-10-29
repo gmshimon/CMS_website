@@ -100,7 +100,7 @@ const Dashboard = () => {
 
   return (
     <section>
-      <ToastContainer/>
+      <ToastContainer />
       <div className='drawer lg:drawer-open'>
         <input id='my-drawer-3' type='checkbox' className='drawer-toggle' />
         <div className='drawer-content flex flex-col'>
@@ -192,15 +192,23 @@ const Dashboard = () => {
                   role='button'
                   className='btn btn-ghost btn-circle avatar'
                 >
-                  <div className='w-8 rounded-full'>
-                    <img
-                      alt='Tailwind CSS Navbar component'
-                      src={
-                        user?.photo ||
-                        'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp'
-                      }
-                    />
-                  </div>
+                  {user?.photo ? (
+                    // ✅ If photo exists
+                    <div className='w-8 rounded-full'>
+                      <img alt={user?.name || 'User avatar'} src={user.photo} />
+                    </div>
+                  ) : (
+                    // ✅ Fallback avatar with initials
+                    <div className='avatar placeholder'>
+                      <div className='bg-neutral text-neutral-content w-8 rounded-full flex items-center justify-center'>
+                        <span className='text-sm font-semibold'>
+                          {user?.name
+                            ? user.name.trim()[0].toUpperCase() // just first letter
+                            : 'U'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <ul
                   tabIndex={0}
