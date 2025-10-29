@@ -16,7 +16,7 @@ import {
 const initialState = {
   user: null,
   roles: null,
-
+  errorMessage: null,
   session_chairs: [],
   moderators: [],
 
@@ -99,15 +99,51 @@ export const loginUser = createAsyncThunk(
 )
 
 // Firebase user creation
-export const createUser = createAsyncThunk('createUser', async formdata => {
-  const email = formdata.get('email')
-  const password = formdata.get('password')
-  const name = formdata.get('name')
-  const res = await createUserWithEmailAndPassword(auth, email, password)
-  await updateProfile(auth.currentUser, { displayName: name })
-  const data = await saveUserData(formdata)
-  return data
-})
+export const createUser = createAsyncThunk(
+  'createUser',
+  async (formdata, { rejectWithValue }) => {
+    try {
+      const email = formdata.get('email')
+      const password = formdata.get('password')
+      const name = formdata.get('name')
+      const res = await createUserWithEmailAndPassword(auth, email, password)
+      await updateProfile(auth.currentUser, { displayName: name })
+      const data = await saveUserData(formdata)
+      return data
+    } catch (err) {
+      // ✅ Firebase errors have `code` and `message`
+      if (err.code && err.message) {
+        // Example: "auth/email-already-in-use"
+        let friendlyMessage = ''
+
+        switch (err.code) {
+          case 'auth/email-already-in-use':
+            friendlyMessage = 'This email is already registered.'
+            break
+          case 'auth/invalid-email':
+            friendlyMessage = 'Please enter a valid email address.'
+            break
+          case 'auth/weak-password':
+            friendlyMessage =
+              'Password is too weak. Please choose a stronger one.'
+            break
+          default:
+            friendlyMessage = err.message.replace('Firebase:', '').trim()
+            break
+        }
+
+        return rejectWithValue(friendlyMessage)
+      }
+      // ✅ If backend/controller error
+      if (err.response && err.response.data && err.response.data.message) {
+        return rejectWithValue(err.response.data.message)
+      }
+
+      // Fallback
+      return rejectWithValue('Failed to create user. Please try again.')
+    }
+  }
+)
 
 export const loginWithGoogle = createAsyncThunk(
   'loginWithGoogle',
@@ -311,10 +347,12 @@ const userSlice = createSlice({
         state.isCreateUserSuccess = true
         state.isCreateUserError = false
       })
-      .addCase(createUser.rejected, state => {
+      .addCase(createUser.rejected, (state, action) => {
         state.isCreateUserLoading = false
         state.isCreateUserSuccess = false
         state.isCreateUserError = true
+        state.errorMessage =
+          action.payload || action.error.message || 'Something went wrong'
       })
 
       //Login using the google providers

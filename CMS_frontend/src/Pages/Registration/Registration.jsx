@@ -31,7 +31,8 @@ const Registration = () => {
     isLoginWithGoogleSuccess,
     isLoginWithGoogleError,
     isLoginWithGooglePending,
-    roles
+    roles,
+    errorMessage
   } = useSelector(state => state.user)
   const [selectedRole, setSelectedRole] = useState('')
   const [name, setName] = useState('')
@@ -53,7 +54,7 @@ const Registration = () => {
   const navigate = useNavigate()
   useEffect(() => {
     if (isCreateUserError) {
-      showErrorToast('User Registration Failed')
+      showErrorToast(errorMessage)
       dispatch(reset())
     }
     if (isCreateUserSuccess) {
@@ -63,17 +64,10 @@ const Registration = () => {
       navigate('/admin')
     }
     if (isLoginWithGoogleError) {
-      showErrorToast("'User Registration Failed")
+      showErrorToast(errorMessage)
       dispatch(reset())
     }
-  }, [
-    dispatch,
-    isCreateUserError,
-    isCreateUserSuccess,
-    isLoginWithGoogleError,
-    isLoginWithGoogleSuccess,
-    navigate
-  ])
+  }, [dispatch, errorMessage, isCreateUserError, isCreateUserSuccess, isLoginWithGoogleError, isLoginWithGoogleSuccess, navigate])
 
   useEffect(() => {
     dispatch(getRole())
