@@ -10,17 +10,22 @@ import {
   setPrice,
   setTheme
 } from '../../Redux/Slice/AbstractSlice'
+
+const MAX_ABSTRACT_WORDS = 250
+const MAX_KEYWORDS = 5
+
 const AbstractInformation = ({ activeStep, setActiveStep }) => {
   const { theme, presentation_method, paper_title, abstract, keywords } =
     useSelector(state => state.abstract)
   const { singleConference } = useSelector(state => state.conference)
+  const [wordCount, setWordCount] = useState(0)
+  const [keywordCount, setKeywordCount] = useState(0)
   const dispatch = useDispatch()
-useEffect(()=>{
-  dispatch(setTheme(singleConference.theme))
-},[dispatch, singleConference.theme])
+  useEffect(() => {
+    dispatch(setTheme(singleConference.theme))
+  }, [dispatch, singleConference.theme])
   const [errors, setErrors] = useState({})
 
-  
   const validateForm = () => {
     const newErrors = {}
     if (!theme) {
@@ -56,6 +61,36 @@ useEffect(()=>{
       setErrors(newErrors)
     }
   }
+
+  const handleWordLimitedChange = (value, type = 'abstract') => {
+    let text = ''
+    let words = []
+
+    // Different input source for ReactQuill vs text input
+    if (type === 'abstract') {
+      text = value.replace(/<[^>]+>/g, ' ').trim() // remove HTML tags
+    } else {
+      text = value.trim() // plain input
+    }
+
+    // ✅ split words by space, comma, or punctuation
+    words = text.split(/[\s,.;:!?]+/).filter(Boolean)
+
+    const limit = type === 'abstract' ? MAX_ABSTRACT_WORDS : MAX_KEYWORDS
+    const count = words.length
+
+    // Enforce limit
+    if (count <= limit) {
+      if (type === 'abstract') {
+        dispatch(setAbstract(value))
+        setWordCount(count)
+      } else {
+        dispatch(setKeywords(value))
+        setKeywordCount(count)
+      }
+    }
+  }
+
   return (
     <div>
       <h2 className='text-2xl font-bold mb-6'>Abstract Information</h2>
@@ -74,7 +109,7 @@ useEffect(()=>{
               errors.theme ? 'select-error' : ''
             }`}
           />
-            
+
           {errors.theme && (
             <p className='text-error text-sm mt-1'>{errors.theme}</p>
           )}
@@ -193,11 +228,18 @@ useEffect(()=>{
           </label>
           <ReactQuill
             value={abstract}
-            onChange={e => dispatch(setAbstract(e))}
+            onChange={val => handleWordLimitedChange(val, 'abstract')}
             className={`h-[200px] mb-12 ${
               errors.abstract ? 'border-error' : ''
             }`}
           />
+          <div
+            className={`text-right text-sm mt-1 ${
+              wordCount > MAX_ABSTRACT_WORDS ? 'text-error' : 'text-gray-500'
+            }`}
+          >
+            {wordCount} / {MAX_ABSTRACT_WORDS} words
+          </div>
           {errors.abstract && (
             <p className='text-error text-sm mt-1'>{errors.abstract}</p>
           )}
@@ -214,12 +256,20 @@ useEffect(()=>{
             type='text'
             name='keywords'
             value={keywords}
-            onChange={e => dispatch(setKeywords(e.target.value))}
+            readOnly={keywordCount > MAX_KEYWORDS}
+            onChange={e => handleWordLimitedChange(e.target.value, 'keywords')}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.keywords ? 'input-error' : ''
             }`}
             placeholder='Enter keywords (comma separated)'
           />
+          <div
+            className={`text-right text-sm mt-1 ${
+              keywordCount > MAX_KEYWORDS ? 'text-error' : 'text-gray-500'
+            }`}
+          >
+            {keywordCount} / {MAX_KEYWORDS} keywords
+          </div>
           {errors.keywords && (
             <p className='text-error text-sm mt-1'>{errors.keywords}</p>
           )}

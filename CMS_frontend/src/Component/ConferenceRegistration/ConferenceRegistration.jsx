@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { FaCalendarAlt, FaClock, FaBed } from 'react-icons/fa'
+// import { FaCalendarAlt, FaClock, FaBed } from 'react-icons/fa'
 import { IoClose } from 'react-icons/io5'
 import { useDispatch, useSelector } from 'react-redux'
 import { createAbstract } from '../../Redux/Slice/AbstractSlice'
@@ -55,13 +55,13 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
     }
   }, [createAbstractSuccess, dispatch, navigate])
 
-  const accommodationOptions = [
-    'Single Room',
-    'Double Room',
-    'Twin Room',
-    'Suite',
-    'Shared Accommodation'
-  ]
+  // const accommodationOptions = [
+  //   'Single Room',
+  //   'Double Room',
+  //   'Twin Room',
+  //   'Suite',
+  //   'Shared Accommodation'
+  // ]
 
   const galaDinnerOptions = ['Yes', 'No', 'Maybe']
 
@@ -272,15 +272,15 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
             </div>
 
             {/* Conditional Accommodation Fields */}
-            {formData.accommodationRequired === 'Yes' && (
-              <div className='bg-blue-50 p-4 rounded-lg border border-blue-200'>
-                <h3 className='text-lg font-medium text-gray-800 mb-4 flex items-center gap-2'>
+            {/* {formData.accommodationRequired === 'Yes' && (
+              <div className='bg-blue-50 p-4 rounded-lg border border-blue-200'> */}
+                {/* <h3 className='text-lg font-medium text-gray-800 mb-4 flex items-center gap-2'>
                   <FaBed className='text-blue-600' />
                   Accommodation Details
-                </h3>
+                </h3> */}
 
                 {/* Accommodation Option */}
-                <div className='mb-4'>
+                {/* <div className='mb-4'>
                   <label className='block text-sm font-medium text-gray-700 mb-2'>
                     Accommodation Option *
                   </label>
@@ -306,10 +306,10 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                       {errors.accommodationOption}
                     </p>
                   )}
-                </div>
+                </div> */}
 
                 {/* Check In Date & Time */}
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
+                {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-4'>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
                       <FaCalendarAlt className='inline mr-2 text-blue-600' />
@@ -349,11 +349,11 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                         {errors.checkInTime}
                       </p>
                     )}
-                  </div>
-                </div>
+                  </div> 
+                  </div> */}
 
                 {/* Check Out Date & Time */}
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                {/* <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                   <div>
                     <label className='block text-sm font-medium text-gray-700 mb-2'>
                       <FaCalendarAlt className='inline mr-2 text-blue-600' />
@@ -394,9 +394,9 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                       </p>
                     )}
                   </div>
-                </div>
-              </div>
-            )}
+                </div> */}
+              {/* </div>
+            )} */}
 
             {/* Attending Gala Dinner */}
             <div>
@@ -424,7 +424,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
             {/* Pre-conference Workshops */}
             <div>
               <label className='block text-sm font-medium text-gray-700 mb-3'>
-                Pre-conference Workshops
+                Conference Workshops
               </label>
 
               {/* Selected Workshops Display */}
