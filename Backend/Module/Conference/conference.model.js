@@ -19,7 +19,9 @@ const conferenceSchema = mongoose.Schema(
       required: true
     },
     category: [String],
-    theme: [String],
+    theme: {
+      type:String,
+    },
     tracks: [
       {
         title: { type: String, required: true },

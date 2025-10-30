@@ -148,7 +148,7 @@ const HomePage = () => {
             </h3>
             <button
               onClick={() => {
-                navigate('/login')
+                window.open('/login','_blank')
               }}
               className='btn btn-lg bg-yellow-500 hover:bg-yellow-400 text-black font-bold border-none px-12 py-4 text-xl rounded-lg transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl'
             >

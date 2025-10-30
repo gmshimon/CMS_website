@@ -29,8 +29,8 @@ const CreateConference = () => {
   const [formData, setFormData] = useState({
     name: '',
     shortName: '',
-    category: [],
-    theme: [],
+    // category: [],
+    theme: '',
     price: 0,
     mode: 'Hybrid',
     presentation_method: [],
@@ -54,8 +54,8 @@ const CreateConference = () => {
     { title: '', price: 0, date: '' }
   ])
 
-  const [currentCategory, setCurrentCategory] = useState('')
-  const [currentTheme, setCurrentTheme] = useState('')
+  // const [currentCategory, setCurrentCategory] = useState('')
+  // const [currentTheme, setCurrentTheme] = useState('')
   // const [currentPresentationMethod, setCurrentPresentationMethod] = useState('')
   const [currentPublicationOption, setCurrentPublicationOption] = useState('')
   const [currentSubTrack, setCurrentSubTrack] = useState('')
@@ -282,7 +282,7 @@ const CreateConference = () => {
     dispatch(createConference(data))
     // resetForm()
   }
-
+console.log(formData)
   return (
     <div className='min-h-screen'>
       <ToastContainer />
@@ -779,7 +779,7 @@ const CreateConference = () => {
             </motion.div>
 
             {/* Categories */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
@@ -838,7 +838,7 @@ const CreateConference = () => {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Themes */}
             <motion.div
@@ -852,7 +852,14 @@ const CreateConference = () => {
               </h2>
 
               <div className='flex gap-2 mb-4'>
-                <input
+                <input name='theme' type="text" className='border border-black rounded-md p-2 w-full text-black'
+                  placeholder='Add theme' onChange={e =>
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }/>
+                {/* <input
                   type='text'
                   value={currentTheme}
                   onChange={e => setCurrentTheme(e.target.value)}
@@ -872,10 +879,10 @@ const CreateConference = () => {
                   className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
                 >
                   <FaPlus /> Add
-                </button>
+                </button> */}
               </div>
 
-              <div className='flex flex-wrap gap-2'>
+              {/* <div className='flex flex-wrap gap-2'>
                 {formData.theme.map((theme, index) => (
                   <span
                     key={index}
@@ -891,7 +898,7 @@ const CreateConference = () => {
                     </button>
                   </span>
                 ))}
-              </div>
+              </div> */}
             </motion.div>
 
             {/* Presentation Methods */}
