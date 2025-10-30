@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css' // Import the styles
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,14 +10,21 @@ import {
   setPrice,
   setTheme
 } from '../../Redux/Slice/AbstractSlice'
+
+const MAX_ABSTRACT_WORDS = 250
+const MAX_KEYWORDS = 5
+
 const AbstractInformation = ({ activeStep, setActiveStep }) => {
   const { theme, presentation_method, paper_title, abstract, keywords } =
     useSelector(state => state.abstract)
   const { singleConference } = useSelector(state => state.conference)
-
-  const [errors, setErrors] = useState({})
-
+  const [wordCount, setWordCount] = useState(0)
+  const [keywordCount, setKeywordCount] = useState(0)
   const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(setTheme(singleConference.theme))
+  }, [dispatch, singleConference.theme])
+  const [errors, setErrors] = useState({})
 
   const validateForm = () => {
     const newErrors = {}
@@ -55,6 +62,35 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
     }
   }
 
+  const handleWordLimitedChange = (value, type = 'abstract') => {
+    let text = ''
+    let words = []
+
+    // Different input source for ReactQuill vs text input
+    if (type === 'abstract') {
+      text = value.replace(/<[^>]+>/g, ' ').trim() // remove HTML tags
+    } else {
+      text = value.trim() // plain input
+    }
+
+    // ✅ split words by space, comma, or punctuation
+    words = text.split(/[\s,.;:!?]+/).filter(Boolean)
+
+    const limit = type === 'abstract' ? MAX_ABSTRACT_WORDS : MAX_KEYWORDS
+    const count = words.length
+
+    // Enforce limit
+    if (count <= limit) {
+      if (type === 'abstract') {
+        dispatch(setAbstract(value))
+        setWordCount(count)
+      } else {
+        dispatch(setKeywords(value))
+        setKeywordCount(count)
+      }
+    }
+  }
+
   return (
     <div>
       <h2 className='text-2xl font-bold mb-6'>Abstract Information</h2>
@@ -65,21 +101,15 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           <label className='label'>
             <span className='label-text font-medium text-black'>Theme *</span>
           </label>
-          <select
+          <input
             name='theme'
             value={theme}
-            onChange={e => dispatch(setTheme(e.target.value))}
+            readOnly
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.theme ? 'select-error' : ''
             }`}
-          >
-            <option value=''>Select a theme</option>
-            {singleConference?.theme?.map((option, index) => (
-              <option key={index} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          />
+
           {errors.theme && (
             <p className='text-error text-sm mt-1'>{errors.theme}</p>
           )}
@@ -94,25 +124,30 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           </label>
           <select
             name='presentation_method'
-            value={presentation_method}
+            value={presentation_method || ''} // <-- store submissionType in state or Redux
             onChange={e => {
-              const selectedOption = JSON.parse(e.target.value) // parse the string back to object
+              const selectedSubmissionType = e.target.value
 
-              // find early bird deadline from importantDates
+              // find full object based on submissionType
+              const selectedOption = singleConference?.submissionOptions?.find(
+                option => option.submissionType === selectedSubmissionType
+              )
+
+              // find early bird deadline
               const earlyBirdDeadline = singleConference?.importantDates?.find(
                 d => d.title.toLowerCase().includes('early bird')
               )?.date
 
-              let price = 0
               const today = new Date()
+              const price =
+                earlyBirdDeadline && today <= new Date(earlyBirdDeadline)
+                  ? selectedOption.earlyBird
+                  : selectedOption.normal
 
-              if (earlyBirdDeadline && today <= new Date(earlyBirdDeadline)) {
-                price = selectedOption.earlyBird // ✅ early bird price
-              } else {
-                price = selectedOption.normal // ✅ normal price
-              }
-
+              // ✅ Save submissionType (for API)
               dispatch(setPresentationMethod(selectedOption.submissionType))
+
+              // ✅ Save calculated price
               dispatch(setPrice(price))
             }}
             className={`border border-black rounded-md p-2 w-full text-black ${
@@ -120,8 +155,8 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             }`}
           >
             <option value=''>Select presentation method</option>
-            {singleConference?.submissionOptions?.map((option, index) => (
-              <option key={index} value={JSON.stringify(option)}>
+            {singleConference?.submissionOptions?.map(option => (
+              <option key={option._id} value={option.submissionType}>
                 {option.submissionType}
               </option>
             ))}
@@ -193,11 +228,18 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
           </label>
           <ReactQuill
             value={abstract}
-            onChange={e => dispatch(setAbstract(e))}
+            onChange={val => handleWordLimitedChange(val, 'abstract')}
             className={`h-[200px] mb-12 ${
               errors.abstract ? 'border-error' : ''
             }`}
           />
+          <div
+            className={`text-right text-sm mt-1 ${
+              wordCount > MAX_ABSTRACT_WORDS ? 'text-error' : 'text-gray-500'
+            }`}
+          >
+            {wordCount} / {MAX_ABSTRACT_WORDS} words
+          </div>
           {errors.abstract && (
             <p className='text-error text-sm mt-1'>{errors.abstract}</p>
           )}
@@ -214,12 +256,20 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             type='text'
             name='keywords'
             value={keywords}
-            onChange={e => dispatch(setKeywords(e.target.value))}
+            readOnly={keywordCount > MAX_KEYWORDS}
+            onChange={e => handleWordLimitedChange(e.target.value, 'keywords')}
             className={`border border-black rounded-md p-2 w-full text-black ${
               errors.keywords ? 'input-error' : ''
             }`}
             placeholder='Enter keywords (comma separated)'
           />
+          <div
+            className={`text-right text-sm mt-1 ${
+              keywordCount > MAX_KEYWORDS ? 'text-error' : 'text-gray-500'
+            }`}
+          >
+            {keywordCount} / {MAX_KEYWORDS} keywords
+          </div>
           {errors.keywords && (
             <p className='text-error text-sm mt-1'>{errors.keywords}</p>
           )}

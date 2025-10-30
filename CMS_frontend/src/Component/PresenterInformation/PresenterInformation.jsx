@@ -46,7 +46,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
 
   const [errors, setErrors] = useState({})
   const dispatch = useDispatch()
-  const titleOptions = ['Dr.', 'Assoc. Prof.', 'Prof.', 'Mr.', 'Ms.', 'Mrs.']
+  const titleOptions = ['Mr.', 'Mrs.', 'Ms.','Dr.', 'Prof.', 'Assoc. Prof.']
   const presenterStatusOptions = [
     'Student',
     'Faculty Member',
@@ -304,7 +304,7 @@ const PresenterInformation = ({ activeStep, setActiveStep }) => {
         <div>
           <label className='label'>
             <span className='label-text font-medium text-black'>
-              Correspondence Email Address *
+              Correspondence Address *
             </span>
           </label>
           <textarea
