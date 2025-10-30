@@ -22,9 +22,6 @@ const abstractSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    category: {
-      type: String
-    },
     member_id: {
       type: String
     },
