@@ -33,13 +33,13 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden w-full md:flex space-x-6">
+          <div className="hidden w-full md:flex space-x-3">
             {navItems.map(item => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 className={({ isActive }) =>
-                  `px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-md ${
+                  `px-2 py-2 text-sm font-medium transition-colors duration-200 rounded-md ${
                     isActive
                       ? 'text-green-600 bg-green-100'
                       : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
