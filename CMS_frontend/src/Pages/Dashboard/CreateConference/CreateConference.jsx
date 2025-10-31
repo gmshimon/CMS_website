@@ -111,22 +111,22 @@ const CreateConference = () => {
     }))
   }
 
-  const addArrayItem = (field, value, setter) => {
-    if (value.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        [field]: [...prev[field], value.trim()]
-      }))
-      setter('')
-    }
-  }
+  // const addArrayItem = (field, value, setter) => {
+  //   if (value.trim()) {
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       [field]: [...prev[field], value.trim()]
+  //     }))
+  //     setter('')
+  //   }
+  // }
 
-  const removeArrayItem = (field, index) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
-    }))
-  }
+  // const removeArrayItem = (field, index) => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     [field]: prev[field].filter((_, i) => i !== index)
+  //   }))
+  // }
 
   // Track management functions
   const addTrack = () => {
@@ -392,6 +392,69 @@ console.log(formData)
                     <option value='Online'>Online</option>
                     <option value='Physical'>Physical</option>
                   </select>
+                </div>
+              </div>
+            </motion.div>
+
+    {/* Location Information */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+              className='bg-gray-50 p-4 rounded-xl'
+            >
+              <h2 className='text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2'>
+                <FaMapMarkerAlt className='text-green-600' />
+                Location Details
+              </h2>
+
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div>
+                  <label className='block text-gray-700 text-sm font-bold mb-2'>
+                    Country *
+                  </label>
+                  <select
+                    name='country'
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    className='border border-black rounded-md p-2 w-full text-black'
+                    required
+                  >
+                    <option value=''>Select Country</option>
+                    {countries.map(country => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className='block text-gray-700 text-sm font-bold mb-2'>
+                    City
+                  </label>
+                  <input
+                    type='text'
+                    name='city'
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    className='border border-black rounded-md p-2 w-full text-black'
+                    placeholder='Enter city name'
+                  />
+                </div>
+
+                <div className='md:col-span-2'>
+                  <label className='block text-gray-700 text-sm font-bold mb-2'>
+                    Venue
+                  </label>
+                  <input
+                    type='text'
+                    name='venue'
+                    value={formData.venue}
+                    onChange={handleInputChange}
+                    className='border border-black rounded-md p-2 w-full text-black'
+                    placeholder='Enter venue details'
+                  />
                 </div>
               </div>
             </motion.div>
@@ -672,69 +735,6 @@ console.log(formData)
               </button>
             </motion.div>
 
-            {/* Location Information */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className='bg-gray-50 p-4 rounded-xl'
-            >
-              <h2 className='text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2'>
-                <FaMapMarkerAlt className='text-green-600' />
-                Location Details
-              </h2>
-
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div>
-                  <label className='block text-gray-700 text-sm font-bold mb-2'>
-                    Country *
-                  </label>
-                  <select
-                    name='country'
-                    value={formData.country}
-                    onChange={handleInputChange}
-                    className='border border-black rounded-md p-2 w-full text-black'
-                    required
-                  >
-                    <option value=''>Select Country</option>
-                    {countries.map(country => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className='block text-gray-700 text-sm font-bold mb-2'>
-                    City
-                  </label>
-                  <input
-                    type='text'
-                    name='city'
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    className='border border-black rounded-md p-2 w-full text-black'
-                    placeholder='Enter city name'
-                  />
-                </div>
-
-                <div className='md:col-span-2'>
-                  <label className='block text-gray-700 text-sm font-bold mb-2'>
-                    Venue
-                  </label>
-                  <input
-                    type='text'
-                    name='venue'
-                    value={formData.venue}
-                    onChange={handleInputChange}
-                    className='border border-black rounded-md p-2 w-full text-black'
-                    placeholder='Enter venue details'
-                  />
-                </div>
-              </div>
-            </motion.div>
-
             {/* Conference Dates */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -966,7 +966,7 @@ console.log(formData)
             </motion.div> */}
 
             {/* Publication Options */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.55 }}
@@ -1027,7 +1027,7 @@ console.log(formData)
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Workshop Options */}
             <motion.div
@@ -1089,6 +1089,8 @@ console.log(formData)
                     <input
                       type='date'
                       value={workshop.date}
+                      min={formData.startingDate}
+                      max={formData.closingDate}
                       onChange={e =>
                         updateWorkshopOption(index, 'date', e.target.value)
                       }
