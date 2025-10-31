@@ -354,14 +354,14 @@ const AbstractInformation = ({ activeStep, setActiveStep }) => {
             JSON.stringify(['Select Conference'])
           )
         }}
-        className='mt-4 px-6 py-3 text-white font-bold btn btn-active btn-sm btn-primary mr-2'
+        className='px-2 py-2 mr-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
       >
         Previous
       </button>
       <button
         type='button'
         onClick={handleSubmit}
-        className='mt-4 px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+        className='px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
       >
         Next
       </button>

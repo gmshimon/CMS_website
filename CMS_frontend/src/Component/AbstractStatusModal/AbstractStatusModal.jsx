@@ -125,10 +125,10 @@ const AbstractStatusModal = ({ isOpen, onClose, abstract, onSubmit }) => {
 
           {/* Modal Actions */}
           <div className='modal-action'>
-            <button className='btn btn-sm btn-outline' onClick={onClose}>
+            <button className='px-2 py-2 text-sm font-semibold text-black border border-black rounded-md transition-colors duration-200 mr-2' onClick={onClose}>
               Close
             </button>
-            <button className='btn btn-sm btn-primary' onClick={handleSubmit}>
+            <button className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 mr-2' onClick={handleSubmit}>
               Save Changes
             </button>
           </div>

@@ -75,7 +75,7 @@ const AttendeeListPage = () => {
         <div>
           <button
             onClick={() => setOpenModal(true)}
-            className='btn btn-active btn-primary'
+            className='px-2 py-2 flex items-center text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 mr-2'
           >
             New Registration <FaPlus />
           </button>

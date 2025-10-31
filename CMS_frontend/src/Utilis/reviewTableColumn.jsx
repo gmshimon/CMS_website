@@ -36,7 +36,7 @@ export const abstractReviewColumns = ({
           <br />
           <button
             onClick={() => handleOpenStatusModal(row)}
-            className='btn btn-xs btn-outline btn-accent text-xs mt-1 flex items-center gap-1'
+            className='px-1 py-1 font-semibold text-white bg-teal-600 rounded-md hover:bg-teal-700 transition-colors duration-200 text-xs mt-1 flex items-center gap-1'
           >
             Change Decision
           </button>
@@ -109,7 +109,7 @@ export const abstractReviewColumns = ({
             {hasReviewed && (
               <button
                 onClick={() => handleViewReview(review)}
-                className='btn btn-sm text-xs btn-accent mt-1'
+                className='px-2 py-2 text-sm font-semibold text-white bg-teal-600 rounded-md hover:bg-teal-700 transition-colors duration-200 mt-1'
               >
                 View Review
               </button>
@@ -117,7 +117,7 @@ export const abstractReviewColumns = ({
             {noResponse && (
               <button
                 onClick={() => handleSendReminder(review?._id)}
-                className='btn btn-xs btn-warning mt-1'
+                className='px-2 py-2 text-sm font-semibold text-white bg-amber-600 rounded-md hover:bg-amber-700 transition-colors duration-200 mt-1'
               >
                 Reminder
               </button>
@@ -134,7 +134,7 @@ export const abstractReviewColumns = ({
     render: (_, row) => (
       <button
         onClick={() => handleViewPaperList(row.papers)}
-        className='btn btn-sm btn-outline text-blue-600 tooltip'
+        className='px-1 py-1 text-sm font-semibold  border border-black rounded-md transition-colors duration-200 text-blue-600 tooltip'
         data-tip='View Submission Paper'
       >
         <FaEye />
@@ -228,7 +228,7 @@ export const reviewHomeColumn = ({
       render: (_, row) => (
         <button
           onClick={() => handleViewPaperList(row.abstract.paper)}
-          className='btn btn-sm btn-outline text-blue-600 tooltip'
+          className='px-1 py-1 text-sm font-semibold  border border-black rounded-md transition-colors duration-200 text-blue-600 tooltip'
           data-tip='View Submission Paper'
         >
           <FaEye />

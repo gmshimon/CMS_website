@@ -122,7 +122,7 @@ const ConferenceListTable = ({
                 {
                   admin && <td className='px-10  whitespace-nowrap text-sm text-gray-500'>
                   {conference.payment_status === 'Pending' ? (
-                    <button onClick={()=>handleOpenPaymentDecision(conference)} className='btn btn-sm btn-primary'>Decision</button>
+                    <button onClick={()=>handleOpenPaymentDecision(conference)} className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'>Decision</button>
                   ) : (
                     <>
                       {conference?.abstract

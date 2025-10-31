@@ -43,7 +43,7 @@ const PresenterHome = () => {
           <div>
             <button
               onClick={() => navigate(`/admin/abstract/add`)}
-              className='btn btn-lg btn-active btn-primary'
+              className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
             >
               Submit New Abstract
             </button>
@@ -96,7 +96,7 @@ const PresenterHome = () => {
                 </p>
                 <p className='text-sm text-gray-600'>Word document format</p>
               </div>
-              <button className='btn btn-sm btn-primary'>
+              <button className='px-2 flex items-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'>
                 <FaDownload className='mr-2' /> Download
               </button>
             </div>
@@ -105,7 +105,7 @@ const PresenterHome = () => {
                 <p className='font-medium text-gray-800'>Paper Template</p>
                 <p className='text-sm text-gray-600'>Word document format</p>
               </div>
-              <button className='btn btn-sm btn-primary'>
+              <button className='px-2 flex items-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'>
                 <FaDownload className='mr-2' /> Download
               </button>
             </div>

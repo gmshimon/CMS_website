@@ -644,7 +644,7 @@ console.log(formData)
               <button
                 type='button'
                 onClick={addTrack}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700'
               >
                 <FaPlus className='inline mr-2' /> Add Track
               </button>
@@ -729,7 +729,7 @@ console.log(formData)
               <button
                 type='button'
                 onClick={addImportantDate}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
               >
                 <FaPlus className='inline mr-2' /> Add Important Date
               </button>
@@ -815,7 +815,7 @@ console.log(formData)
                       setCurrentCategory
                     )
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
                 </button>
@@ -876,7 +876,7 @@ console.log(formData)
                   onClick={() =>
                     addArrayItem('theme', currentTheme, setCurrentTheme)
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
                 </button> */}
@@ -938,7 +938,7 @@ console.log(formData)
                       setCurrentPresentationMethod
                     )
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
                 </button>
@@ -1002,7 +1002,7 @@ console.log(formData)
                       setCurrentPublicationOption
                     )
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
                 </button>
@@ -1115,7 +1115,7 @@ console.log(formData)
               <button
                 type='button'
                 onClick={addWorkshopOption}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
               >
                 <FaPlus className='inline mr-2' /> Add Workshop Option
               </button>
@@ -1130,7 +1130,7 @@ console.log(formData)
             >
               <button
                 type='button'
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-neutral'
+                className='px-2 py-2 text-sm font-semibold text-white bg-gray-600 rounded-md hover:bg-gray-700 transition-colors duration-200'
                 onClick={resetForm}
               >
                 Reset Form
@@ -1139,7 +1139,7 @@ console.log(formData)
               <button
                 type='submit'
                 disabled={createConferenceLoading}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed'
               >
                 {createConferenceLoading ? (
                   <>

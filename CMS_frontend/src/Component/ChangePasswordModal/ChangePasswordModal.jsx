@@ -79,10 +79,10 @@ const ChangePasswordModal = ({ isOpen, onClose }) => {
           </div>
 
           <div className='flex justify-end space-x-4 mt-6'>
-            <button type='button' onClick={onClose} className='btn btn-outline'>
+            <button type='button' onClick={onClose} className='px-2 py-2 text-sm font-semibold text-black border border-black rounded-md transition-colors duration-200 '>
               Cancel
             </button>
-            <button type='submit' className='btn btn-primary'>
+            <button type='submit' className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 mr-2'>
               Update Password
             </button>
           </div>

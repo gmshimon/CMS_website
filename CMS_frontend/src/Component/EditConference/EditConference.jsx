@@ -51,10 +51,10 @@ const EditConference = () => {
     { title: '', price: 0 }
   ])
 
-  const [currentCategory, setCurrentCategory] = useState('')
-  const [currentTheme, setCurrentTheme] = useState('')
-  const [currentPresentationMethod, setCurrentPresentationMethod] = useState('')
-  const [currentPublicationOption, setCurrentPublicationOption] = useState('')
+  // const [currentCategory, setCurrentCategory] = useState('')
+  // const [currentTheme, setCurrentTheme] = useState('')
+  // const [currentPresentationMethod, setCurrentPresentationMethod] = useState('')
+  // const [currentPublicationOption, setCurrentPublicationOption] = useState('')
   // ✅ extra states
   const [tracks, setTracks] = useState([{ title: '', subTracks: [] }])
   const [currentSubTrack, setCurrentSubTrack] = useState('')
@@ -158,22 +158,22 @@ const EditConference = () => {
     }))
   }
 
-  const addArrayItem = (field, value, setter) => {
-    if (value.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        [field]: [...prev[field], value.trim()]
-      }))
-      setter('')
-    }
-  }
+  // const addArrayItem = (field, value, setter) => {
+  //   if (value.trim()) {
+  //     setFormData(prev => ({
+  //       ...prev,
+  //       [field]: [...prev[field], value.trim()]
+  //     }))
+  //     setter('')
+  //   }
+  // }
 
-  const removeArrayItem = (field, index) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
-    }))
-  }
+  // const removeArrayItem = (field, index) => {
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     [field]: prev[field].filter((_, i) => i !== index)
+  //   }))
+  // }
 
   const addWorkshopOption = () => {
     setWorkshopOptions(prev => [...prev, { title: '', price: 0 }])
@@ -398,6 +398,83 @@ const EditConference = () => {
               </div>
             </motion.div>
 
+    {/* Location Information */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className='bg-gray-50 p-4 rounded-xl'
+            >
+              <h2 className='text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2'>
+                <FaMapMarkerAlt className='text-green-600' />
+                Location Details
+              </h2>
+
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <div>
+                  <label
+                    htmlFor='country'
+                    className='block text-gray-700 text-sm font-bold mb-2'
+                  >
+                    Country *
+                  </label>
+                  <select
+                    id='country'
+                    name='country'
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    className='border border-black rounded-md p-2 w-full text-black'
+                    required
+                  >
+                    <option value=''>Select Country</option>
+                    {countries.map(country => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor='city'
+                    className='block text-gray-700 text-sm font-bold mb-2'
+                  >
+                    City *
+                  </label>
+                  <input
+                    type='text'
+                    id='city'
+                    name='city'
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    className='border border-black rounded-md p-2 w-full text-black'
+                    placeholder='Enter city name'
+                    required
+                  />
+                </div>
+
+                <div className='md:col-span-2'>
+                  <label
+                    htmlFor='venue'
+                    className='block text-gray-700 text-sm font-bold mb-2'
+                  >
+                    Venue *
+                  </label>
+                  <input
+                    type='text'
+                    id='venue'
+                    name='venue'
+                    value={formData.venue}
+                    onChange={handleInputChange}
+                    className='border border-black rounded-md p-2 w-full text-black'
+                    placeholder='Enter venue details'
+                    required
+                  />
+                </div>
+              </div>
+            </motion.div>
+
             {/* Submission Types & Prices */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -561,7 +638,7 @@ const EditConference = () => {
                       <button
                         type='button'
                         onClick={() => addSubTrack(trackIndex, currentSubTrack)}
-                        className='px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700'
+                        className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                       >
                         <FaPlus />
                       </button>
@@ -593,7 +670,7 @@ const EditConference = () => {
               <button
                 type='button'
                 onClick={addTrack}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
               >
                 <FaPlus className='inline mr-2' /> Add Track
               </button>
@@ -678,87 +755,10 @@ const EditConference = () => {
               <button
                 type='button'
                 onClick={addImportantDate}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
               >
                 <FaPlus className='inline mr-2' /> Add Important Date
               </button>
-            </motion.div>
-
-            {/* Location Information */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className='bg-gray-50 p-4 rounded-xl'
-            >
-              <h2 className='text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2'>
-                <FaMapMarkerAlt className='text-green-600' />
-                Location Details
-              </h2>
-
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                <div>
-                  <label
-                    htmlFor='country'
-                    className='block text-gray-700 text-sm font-bold mb-2'
-                  >
-                    Country *
-                  </label>
-                  <select
-                    id='country'
-                    name='country'
-                    value={formData.country}
-                    onChange={handleInputChange}
-                    className='border border-black rounded-md p-2 w-full text-black'
-                    required
-                  >
-                    <option value=''>Select Country</option>
-                    {countries.map(country => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor='city'
-                    className='block text-gray-700 text-sm font-bold mb-2'
-                  >
-                    City *
-                  </label>
-                  <input
-                    type='text'
-                    id='city'
-                    name='city'
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    className='border border-black rounded-md p-2 w-full text-black'
-                    placeholder='Enter city name'
-                    required
-                  />
-                </div>
-
-                <div className='md:col-span-2'>
-                  <label
-                    htmlFor='venue'
-                    className='block text-gray-700 text-sm font-bold mb-2'
-                  >
-                    Venue *
-                  </label>
-                  <input
-                    type='text'
-                    id='venue'
-                    name='venue'
-                    value={formData.venue}
-                    onChange={handleInputChange}
-                    className='border border-black rounded-md p-2 w-full text-black'
-                    placeholder='Enter venue details'
-                    required
-                  />
-                </div>
-              </div>
             </motion.div>
 
             {/* Date Information */}
@@ -813,7 +813,7 @@ const EditConference = () => {
             </motion.div>
 
             {/* Categories */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
@@ -849,7 +849,7 @@ const EditConference = () => {
                       setCurrentCategory
                     )
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
                 </button>
@@ -872,7 +872,7 @@ const EditConference = () => {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Themes */}
             <motion.div
@@ -888,28 +888,30 @@ const EditConference = () => {
               <div className='flex gap-2 mb-4'>
                 <input
                   type='text'
-                  value={currentTheme}
-                  onChange={e => setCurrentTheme(e.target.value)}
+                  name='theme'
+                  value={formData.theme}
+                  onChange={e =>
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
                   className='border border-black rounded-md p-2 w-full text-black'
                   placeholder='Add theme'
-                  onKeyPress={e =>
-                    e.key === 'Enter' &&
-                    (e.preventDefault(),
-                    addArrayItem('theme', currentTheme, setCurrentTheme))
-                  }
+                  
                 />
-                <button
+                {/* <button
                   type='button'
                   onClick={() =>
                     addArrayItem('theme', currentTheme, setCurrentTheme)
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
-                </button>
+                </button> */}
               </div>
 
-              <div className='flex flex-wrap gap-2'>
+              {/* <div className='flex flex-wrap gap-2'>
                 {formData.theme.map((theme, index) => (
                   <span
                     key={index}
@@ -925,11 +927,11 @@ const EditConference = () => {
                     </button>
                   </span>
                 ))}
-              </div>
+              </div> */}
             </motion.div>
 
             {/* Presentation Methods */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6 }}
@@ -965,7 +967,7 @@ const EditConference = () => {
                       setCurrentPresentationMethod
                     )
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
                 </button>
@@ -990,10 +992,10 @@ const EditConference = () => {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Publication Options */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
@@ -1029,7 +1031,7 @@ const EditConference = () => {
                       setCurrentPublicationOption
                     )
                   }
-                  className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   <FaPlus /> Add
                 </button>
@@ -1054,7 +1056,7 @@ const EditConference = () => {
                   </span>
                 ))}
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Workshop Options */}
             <motion.div
@@ -1114,6 +1116,7 @@ const EditConference = () => {
                       <div className='flex items-end'>
                         <button
                           type='button'
+                          
                           onClick={() => removeWorkshopOption(index)}
                           className='px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-300'
                         >
@@ -1128,9 +1131,9 @@ const EditConference = () => {
               <button
                 type='button'
                 onClick={addWorkshopOption}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 flex items-center py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
               >
-                <FaPlus /> Add Workshop Option
+                <FaPlus className='mr-2'/> Add Workshop Option
               </button>
             </motion.div>
 
@@ -1144,7 +1147,7 @@ const EditConference = () => {
               <button
                 type='submit'
                 disabled={editConferenceLoading}
-                className='px-3 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+                className='px-2 py-2 flex items-center text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed'
               >
                 {editConferenceLoading ? (
                   <>
@@ -1153,7 +1156,7 @@ const EditConference = () => {
                   </>
                 ) : (
                   <>
-                    <IoCreateOutline />
+                    <IoCreateOutline className='mr-2' />
                     Update Conference
                   </>
                 )}
