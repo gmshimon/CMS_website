@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Calendar, MapPin, Users, Award, BookOpen } from 'lucide-react'
-import { useNavigate } from 'react-router'
 import ConferenceHighlights from '../../Component/ConferenceHighlights/ConferenceHighlights'
 import SpeakersLineup from '../../Component/SpeakersLineup/SpeakersLineup'
 import ConferenceTracks from '../../Component/ConferenceTracks/ConferenceTracks'
@@ -44,8 +43,6 @@ const HomePage = () => {
 
     return () => clearInterval(timer)
   }, [])
-
-  const navigate = useNavigate()
 
   const features = [
     {
