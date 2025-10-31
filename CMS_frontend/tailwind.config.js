@@ -12,14 +12,15 @@ export default {
     require('daisyui')
   ],
   safelist: [
-    "btn",
-    "btn-primary",
-    "btn-secondary",
-    "btn-accent",
-    "btn-outline",
-    "btn-error",
-    "btn-warning",
-    "btn-success",
-  ]
+  { pattern: /^btn/, variants: ['hover', 'focus', 'active', 'disabled'] },
+  'btn-primary',
+  'btn-secondary',
+  'btn-accent',
+  'btn-neutral',
+  'btn-info',
+  'btn-success',
+  'btn-warning',
+  'btn-error',
+],
 }
 
