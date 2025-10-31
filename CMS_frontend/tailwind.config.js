@@ -11,5 +11,15 @@ export default {
   plugins: [
     require('daisyui')
   ],
+  safelist: [
+    "btn",
+    "btn-primary",
+    "btn-secondary",
+    "btn-accent",
+    "btn-outline",
+    "btn-error",
+    "btn-warning",
+    "btn-success",
+  ]
 }
 

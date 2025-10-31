@@ -33,7 +33,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden w-full md:flex">
+          <div className="hidden w-full md:flex space-x-6">
             {navItems.map(item => (
               <NavLink
                 key={item.path}
