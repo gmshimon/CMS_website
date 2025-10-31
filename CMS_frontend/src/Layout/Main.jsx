@@ -10,7 +10,7 @@ const Main = () => {
 
   return (
     <div>
-     <div className='mb-16'>
+     <div className={`${isLocation && 'mb-16'}`}>
        {isLocation && <Navbar />}
      </div>
       <Outlet />
