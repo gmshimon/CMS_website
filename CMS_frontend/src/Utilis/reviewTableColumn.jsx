@@ -204,7 +204,7 @@ export const reviewHomeColumn = ({
       render: (_, row) =>
         row.abstract?.createdAt ? (
           <span className='text-sm text-gray-700'>
-            {format(new Date(row?.deadline), 'dd MMM yyyy')}
+            {format(new Date(row?.deadline.split('T')[0]), 'dd MMM yyyy')}
           </span>
         ) : (
           <span className='text-sm text-gray-400'>N/A</span>

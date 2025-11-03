@@ -100,7 +100,7 @@ export const sendReminderToReviewer = createAsyncThunk(
   'sendReminderToReviewer',
   async (data, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/review/send-reminder', data)
+      const response = await axiosSecure.post('/review/send-reminder', data)
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data.message)
