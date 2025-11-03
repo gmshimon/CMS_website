@@ -121,13 +121,13 @@ const Profile = () => {
             <p className='text-xl text-gray-600'>{user?.title || '--'}</p>
             <div className='mt-4 flex gap-4'>
               <button
-                className='btn btn-primary'
+                className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 onClick={() => setIsEditModalOpen(true)}
               >
                 Edit Profile
               </button>
               <button
-                className='btn btn-outline'
+               className='px-2 py-2 text-sm font-semibold text-black border border-black rounded-md transition-colors duration-200'
                 onClick={() => setIsPasswordModalOpen(true)}
               >
                 Change Password

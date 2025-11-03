@@ -72,32 +72,32 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
       newErrors.presenterName = 'Presenter/Attendee name is required'
     }
 
-    if (formData.accommodationRequired === 'Yes') {
-      if (!formData.accommodationOption) {
-        newErrors.accommodationOption = 'Please select an accommodation option'
-      }
-      if (!formData.checkInDate) {
-        newErrors.checkInDate = 'Check-in date is required'
-      }
-      if (!formData.checkInTime) {
-        newErrors.checkInTime = 'Check-in time is required'
-      }
-      if (!formData.checkOutDate) {
-        newErrors.checkOutDate = 'Check-out date is required'
-      }
-      if (!formData.checkOutTime) {
-        newErrors.checkOutTime = 'Check-out time is required'
-      }
+    // if (formData.accommodationRequired === 'Yes') {
+    //   if (!formData.accommodationOption) {
+    //     newErrors.accommodationOption = 'Please select an accommodation option'
+    //   }
+    //   if (!formData.checkInDate) {
+    //     newErrors.checkInDate = 'Check-in date is required'
+    //   }
+    //   if (!formData.checkInTime) {
+    //     newErrors.checkInTime = 'Check-in time is required'
+    //   }
+    //   if (!formData.checkOutDate) {
+    //     newErrors.checkOutDate = 'Check-out date is required'
+    //   }
+    //   if (!formData.checkOutTime) {
+    //     newErrors.checkOutTime = 'Check-out time is required'
+    //   }
 
-      // Validate that check-out is after check-in
-      if (formData.checkInDate && formData.checkOutDate) {
-        const checkIn = new Date(formData.checkInDate)
-        const checkOut = new Date(formData.checkOutDate)
-        if (checkOut <= checkIn) {
-          newErrors.checkOutDate = 'Check-out date must be after check-in date'
-        }
-      }
-    }
+    //   // Validate that check-out is after check-in
+    //   if (formData.checkInDate && formData.checkOutDate) {
+    //     const checkIn = new Date(formData.checkInDate)
+    //     const checkOut = new Date(formData.checkOutDate)
+    //     if (checkOut <= checkIn) {
+    //       newErrors.checkOutDate = 'Check-out date must be after check-in date'
+    //     }
+    //   }
+    // }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -504,7 +504,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
                 ])
               )
             }}
-            className='mt-4 px-6 py-3 text-white font-bold btn btn-active btn-sm btn-primary mr-2'
+            className='mt-4 px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 mr-2'
           >
             Previous
           </button>
@@ -512,7 +512,7 @@ const ConferenceRegistration = ({ activeStep, setActiveStep }) => {
             disabled={createAbstractLoading}
             type='button'
             onClick={handleSubmit}
-            className='mt-4 px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+            className='mt-4 px-3 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 mr-2'
           >
             {createAbstractLoading ? '..Loading' : 'Submit'}
           </button>

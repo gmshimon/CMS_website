@@ -125,6 +125,7 @@ const Dashboard = () => {
                     d='M4 6h16M4 12h16M4 18h16'
                   ></path>
                 </svg>
+                
               </label>
             </div>
             <div className='mx-2 flex-1 px-2'>Elite Global Excellence CMS</div>

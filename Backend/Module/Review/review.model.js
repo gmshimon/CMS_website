@@ -38,7 +38,12 @@ const reviewSchema = new mongoose.Schema(
     },
 
     deadline: {
-      type: Date
+      type: Date,
+      default:function() {
+        const now = new Date();
+        now.setDate(now.getDate() + 7); // Default deadline is 7 days from now
+        return now;
+      }
     },
 
     completedAt: {

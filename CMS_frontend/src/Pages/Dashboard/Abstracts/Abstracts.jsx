@@ -120,7 +120,7 @@ const filteredAbstracts = abstracts?.filter(abstract => {
                 <div>
                   <button
                     onClick={() => navigate(`/admin/abstract/add`)}
-                    className='btn btn-active btn-primary'
+                    className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                   >
                     Submit New Abstract
                   </button>

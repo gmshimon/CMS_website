@@ -201,14 +201,14 @@ export default function EvaluationFormModal ({
             <div className='flex gap-4 mt-8 justify-end'>
               {!marks?.isEvaluated && (
                 <button
-                  className='btn btn-sm btn-primary text-white px-8'
+                  className='px-8 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 mr-2'
                   onClick={handleSubmit}
                 >
                   Submit
                 </button>
               )}
               <button
-                className='btn btn-sm btn-error text-white px-8'
+                className='px-8 py-2 text-sm font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-200 mr-2'
                 onClick={handleCancel}
               >
                 {marks?.isEvaluated ? 'Close' : 'Cancel'}

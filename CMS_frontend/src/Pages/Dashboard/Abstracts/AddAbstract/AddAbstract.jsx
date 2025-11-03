@@ -1,4 +1,4 @@
-import {useState } from 'react'
+import { useState } from 'react'
 import SelectConference from '../../../../Component/SelectConference/SelectConference'
 import PresenterInformation from '../../../../Component/PresenterInformation/PresenterInformation'
 import AbstractInformation from '../../../../Component/AbstractInformation/AbstractInformation'
@@ -7,6 +7,7 @@ import ConferenceRegistration from '../../../../Component/ConferenceRegistration
 import { useSelector } from 'react-redux'
 import Loading from '../../../../Component/Loading/Loading'
 import useAbstract from '../../../../Hooks/useAbstract'
+import { Step, Stepper } from 'react-form-stepper'
 
 const steps = [
   'Select Conference',
@@ -17,16 +18,21 @@ const steps = [
 ]
 
 const AddAbstract = () => {
-  const { getConferenceLoading} = useSelector(state => state.conference)
-  const [activeStep, setActiveStep] = useState(["Select Conference"])
-  const [currentConference,setCurrentConference] = useState(null)
-  useAbstract({currentConference})
- 
+  const { getConferenceLoading } = useSelector(state => state.conference)
+  const [activeStep, setActiveStep] = useState(['Select Conference'])
+  const [currentConference, setCurrentConference] = useState(null)
+  useAbstract({ currentConference })
+
+  const currentStepKey = activeStep[activeStep.length - 1] || steps[0]
+  const currentStepIndex = Math.max(
+    steps.findIndex(step => step === currentStepKey),
+    0
+  )
 
   // useEffect(() => {
   //   if (sessionStorage.getItem('activeStep')) {
-  //     const activeStep = JSON.parse(sessionStorage.getItem('activeStep'))
-  //     setActiveStep(activeStep)
+  //     const savedSteps = JSON.parse(sessionStorage.getItem('activeStep'))
+  //     setActiveStep(savedSteps.length ? savedSteps : ['Select Conference'])
   //   }
   // }, [])
   return (
@@ -40,25 +46,34 @@ const AddAbstract = () => {
           <h2 className='text-2xl font-bold text-gray-800 mb-2'>
             Abstract Submission
           </h2>
-          <div className='bg-white mx-auto md:max-w-7xl p-1 rounded-lg shadow-lg'>
-            <ul className='steps w-full'>
-              {steps.map((step, index) => (
-                <li
-                  key={index}
-                  className={`step ${
-                    activeStep.indexOf(step) !== -1 ? 'step-primary' : ''
-                  }`}
-                >
-                  {step}
-                </li>
+          <div className='bg-white mx-auto md:max-w-7xl p-2 rounded-lg shadow-lg'>
+            <Stepper
+              activeStep={currentStepIndex}
+              className='w-full overflow-x-auto'
+              connectorStateColors={true}
+              connectorStyleConfig={{
+                activeColor:'#2103B8FF',
+                completedColor:"#2103B8FF",
+                size: 4
+              }}
+              styleConfig={{
+                activeBgColor:'#401DEDFF',
+                completedBgColor:'#401DEDFF'
+              }}
+            >
+              {steps.map(step => (
+                <Step  label={step} />
               ))}
-            </ul>
+            </Stepper>
           </div>
-          <div className='bg-white md:max-w-7xl  mx-auto rounded-lg shadow-lg mt-2 p-3'>
+          <div className='bg-white md:max-w-7xl mx-auto rounded-lg shadow-lg mt-2 p-3'>
             {activeStep[activeStep.length - 1] == 'Select Conference' && (
               <div>
-                <SelectConference setCurrentConference={setCurrentConference} setActiveStep={setActiveStep} activeStep={activeStep}/>
-                
+                <SelectConference
+                  setCurrentConference={setCurrentConference}
+                  setActiveStep={setActiveStep}
+                  activeStep={activeStep}
+                />
               </div>
             )}
             {activeStep[activeStep.length - 1] == 'Abstract Information' && (

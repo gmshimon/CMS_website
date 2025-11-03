@@ -200,7 +200,7 @@ const SingleConference = () => {
               <div className='flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200'>
                 <Link
                   to='/admin/conference-list'
-                  className='px-8 py-3 btn btn-sm btn-primary'
+                  className='px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                 >
                   Back to List
                 </Link>

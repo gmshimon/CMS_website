@@ -66,7 +66,7 @@ const ReviewersModal = ({
                       disabled={row?.reviews.find(
                         item => item.reviewer._id === r._id
                       )}
-                      className='btn btn-sm btn-warning'
+                      className='px-2 py-2 text-sm font-semibold text-white bg-orange-600 rounded-md hover:bg-orange-700 transition-colors duration-200 mr-2'
                       onClick={() => {
                         onClose()
                         handleInviteReview({

@@ -98,9 +98,9 @@ const AdminConference = () => {
                 <div>
                   <button
                     onClick={() => navigate(`/admin/create-conference`)}
-                    className='btn btn-active btn-primary'
+                    className='px-2 py-2 flex  items-center w-full text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
                   >
-                    Create Conference <FaPlus />
+                    Create Conference <FaPlus className='ml-2' />
                   </button>
                 </div>
               </div>

@@ -48,7 +48,7 @@ const ReviewTable = ({
                 <td className='px-4 py-2'>
                   <button
                     onClick={() => handleOpenReviewerModal(row)}
-                    className='btn btn-xs text-xs  btn-accent'
+                    className='btn-sm px-1 py-1 text-sm font-semibold text-black bg-teal-400 rounded-md hover:bg-teal-500 transition-colors duration-200 mr-2'
                   >
                     Invite
                   </button>

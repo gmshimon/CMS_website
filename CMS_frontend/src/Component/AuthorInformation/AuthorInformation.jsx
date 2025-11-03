@@ -163,7 +163,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className='flex items-center gap-2 btn btn-sm btn-active btn-primary'
+          className='flex items-center gap-2 px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
         >
           <FaPlus className='text-sm' />
           Add Author
@@ -277,7 +277,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
             ])
           )
         }}
-        className='mt-4 px-6 py-3 text-white font-bold btn btn-active btn-sm btn-primary mr-2'
+        className='mt-4 px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200 mr-2'
       >
         Previous
       </button>
@@ -290,7 +290,7 @@ const AuthorInformation = ({ activeStep, setActiveStep }) => {
             JSON.stringify([...activeStep, 'Conference Registration'])
           )
         }}
-        className='mt-4 px-6 py-3 text-white font-bold btn btn-sm btn-active btn-primary'
+        className='mt-4 px-6  px-2 py-2 text-sm font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-200'
       >
         Next
       </button>
