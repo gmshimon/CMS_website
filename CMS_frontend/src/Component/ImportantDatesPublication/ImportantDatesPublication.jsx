@@ -347,7 +347,7 @@ const ImportantDatesPublication = () => {
             </h3>
 
             {/* Partners Grid */}
-            <Marquee pauseOnHover={false} gradient={false} speed={40}>
+            <Marquee pauseOnHover={true} gradient={false} speed={40}>
               {partners.map((partner, index) => (
                 <div
                   key={index}
